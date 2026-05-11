@@ -12,6 +12,7 @@ use App\Models\RespuestaEstudiante;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -37,33 +38,36 @@ class DashboardController extends Controller
 
     private function dashboardAdmin()
     {
-        // Inscripciones últimos 6 meses para chart
-        $inscripciones = Inscripcion::selectRaw($this->mesRaw() . ', COUNT(*) as total')
-            ->where('created_at', '>=', now()->subMonths(5)->startOfMonth())
-            ->groupBy('mes')
-            ->orderBy('mes')
-            ->pluck('total', 'mes');
+        $stats = Cache::remember('dashboard.admin.stats', 300, function () {
+            $inscripciones = Inscripcion::selectRaw($this->mesRaw() . ', COUNT(*) as total')
+                ->where('created_at', '>=', now()->subMonths(5)->startOfMonth())
+                ->groupBy('mes')
+                ->orderBy('mes')
+                ->pluck('total', 'mes');
 
-        $meses = collect();
-        for ($i = 5; $i >= 0; $i--) {
-            $key = now()->subMonths($i)->format('Y-m');
-            $meses[$key] = $inscripciones[$key] ?? 0;
-        }
+            $meses = collect();
+            for ($i = 5; $i >= 0; $i--) {
+                $key = now()->subMonths($i)->format('Y-m');
+                $meses[$key] = $inscripciones[$key] ?? 0;
+            }
 
-        $stats = [
-            'total_cursos'       => Curso::count(),
-            'cursos_publicados'  => Curso::where('estado', 'publicado')->count(),
-            'cursos_borrador'    => Curso::where('estado', 'borrador')->count(),
-            'cursos_archivados'  => Curso::where('estado', 'archivado')->count(),
-            'total_usuarios'     => User::count(),
-            'total_instructores' => User::whereHas('roles', fn($q) => $q->where('nombre', 'Instructor'))->count(),
-            'meses_labels'       => $meses->keys()
-                ->map(fn($m) => Carbon::parse($m . '-01')->locale('es')->isoFormat('MMM YY'))
-                ->values(),
-            'meses_data'         => $meses->values(),
-        ];
+            return [
+                'total_cursos'       => Curso::count(),
+                'cursos_publicados'  => Curso::where('estado', 'publicado')->count(),
+                'cursos_borrador'    => Curso::where('estado', 'borrador')->count(),
+                'cursos_archivados'  => Curso::where('estado', 'archivado')->count(),
+                'total_usuarios'     => User::count(),
+                'total_instructores' => User::whereHas('roles', fn($q) => $q->where('nombre', 'Instructor'))->count(),
+                'meses_labels'       => $meses->keys()
+                    ->map(fn($m) => Carbon::parse($m . '-01')->locale('es')->isoFormat('MMM YY'))
+                    ->values(),
+                'meses_data'         => $meses->values(),
+            ];
+        });
 
-        $cursos_recientes = Curso::with('creador')->orderByDesc('created_at')->take(5)->get();
+        $cursos_recientes = Cache::remember('dashboard.admin.recientes', 180, fn() =>
+            Curso::with('creador')->orderByDesc('created_at')->take(5)->get()
+        );
 
         return view('dashboard.admin', compact('stats', 'cursos_recientes'));
     }

@@ -6,6 +6,7 @@ use App\Models\Curso;
 use App\Models\Inscripcion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class CursoController extends Controller
 {
@@ -56,6 +57,9 @@ class CursoController extends Controller
         }
 
         $curso = Curso::create($validated);
+
+        Cache::forget('dashboard.admin.stats');
+        Cache::forget('dashboard.admin.recientes');
 
         return redirect()->route('cursos.edit', $curso)->with('success', 'Curso creado exitosamente');
     }
@@ -148,6 +152,9 @@ class CursoController extends Controller
 
         $curso->update($validated);
 
+        Cache::forget('dashboard.admin.stats');
+        Cache::forget('dashboard.admin.recientes');
+
         return redirect()->route('cursos.edit', $curso)->with('success', 'Curso actualizado correctamente');
     }
 
@@ -155,6 +162,9 @@ class CursoController extends Controller
     {
         $this->authorize('delete', $curso);
         $curso->delete();
+
+        Cache::forget('dashboard.admin.stats');
+        Cache::forget('dashboard.admin.recientes');
 
         return redirect()->route('cursos.index')->with('success', 'Curso eliminado correctamente');
     }
