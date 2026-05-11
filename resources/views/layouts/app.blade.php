@@ -65,6 +65,16 @@
                                 Mis Calificaciones
                             </a>
                         @endif
+                        @if(auth()->user()->esAdmin())
+                            <a href="{{ route('admin.usuarios.index') }}"
+                               class="nav-link {{ request()->routeIs('admin.usuarios.*') ? 'nav-link-active' : '' }}">
+                                Usuarios
+                            </a>
+                            <a href="{{ route('admin.auditoria.index') }}"
+                               class="nav-link {{ request()->routeIs('admin.auditoria.*') ? 'nav-link-active' : '' }}">
+                                Auditoría
+                            </a>
+                        @endif
                     </div>
                     @endauth
                 </div>

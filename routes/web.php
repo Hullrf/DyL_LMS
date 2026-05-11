@@ -129,4 +129,12 @@ Route::middleware('auth')->group(function () {
 // Verificación pública de certificados (sin autenticación)
 Route::get('/verificar-certificado/{numero}', [CertificadoController::class, 'verificar'])->name('certificados.verificar');
 
+// Admin
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('usuarios', \App\Http\Controllers\Admin\UsuarioController::class)
+        ->except(['show']);
+    Route::get('auditoria', [\App\Http\Controllers\Admin\AuditoriaController::class, 'index'])
+        ->name('auditoria.index');
+});
+
 require __DIR__.'/auth.php';
