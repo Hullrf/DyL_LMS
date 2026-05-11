@@ -22,7 +22,7 @@ class ActividadController extends Controller
             'titulo'           => 'required|string|max:255',
             'tipo'             => 'required|in:cuestionario,ensayo,tarea,practica',
             'descripcion'      => 'nullable|string',
-            'puntaje_maximo'   => 'required|integer|min:1|max:1000',
+            'puntaje_maximo'   => 'required|numeric|min:0.01|max:999.99',
             'duracion_minutos' => 'nullable|integer|min:1',
             'es_obligatoria'   => 'boolean',
         ]);
@@ -75,7 +75,7 @@ class ActividadController extends Controller
         $validated = $request->validate([
             'titulo'           => 'required|string|max:255',
             'descripcion'      => 'nullable|string',
-            'puntaje_maximo'   => 'required|integer|min:1|max:1000',
+            'puntaje_maximo'   => 'required|numeric|min:0.01|max:999.99',
             'duracion_minutos' => 'nullable|integer|min:1',
             'es_obligatoria'   => 'boolean',
             'fecha_apertura'   => 'nullable|date',
