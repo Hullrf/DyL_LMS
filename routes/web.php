@@ -129,6 +129,15 @@ Route::middleware('auth')->group(function () {
 // Verificación pública de certificados (sin autenticación)
 Route::get('/verificar-certificado/{numero}', [CertificadoController::class, 'verificar'])->name('certificados.verificar');
 
+// 2FA (sin middleware 2fa para evitar redirección circular)
+Route::middleware('auth')->group(function () {
+    Route::get('/2fa/setup',    [\App\Http\Controllers\Auth\TwoFactorController::class, 'setup'])->name('2fa.setup');
+    Route::post('/2fa/enable',  [\App\Http\Controllers\Auth\TwoFactorController::class, 'enable'])->name('2fa.enable');
+    Route::post('/2fa/disable', [\App\Http\Controllers\Auth\TwoFactorController::class, 'disable'])->name('2fa.disable');
+    Route::get('/2fa/verify',   [\App\Http\Controllers\Auth\TwoFactorController::class, 'verify'])->name('2fa.verify');
+    Route::post('/2fa/check',   [\App\Http\Controllers\Auth\TwoFactorController::class, 'check'])->name('2fa.check');
+});
+
 // Exportar Excel (instructor/admin)
 Route::middleware(['auth', 'instructor'])->group(function () {
     Route::get('/reportes/cursos/{curso}/excel',

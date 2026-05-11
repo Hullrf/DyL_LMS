@@ -17,17 +17,19 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name', 'email', 'password', 'empresa', 'estado',
+        'two_factor_secret', 'two_factor_enabled',
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'two_factor_secret',
     ];
 
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'  => 'datetime',
+            'password'           => 'hashed',
+            'two_factor_enabled' => 'boolean',
         ];
     }
 
