@@ -129,6 +129,18 @@ Route::middleware('auth')->group(function () {
 // Verificación pública de certificados (sin autenticación)
 Route::get('/verificar-certificado/{numero}', [CertificadoController::class, 'verificar'])->name('certificados.verificar');
 
+// Exportar Excel (instructor/admin)
+Route::middleware(['auth', 'instructor'])->group(function () {
+    Route::get('/reportes/cursos/{curso}/excel',
+        [\App\Http\Controllers\ReporteController::class, 'exportarExcelCurso'])
+        ->name('reportes.excel.curso');
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/reportes/usuarios/excel',
+        [\App\Http\Controllers\ReporteController::class, 'exportarExcelUsuarios'])
+        ->name('reportes.excel.usuarios');
+});
+
 // Admin
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('usuarios', \App\Http\Controllers\Admin\UsuarioController::class)

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CursoReporteExport;
+use App\Exports\UsuariosReporteExport;
 use App\Models\Curso;
 use App\Models\Inscripcion;
 use App\Models\RespuestaEstudiante;
@@ -9,6 +11,7 @@ use App\Models\User;
 use App\Services\ReporteService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Mpdf;
 
 class ReporteController extends Controller
@@ -40,6 +43,28 @@ class ReporteController extends Controller
         $chartData = $this->buildChartData();
 
         return view('reportes.index', compact('kpis', 'cursos', 'usuarios', 'chartData'));
+    }
+
+    // ---------------------------------------------------------------
+    // Exportar Excel
+    // ---------------------------------------------------------------
+
+    public function exportarExcelCurso(Curso $curso)
+    {
+        $user = Auth::user();
+
+        if (!$user->esAdmin() && $curso->created_by !== $user->id) {
+            abort(403);
+        }
+
+        $nombre = 'reporte-' . \Str::slug($curso->titulo) . '-' . now()->format('Y-m-d') . '.xlsx';
+
+        return Excel::download(new CursoReporteExport($curso), $nombre);
+    }
+
+    public function exportarExcelUsuarios()
+    {
+        return Excel::download(new UsuariosReporteExport(), 'usuarios-' . now()->format('Y-m-d') . '.xlsx');
     }
 
     // ---------------------------------------------------------------
