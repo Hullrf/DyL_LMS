@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Reporte: ' . $reporte['curso']->titulo)
-
+@section('breadcrumbs'){{ Breadcrumbs::render('reportes.curso', $reporte['curso']) }}@endsection
 @section('content')
 @php $curso = $reporte['curso']; @endphp
 

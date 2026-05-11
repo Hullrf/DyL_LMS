@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Calificaciones - LMS DyL')
+@section('breadcrumbs'){{ Breadcrumbs::render('calificaciones.index') }}@endsection
 @section('content')
 
 <div class="flex justify-between items-center mb-8">

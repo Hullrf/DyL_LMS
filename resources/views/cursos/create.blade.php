@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Crear Curso - LMS DyL')
+@section('breadcrumbs'){{ Breadcrumbs::render('cursos.create') }}@endsection
 @section('content')
 <div class="max-w-2xl mx-auto">
     <h1 class="text-3xl font-bold text-gray-900 mb-8">Crear Nuevo Curso</h1>

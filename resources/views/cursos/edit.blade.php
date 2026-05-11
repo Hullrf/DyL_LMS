@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Editar: ' . $curso->titulo . ' - LMS DyL')
+@section('breadcrumbs'){{ Breadcrumbs::render('cursos.edit', $curso) }}@endsection
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold text-gray-900">Editar Curso</h1>

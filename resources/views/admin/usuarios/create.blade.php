@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Crear Usuario — LMS DyL')
+@section('breadcrumbs'){{ Breadcrumbs::render('admin.usuarios.create') }}@endsection
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="flex items-center gap-3 mb-6">

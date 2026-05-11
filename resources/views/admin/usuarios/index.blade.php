@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Gestión de Usuarios — LMS DyL')
+@section('breadcrumbs'){{ Breadcrumbs::render('admin.usuarios.index') }}@endsection
 @section('content')
 <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-6">

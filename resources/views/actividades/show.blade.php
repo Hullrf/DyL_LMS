@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', $actividad->titulo . ' - LMS DyL')
+@section('breadcrumbs'){{ Breadcrumbs::render('actividades.show', $actividad) }}@endsection
 @section('content')
 <div class="max-w-3xl mx-auto">
     <div class="mb-4">
