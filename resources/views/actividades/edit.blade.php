@@ -477,6 +477,16 @@
                     </div>
                 </div>
 
+                {{-- Aviso para ensayo/practica --}}
+                @if(in_array($actividad->tipo, ['ensayo', 'practica']))
+                <div class="flex items-start gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-500">
+                    <svg class="w-4 h-4 mt-0.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    La rúbrica de evaluación por criterios está disponible únicamente para actividades de tipo <strong>Tarea</strong> (entrega de archivo).
+                </div>
+                @endif
+
                 {{-- ===== CONSTRUCTOR DE RÚBRICA (solo para tarea) ===== --}}
                 @if($actividad->tipo === 'tarea')
                 @php

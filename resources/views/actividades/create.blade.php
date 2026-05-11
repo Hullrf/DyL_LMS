@@ -11,14 +11,21 @@
 
         <form action="{{ route('actividades.store', $leccion) }}" method="POST">
             @csrf
-            <div class="mb-4">
+            <div class="mb-4" x-data="{ tipo: 'cuestionario' }">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de actividad</label>
-                <select name="tipo" id="tipo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <select name="tipo" x-model="tipo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     <option value="cuestionario">Cuestionario (calificación automática)</option>
                     <option value="ensayo">Ensayo (calificación manual)</option>
-                    <option value="tarea">Tarea (calificación manual)</option>
+                    <option value="tarea">Tarea (entrega de archivo, rúbrica disponible)</option>
                     <option value="practica">Práctica (calificación manual)</option>
                 </select>
+                <p x-show="tipo === 'tarea'" x-cloak
+                   class="mt-2 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 flex items-start gap-2">
+                    <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Las actividades de tipo <strong>Tarea</strong> permiten configurar una rúbrica de evaluación por criterios (0–5.0). Podrás crearla en la página de edición después de guardar.
+                </p>
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
@@ -34,7 +41,8 @@
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Puntaje máximo</label>
-                    <input type="number" name="puntaje_maximo" value="{{ old('puntaje_maximo', 100) }}" min="1"
+                    <input type="number" name="puntaje_maximo" value="{{ old('puntaje_maximo', 5.00) }}"
+                           min="0.01" step="0.01"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
