@@ -129,8 +129,8 @@ Route::middleware('auth')->group(function () {
 // Verificación pública de certificados (sin autenticación)
 Route::get('/verificar-certificado/{numero}', [CertificadoController::class, 'verificar'])->name('certificados.verificar');
 
-// Rúbrica
-Route::middleware('instructor')->group(function () {
+// Rúbrica (dentro del grupo auth para tener sesión y CSRF correctos)
+Route::middleware(['auth', 'instructor'])->group(function () {
     Route::post('/actividades/{actividad}/rubrica', [\App\Http\Controllers\RubricaController::class, 'store'])
         ->name('rubrica.store');
     Route::post('/rubrica/importar/{actividad}', [\App\Http\Controllers\RubricaController::class, 'importar'])
@@ -138,7 +138,7 @@ Route::middleware('instructor')->group(function () {
     Route::post('/calificaciones/{respuesta}/rubrica', [CalificacionController::class, 'guardarRubrica'])
         ->name('calificaciones.rubrica');
 });
-Route::get('/rubrica/ejemplo', [\App\Http\Controllers\RubricaController::class, 'ejemplo'])
+Route::middleware('auth')->get('/rubrica/ejemplo', [\App\Http\Controllers\RubricaController::class, 'ejemplo'])
     ->name('rubrica.ejemplo');
 
 // 2FA (sin middleware 2fa para evitar redirección circular)

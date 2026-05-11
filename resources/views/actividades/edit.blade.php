@@ -531,21 +531,29 @@
                             this.importando  = true;
                             this.importError = '';
                             try {
-                            const fd = new FormData();
-                            fd.append('archivo', file);
-                            const csrfMeta = document.querySelector('meta[name=csrf-token]');
-                            fd.append('_token', csrfMeta ? csrfMeta.content : document.querySelector('input[name=_token]')?.value || '');
-                                const res  = await fetch('{{ route('rubrica.importar', $actividad) }}', { method: 'POST', body: fd });
-                                const data = await res.json();
+                                const fd = new FormData();
+                                fd.append('archivo', file);
+                                const csrfMeta = document.querySelector('meta[name=csrf-token]');
+                                fd.append('_token', csrfMeta ? csrfMeta.content : '');
+
+                                const res = await fetch('{{ route('rubrica.importar', $actividad) }}', { method: 'POST', body: fd });
+
+                                let data;
+                                try { data = await res.json(); }
+                                catch (_) {
+                                    this.importError = 'Respuesta inesperada del servidor (código ' + res.status + '). Recarga la página e intenta de nuevo.';
+                                    return;
+                                }
+
                                 if (!res.ok) {
-                                    this.importError = data.error || 'Error al importar.';
+                                    this.importError = data.error || ('Error del servidor: código ' + res.status);
                                 } else {
                                     this.criterios   = data.criterios;
                                     this.usaRubrica  = true;
                                     this.modalImport = false;
                                 }
                             } catch (e) {
-                                this.importError = 'Error de conexión al servidor.';
+                                this.importError = 'Error de red: ' + e.message;
                             } finally {
                                 this.importando = false;
                                 event.target.value = '';

@@ -97,9 +97,10 @@ class RubricaController extends Controller
 
             return response()->json(['criterios' => $criterios]);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            \Log::error('RubricaImport error: ' . $e->getMessage(), ['file' => $e->getFile(), 'line' => $e->getLine()]);
             return response()->json([
-                'error' => 'Error al leer el archivo: ' . $e->getMessage(),
+                'error' => 'Error al procesar el archivo: ' . $e->getMessage(),
             ], 422);
         }
     }
