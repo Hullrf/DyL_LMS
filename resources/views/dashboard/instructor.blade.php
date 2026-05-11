@@ -79,4 +79,36 @@
         </div>
     @endforelse
 </div>
+
+@if($cursos->isNotEmpty())
+<div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <h3 class="text-sm font-semibold text-gray-700 mb-4">Progreso promedio por curso (%)</h3>
+    <div style="height: 200px;">
+        <canvas id="chartProgresoCursos"></canvas>
+    </div>
+</div>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    new Chart(document.getElementById('chartProgresoCursos'), {
+        type: 'bar',
+        data: {
+            labels: @json($cursos->pluck('titulo')),
+            datasets: [{
+                label: 'Progreso (%)',
+                data: @json($stats['progreso_por_curso']),
+                backgroundColor: '#6366F1',
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+});
+</script>
+@endpush
+@endif
 @endsection

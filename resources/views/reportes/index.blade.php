@@ -146,4 +146,64 @@
 </div>
 @endif
 
+{{-- Gráficos (solo admin ve $chartData completo) --}}
+@if(isset($chartData))
+<div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-sm font-semibold text-gray-700 mb-4">Inscripciones por mes (últimos 6 meses)</h3>
+        <div style="height: 220px;">
+            <canvas id="chartInscMes"></canvas>
+        </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-sm font-semibold text-gray-700 mb-4">Estado de Respuestas</h3>
+        <div style="height: 220px; display:flex; align-items:center; justify-content:center;">
+            <canvas id="chartRespEstado"></canvas>
+        </div>
+    </div>
+</div>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    new Chart(document.getElementById('chartInscMes'), {
+        type: 'line',
+        data: {
+            labels: @json($chartData['meses_labels']),
+            datasets: [{
+                label: 'Inscripciones',
+                data: @json($chartData['meses_data']),
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59,130,246,0.08)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#3B82F6',
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    new Chart(document.getElementById('chartRespEstado'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Sin calificar', 'Calificada', 'En revisión'],
+            datasets: [{
+                data: @json($chartData['resp_estados']),
+                backgroundColor: ['#FCD34D', '#34D399', '#60A5FA'],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+        }
+    });
+});
+</script>
+@endpush
+@endif
+
 @endsection

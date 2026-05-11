@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curso;
+use App\Models\Inscripcion;
+use App\Models\RespuestaEstudiante;
 use App\Models\User;
-use App\Services\CertificadoService;
 use App\Services\ReporteService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Mpdf\Mpdf;
 
@@ -35,7 +37,51 @@ class ReporteController extends Controller
             $usuarios = collect();
         }
 
-        return view('reportes.index', compact('kpis', 'cursos', 'usuarios'));
+        $chartData = $this->buildChartData();
+
+        return view('reportes.index', compact('kpis', 'cursos', 'usuarios', 'chartData'));
+    }
+
+    // ---------------------------------------------------------------
+    // Chart data helper
+    // ---------------------------------------------------------------
+
+    private function mesRaw(): string
+    {
+        return \DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', created_at) as mes"
+            : "DATE_FORMAT(created_at, '%Y-%m') as mes";
+    }
+
+    private function buildChartData(): array
+    {
+        $inscripciones = Inscripcion::selectRaw($this->mesRaw() . ', COUNT(*) as total')
+            ->where('created_at', '>=', now()->subMonths(5)->startOfMonth())
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->pluck('total', 'mes');
+
+        $meses = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $key = now()->subMonths($i)->format('Y-m');
+            $meses[$key] = $inscripciones[$key] ?? 0;
+        }
+
+        $respEstados = RespuestaEstudiante::selectRaw('estado, COUNT(*) as total')
+            ->groupBy('estado')
+            ->pluck('total', 'estado');
+
+        return [
+            'meses_labels' => $meses->keys()
+                ->map(fn($m) => Carbon::parse($m . '-01')->locale('es')->isoFormat('MMM YY'))
+                ->values(),
+            'meses_data'   => $meses->values(),
+            'resp_estados' => [
+                $respEstados['sin_calificar'] ?? 0,
+                $respEstados['calificada']    ?? 0,
+                $respEstados['en_revision']   ?? 0,
+            ],
+        ];
     }
 
     // ---------------------------------------------------------------

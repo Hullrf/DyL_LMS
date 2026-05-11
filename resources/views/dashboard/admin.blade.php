@@ -81,4 +81,60 @@
         </table>
     </div>
 </div>
+
+{{-- Gráficos --}}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-sm font-semibold text-gray-700 mb-4">Cursos por Estado</h3>
+        <div style="height:200px; display:flex; align-items:center; justify-content:center;">
+            <canvas id="chartCursosEstado"></canvas>
+        </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+        <h3 class="text-sm font-semibold text-gray-700 mb-4">Inscripciones — Últimos 6 meses</h3>
+        <div style="height:200px;">
+            <canvas id="chartInscripciones"></canvas>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    new Chart(document.getElementById('chartCursosEstado'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Borrador', 'Publicado', 'Archivado'],
+            datasets: [{
+                data: [{{ $stats['cursos_borrador'] }}, {{ $stats['cursos_publicados'] }}, {{ $stats['cursos_archivados'] }}],
+                backgroundColor: ['#FCD34D', '#34D399', '#9CA3AF'],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+        }
+    });
+
+    new Chart(document.getElementById('chartInscripciones'), {
+        type: 'bar',
+        data: {
+            labels: @json($stats['meses_labels']),
+            datasets: [{
+                label: 'Inscripciones',
+                data: @json($stats['meses_data']),
+                backgroundColor: '#3B82F6',
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+});
+</script>
+@endpush
 @endsection
