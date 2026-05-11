@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 
@@ -20,8 +21,9 @@ class RespuestaEstudiante extends Model implements Auditable
     ];
 
     protected $casts = [
-        'fecha_envio' => 'datetime',
-        'fecha_calificacion' => 'datetime',
+        'fecha_envio'       => 'datetime',
+        'fecha_calificacion'=> 'datetime',
+        'calificacion'      => 'decimal:2',
     ];
 
     public function usuario(): BelongsTo
@@ -32,5 +34,10 @@ class RespuestaEstudiante extends Model implements Auditable
     public function actividad(): BelongsTo
     {
         return $this->belongsTo(Actividad::class);
+    }
+
+    public function seleccionesRubrica(): HasMany
+    {
+        return $this->hasMany(SeleccionRubrica::class, 'respuesta_estudiante_id');
     }
 }

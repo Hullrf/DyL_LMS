@@ -20,13 +20,15 @@ class Actividad extends Model implements Auditable
     protected $fillable = [
         'leccion_id', 'tipo', 'titulo', 'descripcion',
         'orden', 'puntaje_maximo', 'duracion_minutos', 'es_obligatoria',
-        'fecha_apertura', 'fecha_cierre',
+        'fecha_apertura', 'fecha_cierre', 'usa_rubrica',
     ];
 
     protected $casts = [
         'fecha_apertura' => 'datetime',
         'fecha_cierre'   => 'datetime',
         'es_obligatoria' => 'boolean',
+        'usa_rubrica'    => 'boolean',
+        'puntaje_maximo' => 'decimal:2',
     ];
 
     /**
@@ -64,5 +66,18 @@ class Actividad extends Model implements Auditable
     public function recursos(): HasMany
     {
         return $this->hasMany(RecursoActividad::class)->orderBy('orden');
+    }
+
+    public function criteriosRubrica(): HasMany
+    {
+        return $this->hasMany(CriterioRubrica::class)->orderBy('orden');
+    }
+
+    public function puntajeRubrica(): float
+    {
+        return (float) $this->criteriosRubrica()
+            ->with('niveles')
+            ->get()
+            ->sum(fn($c) => $c->niveles->max('puntos') ?? 0);
     }
 }
