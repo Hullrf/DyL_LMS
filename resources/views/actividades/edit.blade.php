@@ -530,10 +530,11 @@
                             if (!file) return;
                             this.importando  = true;
                             this.importError = '';
+                            try {
                             const fd = new FormData();
                             fd.append('archivo', file);
-                            fd.append('_token', document.querySelector('meta[name=csrf-token]').content);
-                            try {
+                            const csrfMeta = document.querySelector('meta[name=csrf-token]');
+                            fd.append('_token', csrfMeta ? csrfMeta.content : document.querySelector('input[name=_token]')?.value || '');
                                 const res  = await fetch('{{ route('rubrica.importar', $actividad) }}', { method: 'POST', body: fd });
                                 const data = await res.json();
                                 if (!res.ok) {
