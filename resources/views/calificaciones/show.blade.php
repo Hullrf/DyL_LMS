@@ -56,34 +56,108 @@
                 </div>
             @endif
 
+            @if($respuesta->actividad->usa_rubrica && $criteriosRubrica->isNotEmpty())
+            {{-- ===== CALIFICACIÓN CON RÚBRICA ===== --}}
+            @php
+                $nivelPuntos = $criteriosRubrica->flatMap(fn($c) => $c->niveles)->pluck('puntos', 'id')->map(fn($p) => (float) $p);
+            @endphp
+
+            <form action="{{ route('calificaciones.rubrica', $respuesta) }}" method="POST"
+                  x-data="{
+                    selecciones: {{ $seleccionesActuales->toJson() }},
+                    nivelPuntos: {{ $nivelPuntos->toJson() }},
+                    totalCriterios: {{ $criteriosRubrica->count() }},
+                    get totalSeleccionado() {
+                        return Object.values(this.selecciones)
+                            .reduce((sum, id) => sum + (parseFloat(this.nivelPuntos[id]) || 0), 0)
+                            .toFixed(2);
+                    },
+                    get todosSeleccionados() {
+                        return Object.keys(this.selecciones).length >= this.totalCriterios;
+                    }
+                  }">
+                @csrf
+
+                <div class="space-y-3 mb-5">
+                    @foreach($criteriosRubrica as $criterio)
+                    <div class="border border-gray-200 rounded-xl overflow-hidden">
+                        <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+                            <p class="font-semibold text-gray-800 text-sm">{{ $criterio->nombre }}</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-{{ min($criterio->niveles->count(), 4) }} divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+                            @foreach($criterio->niveles->sortBy('orden') as $nivel)
+                            <label class="cursor-pointer p-3 hover:bg-blue-50 transition-colors"
+                                   :class="selecciones[{{ $criterio->id }}] == {{ $nivel->id }} ? 'bg-blue-50 ring-2 ring-inset ring-dyl-blue' : ''">
+                                <input type="radio"
+                                       name="selecciones[{{ $criterio->id }}]"
+                                       value="{{ $nivel->id }}"
+                                       x-model="selecciones[{{ $criterio->id }}]"
+                                       class="sr-only">
+                                <p class="text-xs text-gray-600 leading-relaxed mb-2">{{ $nivel->descripcion }}</p>
+                                <p class="text-sm font-bold text-green-600">{{ number_format($nivel->puntos, 2) }} pts</p>
+                            </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                {{-- Contador en tiempo real --}}
+                <div class="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl mb-4">
+                    <span class="text-sm font-medium text-blue-800">Calificación actual:</span>
+                    <span class="text-2xl font-bold text-blue-700">
+                        <span x-text="totalSeleccionado"></span>
+                        <span class="text-base font-normal text-blue-500"> / {{ number_format($respuesta->actividad->puntaje_maximo, 2) }}</span>
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Retroalimentación <span class="text-gray-400 font-normal">(opcional)</span>
+                    </label>
+                    <textarea name="feedback" rows="5"
+                              placeholder="Comentarios para el estudiante..."
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 resize-none">{{ old('feedback', $respuesta->feedback) }}</textarea>
+                </div>
+
+                <button type="submit"
+                        :disabled="!todosSeleccionados"
+                        :class="todosSeleccionados ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
+                        class="w-full text-white py-2.5 rounded-lg font-medium transition-colors">
+                    <span x-show="todosSeleccionados">Guardar Calificación</span>
+                    <span x-show="!todosSeleccionados">Selecciona un nivel por criterio para continuar</span>
+                </button>
+            </form>
+
+            @else
+            {{-- ===== CALIFICACIÓN MANUAL (sin rúbrica) ===== --}}
             <form action="{{ route('calificaciones.update', $respuesta) }}" method="POST" class="space-y-5">
                 @csrf @method('PUT')
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Calificación (0 – {{ $respuesta->actividad->puntaje_maximo }})
+                        Calificación (0 – {{ number_format($respuesta->actividad->puntaje_maximo, 2) }})
                     </label>
                     <div class="flex items-center gap-3">
                         <input type="number"
                                name="calificacion"
                                min="0"
                                max="{{ $respuesta->actividad->puntaje_maximo }}"
+                               step="0.01"
                                value="{{ old('calificacion', $respuesta->calificacion) }}"
                                class="w-28 border border-gray-300 rounded-lg px-3 py-2 text-center text-2xl font-bold focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                required>
-                        <span class="text-gray-400 text-lg">/ {{ $respuesta->actividad->puntaje_maximo }}</span>
+                        <span class="text-gray-400 text-lg">/ {{ number_format($respuesta->actividad->puntaje_maximo, 2) }}</span>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Retroalimentación
-                        <span class="text-gray-400 font-normal">(opcional)</span>
+                        Retroalimentación <span class="text-gray-400 font-normal">(opcional)</span>
                     </label>
-                    <textarea name="feedback"
-                              rows="7"
+                    <textarea name="feedback" rows="7"
                               placeholder="Escribe comentarios para el estudiante..."
-                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none">{{ old('feedback', $respuesta->feedback) }}</textarea>
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 resize-none">{{ old('feedback', $respuesta->feedback) }}</textarea>
                 </div>
 
                 <button type="submit"
@@ -91,6 +165,7 @@
                     Guardar Calificación
                 </button>
             </form>
+            @endif
 
             @if($respuesta->fecha_calificacion)
                 <p class="text-xs text-gray-400 text-center mt-3">

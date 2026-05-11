@@ -95,8 +95,8 @@
                             @endphp
                             <div class="flex flex-col items-center">
                                 <span class="text-xl font-bold {{ $pct >= 60 ? 'text-green-600' : 'text-red-500' }}">
-                                    {{ $respuesta->calificacion }}
-                                    <span class="text-sm text-gray-400 font-normal">/ {{ $max }}</span>
+                                    {{ number_format($respuesta->calificacion, 2) }}
+                                    <span class="text-sm text-gray-400 font-normal">/ {{ number_format($max, 2) }}</span>
                                 </span>
                                 <span class="text-xs {{ $pct >= 60 ? 'text-green-600' : 'text-red-500' }}">{{ $pct }}%</span>
                             </div>

@@ -38,7 +38,9 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Puntaje máximo</label>
-                    <input type="number" name="puntaje_maximo" value="{{ old('puntaje_maximo', $actividad->puntaje_maximo) }}" min="1"
+                    <input type="number" name="puntaje_maximo"
+                           value="{{ old('puntaje_maximo', number_format($actividad->puntaje_maximo, 2, '.', '')) }}"
+                           min="0.01" step="0.01"
                            class="form-input" required>
                 </div>
                 <div class="mb-4">
@@ -435,41 +437,290 @@
 
         @else
             {{-- Para ensayo, tarea, practica --}}
-            <div class="card p-8">
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Instrucciones para estudiantes</h3>
-                <p class="text-gray-600 mb-4">
-                    Esta actividad de tipo <strong>{{ $actividad->tipo }}</strong> requiere calificación manual por parte del instructor.
-                </p>
-                @if($actividad->descripcion)
-                <div class="bg-gray-50 rounded-lg p-4 text-gray-700 text-sm">
-                    {{ $actividad->descripcion }}
+            <div class="space-y-6">
+
+                {{-- Instrucciones y respuestas --}}
+                <div class="card p-8">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Instrucciones para estudiantes</h3>
+                    <p class="text-gray-600 mb-4">
+                        Esta actividad de tipo <strong>{{ $actividad->tipo }}</strong> requiere calificación manual por parte del instructor.
+                    </p>
+                    @if($actividad->descripcion)
+                    <div class="bg-gray-50 rounded-lg p-4 text-gray-700 text-sm">
+                        {{ $actividad->descripcion }}
+                    </div>
+                    @endif
+                    <div class="mt-6 border-t pt-4">
+                        <h4 class="font-medium text-gray-900 mb-2">Respuestas recibidas</h4>
+                        @php $respuestas = $actividad->respuestas()->with('usuario')->latest()->get(); @endphp
+                        @forelse($respuestas as $resp)
+                        <div class="border border-gray-200 rounded-lg p-4 mb-3">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-medium text-gray-800">{{ $resp->usuario->name }}</span>
+                                <span class="badge
+                                    @if($resp->estado === 'calificada') badge-green
+                                    @elseif($resp->estado === 'en_revision') badge-yellow
+                                    @else badge-gray @endif">
+                                    {{ str_replace('_', ' ', $resp->estado) }}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 line-clamp-3">{{ $resp->respuesta }}</p>
+                            @if($resp->calificacion !== null)
+                                <p class="text-sm font-medium text-green-600 mt-1">
+                                    Calificación: {{ number_format($resp->calificacion, 2) }} / {{ number_format($actividad->puntaje_maximo, 2) }}
+                                </p>
+                            @endif
+                        </div>
+                        @empty
+                            <p class="text-gray-500 text-sm">Aún no hay respuestas.</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                {{-- ===== CONSTRUCTOR DE RÚBRICA (solo para tarea) ===== --}}
+                @if($actividad->tipo === 'tarea')
+                @php
+                    $criteriosIniciales = $criteriosRubrica->map(fn($c) => [
+                        'nombre'  => $c->nombre,
+                        'niveles' => $c->niveles->map(fn($n) => [
+                            'descripcion' => $n->descripcion,
+                            'puntos'      => (string) $n->puntos,
+                        ])->values()->toArray(),
+                    ])->values()->toArray();
+                @endphp
+
+                <div class="card p-6"
+                     x-data="{
+                        usaRubrica: {{ $actividad->usa_rubrica ? 'true' : 'false' }},
+                        criterios: {{ json_encode($criteriosIniciales) }},
+                        importError: '',
+                        importando: false,
+                        modalImport: false,
+
+                        get totalPuntos() {
+                            return this.criterios.reduce((sum, c) => {
+                                const puntos = c.niveles.map(n => parseFloat(n.puntos) || 0);
+                                return sum + (puntos.length ? Math.max(...puntos) : 0);
+                            }, 0).toFixed(2);
+                        },
+
+                        agregarCriterio() {
+                            this.criterios.push({ nombre: '', niveles: [{ descripcion: '', puntos: '' }] });
+                            this.$nextTick(() => this.$el.querySelector('.criterio-ultimo input')?.focus());
+                        },
+
+                        eliminarCriterio(i) { this.criterios.splice(i, 1); },
+                        agregarNivel(ci) { this.criterios[ci].niveles.push({ descripcion: '', puntos: '' }); },
+                        eliminarNivel(ci, ni) {
+                            if (this.criterios[ci].niveles.length > 1) this.criterios[ci].niveles.splice(ni, 1);
+                        },
+
+                        async importarArchivo(event) {
+                            const file = event.target.files[0];
+                            if (!file) return;
+                            this.importando  = true;
+                            this.importError = '';
+                            const fd = new FormData();
+                            fd.append('archivo', file);
+                            fd.append('_token', document.querySelector('meta[name=csrf-token]').content);
+                            try {
+                                const res  = await fetch('{{ route('rubrica.importar', $actividad) }}', { method: 'POST', body: fd });
+                                const data = await res.json();
+                                if (!res.ok) {
+                                    this.importError = data.error || 'Error al importar.';
+                                } else {
+                                    this.criterios   = data.criterios;
+                                    this.usaRubrica  = true;
+                                    this.modalImport = false;
+                                }
+                            } catch (e) {
+                                this.importError = 'Error de conexión al servidor.';
+                            } finally {
+                                this.importando = false;
+                                event.target.value = '';
+                            }
+                        }
+                     }">
+
+                    {{-- Encabezado con toggle --}}
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            Rúbrica de evaluación
+                        </h3>
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <span class="text-sm text-gray-600" x-text="usaRubrica ? 'Activa' : 'Inactiva'"></span>
+                            <div class="relative">
+                                <input type="checkbox" x-model="usaRubrica" class="sr-only peer">
+                                <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-blue rounded-full transition-colors"></div>
+                                <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div x-show="usaRubrica" x-cloak class="space-y-4">
+                        {{-- Acciones --}}
+                        <div class="flex gap-3 flex-wrap">
+                            <button type="button" @click="agregarCriterio()"
+                                    class="btn-outline btn-sm flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Agregar criterio
+                            </button>
+                            <button type="button" @click="modalImport = true"
+                                    class="btn-outline btn-sm flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                                </svg>
+                                Importar desde Excel
+                            </button>
+                        </div>
+
+                        {{-- Lista de criterios --}}
+                        <div class="space-y-4">
+                            <template x-for="(criterio, ci) in criterios" :key="ci">
+                                <div class="border border-gray-200 rounded-xl p-4 bg-gray-50" :class="'criterio-' + (ci === criterios.length-1 ? 'ultimo' : ci)">
+                                    <div class="flex items-start gap-3 mb-3">
+                                        <div class="flex-1">
+                                            <label class="form-label text-xs">Criterio <span x-text="ci+1"></span></label>
+                                            <input type="text" x-model="criterio.nombre"
+                                                   placeholder="Ej: Planteamiento del Problema"
+                                                   class="form-input">
+                                        </div>
+                                        <button type="button" @click="eliminarCriterio(ci)"
+                                                class="mt-5 text-red-400 hover:text-red-600 transition-colors shrink-0" title="Eliminar criterio">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="space-y-2 mb-3">
+                                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Niveles (menor → mayor rendimiento)</p>
+                                        <template x-for="(nivel, ni) in criterio.niveles" :key="ni">
+                                            <div class="flex gap-2 items-start bg-white border border-gray-200 rounded-lg p-3">
+                                                <span class="text-xs text-gray-400 mt-2 w-5 shrink-0" x-text="ni+1+'.'"></span>
+                                                <textarea x-model="nivel.descripcion"
+                                                          placeholder="Descripción del nivel..."
+                                                          rows="2"
+                                                          class="form-input flex-1 text-sm resize-none"></textarea>
+                                                <div class="w-24 shrink-0">
+                                                    <label class="text-xs text-gray-400 block mb-1">Puntos</label>
+                                                    <input type="number" x-model="nivel.puntos"
+                                                           step="0.01" min="0" max="99.99"
+                                                           placeholder="0.00"
+                                                           class="form-input text-sm text-center">
+                                                </div>
+                                                <button type="button" @click="eliminarNivel(ci, ni)"
+                                                        x-show="criterio.niveles.length > 1"
+                                                        class="mt-1 text-gray-300 hover:text-red-400 transition-colors">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <button type="button" @click="agregarNivel(ci)"
+                                            class="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                        </svg>
+                                        + Nivel
+                                    </button>
+                                </div>
+                            </template>
+
+                            <div x-show="criterios.length === 0"
+                                 class="text-center py-6 text-gray-400 text-sm border border-dashed border-gray-300 rounded-xl">
+                                Sin criterios. Agrega uno o importa desde Excel.
+                            </div>
+                        </div>
+
+                        {{-- Total en tiempo real --}}
+                        <div class="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl">
+                            <span class="text-sm font-medium text-blue-800">Puntaje máximo calculado:</span>
+                            <span class="text-xl font-bold text-blue-700" x-text="totalPuntos + ' pts'"></span>
+                        </div>
+
+                        {{-- Formulario para guardar rúbrica --}}
+                        <form action="{{ route('rubrica.store', $actividad) }}" method="POST" id="form-rubrica">
+                            @csrf
+                            <input type="hidden" name="usa_rubrica" :value="usaRubrica ? '1' : '0'">
+                            <input type="hidden" name="criterios_json" id="criterios-json-input">
+                            <button type="button"
+                                    @click="
+                                        document.getElementById('criterios-json-input').value = JSON.stringify(criterios);
+                                        document.getElementById('form-rubrica').submit();
+                                    "
+                                    class="btn-primary w-full">
+                                Guardar rúbrica
+                            </button>
+                        </form>
+                    </div>
+
+                    {{-- Botón para desactivar si ya estaba activa --}}
+                    <div x-show="!usaRubrica && {{ $actividad->usa_rubrica ? 'true' : 'false' }}" x-cloak class="mt-3">
+                        <form action="{{ route('rubrica.store', $actividad) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="usa_rubrica" value="0">
+                            <input type="hidden" name="criterios_json" value="[]">
+                            <button type="submit" class="btn-outline btn-sm w-full text-gray-500">
+                                Confirmar desactivación de rúbrica
+                            </button>
+                        </form>
+                    </div>
+
+                    {{-- Modal de importación --}}
+                    <div x-show="modalImport" x-cloak
+                         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                         @click.self="modalImport = false">
+                        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Importar rúbrica desde Excel</h3>
+
+                            <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800 space-y-1">
+                                <p class="font-semibold">Formato del archivo:</p>
+                                <p>• Columna A: nombre del criterio</p>
+                                <p>• Columnas B, C, D...: niveles (de peor a mejor)</p>
+                                <p>• Última línea de cada celda: el puntaje (ej: <strong>0.8 puntos</strong>)</p>
+                            </div>
+
+                            <a href="{{ route('rubrica.ejemplo') }}" target="_blank"
+                               class="btn-outline w-full mb-4 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                Descargar archivo de ejemplo
+                            </a>
+
+                            <div class="mb-3">
+                                <label class="form-label">Subir mi archivo (.xlsx)</label>
+                                <input type="file" accept=".xlsx,.xls,.csv"
+                                       @change="importarArchivo($event)"
+                                       :disabled="importando"
+                                       class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 cursor-pointer">
+                            </div>
+
+                            <p x-show="importando" class="text-sm text-blue-600 mt-1 flex items-center gap-2">
+                                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                                Procesando archivo...
+                            </p>
+                            <p x-show="importError" x-text="importError" class="text-sm text-red-600 mt-1"></p>
+
+                            <button type="button" @click="modalImport = false; importError = ''"
+                                    class="btn-outline w-full mt-4">Cancelar</button>
+                        </div>
+                    </div>
+
                 </div>
                 @endif
-                <div class="mt-6 border-t pt-4">
-                    <h4 class="font-medium text-gray-900 mb-2">Respuestas recibidas</h4>
-                    @php $respuestas = $actividad->respuestas()->with('usuario')->latest()->get(); @endphp
-                    @forelse($respuestas as $resp)
-                    <div class="border border-gray-200 rounded-lg p-4 mb-3">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="font-medium text-gray-800">{{ $resp->usuario->name }}</span>
-                            <span class="badge
-                                @if($resp->estado === 'calificada') badge-green
-                                @elseif($resp->estado === 'en_revision') badge-yellow
-                                @else badge-gray @endif">
-                                {{ str_replace('_', ' ', $resp->estado) }}
-                            </span>
-                        </div>
-                        <p class="text-sm text-gray-600 line-clamp-3">{{ $resp->respuesta }}</p>
-                        @if($resp->calificacion !== null)
-                            <p class="text-sm font-medium text-green-600 mt-1">
-                                Calificación: {{ $resp->calificacion }}/{{ $actividad->puntaje_maximo }}
-                            </p>
-                        @endif
-                    </div>
-                    @empty
-                        <p class="text-gray-500 text-sm">Aún no hay respuestas.</p>
-                    @endforelse
-                </div>
+
             </div>
         @endif
     </div>

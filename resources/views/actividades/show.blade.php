@@ -168,6 +168,58 @@
     </div>
     @endif
 
+    {{-- Tabla de rúbrica (solo tarea con rúbrica activa) --}}
+    @if($actividad->usa_rubrica && $criteriosRubrica->isNotEmpty())
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+            <h2 class="font-bold text-gray-900 flex items-center gap-2">
+                <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Criterios de calificación
+            </h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200">
+                        <th class="text-left px-4 py-3 font-semibold text-gray-700 min-w-40">Criterio</th>
+                        @foreach($criteriosRubrica->first()->niveles as $nivelHeader)
+                        <th class="text-center px-3 py-3 font-semibold text-gray-500 text-xs min-w-32">
+                            Nivel {{ $loop->iteration }}<br>
+                            <span class="text-green-600 font-bold">{{ number_format($nivelHeader->puntos, 2) }} pts</span>
+                        </th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($criteriosRubrica as $criterio)
+                    <tr class="border-b border-gray-100 {{ $loop->even ? 'bg-gray-50/50' : '' }}">
+                        <td class="px-4 py-4 font-semibold text-gray-800 align-top">{{ $criterio->nombre }}</td>
+                        @foreach($criterio->niveles as $nivel)
+                        @php $estaSeleccionado = $seleccionesMap->get($criterio->id) == $nivel->id; @endphp
+                        <td class="px-3 py-4 align-top text-xs text-gray-600 leading-relaxed
+                            {{ $estaSeleccionado ? 'bg-green-50 border-l-2 border-green-400' : '' }}">
+                            @if($estaSeleccionado)
+                                <span class="inline-block mb-1 text-green-600 font-semibold text-[10px] uppercase tracking-wide">✓ Nivel obtenido</span><br>
+                            @endif
+                            {{ $nivel->descripcion }}
+                            <span class="block mt-2 font-bold text-sm {{ $estaSeleccionado ? 'text-green-600' : 'text-gray-400' }}">
+                                {{ number_format($nivel->puntos, 2) }} puntos
+                            </span>
+                        </td>
+                        @endforeach
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 text-right text-sm text-gray-500">
+            Nota máxima: <strong class="text-gray-800">{{ number_format($actividad->puntaje_maximo, 2) }} pts</strong>
+        </div>
+    </div>
+    @endif
+
     {{-- Resultado si ya respondió --}}
     @if($respuesta)
     <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">

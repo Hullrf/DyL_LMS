@@ -65,7 +65,7 @@
                 <td class="px-6 py-4">
                     @if($respuesta->estado === 'calificada')
                         <span class="badge badge-green">
-                            {{ $respuesta->calificacion }}/{{ $respuesta->actividad->puntaje_maximo }} pts
+                            {{ number_format($respuesta->calificacion, 2) }} / {{ number_format($respuesta->actividad->puntaje_maximo, 2) }} pts
                         </span>
                     @elseif($respuesta->estado === 'en_revision')
                         <span class="badge badge-blue">

@@ -249,6 +249,13 @@
           role="main"
           class="flex-1 {{ !isset($fullWidth) ? 'max-w-7xl mx-auto w-full py-6 px-4 sm:px-6 lg:px-8' : '' }}">
 
+        {{-- Breadcrumbs --}}
+        @hasSection('breadcrumbs')
+        <nav aria-label="Breadcrumb" class="mb-4">
+            @yield('breadcrumbs')
+        </nav>
+        @endif
+
         {{-- Mensajes globales --}}
         @unless(isset($fullWidth))
         @if(!empty($errors) && $errors->any())
