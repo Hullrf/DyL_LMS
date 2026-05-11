@@ -32,7 +32,7 @@ class RubricaController extends Controller
             'criterios.*.nombre'                     => 'required_with:criterios|string|max:255',
             'criterios.*.niveles'                    => 'required_with:criterios|array|min:1',
             'criterios.*.niveles.*.descripcion'      => 'required|string',
-            'criterios.*.niveles.*.puntos'           => 'required|numeric|min:0|max:99.99',
+            'criterios.*.niveles.*.puntos'           => 'required|decimal:0,2|min:0|max:99.99',
         ]);
 
         $actividad->update(['usa_rubrica' => $request->boolean('usa_rubrica')]);

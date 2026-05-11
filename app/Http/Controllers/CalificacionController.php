@@ -65,7 +65,7 @@ class CalificacionController extends Controller
 
         $actividad = $respuesta->actividad;
         $validated = $request->validate([
-            'calificacion' => "required|numeric|min:0|max:{$actividad->puntaje_maximo}",
+            'calificacion' => "required|decimal:0,2|min:0|max:{$actividad->puntaje_maximo}",
             'feedback'     => 'nullable|string|max:2000',
         ]);
 
