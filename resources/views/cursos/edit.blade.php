@@ -1,0 +1,153 @@
+@extends('layouts.app')
+@section('title', 'Editar: ' . $curso->titulo . ' - LMS DyL')
+@section('content')
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Editar Curso</h1>
+    <a href="{{ route('cursos.show', $curso) }}" class="text-blue-600 hover:text-blue-800 text-sm">Ver curso &rarr;</a>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    {{-- Datos del curso --}}
+    <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">Datos del Curso</h2>
+            <form action="{{ route('cursos.update', $curso) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
+                    <input type="text" name="titulo" value="{{ old('titulo', $curso->titulo) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
+                    @error('titulo')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea name="descripcion" rows="4"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>{{ old('descripcion', $curso->descripcion) }}</textarea>
+                    @error('descripcion')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Duración (horas)</label>
+                    <input type="number" name="duracion_horas" value="{{ old('duracion_horas', $curso->duracion_horas) }}" min="1"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                    <select name="estado" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                        <option value="borrador" @selected(old('estado', $curso->estado) === 'borrador')>Borrador</option>
+                        <option value="publicado" @selected(old('estado', $curso->estado) === 'publicado')>Publicado</option>
+                        <option value="archivado" @selected(old('estado', $curso->estado) === 'archivado')>Archivado</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Imagen de portada</label>
+                    @if($curso->imagen_portada)
+                        <img src="{{ asset('storage/' . $curso->imagen_portada) }}" class="w-full h-24 object-cover rounded mb-2">
+                    @endif
+                    <input type="file" name="imagen_portada" accept="image/*" class="w-full text-sm text-gray-600">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-medium text-sm">
+                    Guardar Cambios
+                </button>
+            </form>
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <form action="{{ route('cursos.destroy', $curso) }}" method="POST"
+                      onsubmit="return confirm('Eliminar este curso y todo su contenido?');">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="w-full bg-red-50 text-red-600 py-2 rounded-lg hover:bg-red-100 text-sm">
+                        Eliminar Curso
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Módulos y lecciones --}}
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow p-6 mb-4">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">Agregar Módulo</h2>
+            <form action="{{ route('modulos.store', $curso) }}" method="POST" class="flex gap-3">
+                @csrf
+                <input type="text" name="titulo" placeholder="Nombre del módulo"
+                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium">
+                    + Módulo
+                </button>
+            </form>
+        </div>
+
+        @forelse($modulos as $modulo)
+        <div class="bg-white rounded-lg shadow mb-4">
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-xs text-gray-400">{{ $loop->iteration }}.</span>
+                    <h3 class="font-semibold text-gray-900">{{ $modulo->titulo }}</h3>
+                    <span class="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded">{{ $modulo->lecciones->count() }} lecciones</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('modulos.edit', $modulo) }}"
+                       class="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300">Editar</a>
+                    <form action="{{ route('modulos.destroy', $modulo) }}" method="POST" class="inline"
+                          onsubmit="return confirm('Eliminar este modulo y todas sus lecciones?');">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="divide-y divide-gray-100">
+                @foreach($modulo->lecciones as $leccion)
+                {{-- Fila de lección --}}
+                <div class="flex items-center justify-between px-6 py-3 hover:bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-gray-800">{{ $leccion->titulo }}</span>
+                        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{{ $leccion->tipo }}</span>
+                        <span class="text-xs text-gray-400">{{ $leccion->duracion_minutos }} min</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('lecciones.edit', $leccion) }}"
+                           class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100">Editar</a>
+                        <a href="{{ route('actividades.create', $leccion) }}"
+                           class="text-xs bg-purple-50 text-purple-600 px-3 py-1 rounded hover:bg-purple-100">+ Actividad</a>
+                        <form action="{{ route('lecciones.destroy', $leccion) }}" method="POST" class="inline"
+                              onsubmit="return confirm('Eliminar esta leccion?');">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="text-xs bg-red-50 text-red-500 px-3 py-1 rounded hover:bg-red-100">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- Sub-filas de actividades --}}
+                @foreach($leccion->actividades as $actividad)
+                <div class="flex items-center justify-between pl-12 pr-6 py-2 bg-purple-50/40 border-t border-purple-100/60 hover:bg-purple-50">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                        <span class="text-sm text-gray-700">{{ $actividad->titulo }}</span>
+                        <span class="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded">{{ ucfirst($actividad->tipo) }}</span>
+                        <span class="text-xs text-gray-400">{{ $actividad->puntaje_maximo }} pts</span>
+                    </div>
+                    <a href="{{ route('actividades.edit', $actividad) }}"
+                       class="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded hover:bg-purple-200">
+                        Editar
+                    </a>
+                </div>
+                @endforeach
+                @endforeach
+                <div class="px-6 py-3 bg-gray-50 rounded-b-lg">
+                    <div class="flex gap-4">
+                        <a href="{{ route('lecciones.create', $modulo) }}"
+                           class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            + Agregar lección
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+            No hay módulos aún. Agrega el primero arriba.
+        </div>
+        @endforelse
+    </div>
+</div>
+@endsection

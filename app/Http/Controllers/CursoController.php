@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Curso;
+use App\Models\Inscripcion;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class CursoController extends Controller
+{
+    public function index()
+    {
+        $user = Auth::user();
+
+        // Inscripciones del usuario con datos del curso
+        $inscripciones = Inscripcion::with('curso.creador')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get()
+            ->filter(fn($i) => $i->curso !== null);
+
+        $inscritosIds = $inscripciones->pluck('curso_id')->toArray();
+
+        // Catálogo: cursos publicados en los que aún NO está inscrito
+        $catalogo = Curso::with('creador')
+            ->when(!$user->esAdmin(), fn($q) => $q->where('estado', 'publicado'))
+            ->whereNotIn('id', $inscritosIds)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('cursos.index', compact('inscripciones', 'catalogo'));
+    }
+
+    public function create()
+    {
+        $this->authorize('create', Curso::class);
+        return view('cursos.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->authorize('create', Curso::class);
+
+        $validated = $request->validate([
+            'titulo'         => 'required|string|max:255|unique:cursos',
+            'descripcion'    => 'required|string|min:20',
+            'duracion_horas' => 'required|integer|min:1|max:500',
+            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $validated['created_by'] = Auth::id();
+
+        if ($request->hasFile('imagen_portada')) {
+            $validated['imagen_portada'] = $request->file('imagen_portada')->store('cursos', 'public');
+        }
+
+        $curso = Curso::create($validated);
+
+        return redirect()->route('cursos.edit', $curso)->with('success', 'Curso creado exitosamente');
+    }
+
+    public function show(Curso $curso)
+    {
+        $this->authorize('view', $curso);
+
+        $modulos = $curso->modulos()->with(['lecciones.actividades'])->get();
+
+        // Datos de progreso del usuario actual
+        $inscripcion = Inscripcion::where('user_id', Auth::id())
+            ->where('curso_id', $curso->id)
+            ->first();
+
+        $estaInscrito = $inscripcion !== null;
+
+        $totalLecciones = $modulos->flatMap->lecciones->count();
+
+        $completadasIds = collect();
+        $porcentaje     = 0;
+
+        if ($estaInscrito && $totalLecciones > 0) {
+            $leccionesIds = $modulos->flatMap->lecciones->pluck('id');
+            $completadasIds = Auth::user()->progresoLecciones()
+                ->whereIn('leccion_id', $leccionesIds)
+                ->where('completado', true)
+                ->pluck('leccion_id');
+            $porcentaje = (int) round(($completadasIds->count() / $totalLecciones) * 100);
+        }
+
+        return view('cursos.show', compact(
+            'curso', 'modulos', 'inscripcion', 'estaInscrito',
+            'completadasIds', 'porcentaje', 'totalLecciones'
+        ));
+    }
+
+    public function inscribirse(Curso $curso)
+    {
+        $this->authorize('view', $curso);
+
+        Inscripcion::firstOrCreate(
+            ['user_id' => Auth::id(), 'curso_id' => $curso->id],
+            ['fecha_inicio' => now()->toDateString(), 'estado' => 'en_progreso']
+        );
+
+        // Redirigir a primera lección si existe
+        $primeraLeccion = $curso->modulos()
+            ->orderBy('orden')
+            ->with(['lecciones' => fn($q) => $q->orderBy('orden')])
+            ->first()
+            ?->lecciones
+            ->first();
+
+        if ($primeraLeccion) {
+            return redirect()
+                ->route('lecciones.show', $primeraLeccion)
+                ->with('success', '¡Te has inscrito en el curso! Comenzando la primera lección.');
+        }
+
+        return redirect()
+            ->route('cursos.show', $curso)
+            ->with('success', '¡Te has inscrito en el curso!');
+    }
+
+    public function edit(Curso $curso)
+    {
+        $this->authorize('update', $curso);
+        $modulos = $curso->modulos()->with(['lecciones.actividades'])->get();
+        return view('cursos.edit', compact('curso', 'modulos'));
+    }
+
+    public function update(Request $request, Curso $curso)
+    {
+        $this->authorize('update', $curso);
+
+        $validated = $request->validate([
+            'titulo'         => 'required|string|max:255|unique:cursos,titulo,' . $curso->id,
+            'descripcion'    => 'required|string|min:20',
+            'duracion_horas' => 'required|integer|min:1|max:500',
+            'estado'         => 'required|in:borrador,publicado,archivado',
+            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('imagen_portada')) {
+            $validated['imagen_portada'] = $request->file('imagen_portada')->store('cursos', 'public');
+        } else {
+            unset($validated['imagen_portada']);
+        }
+
+        $curso->update($validated);
+
+        return redirect()->route('cursos.edit', $curso)->with('success', 'Curso actualizado correctamente');
+    }
+
+    public function destroy(Curso $curso)
+    {
+        $this->authorize('delete', $curso);
+        $curso->delete();
+
+        return redirect()->route('cursos.index')->with('success', 'Curso eliminado correctamente');
+    }
+}

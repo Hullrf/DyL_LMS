@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Actividad extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'actividades';
+    protected $fillable = [
+        'leccion_id', 'tipo', 'titulo', 'descripcion',
+        'orden', 'puntaje_maximo', 'duracion_minutos', 'es_obligatoria',
+        'fecha_apertura', 'fecha_cierre',
+    ];
+
+    protected $casts = [
+        'fecha_apertura' => 'datetime',
+        'fecha_cierre'   => 'datetime',
+        'es_obligatoria' => 'boolean',
+    ];
+
+    /**
+     * 'sin_plazo' | 'pendiente' | 'abierta' | 'cerrada'
+     */
+    public function estadoPlazo(): string
+    {
+        $now = now();
+        if (!$this->fecha_apertura && !$this->fecha_cierre) return 'sin_plazo';
+        if ($this->fecha_apertura && $now->lt($this->fecha_apertura))  return 'pendiente';
+        if ($this->fecha_cierre   && $now->gt($this->fecha_cierre))    return 'cerrada';
+        return 'abierta';
+    }
+
+    public function estaAbierta(): bool
+    {
+        return in_array($this->estadoPlazo(), ['sin_plazo', 'abierta']);
+    }
+
+    public function leccion(): BelongsTo
+    {
+        return $this->belongsTo(Leccion::class);
+    }
+
+    public function preguntas(): HasMany
+    {
+        return $this->hasMany(Pregunta::class)->orderBy('orden');
+    }
+
+    public function respuestas(): HasMany
+    {
+        return $this->hasMany(RespuestaEstudiante::class);
+    }
+
+    public function recursos(): HasMany
+    {
+        return $this->hasMany(RecursoActividad::class)->orderBy('orden');
+    }
+}

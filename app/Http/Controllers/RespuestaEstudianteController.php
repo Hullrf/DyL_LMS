@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Actividad;
+use App\Models\RespuestaEstudiante;
+use App\Services\CalificacionService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+class RespuestaEstudianteController extends Controller
+{
+    public function __construct(private CalificacionService $calificacionService)
+    {
+    }
+
+    public function store(Request $request, Actividad $actividad)
+    {
+        $yaRespondio = RespuestaEstudiante::where('user_id', Auth::id())
+            ->where('actividad_id', $actividad->id)
+            ->exists();
+
+        if ($yaRespondio) {
+            return redirect()
+                ->route('actividades.show', $actividad)
+                ->with('error', 'Ya has respondido esta actividad.');
+        }
+
+        // Verificar ventana de tiempo
+        $estado = $actividad->estadoPlazo();
+        if ($estado === 'pendiente') {
+            return redirect()
+                ->route('actividades.show', $actividad)
+                ->with('error', 'Esta actividad aún no está disponible. Abre el ' . $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') . '.');
+        }
+        if ($estado === 'cerrada') {
+            return redirect()
+                ->route('actividades.show', $actividad)
+                ->with('error', 'El plazo de entrega venció el ' . $actividad->fecha_cierre->format('d/m/Y \a \l\a\s H:i') . '.');
+        }
+
+        if ($actividad->tipo === 'cuestionario') {
+            $request->validate(['respuesta' => 'required|string|min:2']);
+        } else {
+            $request->validate([
+                'respuesta'       => 'nullable|string',
+                'archivo_adjunto' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,webm,zip|max:51200',
+            ]);
+            if (!$request->filled('respuesta') && !$request->hasFile('archivo_adjunto')) {
+                return back()->withErrors(['respuesta' => 'Debes escribir una respuesta o adjuntar un archivo.']);
+            }
+        }
+
+        $calificacion   = null;
+        $estado         = 'sin_calificar';
+        $archivoPath    = null;
+
+        if ($request->hasFile('archivo_adjunto')) {
+            $archivoPath = $request->file('archivo_adjunto')
+                ->store('respuestas/adjuntos', 'public');
+        }
+
+        if ($actividad->tipo === 'cuestionario') {
+            if ($this->calificacionService->tienePreguntasCortas($actividad)) {
+                $estado = 'en_revision';
+            } else {
+                $calificacion = $this->calificacionService->calcularCuestionario($actividad, $request->respuesta);
+                $estado       = 'calificada';
+            }
+        }
+
+        RespuestaEstudiante::create([
+            'user_id'         => Auth::id(),
+            'actividad_id'    => $actividad->id,
+            'respuesta'       => $request->respuesta ?? '',
+            'archivo_adjunto' => $archivoPath,
+            'calificacion'    => $calificacion,
+            'estado'          => $estado,
+            'fecha_envio'     => now(),
+        ]);
+
+        if ($actividad->tipo === 'cuestionario' && $estado === 'en_revision') {
+            $mensaje = 'Respuesta enviada. El instructor revisará las preguntas de respuesta corta antes de publicar tu calificación.';
+        } elseif ($actividad->tipo === 'cuestionario') {
+            $mensaje = "Respuesta enviada. Calificación: {$calificacion}/{$actividad->puntaje_maximo}";
+        } else {
+            $mensaje = 'Respuesta enviada. Será calificada por el instructor.';
+        }
+
+        return redirect()
+            ->route('actividades.show', $actividad)
+            ->with('success', $mensaje);
+    }
+}
