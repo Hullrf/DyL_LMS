@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
 
-class RespuestaEstudiante extends Model
+class RespuestaEstudiante extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory, AuditableTrait;
+
+    protected $auditExclude = ['updated_at'];
     protected $table = 'respuestas_estudiantes';
     protected $fillable = [
         'user_id', 'actividad_id', 'respuesta', 'archivo_adjunto',
