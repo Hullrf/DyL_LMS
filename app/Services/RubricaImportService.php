@@ -8,11 +8,16 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RubricaImportReader implements ToArray
 {
-    private array $rows = [];
+    private array $rows   = [];
+    private bool  $loaded = false;
 
     public function array(array $array): void
     {
-        $this->rows = $array;
+        // Solo capturar la primera hoja no vacía (hoja "Rúbrica")
+        if (!$this->loaded && !empty($array)) {
+            $this->rows   = $array;
+            $this->loaded = true;
+        }
     }
 
     public function getRows(): array
