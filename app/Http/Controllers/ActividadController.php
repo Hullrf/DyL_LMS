@@ -45,17 +45,27 @@ class ActividadController extends Controller
         $this->authorize('view', $actividad->leccion->modulo->curso);
         $respuesta = $actividad->respuestas()
             ->where('user_id', auth()->id())
+            ->with('seleccionesRubrica')
             ->latest()
             ->first();
 
-        return view('actividades.show', compact('actividad', 'respuesta'));
+        $criteriosRubrica = $actividad->usa_rubrica
+            ? $actividad->criteriosRubrica()->with('niveles')->get()
+            : collect();
+
+        $seleccionesMap = $respuesta
+            ? $respuesta->seleccionesRubrica->pluck('nivel_criterio_id', 'criterio_id')
+            : collect();
+
+        return view('actividades.show', compact('actividad', 'respuesta', 'criteriosRubrica', 'seleccionesMap'));
     }
 
     public function edit(Actividad $actividad)
     {
         $this->authorize('update', $actividad->leccion->modulo->curso);
-        $preguntas = $actividad->preguntas()->with('opciones')->get();
-        return view('actividades.edit', compact('actividad', 'preguntas'));
+        $preguntas        = $actividad->preguntas()->with('opciones')->get();
+        $criteriosRubrica = $actividad->criteriosRubrica()->with('niveles')->get();
+        return view('actividades.edit', compact('actividad', 'preguntas', 'criteriosRubrica'));
     }
 
     public function update(Request $request, Actividad $actividad)

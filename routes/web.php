@@ -129,6 +129,18 @@ Route::middleware('auth')->group(function () {
 // Verificación pública de certificados (sin autenticación)
 Route::get('/verificar-certificado/{numero}', [CertificadoController::class, 'verificar'])->name('certificados.verificar');
 
+// Rúbrica
+Route::middleware('instructor')->group(function () {
+    Route::post('/actividades/{actividad}/rubrica', [\App\Http\Controllers\RubricaController::class, 'store'])
+        ->name('rubrica.store');
+    Route::post('/rubrica/importar/{actividad}', [\App\Http\Controllers\RubricaController::class, 'importar'])
+        ->name('rubrica.importar');
+    Route::post('/calificaciones/{respuesta}/rubrica', [CalificacionController::class, 'guardarRubrica'])
+        ->name('calificaciones.rubrica');
+});
+Route::get('/rubrica/ejemplo', [\App\Http\Controllers\RubricaController::class, 'ejemplo'])
+    ->name('rubrica.ejemplo');
+
 // 2FA (sin middleware 2fa para evitar redirección circular)
 Route::middleware('auth')->group(function () {
     Route::get('/2fa/setup',    [\App\Http\Controllers\Auth\TwoFactorController::class, 'setup'])->name('2fa.setup');

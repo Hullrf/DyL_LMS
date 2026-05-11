@@ -3,46 +3,41 @@
 namespace App\Services;
 
 use App\Models\Actividad;
+use App\Models\NivelCriterio;
 use App\Models\RespuestaEstudiante;
 
 class CalificacionService
 {
-    /**
-     * Indica si un cuestionario tiene preguntas de respuesta corta
-     * que requieren revisión manual del instructor.
-     */
     public function tienePreguntasCortas(Actividad $actividad): bool
     {
         return $actividad->preguntas()->where('tipo', 'respuesta_corta')->exists();
     }
 
     /**
-     * Auto-califica un cuestionario.
+     * Auto-califica un cuestionario. Retorna float en escala 0-puntaje_maximo.
      *
-     * Formato del JSON de respuestas:
-     *   - Opción única / V-F:    { "pregunta_id": "opcion_id" }
-     *   - Selección múltiple:    { "pregunta_id": ["id1", "id2"] }
-     *   - Respuesta corta:       { "pregunta_id": "texto libre" }
+     * Formato JSON de respuestas:
+     *   - Opción única / V-F:   { "pregunta_id": "opcion_id" }
+     *   - Selección múltiple:   { "pregunta_id": ["id1", "id2"] }
+     *   - Respuesta corta:      { "pregunta_id": "texto libre" }
      *
-     * $decisionesCortas — decisiones del instructor para respuestas cortas:
-     *   [ pregunta_id => true (correcto) | false (incorrecto) ]
-     * Si está vacío, las respuestas cortas valen 0 (pendientes de revisión).
+     * $decisionesCortas: [ pregunta_id => true|false ]
      */
     public function calcularCuestionario(
         Actividad $actividad,
         string $respuestaJson,
         array $decisionesCortas = []
-    ): int {
+    ): float {
         $respuestas = json_decode($respuestaJson, true);
         if (!is_array($respuestas)) {
-            return 0;
+            return 0.0;
         }
 
-        $totalPuntaje    = 0;
+        $totalPuntaje    = 0.0;
         $puntajeObtenido = 0.0;
 
         foreach ($actividad->preguntas()->with('opciones')->get() as $pregunta) {
-            $totalPuntaje += $pregunta->puntaje;
+            $totalPuntaje += (float) $pregunta->puntaje;
             $respuesta     = $respuestas[$pregunta->id] ?? null;
 
             if ($respuesta === null) {
@@ -50,13 +45,11 @@ class CalificacionService
             }
 
             if ($pregunta->tipo === 'respuesta_corta') {
-                // Solo suma si el instructor la marcó como correcta
                 if ($decisionesCortas[$pregunta->id] ?? false) {
-                    $puntajeObtenido += $pregunta->puntaje;
+                    $puntajeObtenido += (float) $pregunta->puntaje;
                 }
 
             } elseif ($pregunta->seleccion_multiple) {
-                // Selección múltiple: puntaje parcial por respuesta correcta
                 $idsCorrectas = $pregunta->opciones
                     ->where('es_correcta', true)
                     ->pluck('id')
@@ -69,28 +62,27 @@ class CalificacionService
                     ->map(fn($id) => (string) $id);
 
                 $acertadas = $seleccionadas->intersect($idsCorrectas)->count();
-                $puntajeObtenido += ($acertadas / $nCorrectas) * $pregunta->puntaje;
+                $puntajeObtenido += ($acertadas / $nCorrectas) * (float) $pregunta->puntaje;
 
             } else {
-                // Opción única / verdadero-falso
                 $opcionCorrecta = $pregunta->opciones->firstWhere('es_correcta', true);
                 if ($opcionCorrecta && (string) $opcionCorrecta->id === (string) $respuesta) {
-                    $puntajeObtenido += $pregunta->puntaje;
+                    $puntajeObtenido += (float) $pregunta->puntaje;
                 }
             }
         }
 
-        if ($totalPuntaje === 0) {
-            return 0;
+        if ($totalPuntaje == 0) {
+            return 0.0;
         }
 
-        return (int) round(($puntajeObtenido / $totalPuntaje) * $actividad->puntaje_maximo);
+        return round(($puntajeObtenido / $totalPuntaje) * (float) $actividad->puntaje_maximo, 2);
     }
 
     /**
-     * Califica manualmente una respuesta (ensayo, tarea, practica).
+     * Califica manualmente (ensayo, tarea, practica). Acepta float.
      */
-    public function calificarManual(RespuestaEstudiante $respuesta, int $calificacion, ?string $feedback): void
+    public function calificarManual(RespuestaEstudiante $respuesta, float $calificacion, ?string $feedback): void
     {
         $respuesta->update([
             'calificacion'       => $calificacion,
@@ -98,5 +90,32 @@ class CalificacionService
             'estado'             => 'calificada',
             'fecha_calificacion' => now(),
         ]);
+    }
+
+    /**
+     * Califica una tarea usando rúbrica.
+     * $selecciones: [criterio_id => nivel_criterio_id]
+     */
+    public function calificarConRubrica(
+        RespuestaEstudiante $respuesta,
+        array $selecciones,
+        ?string $feedback
+    ): float {
+        foreach ($selecciones as $criterioId => $nivelId) {
+            $respuesta->seleccionesRubrica()->updateOrCreate(
+                ['criterio_id' => (int) $criterioId],
+                ['nivel_criterio_id' => (int) $nivelId]
+            );
+        }
+
+        $nivelIds     = array_map('intval', array_values($selecciones));
+        $calificacion = round(
+            (float) NivelCriterio::whereIn('id', $nivelIds)->sum('puntos'),
+            2
+        );
+
+        $this->calificarManual($respuesta, $calificacion, $feedback);
+
+        return $calificacion;
     }
 }

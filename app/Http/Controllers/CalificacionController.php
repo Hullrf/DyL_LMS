@@ -48,8 +48,12 @@ class CalificacionController extends Controller
     public function show(RespuestaEstudiante $respuesta)
     {
         $this->verificarAcceso($respuesta);
-        $respuesta->load(['usuario', 'actividad.leccion.modulo.curso']);
-        return view('calificaciones.show', compact('respuesta'));
+        $respuesta->load(['usuario', 'actividad.leccion.modulo.curso', 'seleccionesRubrica']);
+        $criteriosRubrica    = $respuesta->actividad->usa_rubrica
+            ? $respuesta->actividad->criteriosRubrica()->with('niveles')->get()
+            : collect();
+        $seleccionesActuales = $respuesta->seleccionesRubrica->pluck('nivel_criterio_id', 'criterio_id');
+        return view('calificaciones.show', compact('respuesta', 'criteriosRubrica', 'seleccionesActuales'));
     }
 
     /**
@@ -61,13 +65,13 @@ class CalificacionController extends Controller
 
         $actividad = $respuesta->actividad;
         $validated = $request->validate([
-            'calificacion' => "required|integer|min:0|max:{$actividad->puntaje_maximo}",
+            'calificacion' => "required|numeric|min:0|max:{$actividad->puntaje_maximo}",
             'feedback'     => 'nullable|string|max:2000',
         ]);
 
         $this->calificacionService->calificarManual(
             $respuesta,
-            $validated['calificacion'],
+            (float) $validated['calificacion'],
             $validated['feedback'] ?? null
         );
 
@@ -130,6 +134,40 @@ class CalificacionController extends Controller
 
         return redirect()->route('calificaciones.index')
             ->with('success', "Calificación publicada: {$calificacion}/{$respuesta->actividad->puntaje_maximo} pts.");
+    }
+
+    /**
+     * Instructor: califica una tarea usando rúbrica.
+     */
+    public function guardarRubrica(\Illuminate\Http\Request $request, RespuestaEstudiante $respuesta)
+    {
+        $this->verificarAcceso($respuesta);
+
+        $actividad   = $respuesta->actividad->load('criteriosRubrica');
+        $criterioIds = $actividad->criteriosRubrica->pluck('id')->toArray();
+
+        $request->validate([
+            'selecciones'   => 'required|array',
+            'selecciones.*' => 'required|integer|exists:niveles_criterio,id',
+            'feedback'      => 'nullable|string|max:2000',
+        ]);
+
+        foreach ($criterioIds as $criterioId) {
+            if (!array_key_exists($criterioId, $request->selecciones)) {
+                return back()->withErrors([
+                    'selecciones' => 'Debes seleccionar un nivel para cada criterio de la rúbrica.',
+                ]);
+            }
+        }
+
+        $calificacion = $this->calificacionService->calificarConRubrica(
+            $respuesta,
+            $request->selecciones,
+            $request->feedback
+        );
+
+        return redirect()->route('calificaciones.index')
+            ->with('success', "Calificación guardada: {$calificacion} / {$actividad->puntaje_maximo} pts.");
     }
 
     /**
