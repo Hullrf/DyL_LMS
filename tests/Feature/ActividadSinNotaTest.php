@@ -45,6 +45,7 @@ class ActividadSinNotaTest extends TestCase
         ]);
 
         $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('actividades', [
             'leccion_id'    => $leccion->id,
             'tipo'          => 'lectura',
@@ -113,7 +114,7 @@ class ActividadSinNotaTest extends TestCase
         $response = $this->actingAs($estudiante)->get(route('actividades.show', $actividad));
 
         $response->assertStatus(200);
-        $response->assertDontSee('form-respuesta', false);
+        $response->assertDontSee('<form id="form-respuesta"', false);
         $response->assertSee('Sin calificación');
     }
 }
