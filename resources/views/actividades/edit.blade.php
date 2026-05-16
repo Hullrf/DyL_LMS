@@ -36,13 +36,15 @@
                     <label class="form-label">Descripción / Instrucciones</label>
                     <textarea name="descripcion" rows="3" class="form-textarea">{{ old('descripcion', $actividad->descripcion) }}</textarea>
                 </div>
+                @if($actividad->tieneCalificacion())
                 <div class="mb-3">
                     <label class="form-label">Puntaje máximo</label>
                     <input type="number" name="puntaje_maximo"
-                           value="{{ old('puntaje_maximo', number_format($actividad->puntaje_maximo, 2, '.', '')) }}"
+                           value="{{ old('puntaje_maximo', $actividad->puntaje_maximo ? number_format($actividad->puntaje_maximo, 2, '.', '') : '') }}"
                            min="0.01" step="0.01"
                            class="form-input" required>
                 </div>
+                @endif
                 <div class="mb-4">
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="es_obligatoria" value="1" @checked($actividad->es_obligatoria) class="rounded">
@@ -435,6 +437,14 @@
             </div>
             @endforelse
 
+        @elseif(!$actividad->tieneCalificacion())
+            <div class="card p-8 text-center">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="font-semibold text-gray-700 mb-1">Actividad de consulta</p>
+                <p class="text-sm text-gray-500">Esta actividad no tiene calificación ni formulario de respuesta.<br>Agrega recursos en el panel izquierdo para que los estudiantes los consulten.</p>
+            </div>
         @else
             {{-- Para ensayo, tarea, practica --}}
             <div class="space-y-6">
