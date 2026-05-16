@@ -17,6 +17,8 @@ class RespuestaEstudianteController extends Controller
 
     public function store(Request $request, Actividad $actividad)
     {
+        abort_if(!$actividad->tieneCalificacion(), 403, 'Esta actividad no admite respuestas.');
+
         $yaRespondio = RespuestaEstudiante::where('user_id', Auth::id())
             ->where('actividad_id', $actividad->id)
             ->exists();

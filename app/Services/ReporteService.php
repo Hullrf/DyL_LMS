@@ -83,6 +83,7 @@ class ReporteService
             // Promedio de calificaciones en este curso
             $respuestas = $usuario->respuestas()
                 ->where('estado', 'calificada')
+                ->whereHas('actividad', fn($q) => $q->whereNotNull('puntaje_maximo'))
                 ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
                 ->with('actividad')
                 ->get();
@@ -151,6 +152,7 @@ class ReporteService
 
             $respuestas = $usuario->respuestas()
                 ->where('estado', 'calificada')
+                ->whereHas('actividad', fn($q) => $q->whereNotNull('puntaje_maximo'))
                 ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
                 ->with('actividad')
                 ->get();
