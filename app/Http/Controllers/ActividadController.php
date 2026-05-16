@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Actividad;
 use App\Models\Leccion;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ActividadController extends Controller
 {
@@ -20,9 +21,15 @@ class ActividadController extends Controller
 
         $validated = $request->validate([
             'titulo'           => 'required|string|max:255',
-            'tipo'             => 'required|in:cuestionario,ensayo,tarea,practica',
+            'tipo'             => 'required|in:cuestionario,ensayo,tarea,practica,ejercicio,lectura,encuesta,reflexion',
             'descripcion'      => 'nullable|string',
-            'puntaje_maximo'   => 'required|decimal:0,2|min:0.01|max:999.99',
+            'puntaje_maximo'   => [
+                Rule::requiredIf(fn() => !in_array($request->tipo, Actividad::TIPOS_SIN_NOTA)),
+                'nullable',
+                'decimal:0,2',
+                'min:0.01',
+                'max:999.99',
+            ],
             'duracion_minutos' => 'nullable|integer|min:1',
             'es_obligatoria'   => 'boolean',
         ]);
@@ -31,8 +38,9 @@ class ActividadController extends Controller
 
         $actividad = $leccion->actividades()->create([
             ...$validated,
-            'es_obligatoria' => $request->boolean('es_obligatoria', true),
-            'orden'          => $orden,
+            'puntaje_maximo'  => in_array($request->tipo, Actividad::TIPOS_SIN_NOTA) ? null : ($validated['puntaje_maximo'] ?? null),
+            'es_obligatoria'  => $request->boolean('es_obligatoria', true),
+            'orden'           => $orden,
         ]);
 
         return redirect()
@@ -75,7 +83,13 @@ class ActividadController extends Controller
         $validated = $request->validate([
             'titulo'           => 'required|string|max:255',
             'descripcion'      => 'nullable|string',
-            'puntaje_maximo'   => 'required|decimal:0,2|min:0.01|max:999.99',
+            'puntaje_maximo'   => [
+                Rule::requiredIf(fn() => $actividad->tieneCalificacion()),
+                'nullable',
+                'decimal:0,2',
+                'min:0.01',
+                'max:999.99',
+            ],
             'duracion_minutos' => 'nullable|integer|min:1',
             'es_obligatoria'   => 'boolean',
             'fecha_apertura'   => 'nullable|date',
@@ -84,7 +98,7 @@ class ActividadController extends Controller
 
         $actividad->update([
             ...$validated,
-            'es_obligatoria' => $request->boolean('es_obligatoria', true),
+            'es_obligatoria'  => $request->boolean('es_obligatoria', true),
             'fecha_apertura'  => $request->filled('fecha_apertura') ? $request->fecha_apertura : null,
             'fecha_cierre'    => $request->filled('fecha_cierre')   ? $request->fecha_cierre   : null,
         ]);
