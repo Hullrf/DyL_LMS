@@ -16,7 +16,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('actividades', function (Blueprint $table) {
-            $table->decimal('puntaje_maximo', 8, 2)->nullable(false)->default(0)->change();
+            $table->decimal('puntaje_maximo', 8, 2)->nullable(false)->default(5.00)->change();
         });
     }
 };
