@@ -9,9 +9,9 @@
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Nueva Actividad</h1>
         <p class="text-gray-500 text-sm mb-6">Lección: <strong>{{ $leccion->titulo }}</strong></p>
 
-        <form action="{{ route('actividades.store', $leccion) }}" method="POST">
+        <form action="{{ route('actividades.store', $leccion) }}" method="POST" x-data="{ tipo: 'cuestionario' }">
             @csrf
-            <div class="mb-4" x-data="{ tipo: 'cuestionario' }">
+            <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de actividad</label>
                 <select name="tipo" x-model="tipo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     <optgroup label="Con calificación">
