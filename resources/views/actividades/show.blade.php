@@ -15,8 +15,14 @@
                 <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $actividad->titulo }}</h1>
             </div>
             <div class="text-right">
-                <p class="text-2xl font-bold text-blue-600">{{ $actividad->puntaje_maximo }}</p>
-                <p class="text-xs text-gray-500">puntos</p>
+                @if($actividad->tieneCalificacion())
+                    <p class="text-2xl font-bold text-blue-600">{{ $actividad->puntaje_maximo }}</p>
+                    <p class="text-xs text-gray-500">puntos</p>
+                @else
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        Sin calificación
+                    </span>
+                @endif
             </div>
         </div>
         @if($actividad->descripcion)
@@ -220,179 +226,193 @@
     </div>
     @endif
 
-    {{-- Resultado si ya respondió --}}
-    @if($respuesta)
-    <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-        <h2 class="font-bold text-green-800 mb-2">Ya respondiste esta actividad</h2>
-        @if($respuesta->calificacion !== null)
-            <p class="text-2xl font-bold text-green-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
-        @else
-            <p class="text-gray-600">Tu respuesta está pendiente de calificación.</p>
-        @endif
-        @if($respuesta->feedback)
-            <div class="mt-3 pt-3 border-t border-green-200">
-                <p class="text-sm font-medium text-gray-700 mb-1">Retroalimentación:</p>
-                <p class="text-sm text-gray-600">{{ $respuesta->feedback }}</p>
-            </div>
-        @endif
-    </div>
+    @if($actividad->tieneCalificacion())
+        {{-- Resultado si ya respondió --}}
+        @if($respuesta)
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+            <h2 class="font-bold text-green-800 mb-2">Ya respondiste esta actividad</h2>
+            @if($respuesta->calificacion !== null)
+                <p class="text-2xl font-bold text-green-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
+            @else
+                <p class="text-gray-600">Tu respuesta está pendiente de calificación.</p>
+            @endif
+            @if($respuesta->feedback)
+                <div class="mt-3 pt-3 border-t border-green-200">
+                    <p class="text-sm font-medium text-gray-700 mb-1">Retroalimentación:</p>
+                    <p class="text-sm text-gray-600">{{ $respuesta->feedback }}</p>
+                </div>
+            @endif
+        </div>
 
-    @elseif(!$actividad->estaAbierta())
-    {{-- Actividad cerrada o pendiente: no se puede responder --}}
-    <div class="bg-white rounded-lg shadow p-10 text-center">
-        @if($estadoPlazo === 'pendiente')
-            <svg class="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <p class="text-gray-700 font-medium">La actividad estará disponible el</p>
-            <p class="text-xl font-bold text-yellow-600 mt-1">{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</p>
+        @elseif(!$actividad->estaAbierta())
+        {{-- Actividad cerrada o pendiente: no se puede responder --}}
+        <div class="bg-white rounded-lg shadow p-10 text-center">
+            @if($estadoPlazo === 'pendiente')
+                <svg class="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-gray-700 font-medium">La actividad estará disponible el</p>
+                <p class="text-xl font-bold text-yellow-600 mt-1">{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</p>
+            @else
+                <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-5V7m0 0V5m0 2h2M12 7H10m10 5a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-gray-700 font-medium">El plazo de entrega venció el</p>
+                <p class="text-xl font-bold text-red-600 mt-1">{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</p>
+            @endif
+        </div>
+
         @else
-            <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-5V7m0 0V5m0 2h2M12 7H10m10 5a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <p class="text-gray-700 font-medium">El plazo de entrega venció el</p>
-            <p class="text-xl font-bold text-red-600 mt-1">{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</p>
+        {{-- Formulario de respuesta --}}
+        <form id="form-respuesta" action="{{ route('respuestas.store', $actividad) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            @if($actividad->tipo === 'cuestionario')
+                @php
+                    $preguntas  = $actividad->preguntas()->with('opciones')->orderBy('orden')->get();
+                    $oldAnswers = old('respuesta') ? (json_decode(old('respuesta'), true) ?? []) : [];
+                @endphp
+                <div class="space-y-6">
+                    @foreach($preguntas as $index => $pregunta)
+                    @php $oldVal = $oldAnswers[$pregunta->id] ?? null; @endphp
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <p class="font-medium text-gray-900 mb-1">
+                            {{ $index + 1 }}. {{ $pregunta->pregunta_texto }}
+                            <span class="text-xs text-gray-400 ml-2">({{ $pregunta->puntaje }} pts)</span>
+                        </p>
+
+                        @if($pregunta->imagen_path)
+                        <img src="{{ $pregunta->imagenUrl() }}"
+                             alt="Imagen de apoyo"
+                             class="my-4 w-full h-64 object-contain rounded-lg border border-gray-200 bg-gray-50">
+                        @endif
+
+                        @if($pregunta->tipo === 'respuesta_corta')
+                            <input type="text" name="respuesta_{{ $pregunta->id }}"
+                                   value="{{ old('respuesta_' . $pregunta->id) }}"
+                                   class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
+
+                        @elseif($pregunta->seleccion_multiple)
+                            <p class="mt-2 text-xs text-blue-600 font-medium">
+                                Selecciona todas las respuestas correctas.
+                            </p>
+                            <div class="mt-2 space-y-2">
+                                @foreach($pregunta->opciones as $opcion)
+                                @php $checked = is_array($oldVal) && in_array((string)$opcion->id, array_map('strval', $oldVal)); @endphp
+                                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox"
+                                           name="respuesta_{{ $pregunta->id }}[]"
+                                           value="{{ $opcion->id }}"
+                                           {{ $checked ? 'checked' : '' }}
+                                           class="w-4 h-4 rounded text-blue-600">
+                                    <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
+                                </label>
+                                @endforeach
+                            </div>
+
+                        @else
+                            <div class="mt-3 space-y-2">
+                                @foreach($pregunta->opciones as $opcion)
+                                @php $checked = $oldVal !== null && (string)$oldVal === (string)$opcion->id; @endphp
+                                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <input type="radio" name="respuesta_{{ $pregunta->id }}" value="{{ $opcion->id }}"
+                                           {{ $checked ? 'checked' : '' }}
+                                           class="text-blue-600">
+                                    <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
+                                </label>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+
+                {{-- Serializar respuestas en JSON --}}
+                <input type="hidden" name="respuesta" id="respuesta-json">
+                <script>
+                document.getElementById('form-respuesta').addEventListener('submit', function(e) {
+                    const data = {};
+
+                    // Radios y texto (una sola respuesta)
+                    this.querySelectorAll('[name^="respuesta_"]:not([type=checkbox])').forEach(function(el) {
+                        if (el.type === 'radio' && !el.checked) return;
+                        if (!el.value) return;
+                        const id = el.name.replace('respuesta_', '');
+                        data[id] = el.value;
+                    });
+
+                    // Checkboxes (selección múltiple) — agrupados por pregunta_id
+                    this.querySelectorAll('[name^="respuesta_"][type=checkbox]:checked').forEach(function(el) {
+                        const id = el.name.replace('respuesta_', '').replace('[]', '');
+                        if (!data[id]) data[id] = [];
+                        data[id].push(el.value);
+                    });
+
+                    document.getElementById('respuesta-json').value = JSON.stringify(data);
+                });
+                </script>
+
+            @else
+                <div class="bg-white rounded-lg shadow p-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tu respuesta</label>
+                    <textarea name="respuesta" rows="8"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                              placeholder="Escribe tu respuesta aquí...">{{ old('respuesta') }}</textarea>
+                    @error('respuesta')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                {{-- Adjunto opcional --}}
+                <div class="bg-white rounded-lg shadow p-6" x-data="{ nombre: null }">
+                    <p class="text-sm font-medium text-gray-700 mb-3">
+                        Adjuntar archivo
+                        <span class="text-gray-400 font-normal">(opcional)</span>
+                    </p>
+                    <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-colors"
+                           :class="nombre
+                               ? 'border-green-400 bg-green-50/40 hover:bg-green-50'
+                               : 'border-gray-300 bg-gray-50/40 hover:border-blue-400 hover:bg-blue-50/30'">
+                        <div x-show="!nombre" class="flex flex-col items-center gap-1.5 text-gray-400 pointer-events-none">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            <p class="text-sm">Haz clic para seleccionar</p>
+                            <p class="text-xs">Imagen, PDF, Word, video — máx. 50 MB</p>
+                        </div>
+                        <div x-show="nombre" class="flex items-center gap-2 px-4 text-green-700 pointer-events-none">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm font-medium truncate max-w-xs" x-text="nombre"></span>
+                        </div>
+                        <input type="file" name="archivo_adjunto" class="sr-only"
+                               accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
+                               @change="nombre = $event.target.files[0]?.name ?? null">
+                    </label>
+                    @error('archivo_adjunto')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+            @endif
+
+            <div class="mt-6 flex justify-end">
+                <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium">
+                    Enviar respuesta
+                </button>
+            </div>
+        </form>
         @endif
-    </div>
 
     @else
-    {{-- Formulario de respuesta --}}
-    <form id="form-respuesta" action="{{ route('respuestas.store', $actividad) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        @if($actividad->tipo === 'cuestionario')
-            @php
-                $preguntas  = $actividad->preguntas()->with('opciones')->orderBy('orden')->get();
-                $oldAnswers = old('respuesta') ? (json_decode(old('respuesta'), true) ?? []) : [];
-            @endphp
-            <div class="space-y-6">
-                @foreach($preguntas as $index => $pregunta)
-                @php $oldVal = $oldAnswers[$pregunta->id] ?? null; @endphp
-                <div class="bg-white rounded-lg shadow p-6">
-                    <p class="font-medium text-gray-900 mb-1">
-                        {{ $index + 1 }}. {{ $pregunta->pregunta_texto }}
-                        <span class="text-xs text-gray-400 ml-2">({{ $pregunta->puntaje }} pts)</span>
-                    </p>
-
-                    @if($pregunta->imagen_path)
-                    <img src="{{ $pregunta->imagenUrl() }}"
-                         alt="Imagen de apoyo"
-                         class="my-4 w-full h-64 object-contain rounded-lg border border-gray-200 bg-gray-50">
-                    @endif
-
-                    @if($pregunta->tipo === 'respuesta_corta')
-                        <input type="text" name="respuesta_{{ $pregunta->id }}"
-                               value="{{ old('respuesta_' . $pregunta->id) }}"
-                               class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-
-                    @elseif($pregunta->seleccion_multiple)
-                        <p class="mt-2 text-xs text-blue-600 font-medium">
-                            Selecciona todas las respuestas correctas.
-                        </p>
-                        <div class="mt-2 space-y-2">
-                            @foreach($pregunta->opciones as $opcion)
-                            @php $checked = is_array($oldVal) && in_array((string)$opcion->id, array_map('strval', $oldVal)); @endphp
-                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                <input type="checkbox"
-                                       name="respuesta_{{ $pregunta->id }}[]"
-                                       value="{{ $opcion->id }}"
-                                       {{ $checked ? 'checked' : '' }}
-                                       class="w-4 h-4 rounded text-blue-600">
-                                <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
-                            </label>
-                            @endforeach
-                        </div>
-
-                    @else
-                        <div class="mt-3 space-y-2">
-                            @foreach($pregunta->opciones as $opcion)
-                            @php $checked = $oldVal !== null && (string)$oldVal === (string)$opcion->id; @endphp
-                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                                <input type="radio" name="respuesta_{{ $pregunta->id }}" value="{{ $opcion->id }}"
-                                       {{ $checked ? 'checked' : '' }}
-                                       class="text-blue-600">
-                                <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
-                            </label>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-                @endforeach
+        {{-- Actividad sin calificación: solo consulta --}}
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 flex items-start gap-4">
+            <svg class="w-6 h-6 text-gray-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+                <p class="font-medium text-gray-700">Esta actividad es de consulta</p>
+                <p class="text-sm text-gray-500 mt-1">No requiere entrega ni tiene calificación. Revisa los recursos disponibles arriba.</p>
             </div>
-
-            {{-- Serializar respuestas en JSON --}}
-            <input type="hidden" name="respuesta" id="respuesta-json">
-            <script>
-            document.getElementById('form-respuesta').addEventListener('submit', function(e) {
-                const data = {};
-
-                // Radios y texto (una sola respuesta)
-                this.querySelectorAll('[name^="respuesta_"]:not([type=checkbox])').forEach(function(el) {
-                    if (el.type === 'radio' && !el.checked) return;
-                    if (!el.value) return;
-                    const id = el.name.replace('respuesta_', '');
-                    data[id] = el.value;
-                });
-
-                // Checkboxes (selección múltiple) — agrupados por pregunta_id
-                this.querySelectorAll('[name^="respuesta_"][type=checkbox]:checked').forEach(function(el) {
-                    const id = el.name.replace('respuesta_', '').replace('[]', '');
-                    if (!data[id]) data[id] = [];
-                    data[id].push(el.value);
-                });
-
-                document.getElementById('respuesta-json').value = JSON.stringify(data);
-            });
-            </script>
-
-        @else
-            <div class="bg-white rounded-lg shadow p-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tu respuesta</label>
-                <textarea name="respuesta" rows="8"
-                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                          placeholder="Escribe tu respuesta aquí...">{{ old('respuesta') }}</textarea>
-                @error('respuesta')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
-            </div>
-
-            {{-- Adjunto opcional --}}
-            <div class="bg-white rounded-lg shadow p-6" x-data="{ nombre: null }">
-                <p class="text-sm font-medium text-gray-700 mb-3">
-                    Adjuntar archivo
-                    <span class="text-gray-400 font-normal">(opcional)</span>
-                </p>
-                <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-colors"
-                       :class="nombre
-                           ? 'border-green-400 bg-green-50/40 hover:bg-green-50'
-                           : 'border-gray-300 bg-gray-50/40 hover:border-blue-400 hover:bg-blue-50/30'">
-                    <div x-show="!nombre" class="flex flex-col items-center gap-1.5 text-gray-400 pointer-events-none">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                        </svg>
-                        <p class="text-sm">Haz clic para seleccionar</p>
-                        <p class="text-xs">Imagen, PDF, Word, video — máx. 50 MB</p>
-                    </div>
-                    <div x-show="nombre" class="flex items-center gap-2 px-4 text-green-700 pointer-events-none">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-sm font-medium truncate max-w-xs" x-text="nombre"></span>
-                    </div>
-                    <input type="file" name="archivo_adjunto" class="sr-only"
-                           accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
-                           @change="nombre = $event.target.files[0]?.name ?? null">
-                </label>
-                @error('archivo_adjunto')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
-            </div>
-        @endif
-
-        <div class="mt-6 flex justify-end">
-            <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium">
-                Enviar respuesta
-            </button>
         </div>
-    </form>
     @endif
 </div>
 @endsection
