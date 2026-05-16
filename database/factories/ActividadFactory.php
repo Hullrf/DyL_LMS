@@ -35,4 +35,12 @@ class ActividadFactory extends Factory
     {
         return $this->state(['tipo' => 'tarea']);
     }
+
+    public function sinNota(): static
+    {
+        return $this->state([
+            'tipo'           => 'lectura',
+            'puntaje_maximo' => null,
+        ]);
+    }
 }

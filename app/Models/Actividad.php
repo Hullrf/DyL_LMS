@@ -14,6 +14,8 @@ class Actividad extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, AuditableTrait;
 
+    const TIPOS_SIN_NOTA = ['ejercicio', 'lectura', 'encuesta', 'reflexion'];
+
     protected $auditExclude = ['updated_at'];
 
     protected $table = 'actividades';
@@ -79,5 +81,10 @@ class Actividad extends Model implements Auditable
             ->with('niveles')
             ->get()
             ->sum(fn($c) => $c->niveles->max('puntos') ?? 0);
+    }
+
+    public function tieneCalificacion(): bool
+    {
+        return !in_array($this->tipo, self::TIPOS_SIN_NOTA);
     }
 }
