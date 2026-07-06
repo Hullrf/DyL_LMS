@@ -5,10 +5,6 @@
     <a href="{{ route('cursos.edit', $actividad->leccion->modulo->curso) }}" class="text-blue-600 hover:text-blue-800 text-sm">&larr; Volver al curso</a>
 </div>
 
-@if(session('success'))
-    <div class="mb-4 alert-success">{{ session('success') }}</div>
-@endif
-
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     {{-- ===== COLUMNA IZQUIERDA: datos de la actividad ===== --}}
