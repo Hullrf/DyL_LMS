@@ -146,11 +146,21 @@
 
                 {{-- Campo dinámico según tipo --}}
                 {{-- Documento --}}
-                <div x-show="tipoRecurso === 'documento'" x-cloak>
+                <div x-show="tipoRecurso === 'documento'" x-cloak
+                     x-data="{ archivoError: '' }">
                     <label class="form-label">Archivo</label>
                     <input type="file" name="archivo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip"
-                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                    <p class="form-hint">PDF, Word, PowerPoint, Excel o ZIP — máx. 20 MB</p>
+                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                           x-on:change="
+                               archivoError = '';
+                               const maxBytes = 50 * 1024 * 1024;
+                               if ($event.target.files[0]?.size > maxBytes) {
+                                   archivoError = 'El archivo supera el límite de 50 MB.';
+                                   $event.target.value = '';
+                               }
+                           ">
+                    <p class="form-hint">PDF, Word, PowerPoint, Excel o ZIP — máx. 50 MB</p>
+                    <p x-show="archivoError" x-text="archivoError" class="text-red-600 text-xs mt-1"></p>
                     @error('archivo')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
 

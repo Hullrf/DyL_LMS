@@ -80,7 +80,7 @@
         <div class="bg-white rounded-lg shadow mb-4">
             <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
                 <div class="flex items-center gap-3">
-                    <span class="font-medium text-xs text-gray-400">{{ $loop->iteration }}.</span>
+                    <span class="font-medium text-xs text-gray-400">{{ $modulo->orden + 1 }}.</span>
                     <h3 class="font-semibold text-gray-900">{{ $modulo->titulo }}</h3>
                     <span class="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded">{{ $modulo->lecciones->count() }} lecciones</span>
                 </div>

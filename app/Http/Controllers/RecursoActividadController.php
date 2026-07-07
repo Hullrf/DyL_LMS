@@ -24,7 +24,7 @@ class RecursoActividadController extends Controller
 
         // Validaciones por tipo
         match($tipo) {
-            'documento' => $rules['archivo'] = 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:20480',
+            'documento' => $rules['archivo'] = 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:51200',
             'video'     => $rules['url'] = 'required|url|max:2048',
             'texto'     => $rules['contenido'] = 'required|string',
             'enlace'    => $rules['url'] = 'required|url|max:2048',

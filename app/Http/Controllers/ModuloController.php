@@ -60,6 +60,12 @@ class ModuloController extends Controller
         $this->authorize('update', $curso);
         $modulo->delete();
 
+        // Re-ordenar módulos restantes para evitar huecos
+        $modulos = $curso->modulos()->orderBy('orden')->get();
+        foreach ($modulos as $index => $m) {
+            $m->update(['orden' => $index]);
+        }
+
         return redirect()
             ->route('cursos.edit', $curso)
             ->with('success', 'Módulo eliminado correctamente');
