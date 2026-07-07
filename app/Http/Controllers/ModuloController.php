@@ -18,7 +18,8 @@ class ModuloController extends Controller
             'descripcion' => 'nullable|string',
         ]);
 
-        $orden = $curso->modulos()->max('orden') + 1;
+        $maxOrden = $curso->modulos()->max('orden');
+        $orden = $maxOrden !== null ? $maxOrden + 1 : 0;
 
         $curso->modulos()->create([
             'titulo'      => $validated['titulo'],
