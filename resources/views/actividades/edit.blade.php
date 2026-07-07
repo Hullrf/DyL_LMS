@@ -118,7 +118,7 @@
                 <div>
                     <label class="form-label">Tipo de recurso</label>
                     <div class="grid grid-cols-2 gap-2">
-                        @foreach(['documento' => ['📄','Documento'], 'video' => ['▶️','Video'], 'texto' => ['📝','Texto'], 'enlace' => ['🔗','Enlace']] as $val => [$emoji, $label])
+                        @foreach(['documento' => ['📄','Documento'], 'imagen' => ['🖼️','Imagen'], 'video' => ['▶️','Video'], 'texto' => ['📝','Texto'], 'enlace' => ['🔗','Enlace']] as $val => [$emoji, $label])
                         <label class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
                                :class="tipoRecurso === '{{ $val }}' ? 'border-dyl-blue bg-blue-50 text-dyl-blue font-medium' : 'border-gray-200 text-gray-600 hover:border-gray-300'">
                             <input type="radio" name="tipo" value="{{ $val }}" x-model="tipoRecurso" class="sr-only">
@@ -161,6 +161,33 @@
                            ">
                     <p class="form-hint">PDF, Word, PowerPoint, Excel o ZIP — máx. 50 MB</p>
                     <p x-show="archivoError" x-text="archivoError" class="text-red-600 text-xs mt-1"></p>
+                    @error('archivo')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+
+                {{-- Imagen --}}
+                <div x-show="tipoRecurso === 'imagen'" x-cloak
+                     x-data="{ archivoError: '', preview: null }">
+                    <label class="form-label">Archivo de imagen</label>
+                    <input type="file" name="archivo" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-dyl-orange hover:file:bg-orange-100 cursor-pointer"
+                           x-on:change="
+                               archivoError = '';
+                               preview = null;
+                               const file = $event.target.files[0];
+                               if (file) {
+                                   const maxBytes = 50 * 1024 * 1024;
+                                   if (file.size > maxBytes) {
+                                       archivoError = 'La imagen supera el límite de 50 MB.';
+                                       $event.target.value = '';
+                                   } else {
+                                       preview = URL.createObjectURL(file);
+                                   }
+                               }
+                           ">
+                    <p class="form-hint">JPG, PNG, GIF, WebP o SVG — máx. 50 MB</p>
+                    <p x-show="archivoError" x-text="archivoError" class="text-red-600 text-xs mt-1"></p>
+                    <img x-show="preview" x-cloak :src="preview"
+                         class="mt-2 w-full h-48 object-contain rounded-lg border border-gray-200 bg-gray-50">
                     @error('archivo')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
 
@@ -207,6 +234,7 @@
                     <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg group">
                         <svg class="w-5 h-5 mt-0.5 flex-shrink-0
                             @if($recurso->tipo === 'documento') text-red-500
+                            @elseif($recurso->tipo === 'imagen') text-orange-500
                             @elseif($recurso->tipo === 'video') text-purple-500
                             @elseif($recurso->tipo === 'texto') text-blue-500
                             @else text-green-500 @endif"

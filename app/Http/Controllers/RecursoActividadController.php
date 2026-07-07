@@ -17,7 +17,7 @@ class RecursoActividadController extends Controller
         $tipo = $request->input('tipo');
 
         $rules = [
-            'tipo'        => 'required|in:documento,video,texto,enlace',
+            'tipo'        => 'required|in:documento,video,texto,enlace,imagen',
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:500',
         ];
@@ -25,6 +25,7 @@ class RecursoActividadController extends Controller
         // Validaciones por tipo
         match($tipo) {
             'documento' => $rules['archivo'] = 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:51200',
+            'imagen'    => $rules['archivo'] = 'required|file|mimes:jpg,jpeg,png,gif,webp,svg|max:51200',
             'video'     => $rules['url'] = 'required|url|max:2048',
             'texto'     => $rules['contenido'] = 'required|string',
             'enlace'    => $rules['url'] = 'required|url|max:2048',
@@ -41,7 +42,7 @@ class RecursoActividadController extends Controller
             'orden'        => $actividad->recursos()->max('orden') + 1,
         ];
 
-        if ($tipo === 'documento' && $request->hasFile('archivo')) {
+        if (in_array($tipo, ['documento', 'imagen']) && $request->hasFile('archivo')) {
             $slug = Str::slug($actividad->leccion->modulo->curso->titulo);
             $path = $request->file('archivo')
                 ->store("cursos/{$slug}/recursos/{$actividad->id}", 'public');
@@ -64,8 +65,8 @@ class RecursoActividadController extends Controller
         $actividad = $recurso->actividad;
         $this->authorize('update', $actividad->leccion->modulo->curso);
 
-        // Eliminar archivo físico si es documento
-        if ($recurso->tipo === 'documento' && $recurso->archivo_path) {
+        // Eliminar archivo físico si es documento o imagen
+        if (in_array($recurso->tipo, ['documento', 'imagen']) && $recurso->archivo_path) {
             Storage::disk('public')->delete($recurso->archivo_path);
         }
 

@@ -106,6 +106,28 @@
                 </a>
             </div>
 
+            {{-- IMAGEN --}}
+            @elseif($recurso->tipo === 'imagen')
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-sm transition-all">
+                <div class="p-4 flex items-center gap-3 border-b border-gray-100">
+                    <div class="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $recurso->iconoTipo() }}"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900 text-sm">{{ $recurso->titulo }}</p>
+                        @if($recurso->descripcion)<p class="text-xs text-gray-500">{{ $recurso->descripcion }}</p>@endif
+                    </div>
+                </div>
+                <a href="{{ $recurso->archivoUrl() }}" target="_blank" class="block bg-gray-50 p-2">
+                    <img src="{{ $recurso->archivoUrl() }}"
+                         alt="{{ $recurso->titulo }}"
+                         class="w-full max-h-96 object-contain rounded-lg mx-auto"
+                         loading="lazy">
+                </a>
+            </div>
+
             {{-- VIDEO --}}
             @elseif($recurso->tipo === 'video')
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
