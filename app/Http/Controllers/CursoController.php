@@ -7,6 +7,8 @@ use App\Models\Inscripcion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CursoController extends Controller
 {
@@ -53,7 +55,10 @@ class CursoController extends Controller
         $validated['created_by'] = Auth::id();
 
         if ($request->hasFile('imagen_portada')) {
-            $validated['imagen_portada'] = $request->file('imagen_portada')->store('cursos', 'public');
+            $slug = Str::slug($validated['titulo']);
+            $ext  = $request->file('imagen_portada')->getClientOriginalExtension();
+            $validated['imagen_portada'] = $request->file('imagen_portada')
+                ->storeAs("cursos/{$slug}", "portada.{$ext}", 'public');
         }
 
         $curso = Curso::create($validated);
@@ -145,7 +150,13 @@ class CursoController extends Controller
         ]);
 
         if ($request->hasFile('imagen_portada')) {
-            $validated['imagen_portada'] = $request->file('imagen_portada')->store('cursos', 'public');
+            if ($curso->imagen_portada) {
+                Storage::disk('public')->delete($curso->imagen_portada);
+            }
+            $slug = Str::slug($validated['titulo']);
+            $ext  = $request->file('imagen_portada')->getClientOriginalExtension();
+            $validated['imagen_portada'] = $request->file('imagen_portada')
+                ->storeAs("cursos/{$slug}", "portada.{$ext}", 'public');
         } else {
             unset($validated['imagen_portada']);
         }

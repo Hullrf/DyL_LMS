@@ -8,6 +8,7 @@ use App\Services\CalificacionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RespuestaEstudianteController extends Controller
 {
@@ -59,8 +60,10 @@ class RespuestaEstudianteController extends Controller
         $archivoPath    = null;
 
         if ($request->hasFile('archivo_adjunto')) {
+            $slug        = Str::slug($actividad->leccion->modulo->curso->titulo);
+            $userId      = Auth::id();
             $archivoPath = $request->file('archivo_adjunto')
-                ->store('respuestas/adjuntos', 'public');
+                ->store("cursos/{$slug}/respuestas/{$userId}/{$actividad->id}", 'public');
         }
 
         if ($actividad->tipo === 'cuestionario') {

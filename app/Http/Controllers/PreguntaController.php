@@ -6,6 +6,7 @@ use App\Models\Actividad;
 use App\Models\Pregunta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PreguntaController extends Controller
 {
@@ -32,8 +33,9 @@ class PreguntaController extends Controller
         ];
 
         if ($request->hasFile('imagen')) {
+            $slug = Str::slug($actividad->leccion->modulo->curso->titulo);
             $data['imagen_path'] = $request->file('imagen')
-                ->store('preguntas/imagenes', 'public');
+                ->store("cursos/{$slug}/preguntas", 'public');
         }
 
         $pregunta = $actividad->preguntas()->create($data);

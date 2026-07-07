@@ -80,12 +80,17 @@ class CertificadoService
 
         $mpdf->WriteHTML($html);
 
+        $año           = date('Y');
         $nombreArchivo = 'certificado-' . $certificado->numero_certificado . '.pdf';
-        $rutaAbsoluta  = storage_path('app/public/certificados/' . $nombreArchivo);
+        $directorio    = storage_path("app/public/certificados/{$año}");
 
-        $mpdf->Output($rutaAbsoluta, 'F');
+        if (!is_dir($directorio)) {
+            mkdir($directorio, 0755, true);
+        }
 
-        return 'certificados/' . $nombreArchivo;
+        $mpdf->Output("{$directorio}/{$nombreArchivo}", 'F');
+
+        return "certificados/{$año}/{$nombreArchivo}";
     }
 
     /**

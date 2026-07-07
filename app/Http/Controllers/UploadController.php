@@ -16,7 +16,8 @@ class UploadController extends Controller
             'imagen' => 'required|image|max:4096',
         ]);
 
-        $path = $request->file('imagen')->store('editor/imagenes', 'public');
+        $yearMonth = now()->format('Y-m');
+        $path = $request->file('imagen')->store("editor/{$yearMonth}", 'public');
 
         return response()->json(['url' => asset('storage/' . $path)]);
     }

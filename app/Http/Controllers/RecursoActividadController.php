@@ -6,6 +6,7 @@ use App\Models\Actividad;
 use App\Models\RecursoActividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RecursoActividadController extends Controller
 {
@@ -41,7 +42,9 @@ class RecursoActividadController extends Controller
         ];
 
         if ($tipo === 'documento' && $request->hasFile('archivo')) {
-            $path = $request->file('archivo')->store('recursos/documentos', 'public');
+            $slug = Str::slug($actividad->leccion->modulo->curso->titulo);
+            $path = $request->file('archivo')
+                ->store("cursos/{$slug}/recursos/{$actividad->id}", 'public');
             $data['archivo_path'] = $path;
         } elseif (in_array($tipo, ['video', 'enlace'])) {
             $data['url'] = $validated['url'];
