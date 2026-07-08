@@ -69,5 +69,9 @@ class DatabaseSeeder extends Seeder
         echo "  - Admin: admin@dyl-quality.test / password123\n";
         echo "  - Instructor: instructor@dyl-quality.test / password123\n";
         echo "  - Estudiante: student@dyl-quality.test / password123\n\n";
+
+        if (app()->environment('local', 'production')) {
+            $this->call(CursosDemoSeeder::class);
+        }
     }
 }

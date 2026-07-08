@@ -112,12 +112,33 @@ class CursoController extends Controller
     {
         $this->authorize('view', $curso);
 
-        Inscripcion::firstOrCreate(
-            ['user_id' => Auth::id(), 'curso_id' => $curso->id],
-            ['fecha_inicio' => now()->toDateString(), 'estado' => 'en_progreso']
-        );
+        $yaInscrito = Inscripcion::where('user_id', Auth::id())
+            ->where('curso_id', $curso->id)
+            ->exists();
 
-        // Redirigir a primera lección si existe
+        if ($yaInscrito) {
+            $primeraLeccion = $curso->modulos()
+                ->orderBy('orden')
+                ->with(['lecciones' => fn($q) => $q->orderBy('orden')])
+                ->first()
+                ?->lecciones
+                ->first();
+
+            if ($primeraLeccion) {
+                return redirect()->route('lecciones.show', $primeraLeccion)
+                    ->with('info', 'Ya estás inscrito en este curso. Continuando donde lo dejaste.');
+            }
+            return redirect()->route('cursos.show', $curso)
+                ->with('info', 'Ya estás inscrito en este curso.');
+        }
+
+        Inscripcion::create([
+            'user_id'     => Auth::id(),
+            'curso_id'    => $curso->id,
+            'fecha_inicio' => now()->toDateString(),
+            'estado'       => 'en_progreso',
+        ]);
+
         $primeraLeccion = $curso->modulos()
             ->orderBy('orden')
             ->with(['lecciones' => fn($q) => $q->orderBy('orden')])

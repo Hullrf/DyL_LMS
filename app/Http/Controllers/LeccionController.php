@@ -33,6 +33,11 @@ class LeccionController extends Controller
 
         $estaCompletada = $completadasIds->contains($leccion->id);
 
+        $tiempoReal = Auth::user()->progresoLecciones()
+            ->where('leccion_id', $leccion->id)
+            ->where('completado', true)
+            ->value('tiempo_dedicado_minutos');
+
         // Lección anterior y siguiente (orden lineal: módulo por módulo)
         $todasLecciones = $modulos->flatMap->lecciones;
         $idx            = $todasLecciones->search(fn($l) => $l->id === $leccion->id);
@@ -50,7 +55,7 @@ class LeccionController extends Controller
 
         return view('lecciones.show', compact(
             'leccion', 'curso', 'modulos',
-            'completadasIds', 'estaCompletada',
+            'completadasIds', 'estaCompletada', 'tiempoReal',
             'prevLeccion', 'nextLeccion',
             'actividades', 'respuestasIds'
         ));
@@ -67,7 +72,11 @@ class LeccionController extends Controller
 
         ProgresoLeccion::updateOrCreate(
             ['user_id' => Auth::id(), 'leccion_id' => $leccion->id],
-            ['completado' => true, 'fecha_completado' => now()]
+            [
+                'completado'              => true,
+                'fecha_completado'        => now(),
+                'tiempo_dedicado_minutos' => (int) ceil(($request->input('tiempo_segundos', 0) / 60)),
+            ]
         );
 
         // Verificar si el curso quedó 100% completado

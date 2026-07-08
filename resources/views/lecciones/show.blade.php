@@ -118,6 +118,9 @@
                 <span>{{ ucfirst($leccion->tipo) }}</span>
                 @if($estaCompletada)
                     <span class="ml-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">Completada</span>
+                    @if($tiempoReal)
+                        <span class="text-gray-400">· Estudiada {{ $tiempoReal }} min</span>
+                    @endif
                 @endif
             </div>
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $leccion->titulo }}</h1>
@@ -205,9 +208,10 @@
 
         {{-- Botón completar lección --}}
         @if(!$estaCompletada)
-            <div class="mb-8">
+            <div class="mb-8" x-data="{ segundos: 0 }" x-init="setInterval(() => segundos++, 1000)">
                 <form action="{{ route('lecciones.completar', $leccion) }}" method="POST">
                     @csrf
+                    <input type="hidden" name="tiempo_segundos" :value="segundos">
                     <button type="submit"
                             class="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
