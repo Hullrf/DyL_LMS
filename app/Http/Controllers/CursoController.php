@@ -49,7 +49,7 @@ class CursoController extends Controller
             'titulo'         => 'required|string|max:255|unique:cursos',
             'descripcion'    => 'required|string|min:20',
             'duracion_horas' => 'required|integer|min:1|max:500',
-            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         $validated['created_by'] = Auth::id();
@@ -146,7 +146,7 @@ class CursoController extends Controller
             'descripcion'    => 'required|string|min:20',
             'duracion_horas' => 'required|integer|min:1|max:500',
             'estado'         => 'required|in:borrador,publicado,archivado',
-            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         if ($request->hasFile('imagen_portada')) {

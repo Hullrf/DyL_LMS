@@ -101,6 +101,10 @@ quill.getModule('toolbar').addHandler('image', function () {
     input.addEventListener('change', async function () {
         const file = input.files[0];
         if (!file) return;
+        if (file.size > 4 * 1024 * 1024) {
+            alert('La imagen supera el límite de 4 MB.');
+            return;
+        }
         const body = new FormData();
         body.append('imagen', file);
         body.append('_token', '{{ csrf_token() }}');

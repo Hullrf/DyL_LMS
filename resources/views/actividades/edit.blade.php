@@ -103,7 +103,7 @@
         </div>
 
         {{-- ===== PANEL DE RECURSOS ===== --}}
-        <div class="card p-6" x-data="{ tipoRecurso: 'documento' }">
+        <div class="card p-6" x-data="{ tipoRecurso: '{{ old('tipo', 'documento') }}' }">
             <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
@@ -151,6 +151,7 @@
                     <label class="form-label">Archivo</label>
                     <input type="file" name="archivo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip"
                            class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                           :disabled="tipoRecurso !== 'documento'"
                            x-on:change="
                                archivoError = '';
                                const maxBytes = 50 * 1024 * 1024;
@@ -170,6 +171,7 @@
                     <label class="form-label">Archivo de imagen</label>
                     <input type="file" name="archivo" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
                            class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-dyl-orange hover:file:bg-orange-100 cursor-pointer"
+                           :disabled="tipoRecurso !== 'imagen'"
                            x-on:change="
                                archivoError = '';
                                preview = null;
@@ -286,7 +288,7 @@
             <div class="card p-6 mb-4">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">Agregar Pregunta</h3>
                 <form action="{{ route('preguntas.store', $actividad) }}" method="POST" enctype="multipart/form-data"
-                      x-data="{ tipo: 'opcion_multiple', preview: null, correctaVF: '' }">
+                      x-data="{ tipo: 'opcion_multiple', preview: null, correctaVF: '', errorImagen: '' }">
                     @csrf
 
                     {{-- Enunciado --}}
@@ -303,8 +305,21 @@
                         </label>
                         <input type="file" name="imagen" accept="image/*"
                                class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-dyl-orange hover:file:bg-orange-100 cursor-pointer"
-                               x-on:change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null">
+                               x-on:change="
+                                   errorImagen = '';
+                                   preview = null;
+                                   const f = $event.target.files[0];
+                                   if (f) {
+                                       if (f.size > 4 * 1024 * 1024) {
+                                           errorImagen = 'La imagen supera el límite de 4 MB.';
+                                           $event.target.value = '';
+                                       } else {
+                                           preview = URL.createObjectURL(f);
+                                       }
+                                   }
+                               ">
                         <p class="form-hint">JPG, PNG, WebP — máx. 4 MB · Resolución sugerida: <strong>1280 × 720 px</strong> (16:9)</p>
+                        <p x-show="errorImagen" x-text="errorImagen" class="text-red-600 text-xs mt-1"></p>
                         <img x-show="preview" x-cloak :src="preview"
                              class="mt-2 w-full h-48 object-contain rounded-lg border border-gray-200 bg-gray-50">
                     </div>

@@ -39,12 +39,23 @@
                         <option value="archivado" @selected(old('estado', $curso->estado) === 'archivado')>Archivado</option>
                     </select>
                 </div>
-                <div class="mb-4">
+                <div class="mb-4" x-data="{ errorPortada: '' }">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Imagen de portada</label>
                     @if($curso->imagen_portada)
                         <img src="{{ asset('storage/' . $curso->imagen_portada) }}" class="w-full h-24 object-cover rounded mb-2">
                     @endif
-                    <input type="file" name="imagen_portada" accept="image/*" class="w-full text-sm text-gray-600">
+                    <input type="file" name="imagen_portada" accept="image/*"
+                           class="w-full text-sm text-gray-600"
+                           x-on:change="
+                               errorPortada = '';
+                               const f = $event.target.files[0];
+                               if (f && f.size > 5 * 1024 * 1024) {
+                                   errorPortada = 'La imagen supera el límite de 5 MB.';
+                                   $event.target.value = '';
+                               }
+                           ">
+                    <p class="text-xs text-gray-400 mt-1">JPG o PNG — máx. 5 MB</p>
+                    <p x-show="errorPortada" x-text="errorPortada" class="text-red-600 text-xs mt-1"></p>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-medium text-sm">
                     Guardar Cambios

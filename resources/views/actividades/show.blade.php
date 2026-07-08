@@ -384,16 +384,18 @@
                 </div>
 
                 {{-- Adjunto opcional --}}
-                <div class="bg-white rounded-lg shadow p-6" x-data="{ nombre: null }">
+                <div class="bg-white rounded-lg shadow p-6" x-data="{ nombre: null, errorArchivo: '' }">
                     <p class="text-sm font-medium text-gray-700 mb-3">
                         Adjuntar archivo
                         <span class="text-gray-400 font-normal">(opcional)</span>
                     </p>
                     <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-colors"
-                           :class="nombre
+                           :class="nombre && !errorArchivo
                                ? 'border-green-400 bg-green-50/40 hover:bg-green-50'
-                               : 'border-gray-300 bg-gray-50/40 hover:border-blue-400 hover:bg-blue-50/30'">
-                        <div x-show="!nombre" class="flex flex-col items-center gap-1.5 text-gray-400 pointer-events-none">
+                               : errorArchivo
+                                   ? 'border-red-400 bg-red-50/40'
+                                   : 'border-gray-300 bg-gray-50/40 hover:border-blue-400 hover:bg-blue-50/30'">
+                        <div x-show="!nombre && !errorArchivo" class="flex flex-col items-center gap-1.5 text-gray-400 pointer-events-none">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                       d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
@@ -401,17 +403,39 @@
                             <p class="text-sm">Haz clic para seleccionar</p>
                             <p class="text-xs">Imagen, PDF, Word, video — máx. 50 MB</p>
                         </div>
-                        <div x-show="nombre" class="flex items-center gap-2 px-4 text-green-700 pointer-events-none">
+                        <div x-show="nombre && !errorArchivo" class="flex items-center gap-2 px-4 text-green-700 pointer-events-none">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <span class="text-sm font-medium truncate max-w-xs" x-text="nombre"></span>
                         </div>
+                        <div x-show="errorArchivo" class="flex items-center gap-2 px-4 text-red-600 pointer-events-none">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm font-medium" x-text="errorArchivo"></span>
+                        </div>
                         <input type="file" name="archivo_adjunto" class="sr-only"
                                accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
-                               @change="nombre = $event.target.files[0]?.name ?? null">
+                               @change="
+                                   errorArchivo = '';
+                                   const f = $event.target.files[0];
+                                   if (f) {
+                                       if (f.size > 50 * 1024 * 1024) {
+                                           errorArchivo = 'El archivo supera el límite de 50 MB.';
+                                           $event.target.value = '';
+                                           nombre = null;
+                                       } else {
+                                           nombre = f.name;
+                                       }
+                                   } else {
+                                       nombre = null;
+                                   }
+                               ">
                     </label>
+                    <p x-show="errorArchivo" x-text="errorArchivo" class="text-red-600 text-xs mt-1"></p>
                     @error('archivo_adjunto')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             @endif
