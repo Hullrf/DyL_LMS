@@ -18,7 +18,7 @@ class MensajeController extends Controller
             ? Mensaje::with(['remitente', 'curso'])->whereNull('padre_id')->latest()->paginate(20)
             : Mensaje::with(['remitente', 'curso'])
                 ->where(function ($q) use ($user) {
-                    $q->where('remitente_id', $user->id)->orWhereHas('curso', function ($q2) {
+                    $q->where('remitente_id', $user->id)->orWhereHas('curso', function ($q2) use ($user) {
                         $q2->where('created_by', $user->id);
                     });
                 })
