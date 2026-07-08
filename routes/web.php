@@ -14,6 +14,7 @@ use App\Http\Controllers\CertificadoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\RecursoActividadController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\AnuncioController;
 use App\Http\Controllers\ForoController;
 use App\Http\Controllers\MensajeController;
 use App\Http\Controllers\NotificacionController;
@@ -127,6 +128,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/cursos/{curso}/certificado', [CertificadoController::class, 'generar'])->name('certificados.generar');
     Route::get('/certificados/{certificado}', [CertificadoController::class, 'show'])->name('certificados.show');
     Route::get('/certificados/{certificado}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
+
+    // Anuncios
+    Route::get('/anuncios', [AnuncioController::class, 'todos'])->name('anuncios.todos');
+    Route::get('/cursos/{curso}/anuncios', [AnuncioController::class, 'index'])->name('anuncios.index');
+    Route::middleware('instructor')->group(function () {
+        Route::get('/cursos/{curso}/anuncios/crear', [AnuncioController::class, 'create'])->name('anuncios.create');
+        Route::post('/cursos/{curso}/anuncios', [AnuncioController::class, 'store'])->name('anuncios.store');
+    });
 
     // Foros
     Route::get('/cursos/{curso}/foros', [ForoController::class, 'index'])->name('foros.index');

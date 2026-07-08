@@ -56,6 +56,11 @@
                             Mensajes
                         </a>
 
+                        <a href="{{ route('anuncios.todos') }}"
+                           class="nav-link {{ request()->routeIs('anuncios.*') ? 'nav-link-active' : '' }}">
+                            Anuncios
+                        </a>
+
                         @if(auth()->user()->esInstructor() || auth()->user()->esAdmin())
                             <a href="{{ route('calificaciones.index') }}"
                                class="nav-link {{ request()->routeIs('calificaciones.index') ? 'nav-link-active' : '' }}">
@@ -234,6 +239,7 @@
                 <a href="{{ route('cursos.index') }}" class="mobile-nav-link">Cursos</a>
 
                 <a href="{{ route('mensajes.bandeja') }}" class="mobile-nav-link">Mensajes</a>
+                <a href="{{ route('anuncios.todos') }}" class="mobile-nav-link">Anuncios</a>
 
                 @if(auth()->user()->esInstructor() || auth()->user()->esAdmin())
                     <a href="{{ route('calificaciones.index') }}" class="mobile-nav-link">Calificaciones</a>
