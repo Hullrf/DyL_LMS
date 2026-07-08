@@ -17,6 +17,11 @@ class CursosDemoSeeder extends Seeder
 {
     public function run(): void
     {
+        if (Curso::where('titulo', 'Fundamentos de ISO 9001:2015')->exists()) {
+            echo "\n Cursos demo ya existen, omitiendo...\n";
+            return;
+        }
+
         $instructor = User::where('email', 'instructor@dyl-quality.test')->first();
         $estudiante = User::where('email', 'student@dyl-quality.test')->first();
         if (!$instructor || !$estudiante) return;
