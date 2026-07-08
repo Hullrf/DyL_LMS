@@ -81,8 +81,70 @@
     @php $recursos = $actividad->recursos; @endphp
     @php $descargaPermitida = $actividad->permitir_descarga_adjuntos ?? true; @endphp
     @if($recursos->isNotEmpty())
-    <div class="mb-6" x-data="{ visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '', visorTrig: 0 }"
-         @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()">
+    <div class="mb-6" x-data="{
+         visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '', visorTrig: 0,
+
+         pdfDoc: null, currentPage: 1, totalPages: 0, pdfScale: 1.25, loading: false,
+         pdfScriptLoaded: false,
+
+         async loadScript() {
+             if (this.pdfScriptLoaded) return;
+             if (window.pdfjsLib) { this.pdfScriptLoaded = true; return; }
+             return new Promise((resolve, reject) => {
+                 const script = document.createElement('script');
+                 script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                 script.onload = () => { this.pdfScriptLoaded = true; resolve(); };
+                 script.onerror = reject;
+                 document.head.appendChild(script);
+             });
+         },
+
+         async loadPdf(url) {
+             this.pdfDoc = null;
+             this.currentPage = 1;
+             this.totalPages = 0;
+             this.loading = true;
+             try {
+                 await this.loadScript();
+                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                 this.pdfDoc = await pdfjsLib.getDocument(url).promise;
+                 this.totalPages = this.pdfDoc.numPages;
+                 await this.renderPdf();
+             } catch(e) {
+                 console.error('Error al cargar PDF:', e);
+             } finally {
+                 this.loading = false;
+             }
+         },
+
+         async renderPdf() {
+             const canvas = document.getElementById('pdf-canvas');
+             if (!canvas || !this.pdfDoc) return;
+             const page = await this.pdfDoc.getPage(this.currentPage);
+             const vp = page.getViewport({scale: this.pdfScale});
+             const container = document.getElementById('pdf-canvas-container');
+             const containerWidth = container ? container.clientWidth : 0;
+             if (containerWidth > 0 && vp.width < containerWidth && this.pdfScale < 1.5) {
+                 const fitScale = (containerWidth - 40) / page.getViewport({scale: 1}).width;
+                 const clamped = Math.min(fitScale, 1.5);
+                 const fitVp = page.getViewport({scale: clamped});
+                 canvas.width = fitVp.width;
+                 canvas.height = fitVp.height;
+                 await page.render({canvasContext: canvas.getContext('2d'), viewport: fitVp}).promise;
+             } else {
+                 canvas.width = vp.width;
+                 canvas.height = vp.height;
+                 await page.render({canvasContext: canvas.getContext('2d'), viewport: vp}).promise;
+             }
+         },
+
+         async pdfZoomIn()  { this.pdfScale = Math.min(this.pdfScale + 0.25, 3.0); await this.renderPdf(); },
+         async pdfZoomOut() { this.pdfScale = Math.max(this.pdfScale - 0.25, 0.75); await this.renderPdf(); },
+         async pdfPrev() { if(this.currentPage > 1) { this.currentPage--; await this.renderPdf(); } },
+         async pdfNext() { if(this.currentPage < this.totalPages) { this.currentPage++; await this.renderPdf(); } },
+     }"
+         @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()"
+         x-init="$watch('visorTrig', () => { if(visorTipo === 'pdf' && visorUrl && visorAbierto) loadPdf(visorUrl); })">
         <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
             <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
@@ -278,83 +340,23 @@
                 <div class="flex-1 overflow-auto" @contextmenu.prevent>
                     {{-- PDF (pdf.js personalizado, solo zoom) --}}
                     <div x-show="visorTipo === 'pdf'"
-                         x-data="{
-                            pdfDoc: null, currentPage: 1, totalPages: 0, scale: 1.25, loading: false,
-                            pdfScriptLoaded: false,
-
-                            async loadScript() {
-                                if (this.pdfScriptLoaded) return;
-                                if (window.pdfjsLib) { this.pdfScriptLoaded = true; return; }
-                                return new Promise((resolve, reject) => {
-                                    const script = document.createElement('script');
-                                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-                                    script.onload = () => { this.pdfScriptLoaded = true; resolve(); };
-                                    script.onerror = reject;
-                                    document.head.appendChild(script);
-                                });
-                            },
-
-                            async load(url) {
-                                this.pdfDoc = null;
-                                this.currentPage = 1;
-                                this.totalPages = 0;
-                                this.loading = true;
-                                try {
-                                    await this.loadScript();
-                                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                                    this.pdfDoc = await pdfjsLib.getDocument(url).promise;
-                                    this.totalPages = this.pdfDoc.numPages;
-                                    await this.render();
-                                } catch(e) {
-                                    console.error('Error al cargar PDF:', e);
-                                } finally {
-                                    this.loading = false;
-                                }
-                            },
-
-                            async render() {
-                                const canvas = this.$refs.canvas;
-                                if (!canvas || !this.pdfDoc) return;
-                                const page = await this.pdfDoc.getPage(this.currentPage);
-                                const vp = page.getViewport({scale: this.scale});
-                                const containerWidth = this.$refs.canvasContainer.clientWidth;
-                                if (vp.width < containerWidth && this.scale < 1.5) {
-                                    const fitScale = (containerWidth - 40) / page.getViewport({scale: 1}).width;
-                                    const clampedScale = Math.min(fitScale, 1.5);
-                                    const fitVp = page.getViewport({scale: clampedScale});
-                                    canvas.width = fitVp.width;
-                                    canvas.height = fitVp.height;
-                                    await page.render({canvasContext: canvas.getContext('2d'), viewport: fitVp}).promise;
-                                } else {
-                                    canvas.width = vp.width;
-                                    canvas.height = vp.height;
-                                    await page.render({canvasContext: canvas.getContext('2d'), viewport: vp}).promise;
-                                }
-                            },
-
-                            async zoomIn()  { this.scale = Math.min(this.scale + 0.25, 3.0); await this.render(); },
-                            async zoomOut() { this.scale = Math.max(this.scale - 0.25, 0.75); await this.render(); },
-                            async prev() { if(this.currentPage > 1) { this.currentPage--; await this.render(); } },
-                            async next() { if(this.currentPage < this.totalPages) { this.currentPage++; await this.render(); } },
-                         }"
-                         x-init="$watch('visorTrig', () => { if(visorTipo === 'pdf' && visorUrl && visorAbierto) load(visorUrl); })"
                          class="w-full flex flex-col items-center select-none">
 
                         {{-- Controles --}}
                         <div class="flex items-center justify-center gap-2 mb-3 bg-gray-100 rounded-lg px-4 py-2 sticky top-0 z-10"
                              @contextmenu.prevent>
-                            <button @click="prev()" :disabled="currentPage <= 1"
+                            <button @click="pdfPrev()" :disabled="currentPage <= 1"
                                     class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     aria-label="Página anterior">◀</button>
-                            <button @click="zoomOut()"
+                            <button @click="pdfZoomOut()"
                                     class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded font-bold transition-colors"
                                     aria-label="Alejar">−</button>
-                            <span class="text-sm text-gray-700 min-w-[3.5rem] text-center font-medium" x-text="Math.round(scale * 100) + '%'"></span>
-                            <button @click="zoomIn()"
+                            <span class="text-sm text-gray-700 min-w-[3.5rem] text-center font-medium" x-text="Math.round(pdfScale * 100) + '%'"></span>
+                            <button @click="pdfZoomIn()"
                                     class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded font-bold transition-colors"
                                     aria-label="Acercar">+</button>
                             <span class="text-sm text-gray-500 mx-2" x-text="currentPage + ' / ' + totalPages"></span>
-                            <button @click="next()" :disabled="currentPage >= totalPages"
+                            <button @click="pdfNext()" :disabled="currentPage >= totalPages"
                                     class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     aria-label="Página siguiente">▶</button>
                         </div>
@@ -368,9 +370,8 @@
                         </div>
 
                         {{-- Canvas + watermark --}}
-                        <div x-show="!loading" x-ref="canvasContainer" class="relative inline-block w-full" @contextmenu.prevent>
-                            <canvas x-ref="canvas" class="mx-auto shadow-lg max-w-full"></canvas>
-                            {{-- Marca de agua --}}
+                        <div x-show="!loading" id="pdf-canvas-container" class="relative inline-block w-full" @contextmenu.prevent>
+                            <canvas id="pdf-canvas" class="mx-auto shadow-lg max-w-full"></canvas>
                             <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                                  style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
                             </div>
