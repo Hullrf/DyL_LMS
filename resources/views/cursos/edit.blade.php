@@ -39,6 +39,15 @@
                         <option value="archivado" @selected(old('estado', $curso->estado) === 'archivado')>Archivado</option>
                     </select>
                 </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                    <select name="categoria_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                        <option value="">Sin categoría</option>
+                        @foreach($categorias as $cat)
+                            <option value="{{ $cat->id }}" @selected(old('categoria_id', $curso->categoria_id) == $cat->id)>{{ $cat->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="mb-4" x-data="{ errorPortada: '' }">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Imagen de portada</label>
                     @if($curso->imagen_portada)

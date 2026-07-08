@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Rol;
+use App\Models\Categoria;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +16,21 @@ class DatabaseSeeder extends Seeder
         $adminRole      = Rol::firstOrCreate(['nombre' => 'Administrador'], ['descripcion' => 'Acceso total al sistema']);
         $instructorRole = Rol::firstOrCreate(['nombre' => 'Instructor'],    ['descripcion' => 'Puede crear y editar cursos']);
         $studentRole    = Rol::firstOrCreate(['nombre' => 'Estudiante'],    ['descripcion' => 'Puede ver cursos e inscribirse']);
+
+        // Categorías por defecto
+        $categorias = [
+            ['nombre' => 'Gestión de Calidad', 'color' => '#4F46E5'],
+            ['nombre' => 'Seguridad y Salud',  'color' => '#059669'],
+            ['nombre' => 'Normas ISO',         'color' => '#D97706'],
+            ['nombre' => 'Liderazgo',          'color' => '#7C3AED'],
+            ['nombre' => 'Auditoría',          'color' => '#DC2626'],
+        ];
+        foreach ($categorias as $cat) {
+            Categoria::firstOrCreate(['nombre' => $cat['nombre']], [
+                'slug'  => Str::slug($cat['nombre']),
+                'color' => $cat['color'],
+            ]);
+        }
 
         $admin = User::firstOrCreate(
             ['email' => 'admin@dyl-quality.test'],

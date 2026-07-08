@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Curso;
 use App\Models\Inscripcion;
 use Illuminate\Http\Request;
@@ -12,11 +13,10 @@ use Illuminate\Support\Str;
 
 class CursoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
-        // Inscripciones del usuario con datos del curso
         $inscripciones = Inscripcion::with('curso.creador')
             ->where('user_id', $user->id)
             ->latest()
@@ -25,20 +25,24 @@ class CursoController extends Controller
 
         $inscritosIds = $inscripciones->pluck('curso_id')->toArray();
 
-        // Catálogo: cursos publicados en los que aún NO está inscrito
-        $catalogo = Curso::with('creador')
+        $catalogo = Curso::with(['creador', 'categoria'])
             ->when(!$user->esAdmin(), fn($q) => $q->where('estado', 'publicado'))
+            ->when($request->filled('categoria'), fn($q) => $q->where('categoria_id', $request->categoria))
+            ->when($request->filled('buscar'), fn($q) => $q->where('titulo', 'like', "%{$request->buscar}%"))
             ->whereNotIn('id', $inscritosIds)
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
-        return view('cursos.index', compact('inscripciones', 'catalogo'));
+        $categorias = Categoria::orderBy('nombre')->get();
+
+        return view('cursos.index', compact('inscripciones', 'catalogo', 'categorias'));
     }
 
     public function create()
     {
         $this->authorize('create', Curso::class);
-        return view('cursos.create');
+        $categorias = Categoria::orderBy('nombre')->get();
+        return view('cursos.create', compact('categorias'));
     }
 
     public function store(Request $request)
@@ -50,6 +54,7 @@ class CursoController extends Controller
             'descripcion'    => 'required|string|min:20',
             'duracion_horas' => 'required|integer|min:1|max:500',
             'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'categoria_id'   => 'nullable|exists:categorias,id',
         ]);
 
         $validated['created_by'] = Auth::id();
@@ -134,7 +139,8 @@ class CursoController extends Controller
     {
         $this->authorize('update', $curso);
         $modulos = $curso->modulos()->with(['lecciones.actividades'])->get();
-        return view('cursos.edit', compact('curso', 'modulos'));
+        $categorias = Categoria::orderBy('nombre')->get();
+        return view('cursos.edit', compact('curso', 'modulos', 'categorias'));
     }
 
     public function update(Request $request, Curso $curso)
@@ -147,6 +153,7 @@ class CursoController extends Controller
             'duracion_horas' => 'required|integer|min:1|max:500',
             'estado'         => 'required|in:borrador,publicado,archivado',
             'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'categoria_id'   => 'nullable|exists:categorias,id',
         ]);
 
         if ($request->hasFile('imagen_portada')) {

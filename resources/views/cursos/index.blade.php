@@ -107,6 +107,26 @@
             @endif
         </div>
     @else
+        {{-- Filtros --}}
+        <div class="flex flex-wrap items-center gap-3 mb-5">
+            <form method="GET" action="{{ route('cursos.index') }}" class="flex flex-wrap items-center gap-3 w-full">
+                @if($categorias->isNotEmpty())
+                <select name="categoria" onchange="this.form.submit()"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="">Todas las categorías</option>
+                    @foreach($categorias as $cat)
+                        <option value="{{ $cat->id }}" {{ request('categoria') == $cat->id ? 'selected' : '' }}>{{ $cat->nombre }}</option>
+                    @endforeach
+                </select>
+                @endif
+                <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar curso..."
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px] focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Buscar</button>
+                @if(request()->anyFilled(['categoria', 'buscar']))
+                    <a href="{{ route('cursos.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</a>
+                @endif
+            </form>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($catalogo as $curso)
             <div class="bg-white rounded-xl shadow hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
@@ -131,7 +151,11 @@
                         </span>
                         <span class="text-xs text-gray-400">{{ $curso->duracion_horas }} h</span>
                     </div>
-
+                    @if($curso->categoria)
+                        <span class="inline-block text-xs px-2 py-0.5 rounded font-medium mb-2" style="background-color: {{ $curso->categoria->color }}20; color: {{ $curso->categoria->color }}">
+                            {{ $curso->categoria->nombre }}
+                        </span>
+                    @endif
                     <h3 class="text-base font-bold text-gray-900 line-clamp-2 mb-2">{{ $curso->titulo }}</h3>
 
                     <p class="text-gray-500 text-sm line-clamp-2 flex-1 mb-4">

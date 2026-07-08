@@ -21,12 +21,17 @@ class Curso extends Model implements Auditable
     protected $table = 'cursos';
     protected $fillable = [
         'titulo', 'descripcion', 'duracion_horas',
-        'imagen_portada', 'estado', 'created_by', 'orden',
+        'imagen_portada', 'estado', 'created_by', 'orden', 'categoria_id',
     ];
 
     public function creador(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function categoria(): BelongsTo
+    {
+        return $this->belongsTo(Categoria::class);
     }
 
     public function modulos(): HasMany
