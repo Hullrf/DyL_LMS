@@ -3,8 +3,14 @@
 @section('breadcrumbs'){{ Breadcrumbs::render('actividades.show', $actividad) }}@endsection
 @section('content')
 <div class="max-w-3xl mx-auto">
-    <div class="mb-4">
-        <a href="{{ route('cursos.show', $actividad->leccion->modulo->curso) }}" class="text-blue-600 hover:text-blue-800 text-sm">&larr; Volver al curso</a>
+    <div class="mb-4 flex items-center justify-between">
+        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Volver a la lección
+        </a>
+        <a href="{{ route('cursos.show', $actividad->leccion->modulo->curso) }}" class="text-gray-500 hover:text-gray-700 text-sm">
+            Ir al curso
+        </a>
     </div>
 
     {{-- Encabezado de la actividad --}}
@@ -264,6 +270,12 @@
                     <p class="text-sm text-gray-600">{{ $respuesta->feedback }}</p>
                 </div>
             @endif
+            <div class="mt-4">
+                <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    Volver a la lección
+                </a>
+            </div>
         </div>
 
         @elseif(!$actividad->estaAbierta())
@@ -458,6 +470,9 @@
                 <p class="font-medium text-gray-700">Esta actividad es de consulta</p>
                 <p class="text-sm text-gray-500 mt-1">No requiere entrega ni tiene calificación. Revisa los recursos disponibles arriba.</p>
             </div>
+            <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="ml-auto inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium shrink-0">
+                Continuar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </a>
         </div>
     @endif
 </div>
