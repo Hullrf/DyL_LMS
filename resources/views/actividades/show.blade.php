@@ -277,12 +277,15 @@
                 <div class="flex-1 overflow-auto">
                     {{-- PDF --}}
                     <div x-show="visorTipo === 'pdf'" class="w-full h-full min-h-[75vh]">
-                        <iframe :src="visorUrl" class="w-full h-full min-h-[75vh]" frameborder="0"></iframe>
+                        <iframe :src="visorUrl + '#toolbar=0&navpanes=0'"
+                                class="w-full h-full min-h-[75vh]" frameborder="0"
+                                sandbox="allow-scripts allow-same-origin"></iframe>
                     </div>
                     {{-- Office (Google Docs Viewer) --}}
                     <div x-show="visorTipo === 'office'" class="w-full h-full min-h-[75vh]">
-                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(visorUrl) + '&embedded=true'"
-                                class="w-full h-full min-h-[75vh]" frameborder="0"></iframe>
+                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(visorUrl) + '&embedded=true&rm=minimal'"
+                                class="w-full h-full min-h-[75vh]" frameborder="0"
+                                sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
                     </div>
                     {{-- Imagen --}}
                     <div x-show="visorTipo === 'imagen'" class="flex items-center justify-center p-4 min-h-[50vh]">
