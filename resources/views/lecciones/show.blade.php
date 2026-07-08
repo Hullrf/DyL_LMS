@@ -3,12 +3,25 @@
 @php $fullWidth = true; @endphp
 
 @section('content')
-<div class="flex min-h-[calc(100vh-4rem)]">
+<div x-data="{ sidebarOpen: false }" class="flex min-h-[calc(100vh-4rem)]">
+
+    {{-- Mobile overlay --}}
+    <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
+         class="lg:hidden fixed inset-0 bg-black/50 z-40"
+         x-transition:enter="transition-opacity ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"></div>
 
     {{-- ============================================================
          SIDEBAR — índice del curso
     ============================================================ --}}
-    <aside class="hidden lg:flex flex-col w-72 xl:w-80 bg-white border-r border-gray-200 flex-shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
+    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+           class="lg:translate-x-0 lg:relative lg:z-auto flex-col w-72 xl:w-80 bg-white border-r border-gray-200 flex-shrink-0
+                  fixed inset-y-0 left-0 z-50 lg:sticky lg:top-16 h-[calc(100vh-4rem)] overflow-y-auto
+                  transition-transform duration-300 flex">
 
         {{-- Cabecera sidebar --}}
         <div class="p-4 border-b border-gray-200 bg-gray-50">
@@ -86,10 +99,13 @@
         @endif
 
         {{-- Breadcrumb móvil --}}
-        <div class="lg:hidden mb-4 text-sm text-gray-500">
-            <a href="{{ route('cursos.show', $curso) }}" class="text-blue-600 hover:underline">{{ $curso->titulo }}</a>
-            <span class="mx-1">/</span>
-            <span>{{ $leccion->titulo }}</span>
+        <div class="lg:hidden mb-4 flex items-center gap-2 text-sm text-gray-500">
+            <button @click="sidebarOpen = true" class="p-1.5 -ml-1.5 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100" aria-label="Abrir índice del curso">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+            </button>
+            <a href="{{ route('cursos.show', $curso) }}" class="text-blue-600 hover:underline truncate">{{ $curso->titulo }}</a>
+            <span class="text-gray-300">/</span>
+            <span class="truncate">{{ $leccion->titulo }}</span>
         </div>
 
         {{-- Cabecera de lección --}}
