@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Models\Notificacion;
 use App\Models\RespuestaEstudiante;
 use App\Services\CalificacionService;
 use Illuminate\Http\Request;
@@ -84,6 +85,17 @@ class RespuestaEstudianteController extends Controller
             'estado'          => $estado,
             'fecha_envio'     => now(),
         ]);
+
+        $curso     = $actividad->leccion->modulo->curso;
+        $estudiante = Auth::user();
+
+        Notificacion::crear(
+            $curso->created_by,
+            'entrega',
+            'Nueva entrega recibida',
+            "{$estudiante->name} entregó «{$actividad->titulo}» en el curso {$curso->titulo}.",
+            route('calificaciones.index')
+        );
 
         if ($actividad->tipo === 'cuestionario' && $estado === 'en_revision') {
             $mensaje = 'Respuesta enviada. El instructor revisará las preguntas de respuesta corta antes de publicar tu calificación.';

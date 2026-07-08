@@ -14,6 +14,7 @@ use App\Http\Controllers\CertificadoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\RecursoActividadController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\NotificacionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => redirect('/dashboard'));
@@ -119,6 +120,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/cursos/{curso}/certificado', [CertificadoController::class, 'generar'])->name('certificados.generar');
     Route::get('/certificados/{certificado}', [CertificadoController::class, 'show'])->name('certificados.show');
     Route::get('/certificados/{certificado}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
+
+    // Notificaciones
+    Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones.index');
+    Route::get('/notificaciones/{notificacion}/marcar', [NotificacionController::class, 'marcarLeida'])->name('notificaciones.marcar');
+    Route::post('/notificaciones/marcar-todas', [NotificacionController::class, 'marcarTodasLeidas'])->name('notificaciones.marcar-todas');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

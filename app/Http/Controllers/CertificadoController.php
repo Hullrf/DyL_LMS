@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Certificado;
 use App\Models\Curso;
+use App\Models\Notificacion;
 use App\Services\CertificadoService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +27,16 @@ class CertificadoController extends Controller
             return redirect()
                 ->route('cursos.show', $curso)
                 ->with('error', 'Debes completar todas las lecciones del curso para obtener el certificado.');
+        }
+
+        if ($certificado->wasRecentlyCreated) {
+            Notificacion::crear(
+                $usuario->id,
+                'certificado',
+                'Certificado generado',
+                "¡Felicitaciones! Obtuviste el certificado del curso «{$curso->titulo}».",
+                route('certificados.show', $certificado)
+            );
         }
 
         return redirect()->route('certificados.show', $certificado);

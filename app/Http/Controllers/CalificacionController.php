@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RespuestaEstudiante;
+use App\Models\Notificacion;
 use App\Services\CalificacionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,6 +76,15 @@ class CalificacionController extends Controller
             $validated['feedback'] ?? null
         );
 
+        $actividad = $respuesta->actividad;
+        Notificacion::crear(
+            $respuesta->user_id,
+            'calificacion',
+            'Actividad calificada',
+            "Tu entrega de «{$actividad->titulo}» recibió {$validated['calificacion']}/{$actividad->puntaje_maximo} pts.",
+            route('calificaciones.mis')
+        );
+
         return redirect()->route('calificaciones.index')->with('success', 'Calificación guardada correctamente.');
     }
 
@@ -132,6 +142,15 @@ class CalificacionController extends Controller
             'fecha_calificacion' => now(),
         ]);
 
+        $actividadPub = $respuesta->actividad;
+        Notificacion::crear(
+            $respuesta->user_id,
+            'calificacion',
+            'Cuestionario calificado',
+            "Tu cuestionario «{$actividadPub->titulo}» fue calificado: {$calificacion}/{$actividadPub->puntaje_maximo} pts.",
+            route('calificaciones.mis')
+        );
+
         return redirect()->route('calificaciones.index')
             ->with('success', "Calificación publicada: {$calificacion}/{$respuesta->actividad->puntaje_maximo} pts.");
     }
@@ -164,6 +183,14 @@ class CalificacionController extends Controller
             $respuesta,
             $request->selecciones,
             $request->feedback
+        );
+
+        Notificacion::crear(
+            $respuesta->user_id,
+            'calificacion',
+            'Actividad calificada con rúbrica',
+            "Tu entrega de «{$actividad->titulo}» fue evaluada: {$calificacion}/{$actividad->puntaje_maximo} pts.",
+            route('calificaciones.mis')
         );
 
         return redirect()->route('calificaciones.index')

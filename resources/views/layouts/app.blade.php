@@ -66,6 +66,12 @@
                                 Mis Calificaciones
                             </a>
                         @endif
+                        @if(!auth()->user()->esAdmin() || auth()->user()->esEstudiante())
+                            <a href="{{ route('certificados.mis') }}"
+                               class="nav-link {{ request()->routeIs('certificados.mis') ? 'nav-link-active' : '' }}">
+                                Certificados
+                            </a>
+                        @endif
                         @if(auth()->user()->esAdmin())
                             <a href="{{ route('admin.usuarios.index') }}"
                                class="nav-link {{ request()->routeIs('admin.usuarios.*') ? 'nav-link-active' : '' }}">
@@ -83,6 +89,9 @@
                 {{-- Acciones derecha --}}
                 <div class="flex items-center gap-3">
                     @auth
+                        {{-- Notificaciones --}}
+                        <x-notification-bell />
+
                         {{-- Botón nuevo curso (desktop) --}}
                         @if(auth()->user()->esInstructor() || auth()->user()->esAdmin())
                             <a href="{{ route('cursos.create') }}"

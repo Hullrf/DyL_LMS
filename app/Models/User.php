@@ -70,6 +70,11 @@ class User extends Authenticatable implements Auditable
         return $this->hasMany(Certificado::class);
     }
 
+    public function notificaciones(): HasMany
+    {
+        return $this->hasMany(Notificacion::class);
+    }
+
     public function tieneRol(string $nombreRol): bool
     {
         return $this->roles()->where('nombre', $nombreRol)->exists();
