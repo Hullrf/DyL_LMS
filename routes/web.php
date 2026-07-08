@@ -14,6 +14,7 @@ use App\Http\Controllers\CertificadoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\RecursoActividadController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\ForoController;
 use App\Http\Controllers\MensajeController;
 use App\Http\Controllers\NotificacionController;
 use Illuminate\Support\Facades\Route;
@@ -126,6 +127,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/cursos/{curso}/certificado', [CertificadoController::class, 'generar'])->name('certificados.generar');
     Route::get('/certificados/{certificado}', [CertificadoController::class, 'show'])->name('certificados.show');
     Route::get('/certificados/{certificado}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
+
+    // Foros
+    Route::get('/cursos/{curso}/foros', [ForoController::class, 'index'])->name('foros.index');
+    Route::get('/foros/{foro}', [ForoController::class, 'show'])->name('foros.show');
+    Route::post('/foros/{foro}/comentar', [ForoController::class, 'comentar'])->name('foros.comentar');
+    Route::middleware('instructor')->group(function () {
+        Route::get('/cursos/{curso}/foros/crear', [ForoController::class, 'create'])->name('foros.create');
+        Route::post('/cursos/{curso}/foros', [ForoController::class, 'store'])->name('foros.store');
+    });
 
     // Mensajería interna
     Route::get('/mensajes', [MensajeController::class, 'bandeja'])->name('mensajes.bandeja');
