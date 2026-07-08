@@ -23,7 +23,9 @@ class CalificacionController extends Controller
         $user   = Auth::user();
         $estado = $request->get('estado', 'pendiente');
 
-        $query = RespuestaEstudiante::with(['usuario', 'actividad.leccion.modulo.curso']);
+        $query = RespuestaEstudiante::with(['usuario', 'actividad.leccion.modulo.curso'])
+            ->whereHas('actividad')
+            ->whereHas('usuario');
 
         if (!$user->esAdmin()) {
             $query->whereHas('actividad.leccion.modulo.curso', fn($q) => $q->where('created_by', $user->id));
@@ -50,6 +52,7 @@ class CalificacionController extends Controller
     {
         $this->verificarAcceso($respuesta);
         $respuesta->load(['usuario', 'actividad.leccion.modulo.curso', 'seleccionesRubrica']);
+        if (!$respuesta->actividad) abort(404, 'Actividad no encontrada.');
         $criteriosRubrica    = $respuesta->actividad->usa_rubrica
             ? $respuesta->actividad->criteriosRubrica()->with('niveles')->get()
             : collect();
@@ -204,6 +207,7 @@ class CalificacionController extends Controller
     {
         $respuestas = RespuestaEstudiante::with(['actividad.leccion.modulo.curso'])
             ->where('user_id', Auth::id())
+            ->whereHas('actividad')
             ->orderBy('fecha_envio', 'desc')
             ->get();
 
