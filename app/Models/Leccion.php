@@ -13,11 +13,7 @@ class Leccion extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'lecciones';
-    protected $fillable = ['modulo_id', 'titulo', 'contenido_html', 'video_url', 'orden', 'duracion_minutos', 'tipo', 'permitir_descarga_adjuntos'];
-
-    protected $casts = [
-        'permitir_descarga_adjuntos' => 'boolean',
-    ];
+    protected $fillable = ['modulo_id', 'titulo', 'contenido_html', 'video_url', 'orden', 'duracion_minutos', 'tipo'];
 
     /** Convierte una URL de YouTube/Vimeo a URL embebible para el iframe. */
     public function embedUrl(): ?string

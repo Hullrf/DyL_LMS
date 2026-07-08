@@ -79,7 +79,7 @@
 
     {{-- Recursos de la actividad --}}
     @php $recursos = $actividad->recursos; @endphp
-    @php $descargaPermitida = $actividad->leccion->permitir_descarga_adjuntos ?? true; @endphp
+    @php $descargaPermitida = $actividad->permitir_descarga_adjuntos ?? true; @endphp
     @if($recursos->isNotEmpty())
     <div class="mb-6" x-data="{ visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '' }">
         <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">

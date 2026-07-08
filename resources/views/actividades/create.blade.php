@@ -74,6 +74,22 @@
                     <span class="text-sm font-medium text-gray-700">Actividad obligatoria</span>
                 </label>
             </div>
+
+            {{-- Toggle: permitir descarga de adjuntos --}}
+            <div class="mb-6 p-5 bg-gray-50 rounded-xl border border-gray-200">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">Permitir descarga de archivos adjuntos</p>
+                        <p class="text-xs text-gray-500 mt-1">Si se desactiva, los estudiantes solo podrán visualizar los documentos en un visor integrado sin opción de descarga.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                        <input type="hidden" name="permitir_descarga_adjuntos" value="0">
+                        <input type="checkbox" name="permitir_descarga_adjuntos" value="1"
+                               class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+            </div>
             <div class="flex gap-4">
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                     Crear y configurar

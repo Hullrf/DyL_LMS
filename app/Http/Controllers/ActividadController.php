@@ -32,6 +32,7 @@ class ActividadController extends Controller
             ],
             'duracion_minutos' => 'nullable|integer|min:1',
             'es_obligatoria'   => 'boolean',
+            'permitir_descarga_adjuntos' => 'boolean',
         ]);
 
         $orden = $leccion->actividades()->max('orden') + 1;
@@ -94,6 +95,7 @@ class ActividadController extends Controller
             'es_obligatoria'   => 'boolean',
             'fecha_apertura'   => 'nullable|date',
             'fecha_cierre'     => 'nullable|date|after_or_equal:fecha_apertura',
+            'permitir_descarga_adjuntos' => 'boolean',
         ]);
 
         $actividad->update([

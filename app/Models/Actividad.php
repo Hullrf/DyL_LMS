@@ -23,14 +23,16 @@ class Actividad extends Model implements Auditable
         'leccion_id', 'tipo', 'titulo', 'descripcion',
         'orden', 'puntaje_maximo', 'duracion_minutos', 'es_obligatoria',
         'fecha_apertura', 'fecha_cierre', 'usa_rubrica',
+        'permitir_descarga_adjuntos',
     ];
 
     protected $casts = [
-        'fecha_apertura' => 'datetime',
-        'fecha_cierre'   => 'datetime',
-        'es_obligatoria' => 'boolean',
-        'usa_rubrica'    => 'boolean',
-        'puntaje_maximo' => 'decimal:2',
+        'fecha_apertura'              => 'datetime',
+        'fecha_cierre'                => 'datetime',
+        'es_obligatoria'              => 'boolean',
+        'usa_rubrica'                 => 'boolean',
+        'permitir_descarga_adjuntos'  => 'boolean',
+        'puntaje_maximo'              => 'decimal:2',
     ];
 
     /**
