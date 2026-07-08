@@ -384,7 +384,7 @@
                     </div>
                     {{-- Office (Google Docs Viewer) --}}
                     <div x-show="visorTipo === 'office'" class="w-full h-full min-h-[75vh] select-none" @contextmenu.prevent>
-                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(visorUrl) + '&embedded=true&rm=minimal'"
+                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(location.origin + visorUrl) + '&embedded=true&rm=minimal'"
                                 class="w-full h-full min-h-[75vh]" frameborder="0"
                                 sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
                     </div>
