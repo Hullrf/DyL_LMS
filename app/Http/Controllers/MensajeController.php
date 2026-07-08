@@ -53,8 +53,13 @@ class MensajeController extends Controller
             fn($q) => $q->whereHas('inscripciones', fn($q2) => $q2->where('user_id', Auth::id()))
         )->orderBy('titulo')->get();
 
-        $destinatarios = User::when(Auth::user()->esAdmin(), fn($q) => $q->where('id', '!=', Auth::id()))
-            ->orderBy('name')->get(['id', 'name']);
+        $destinatarios = collect();
+        if ($cursoId) {
+            $destinatarios = User::whereHas('inscripciones', fn($q) => $q->where('curso_id', $cursoId))
+                ->where('id', '!=', Auth::id())
+                ->orderBy('name')
+                ->get(['id', 'name', 'email']);
+        }
 
         return view('mensajes.create', compact('cursos', 'cursoId', 'destinatarios'));
     }
@@ -64,32 +69,44 @@ class MensajeController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'curso_id'        => 'required|exists:cursos,id',
-            'destinatario_id' => 'required|exists:users,id',
-            'asunto'          => 'required|string|max:255',
-            'mensaje'         => 'required|string|min:3',
-            'padre_id'        => 'nullable|exists:mensajes,id',
+            'curso_id'      => 'required|exists:cursos,id',
+            'asunto'        => 'required|string|max:255',
+            'mensaje'       => 'required|string|min:3',
+            'padre_id'      => 'nullable|exists:mensajes,id',
+            'destinatarios' => 'nullable|array',
+            'destinatarios.*' => 'exists:users,id',
         ]);
 
         $mensaje = Mensaje::create([
-            'curso_id'        => $validated['curso_id'],
-            'remitente_id'    => $user->id,
-            'asunto'          => $validated['asunto'],
-            'mensaje'         => $validated['mensaje'],
-            'padre_id'        => $validated['padre_id'] ?? null,
+            'curso_id'     => $validated['curso_id'],
+            'remitente_id' => $user->id,
+            'asunto'       => $validated['asunto'],
+            'mensaje'      => $validated['mensaje'],
+            'padre_id'     => $validated['padre_id'] ?? null,
         ]);
 
         $curso = $mensaje->curso;
 
-        Notificacion::crear(
-            $validated['destinatario_id'],
-            'mensaje',
-            "Nuevo mensaje: {$validated['asunto']}",
-            "{$user->name} te envió un mensaje en el curso «{$curso->titulo}».",
-            route('mensajes.conversacion', $mensaje)
-        );
+        $destinatarioIds = $request->filled('destinatarios')
+            ? $request->destinatarios
+            : $curso->inscripciones()->where('user_id', '!=', $user->id)->pluck('user_id')->toArray();
 
+        if (empty($destinatarioIds) && $user->esAdmin()) {
+            $destinatarioIds = User::where('id', '!=', $user->id)->pluck('id')->toArray();
+        }
+
+        foreach ($destinatarioIds as $uid) {
+            Notificacion::crear(
+                $uid,
+                'mensaje',
+                "Nuevo mensaje: {$validated['asunto']}",
+                "{$user->name} te envió un mensaje en el curso «{$curso->titulo}».",
+                route('mensajes.conversacion', $mensaje)
+            );
+        }
+
+        $total = count($destinatarioIds);
         return redirect()->route('mensajes.conversacion', $mensaje)
-            ->with('success', 'Mensaje enviado.');
+            ->with('success', "Mensaje enviado a {$total} destinatario(s).");
     }
 }
