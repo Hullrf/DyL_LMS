@@ -18,7 +18,7 @@ class RecursoActividadController extends Controller
 
         $rules = [
             'tipo'        => 'required|in:documento,video,texto,enlace,imagen',
-            'titulo'      => 'required|string|max:255',
+            'titulo'      => 'nullable|string|max:255',
             'descripcion' => 'nullable|string|max:500',
         ];
 
@@ -37,7 +37,7 @@ class RecursoActividadController extends Controller
         $data = [
             'actividad_id' => $actividad->id,
             'tipo'         => $tipo,
-            'titulo'       => $validated['titulo'],
+            'titulo'       => $validated['titulo'] ?: $request->file('archivo')?->getClientOriginalName() ?: 'Sin título',
             'descripcion'  => $validated['descripcion'] ?? null,
             'orden'        => $actividad->recursos()->max('orden') + 1,
         ];

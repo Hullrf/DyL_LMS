@@ -131,8 +131,8 @@
 
                 {{-- Título --}}
                 <div>
-                    <label class="form-label">Título del recurso</label>
-                    <input type="text" name="titulo" value="{{ old('titulo') }}" class="form-input" required
+                    <label class="form-label">Título del recurso <span class="text-gray-400 font-normal">(opcional — se usará el nombre del archivo si se deja vacío)</span></label>
+                    <input type="text" name="titulo" value="{{ old('titulo') }}" class="form-input"
                            placeholder="Ej: Guía ISO 9001 v2015">
                     @error('titulo')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
