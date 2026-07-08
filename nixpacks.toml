@@ -1,30 +1,12 @@
+[variables]
+UPLOAD_MAX_FILESIZE = '100M'
+POST_MAX_SIZE = '100M'
+
 [phases.setup]
-nixPkgs = [
-  "php82",
-  "php82Packages.composer",
-  "php82Extensions.gd",
-  "php82Extensions.zip",
-  "php82Extensions.pdo_mysql",
-  "php82Extensions.intl",
-  "php82Extensions.bcmath",
-  "php82Extensions.mbstring",
-  "php82Extensions.xml",
-  "php82Extensions.tokenizer",
-  "php82Extensions.ctype",
-  "php82Extensions.fileinfo",
-  "php82Extensions.curl",
-  "php82Extensions.dom",
-  "php82Extensions.exif",
-  "nodejs_20"
-]
-
-[phases.install]
 cmds = [
-  "composer install --no-dev --optimize-autoloader --no-interaction",
-  "npm ci"
-]
-
-[phases.build]
-cmds = [
-  "npm run build"
+  '''
+  INI_DIR=$(find /nix/store/*-php-*/lib -name php.ini -print0 | tail -z -n 1 | rev | cut -c 9- | rev)
+  echo "upload_max_filesize=${UPLOAD_MAX_FILESIZE};" >> "$INI_DIR/upload.ini"
+  echo "post_max_size=${POST_MAX_SIZE};" >> "$INI_DIR/upload.ini"
+  '''
 ]
