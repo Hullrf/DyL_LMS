@@ -113,11 +113,12 @@ class LeccionController extends Controller
         $this->authorize('update', $modulo->curso);
 
         $validated = $request->validate([
-            'titulo'           => 'required|string|max:255',
-            'contenido_html'   => 'nullable|string',
-            'video_url'        => 'nullable|url|max:2048',
-            'duracion_minutos' => 'required|integer|min:1',
-            'tipo'             => 'required|in:video,texto,mixto',
+            'titulo'                      => 'required|string|max:255',
+            'contenido_html'              => 'nullable|string',
+            'video_url'                   => 'nullable|url|max:2048',
+            'duracion_minutos'            => 'required|integer|min:1',
+            'tipo'                        => 'required|in:video,texto,mixto',
+            'permitir_descarga_adjuntos'  => 'boolean',
         ]);
 
         $orden = $modulo->lecciones()->max('orden') + 1;
@@ -140,11 +141,12 @@ class LeccionController extends Controller
         $this->authorize('update', $leccion->modulo->curso);
 
         $validated = $request->validate([
-            'titulo'           => 'required|string|max:255',
-            'contenido_html'   => 'nullable|string',
-            'video_url'        => 'nullable|url|max:2048',
-            'duracion_minutos' => 'required|integer|min:1',
-            'tipo'             => 'required|in:video,texto,mixto',
+            'titulo'                      => 'required|string|max:255',
+            'contenido_html'              => 'nullable|string',
+            'video_url'                   => 'nullable|url|max:2048',
+            'duracion_minutos'            => 'required|integer|min:1',
+            'tipo'                        => 'required|in:video,texto,mixto',
+            'permitir_descarga_adjuntos'  => 'boolean',
         ]);
 
         $leccion->update($validated);

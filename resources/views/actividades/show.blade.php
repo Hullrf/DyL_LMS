@@ -79,8 +79,9 @@
 
     {{-- Recursos de la actividad --}}
     @php $recursos = $actividad->recursos; @endphp
+    @php $descargaPermitida = $actividad->leccion->permitir_descarga_adjuntos ?? true; @endphp
     @if($recursos->isNotEmpty())
-    <div class="mb-6">
+    <div class="mb-6" x-data="{ visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '' }">
         <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
             <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
@@ -92,6 +93,13 @@
 
             {{-- DOCUMENTO --}}
             @if($recurso->tipo === 'documento')
+            @php
+                $ext = strtolower(pathinfo($recurso->archivoNombre(), PATHINFO_EXTENSION));
+                $esPdf = $ext === 'pdf';
+                $esOffice = in_array($ext, ['doc','docx','xls','xlsx','ppt','pptx']);
+                $esImagenDoc = in_array($ext, ['jpg','jpeg','png','gif','webp','svg','bmp']);
+                $urlArchivo = $recurso->archivoUrl();
+            @endphp
             <div class="flex items-start gap-4 bg-white border border-gray-200 rounded-xl p-4 hover:border-red-300 hover:shadow-sm transition-all">
                 <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,13 +111,46 @@
                     @if($recurso->descripcion)<p class="text-xs text-gray-500 mt-0.5">{{ $recurso->descripcion }}</p>@endif
                     <p class="text-xs text-gray-400 mt-1">{{ $recurso->archivoNombre() }}</p>
                 </div>
-                <a href="{{ $recurso->archivoUrl() }}" target="_blank" download
+                @if($descargaPermitida)
+                <a href="{{ $urlArchivo }}" target="_blank" download
                    class="btn-outline btn-sm flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                     </svg>
                     Descargar
                 </a>
+                @else
+                    @if($esPdf)
+                    <button type="button" @click="visorTipo='pdf'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
+                       class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Ver
+                    </button>
+                    @elseif($esOffice)
+                    <button type="button" @click="visorTipo='office'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
+                       class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Ver
+                    </button>
+                    @elseif($esImagenDoc)
+                    <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
+                       class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Ver
+                    </button>
+                    @else
+                    <span class="text-xs text-gray-400 italic flex-shrink-0 self-center">Vista previa no disponible</span>
+                    @endif
+                @endif
             </div>
 
             {{-- IMAGEN --}}
@@ -126,12 +167,22 @@
                         @if($recurso->descripcion)<p class="text-xs text-gray-500">{{ $recurso->descripcion }}</p>@endif
                     </div>
                 </div>
+                @if($descargaPermitida)
                 <a href="{{ $recurso->archivoUrl() }}" target="_blank" class="block bg-gray-50 p-2">
                     <img src="{{ $recurso->archivoUrl() }}"
                          alt="{{ $recurso->titulo }}"
                          class="w-full max-h-96 object-contain rounded-lg mx-auto"
                          loading="lazy">
                 </a>
+                @else
+                <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $recurso->archivoUrl() }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
+                        class="block bg-gray-50 p-2 w-full cursor-pointer hover:bg-gray-100 transition-colors">
+                    <img src="{{ $recurso->archivoUrl() }}"
+                         alt="{{ $recurso->titulo }}"
+                         class="w-full max-h-96 object-contain rounded-lg mx-auto"
+                         loading="lazy">
+                </button>
+                @endif
             </div>
 
             {{-- VIDEO --}}
@@ -199,6 +250,49 @@
 
         @endforeach
         </div>
+
+        {{-- Modal visor de documentos --}}
+        <div x-show="visorAbierto" x-cloak
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4"
+             @click.self="visorAbierto = false"
+             @keydown.escape.window="visorAbierto = false">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col z-10">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 truncate pr-4" x-text="visorTitulo"></h3>
+                    <button @click="visorAbierto = false"
+                            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            aria-label="Cerrar visor">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-auto">
+                    {{-- PDF --}}
+                    <div x-show="visorTipo === 'pdf'" class="w-full h-full min-h-[75vh]">
+                        <iframe :src="visorUrl" class="w-full h-full min-h-[75vh]" frameborder="0"></iframe>
+                    </div>
+                    {{-- Office (Google Docs Viewer) --}}
+                    <div x-show="visorTipo === 'office'" class="w-full h-full min-h-[75vh]">
+                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(visorUrl) + '&embedded=true'"
+                                class="w-full h-full min-h-[75vh]" frameborder="0"></iframe>
+                    </div>
+                    {{-- Imagen --}}
+                    <div x-show="visorTipo === 'imagen'" class="flex items-center justify-center p-4 min-h-[50vh]">
+                        <img :src="visorUrl" :alt="visorTitulo"
+                             class="max-w-full max-h-[80vh] object-contain rounded-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     @endif
 
