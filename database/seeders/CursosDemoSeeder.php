@@ -79,8 +79,8 @@ class CursosDemoSeeder extends Seeder
 
         Leccion::create(['modulo_id' => $m4->id, 'titulo' => 'Identificación de Peligros', 'contenido_html' => '<p>Todo lugar de trabajo tiene riesgos. Esta lección cubre:</p><ul><li>Tipos de peligros (físicos, químicos, biológicos)</li><li>Metodología de evaluación</li><li>Matriz de riesgos</li></ul>', 'orden' => 0, 'duracion_minutos' => 35, 'tipo' => 'mixto']);
         Leccion::create(['modulo_id' => $m5->id, 'titulo' => 'Uso de EPP',                  'contenido_html' => '<p>El Equipo de Protección Personal es la última barrera. Incluye:</p><ul><li>Cascos y protección craneal</li><li>Protección ocular y auditiva</li><li>Calzado de seguridad</li></ul>', 'orden' => 0, 'duracion_minutos' => 25, 'tipo' => 'video']);
-        Actividad::create(['leccion_id' => $m4->lecciones->first()->id, 'tipo' => 'cuestionario', 'titulo' => 'Quiz: Identificación de Riesgos', 'puntaje_maximo' => 15, 'orden' => 0, 'es_obligatoria' => true]);
-        Actividad::create(['leccion_id' => $m5->lecciones->first()->id, 'tipo' => 'practica', 'titulo' => 'Inspección de EPP', 'puntaje_maximo' => 20, 'orden' => 0, 'es_obligatoria' => true]);
+        Actividad::create(['leccion_id' => Leccion::where('modulo_id', $m4->id)->first()->id, 'tipo' => 'cuestionario', 'titulo' => 'Quiz: Identificación de Riesgos', 'puntaje_maximo' => 15, 'orden' => 0, 'es_obligatoria' => true]);
+        Actividad::create(['leccion_id' => Leccion::where('modulo_id', $m5->id)->first()->id, 'tipo' => 'practica', 'titulo' => 'Inspección de EPP', 'puntaje_maximo' => 20, 'orden' => 0, 'es_obligatoria' => true]);
 
         // ─── Curso 3: Liderazgo (borrador) ─────────────────
         Curso::create([
