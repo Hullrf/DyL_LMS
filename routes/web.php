@@ -151,6 +151,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/mensajes/redactar', [MensajeController::class, 'create'])->name('mensajes.create');
     Route::post('/mensajes', [MensajeController::class, 'store'])->name('mensajes.store');
     Route::get('/mensajes/{mensaje}', [MensajeController::class, 'conversacion'])->name('mensajes.conversacion');
+    Route::get('/api/mensajes/buscar-destinatarios', [MensajeController::class, 'buscarDestinatarios'])->name('mensajes.buscar');
 
     // Notificaciones
     Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones.index');

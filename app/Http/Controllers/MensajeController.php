@@ -64,6 +64,22 @@ class MensajeController extends Controller
         return view('mensajes.create', compact('cursos', 'cursoId', 'destinatarios'));
     }
 
+    public function buscarDestinatarios(Request $request)
+    {
+        $request->validate(['curso_id' => 'required|exists:cursos,id', 'q' => 'required|string|min:1']);
+
+        $usuarios = User::whereHas('cursos', fn($q) => $q->where('curso_id', $request->curso_id))
+            ->where('id', '!=', Auth::id())
+            ->where(function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->q}%")
+                  ->orWhere('email', 'like', "%{$request->q}%");
+            })
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($usuarios);
+    }
+
     public function store(Request $request)
     {
         $user = Auth::user();
