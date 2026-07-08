@@ -2,7 +2,7 @@
 @section('title', 'Notificaciones - LMS DyL')
 @section('content')
 <div class="max-w-2xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Notificaciones</h1>
         @if($notificaciones->where('leido', false)->count() > 0)
             <form method="POST" action="{{ route('notificaciones.marcar-todas') }}">

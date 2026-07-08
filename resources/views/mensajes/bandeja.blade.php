@@ -2,7 +2,7 @@
 @section('title', 'Mensajes - LMS DyL')
 @section('content')
 <div class="max-w-3xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Mensajes</h1>
         <a href="{{ route('mensajes.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">+ Nuevo mensaje</a>
     </div>

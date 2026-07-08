@@ -3,7 +3,7 @@
 @section('breadcrumbs'){{ Breadcrumbs::render('admin.usuarios.index') }}@endsection
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
         <a href="{{ route('admin.usuarios.create') }}" class="btn-primary">+ Nuevo Usuario</a>
     </div>
