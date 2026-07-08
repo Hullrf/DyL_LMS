@@ -55,7 +55,7 @@ class MensajeController extends Controller
 
         $destinatarios = collect();
         if ($cursoId) {
-            $destinatarios = User::whereHas('inscripciones', fn($q) => $q->where('curso_id', $cursoId))
+            $destinatarios = User::whereHas('cursos', fn($q) => $q->where('curso_id', $cursoId))
                 ->where('id', '!=', Auth::id())
                 ->orderBy('name')
                 ->get(['id', 'name', 'email']);
