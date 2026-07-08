@@ -163,13 +163,17 @@ class ReporteController extends Controller
 
         $html = view('reportes.pdf-curso', compact('reporte'))->render();
 
+        $tmpDir = storage_path('app/tmp');
+        if (!is_dir($tmpDir)) mkdir($tmpDir, 0755, true);
+
         $mpdf = new Mpdf([
-            'mode'        => 'utf-8',
-            'format'      => 'A4',
-            'margin_top'  => 15,
-            'margin_right'  => 15,
-            'margin_bottom' => 15,
-            'margin_left'   => 15,
+            'mode'         => 'utf-8',
+            'format'       => 'A4',
+            'margin_top'   => 15,
+            'margin_right' => 15,
+            'margin_bottom'=> 15,
+            'margin_left'  => 15,
+            'tempDir'      => storage_path('app/tmp'),
         ]);
 
         $mpdf->SetTitle('Reporte - ' . $curso->titulo);

@@ -69,13 +69,14 @@ class CertificadoService
         $html = view('certificados.plantilla-pdf', compact('certificado'))->render();
 
         $mpdf = new Mpdf([
-            'mode'        => 'utf-8',
-            'format'      => 'A4-L',     // Paisaje
-            'orientation' => 'L',
-            'margin_top'  => 0,
-            'margin_right'  => 0,
-            'margin_bottom' => 0,
-            'margin_left'   => 0,
+            'mode'         => 'utf-8',
+            'format'       => 'A4-L',
+            'orientation'  => 'L',
+            'margin_top'   => 0,
+            'margin_right' => 0,
+            'margin_bottom'=> 0,
+            'margin_left'  => 0,
+            'tempDir'      => storage_path('app/tmp'),
         ]);
 
         $mpdf->WriteHTML($html);
