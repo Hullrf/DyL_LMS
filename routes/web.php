@@ -14,6 +14,7 @@ use App\Http\Controllers\CertificadoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\RecursoActividadController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\MensajeController;
 use App\Http\Controllers\NotificacionController;
 use Illuminate\Support\Facades\Route;
 
@@ -125,6 +126,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/cursos/{curso}/certificado', [CertificadoController::class, 'generar'])->name('certificados.generar');
     Route::get('/certificados/{certificado}', [CertificadoController::class, 'show'])->name('certificados.show');
     Route::get('/certificados/{certificado}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
+
+    // Mensajería interna
+    Route::get('/mensajes', [MensajeController::class, 'bandeja'])->name('mensajes.bandeja');
+    Route::get('/mensajes/redactar', [MensajeController::class, 'create'])->name('mensajes.create');
+    Route::post('/mensajes', [MensajeController::class, 'store'])->name('mensajes.store');
+    Route::get('/mensajes/{mensaje}', [MensajeController::class, 'conversacion'])->name('mensajes.conversacion');
 
     // Notificaciones
     Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones.index');
