@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categoria;
 use App\Models\Curso;
 use App\Models\Inscripcion;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -133,6 +134,45 @@ class CursoController extends Controller
         return redirect()
             ->route('cursos.show', $curso)
             ->with('success', '¡Te has inscrito en el curso!');
+    }
+
+    public function inscripcionMasiva(Curso $curso, Request $request)
+    {
+        $this->authorize('update', $curso);
+
+        $inscritosIds = Inscripcion::where('curso_id', $curso->id)->pluck('user_id')->toArray();
+
+        $usuarios = User::whereNotIn('id', $inscritosIds)
+            ->when($request->filled('buscar'), fn($q) =>
+                $q->where('name', 'like', "%{$request->buscar}%")
+                  ->orWhere('email', 'like', "%{$request->buscar}%"))
+            ->orderBy('name')
+            ->paginate(20);
+
+        return view('cursos.inscripcion-masiva', compact('curso', 'usuarios', 'inscritosIds'));
+    }
+
+    public function procesarInscripcionMasiva(Request $request, Curso $curso)
+    {
+        $this->authorize('update', $curso);
+
+        $request->validate([
+            'usuarios' => 'required|array|min:1',
+            'usuarios.*' => 'exists:users,id',
+        ]);
+
+        $inscritos = 0;
+        foreach ($request->usuarios as $userId) {
+            $created = Inscripcion::firstOrCreate(
+                ['user_id' => $userId, 'curso_id' => $curso->id],
+                ['fecha_inicio' => now()->toDateString(), 'estado' => 'en_progreso']
+            );
+            if ($created->wasRecentlyCreated) $inscritos++;
+        }
+
+        return redirect()
+            ->route('cursos.inscripcion-masiva', $curso)
+            ->with('success', "{$inscritos} estudiantes inscritos correctamente.");
     }
 
     public function edit(Curso $curso)

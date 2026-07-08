@@ -61,8 +61,12 @@
                 @if(auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
                     {{-- Instructor: botón editar --}}
                     <a href="{{ route('cursos.edit', $curso) }}"
-                       class="block w-full text-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium">
+                       class="block w-full text-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium mb-2">
                         Editar curso
+                    </a>
+                    <a href="{{ route('cursos.inscripcion-masiva', $curso) }}"
+                       class="block w-full text-center bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 font-medium text-sm">
+                        Inscribir estudiantes
                     </a>
                 @elseif($estaInscrito)
                     {{-- Inscrito: mostrar progreso y continuar --}}

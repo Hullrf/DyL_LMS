@@ -36,6 +36,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/cursos/{curso}/inscribirse', [CursoController::class, 'inscribirse'])->name('cursos.inscribirse');
 
     Route::middleware('instructor')->group(function () {
+        Route::get('/cursos/{curso}/inscribir-estudiantes', [CursoController::class, 'inscripcionMasiva'])->name('cursos.inscripcion-masiva');
+        Route::post('/cursos/{curso}/inscribir-estudiantes', [CursoController::class, 'procesarInscripcionMasiva']);
+    });
+
+    Route::middleware('instructor')->group(function () {
         Route::get('/cursos/{curso}/editar', [CursoController::class, 'edit'])->name('cursos.edit');
         Route::put('/cursos/{curso}', [CursoController::class, 'update'])->name('cursos.update');
         Route::delete('/cursos/{curso}', [CursoController::class, 'destroy'])->name('cursos.destroy');
