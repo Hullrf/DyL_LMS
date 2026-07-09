@@ -99,6 +99,7 @@ const quill = new Quill('#quill-editor', {
         toolbar: [
             [{ header: [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike'],
+            [{ 'align': [] }],
             [{ list: 'ordered' }, { list: 'bullet' }],
             ['blockquote', 'code-block'],
             ['link', 'image'],
