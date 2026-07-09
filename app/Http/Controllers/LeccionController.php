@@ -151,6 +151,11 @@ class LeccionController extends Controller
 
         $leccion->update($validated);
 
+        // Cascada: si se bloquea la descarga en la lección, bloquear todas las actividades
+        if ($leccion->wasChanged('permitir_descarga_adjuntos') && !$leccion->permitir_descarga_adjuntos) {
+            $leccion->actividades()->update(['permitir_descarga_adjuntos' => false]);
+        }
+
         return redirect()
             ->route('cursos.edit', $leccion->modulo->curso)
             ->with('success', 'Lección actualizada correctamente');
