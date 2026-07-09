@@ -77,17 +77,13 @@
 
             {{-- Toggle: permitir descarga de adjuntos --}}
             <div class="mb-6 p-5 bg-gray-50 rounded-xl border border-gray-200">
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <p class="text-sm font-semibold text-gray-800">Permitir descarga de archivos adjuntos</p>
-                        <p class="text-xs text-gray-500 mt-1">Si se desactiva, los estudiantes solo podrán visualizar los documentos en un visor integrado sin opción de descarga.</p>
-                    </div>
-                    <select name="permitir_descarga_adjuntos" class="text-sm border border-gray-300 rounded-lg px-3 py-2 flex-shrink-0">
-                        <option value="1" {{ old('permitir_descarga_adjuntos') === '1' ? 'selected' : '' }}>Permitir descarga</option>
-                        <option value="leccion" {{ old('permitir_descarga_adjuntos') !== '0' ? 'selected' : '' }}>Usar config. de la lección</option>
-                        <option value="0" {{ old('permitir_descarga_adjuntos') === '0' ? 'selected' : '' }}>Bloquear descarga</option>
-                    </select>
-                </div>
+                <p class="text-sm font-semibold text-gray-800">Permitir descarga de archivos adjuntos</p>
+                <p class="text-xs text-gray-500 mt-1 mb-3">Si se desactiva, los estudiantes solo podrán visualizar los documentos en un visor integrado sin opción de descarga.</p>
+                <select name="permitir_descarga_adjuntos" class="text-sm border border-gray-300 rounded-lg px-3 py-2">
+                    <option value="1" {{ old('permitir_descarga_adjuntos') === '1' ? 'selected' : '' }}>Permitir descarga</option>
+                    <option value="leccion" {{ old('permitir_descarga_adjuntos') !== '0' ? 'selected' : '' }}>Usar config. de la lección</option>
+                    <option value="0" {{ old('permitir_descarga_adjuntos') === '0' ? 'selected' : '' }}>Bloquear descarga</option>
+                </select>
             </div>
             <div class="flex gap-4">
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">

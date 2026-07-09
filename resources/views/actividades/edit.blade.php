@@ -51,21 +51,17 @@
 
                 {{-- Toggle: permitir descarga de adjuntos --}}
                 <div class="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800">Permitir descarga de archivos adjuntos</p>
-                            <p class="text-xs text-gray-500 mt-0.5">Si se desactiva, los estudiantes solo podrán visualizar los documentos en un visor integrado sin opción de descarga.</p>
-                        </div>
-                        @php
-                            $rawActual = $actividad->getRawOriginal('permitir_descarga_adjuntos');
-                            $valorActual = old('permitir_descarga_adjuntos', is_null($rawActual) ? 'leccion' : ($rawActual ? '1' : '0'));
-                        @endphp
-                        <select name="permitir_descarga_adjuntos" class="text-sm border border-gray-300 rounded-lg px-3 py-2 flex-shrink-0">
-                            <option value="1" {{ $valorActual === '1' ? 'selected' : '' }}>Permitir descarga</option>
-                            <option value="0" {{ $valorActual === '0' ? 'selected' : '' }}>Bloquear descarga</option>
-                            <option value="leccion" {{ $valorActual === 'leccion' ? 'selected' : '' }}>Usar config. de la lección</option>
-                        </select>
-                    </div>
+                    <p class="text-sm font-semibold text-gray-800">Permitir descarga de archivos adjuntos</p>
+                    <p class="text-xs text-gray-500 mt-0.5 mb-3">Si se desactiva, los estudiantes solo podrán visualizar los documentos en un visor integrado sin opción de descarga.</p>
+                    @php
+                        $rawActual = $actividad->getRawOriginal('permitir_descarga_adjuntos');
+                        $valorActual = old('permitir_descarga_adjuntos', is_null($rawActual) ? 'leccion' : ($rawActual ? '1' : '0'));
+                    @endphp
+                    <select name="permitir_descarga_adjuntos" class="text-sm border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="1" {{ $valorActual === '1' ? 'selected' : '' }}>Permitir descarga</option>
+                        <option value="0" {{ $valorActual === '0' ? 'selected' : '' }}>Bloquear descarga</option>
+                        <option value="leccion" {{ $valorActual === 'leccion' ? 'selected' : '' }}>Usar config. de la lección</option>
+                    </select>
                 </div>
 
                 {{-- Plazo de entrega --}}
