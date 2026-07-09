@@ -56,13 +56,15 @@
                             <p class="text-sm font-semibold text-gray-800">Permitir descarga de archivos adjuntos</p>
                             <p class="text-xs text-gray-500 mt-0.5">Si se desactiva, los estudiantes solo podrán visualizar los documentos en un visor integrado sin opción de descarga.</p>
                         </div>
-                        <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                            <input type="hidden" name="permitir_descarga_adjuntos" value="0">
-                            <input type="checkbox" name="permitir_descarga_adjuntos" value="1"
-                                   class="sr-only peer"
-                                   {{ old('permitir_descarga_adjuntos', $actividad->permitir_descarga_adjuntos ?? true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        @php
+                            $rawActual = $actividad->getRawOriginal('permitir_descarga_adjuntos');
+                            $valorActual = old('permitir_descarga_adjuntos', is_null($rawActual) ? 'leccion' : ($rawActual ? '1' : '0'));
+                        @endphp
+                        <select name="permitir_descarga_adjuntos" class="text-sm border border-gray-300 rounded-lg px-3 py-2 flex-shrink-0">
+                            <option value="1" {{ $valorActual === '1' ? 'selected' : '' }}>Permitir descarga</option>
+                            <option value="0" {{ $valorActual === '0' ? 'selected' : '' }}>Bloquear descarga</option>
+                            <option value="leccion" {{ $valorActual === 'leccion' ? 'selected' : '' }}>Usar config. de la lección</option>
+                        </select>
                     </div>
                 </div>
 

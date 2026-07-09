@@ -79,7 +79,7 @@
 
     {{-- Recursos de la actividad --}}
     @php $recursos = $actividad->recursos; @endphp
-    @php $descargaPermitida = $actividad->permitir_descarga_adjuntos ?? true; @endphp
+    @php $descargaPermitida = $actividad->descargaPermitida(); @endphp
     @if($recursos->isNotEmpty())
     <div class="mb-6" x-data="{
          visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '',

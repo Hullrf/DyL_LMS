@@ -118,6 +118,7 @@ class LeccionController extends Controller
             'video_url'        => 'nullable|url|max:2048',
             'duracion_minutos' => 'required|integer|min:1',
             'tipo'             => 'required|in:video,texto,mixto',
+            'permitir_descarga_adjuntos' => 'boolean',
         ]);
 
         $orden = $modulo->lecciones()->max('orden') + 1;
@@ -145,6 +146,7 @@ class LeccionController extends Controller
             'video_url'        => 'nullable|url|max:2048',
             'duracion_minutos' => 'required|integer|min:1',
             'tipo'             => 'required|in:video,texto,mixto',
+            'permitir_descarga_adjuntos' => 'boolean',
         ]);
 
         $leccion->update($validated);

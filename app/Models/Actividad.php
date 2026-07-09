@@ -52,6 +52,14 @@ class Actividad extends Model implements Auditable
         return in_array($this->estadoPlazo(), ['sin_plazo', 'abierta']);
     }
 
+    /** Resuelve si se permite descarga: actividad (si está definido) o hereda de la lección. */
+    public function descargaPermitida(): bool
+    {
+        $raw = $this->getRawOriginal('permitir_descarga_adjuntos');
+        if ($raw !== null) return (bool) $raw;
+        return (bool) ($this->leccion->permitir_descarga_adjuntos ?? true);
+    }
+
     public function leccion(): BelongsTo
     {
         return $this->belongsTo(Leccion::class);

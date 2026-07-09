@@ -32,7 +32,7 @@ class ActividadController extends Controller
             ],
             'duracion_minutos' => 'nullable|integer|min:1',
             'es_obligatoria'   => 'boolean',
-            'permitir_descarga_adjuntos' => 'boolean',
+            'permitir_descarga_adjuntos' => 'nullable|in:0,1,leccion',
         ]);
 
         $orden = $leccion->actividades()->max('orden') + 1;
@@ -41,6 +41,7 @@ class ActividadController extends Controller
             ...$validated,
             'puntaje_maximo'  => in_array($request->tipo, Actividad::TIPOS_SIN_NOTA) ? null : ($validated['puntaje_maximo'] ?? null),
             'es_obligatoria'  => $request->boolean('es_obligatoria', true),
+            'permitir_descarga_adjuntos' => $validated['permitir_descarga_adjuntos'] === 'leccion' ? null : (bool) $validated['permitir_descarga_adjuntos'],
             'orden'           => $orden,
         ]);
 
@@ -95,12 +96,13 @@ class ActividadController extends Controller
             'es_obligatoria'   => 'boolean',
             'fecha_apertura'   => 'nullable|date',
             'fecha_cierre'     => 'nullable|date|after_or_equal:fecha_apertura',
-            'permitir_descarga_adjuntos' => 'boolean',
+            'permitir_descarga_adjuntos' => 'nullable|in:0,1,leccion',
         ]);
 
         $actividad->update([
             ...$validated,
             'es_obligatoria'  => $request->boolean('es_obligatoria', true),
+            'permitir_descarga_adjuntos' => $validated['permitir_descarga_adjuntos'] === 'leccion' ? null : (bool) $validated['permitir_descarga_adjuntos'],
             'fecha_apertura'  => $request->filled('fecha_apertura') ? $request->fecha_apertura : null,
             'fecha_cierre'    => $request->filled('fecha_cierre')   ? $request->fecha_cierre   : null,
         ]);
