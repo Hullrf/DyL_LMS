@@ -33,7 +33,7 @@
         </div>
         @if($actividad->descripcion)
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-gray-700 text-sm">
-            {!! nl2br(e($actividad->descripcion)) !!}
+            @include('components.descripcion-render', ['slot' => $actividad->descripcion])
         </div>
         @endif
         @if($actividad->duracion_minutos)

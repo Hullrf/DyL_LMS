@@ -33,7 +33,7 @@
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
             <div class="flex-1">
                 <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{{ $curso->titulo }}</h1>
-                <p class="text-gray-600 leading-relaxed mb-4">{{ $curso->descripcion }}</p>
+                                @include('components.descripcion-render', ['slot' => $curso->descripcion])
                 <div class="flex flex-wrap gap-4 text-sm text-gray-500">
                     <span class="flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,9 @@
                     {{ $modulo->orden + 1 }}. {{ $modulo->titulo }}
                 </h3>
                 @if($modulo->descripcion)
-                    <p class="text-sm text-gray-500 mt-0.5">{{ $modulo->descripcion }}</p>
+                    <div class="text-sm text-gray-500 mt-0.5">
+                        @include('components.descripcion-render', ['slot' => $modulo->descripcion])
+                    </div>
                 @endif
             </div>
             <div class="flex items-center gap-3 ml-4">

@@ -60,7 +60,7 @@
                 <h3 class="text-base font-bold text-gray-900 line-clamp-2 mb-2">{{ $curso->titulo }}</h3>
 
                 <p class="text-gray-500 text-sm line-clamp-2 flex-1 mb-4">
-                    {{ Str::limit($curso->descripcion, 90) }}
+                    {{ Str::limit(strip_tags($curso->descripcion), 90) }}
                 </p>
 
                 <div class="mt-auto space-y-2">
@@ -159,7 +159,7 @@
                     <h3 class="text-base font-bold text-gray-900 line-clamp-2 mb-2">{{ $curso->titulo }}</h3>
 
                     <p class="text-gray-500 text-sm line-clamp-2 flex-1 mb-4">
-                        {{ Str::limit($curso->descripcion, 90) }}
+                        {{ Str::limit(strip_tags($curso->descripcion), 90) }}
                     </p>
 
                     <p class="text-xs text-gray-400 mb-4">Por {{ $curso->creador->name }}</p>

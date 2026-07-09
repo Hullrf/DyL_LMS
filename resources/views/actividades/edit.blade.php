@@ -30,7 +30,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Descripción / Instrucciones</label>
-                    <textarea name="descripcion" rows="3" class="form-textarea">{{ old('descripcion', $actividad->descripcion) }}</textarea>
+                    <div id="quill-descripcion" class="h-48 border border-gray-300 rounded-lg"></div>
+                    <input type="hidden" name="descripcion" id="descripcion" value="{{ old('descripcion', $actividad->descripcion) }}">
                 </div>
                 @if($actividad->tieneCalificacion())
                 <div class="mb-3">
@@ -523,7 +524,7 @@
                     </p>
                     @if($actividad->descripcion)
                     <div class="bg-gray-50 rounded-lg p-4 text-gray-700 text-sm">
-                        {{ $actividad->descripcion }}
+                        @include('components.descripcion-render', ['slot' => $actividad->descripcion])
                     </div>
                     @endif
                     <div class="mt-6 border-t pt-4">
@@ -822,3 +823,5 @@
 
 </div>
 @endsection
+
+@include('components.quill-init')

@@ -13,9 +13,9 @@
             @error('titulo')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="mb-6">
-            <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
-            <textarea name="descripcion" id="descripcion" rows="4"
-                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>{{ old('descripcion') }}</textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+            <div id="quill-descripcion" class="h-48 border border-gray-300 rounded-lg"></div>
+            <input type="hidden" name="descripcion" id="descripcion" value="{{ old('descripcion') }}">
             @error('descripcion')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="mb-6">
@@ -57,3 +57,5 @@
     </form>
 </div>
 @endsection
+
+@include('components.quill-init')

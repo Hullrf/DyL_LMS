@@ -6,7 +6,7 @@
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
         <h1 class="text-xl font-bold text-gray-900 mb-2">{{ $foro->titulo }}</h1>
-        @if($foro->descripcion)<p class="text-gray-600 text-sm mb-3">{{ $foro->descripcion }}</p>@endif
+        @if($foro->descripcion)<div class="text-gray-600 text-sm mb-3">@include('components.descripcion-render', ['slot' => $foro->descripcion])</div>@endif
         <p class="text-xs text-gray-400">{{ $foro->creador->name }} · {{ $foro->created_at->format('d/m/Y') }}
             @if($foro->leccion) · Lección: {{ $foro->leccion->titulo }} @endif
         </p>

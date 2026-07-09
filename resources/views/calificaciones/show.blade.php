@@ -180,7 +180,8 @@
 
             @if($respuesta->actividad->descripcion)
                 <div class="bg-blue-50 rounded p-3 mb-4 text-sm text-blue-800">
-                    <span class="font-medium">Enunciado:</span> {{ $respuesta->actividad->descripcion }}
+                    <span class="font-medium">Enunciado:</span>
+                    @include('components.descripcion-render', ['slot' => $respuesta->actividad->descripcion])
                 </div>
             @endif
 
