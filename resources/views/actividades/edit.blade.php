@@ -395,7 +395,7 @@
 
             {{-- Lista de preguntas --}}
             @forelse($preguntas as $pregunta)
-            <div class="card mb-4">
+            <div class="card mb-4" x-data="{ editing: false }">
                 <div class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl">
                     <div class="flex items-start justify-between gap-4">
                         <div class="flex-1">
@@ -406,10 +406,11 @@
                             @if($pregunta->seleccion_multiple)
                                 <span class="ml-2 badge badge-blue text-[10px]">selección múltiple</span>
                             @endif
-                            <p class="font-medium text-gray-900 mt-1">{{ $pregunta->pregunta_texto }}</p>
+                            <p class="font-medium text-gray-900 mt-1" x-show="!editing">{{ $pregunta->pregunta_texto }}</p>
 
+                            {{-- Imagen (modo vista) --}}
                             @if($pregunta->imagen_path)
-                            <div class="mt-3">
+                            <div class="mt-3" x-show="!editing">
                                 <img src="{{ $pregunta->imagenUrl() }}"
                                      alt="Imagen de la pregunta"
                                      class="w-full h-48 object-contain rounded-lg border border-gray-200 bg-gray-50 mb-1.5">
@@ -427,38 +428,73 @@
                             </div>
                             @endif
                         </div>
-                        <form action="{{ route('preguntas.destroy', $pregunta) }}" method="POST" class="shrink-0"
-                              onsubmit="return confirm('¿Eliminar pregunta?');">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-danger btn-sm">Eliminar</button>
-                        </form>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" @click="editing = !editing"
+                                    class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                <span x-text="editing ? 'Cancelar' : 'Editar'"></span>
+                            </button>
+                            <form action="{{ route('preguntas.destroy', $pregunta) }}" method="POST" class="shrink-0"
+                                  onsubmit="return confirm('¿Eliminar pregunta?');">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
-                <div class="p-4">
-                    @if($pregunta->tipo === 'verdadero_falso')
-                        {{-- Selector de respuesta correcta para V/F --}}
-                        @php $correctaVF = $pregunta->opciones->firstWhere('es_correcta', true)?->texto; @endphp
-                        <form action="{{ route('preguntas.update', $pregunta) }}" method="POST">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="pregunta_texto" value="{{ $pregunta->pregunta_texto }}">
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm text-gray-500">Respuesta correcta:</span>
-                                <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer text-sm transition-colors
-                                    {{ $correctaVF === 'Verdadero' ? 'border-green-400 bg-green-50 text-green-700 font-medium' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
-                                    <input type="radio" name="correcta_vf" value="verdadero"
-                                           {{ $correctaVF === 'Verdadero' ? 'checked' : '' }} class="sr-only">
-                                    ✓ Verdadero
-                                </label>
-                                <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer text-sm transition-colors
-                                    {{ $correctaVF === 'Falso' ? 'border-red-400 bg-red-50 text-red-700 font-medium' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
-                                    <input type="radio" name="correcta_vf" value="falso"
-                                           {{ $correctaVF === 'Falso' ? 'checked' : '' }} class="sr-only">
-                                    ✗ Falso
-                                </label>
-                                <button type="submit" class="btn-primary btn-sm ml-1">Guardar</button>
+                {{-- Modo edición --}}
+                <div class="p-4" x-show="editing" x-cloak>
+                    <form action="{{ route('preguntas.update', $pregunta) }}" method="POST" enctype="multipart/form-data">
+                        @csrf @method('PUT')
+                        <div class="mb-3">
+                            <label class="form-label">Texto de la pregunta</label>
+                            <textarea name="pregunta_texto" rows="2" class="form-textarea" required>{{ $pregunta->pregunta_texto }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cambiar imagen <span class="text-gray-400 font-normal">(opcional)</span></label>
+                            <input type="file" name="imagen" accept="image/*"
+                                   class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-dyl-orange hover:file:bg-orange-100 cursor-pointer">
+                            <p class="form-hint">JPG, PNG, WebP — máx. 4 MB</p>
+                        </div>
+
+                        @if($pregunta->tipo === 'verdadero_falso')
+                            @php $correctaVF = $pregunta->opciones->firstWhere('es_correcta', true)?->texto; @endphp
+                            <div class="mb-3">
+                                <label class="form-label">Respuesta correcta</label>
+                                <div class="flex gap-3">
+                                    <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors
+                                        {{ $correctaVF === 'Verdadero' ? 'border-green-400 bg-green-50 text-green-700 font-medium' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
+                                        <input type="radio" name="correcta_vf" value="verdadero"
+                                               {{ $correctaVF === 'Verdadero' ? 'checked' : '' }} class="sr-only">
+                                        ✓ Verdadero
+                                    </label>
+                                    <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors
+                                        {{ $correctaVF === 'Falso' ? 'border-red-400 bg-red-50 text-red-700 font-medium' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
+                                        <input type="radio" name="correcta_vf" value="falso"
+                                               {{ $correctaVF === 'Falso' ? 'checked' : '' }} class="sr-only">
+                                        ✗ Falso
+                                    </label>
+                                </div>
                             </div>
-                        </form>
+                        @endif
+
+                        <div class="flex gap-2">
+                            <button type="submit" class="btn-primary btn-sm">Guardar cambios</button>
+                            <button type="button" @click="editing = false" class="btn btn-sm bg-gray-200 text-gray-700 hover:bg-gray-300">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                {{-- Opciones (modo vista) --}}
+                <div class="p-4" x-show="!editing">
+                    @if($pregunta->tipo === 'verdadero_falso')
+                        @php $correctaVF = $pregunta->opciones->firstWhere('es_correcta', true)?->texto; @endphp
+                        <p class="text-sm text-gray-500">
+                            Respuesta correcta:
+                            <span class="font-medium {{ $correctaVF === 'Verdadero' ? 'text-green-700' : 'text-red-700' }}">
+                                {{ $correctaVF ?? '—' }}
+                            </span>
+                        </p>
 
                     @elseif($pregunta->tipo === 'opcion_multiple')
                         <div class="space-y-2 mb-4">

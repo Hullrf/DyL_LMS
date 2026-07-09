@@ -59,8 +59,21 @@ class PreguntaController extends Controller
     {
         $this->authorize('update', $pregunta->actividad->leccion->modulo->curso);
 
-        $request->validate(['pregunta_texto' => 'required|string']);
-        $pregunta->update(['pregunta_texto' => $request->pregunta_texto]);
+        $request->validate([
+            'pregunta_texto' => 'required|string',
+            'imagen'         => 'nullable|image|max:4096',
+        ]);
+
+        $data = ['pregunta_texto' => $request->pregunta_texto];
+
+        if ($request->hasFile('imagen')) {
+            if ($pregunta->imagen_path) {
+                Storage::disk('public')->delete($pregunta->imagen_path);
+            }
+            $data['imagen_path'] = $request->file('imagen')->store('preguntas', 'public');
+        }
+
+        $pregunta->update($data);
 
         if ($pregunta->tipo === 'verdadero_falso' && $request->filled('correcta_vf')) {
             $request->validate(['correcta_vf' => 'in:verdadero,falso']);
