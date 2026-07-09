@@ -7,6 +7,7 @@
     <meta name="description" content="@yield('meta_description', 'DyL Quality Consulting — Plataforma de Aprendizaje')">
     <title>@yield('title', 'LMS DyL')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet">
     @stack('styles')
     <style>[x-cloak]{display:none!important}</style>
 </head>
@@ -329,6 +330,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     @stack('scripts')
 </body>
 </html>

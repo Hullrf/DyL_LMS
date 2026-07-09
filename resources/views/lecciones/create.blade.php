@@ -97,12 +97,16 @@ const quill = new Quill('#quill-editor', {
     placeholder: 'Escribe el contenido de la lección aquí...',
     modules: {
         toolbar: [
+            [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
             [{ header: [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
             [{ 'align': [] }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
             [{ list: 'ordered' }, { list: 'bullet' }],
             ['blockquote', 'code-block'],
-            ['link', 'image'],
+            ['link', 'image', 'formula'],
             ['clean']
         ]
     }

@@ -13,10 +13,16 @@
         placeholder: 'Escribe la descripción aquí...',
         modules: {
             toolbar: [
+                [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, false] }],
                 ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'script': 'sub' }, { 'script': 'super' }],
                 [{ 'align': [] }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
                 [{ list: 'ordered' }, { list: 'bullet' }],
-                ['link', 'image'],
+                ['blockquote', 'code-block'],
+                ['link', 'image', 'formula'],
                 ['clean']
             ]
         }
