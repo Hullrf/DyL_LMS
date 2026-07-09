@@ -324,7 +324,8 @@
                     {{-- PDF — iframe nativo + marca de agua --}}
                     <div x-show="visorTipo === 'pdf'" class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
                         <iframe :src="visorTipo === 'pdf' ? visorUrl + '#toolbar=0&navpanes=0' : ''"
-                                class="w-full h-full min-h-[75vh]" frameborder="0"></iframe>
+                                class="w-full h-full min-h-[75vh]" frameborder="0"
+                                @load="try { const d = $el.contentDocument || $el.contentWindow.document; d.addEventListener('contextmenu', e => e.preventDefault(), {capture: true}); d.addEventListener('keydown', e => { if((e.ctrlKey||e.metaKey)&&['s','p','S','P'].includes(e.key)) e.preventDefault(); }, {capture: true}); } catch(e) {}"></iframe>
                         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                              style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
                         </div>
