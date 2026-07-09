@@ -12,7 +12,10 @@
     @stack('styles')
     <style>[x-cloak]{display:none!important}</style>
     <style>
-        .desc-justify, .desc-justify * { text-align: justify !important; }
+        .desc-justify { text-align: justify; }
+        .desc-justify .ql-align-center { text-align: center; }
+        .desc-justify .ql-align-right { text-align: right; }
+        .desc-justify .ql-align-justify { text-align: justify; }
     </style>
     <script>
     function traducirQuill(quill) {
