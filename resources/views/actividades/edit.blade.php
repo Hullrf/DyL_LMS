@@ -42,6 +42,13 @@
                            class="form-input" required>
                 </div>
                 @endif
+                <div class="mb-3">
+                    <label class="form-label">Tiempo límite <span class="text-gray-400 font-normal">(minutos, opcional)</span></label>
+                    <input type="number" name="duracion_minutos"
+                           value="{{ old('duracion_minutos', $actividad->duracion_minutos) }}"
+                           min="1" placeholder="Sin límite"
+                           class="form-input">
+                </div>
                 <div class="mb-4">
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="es_obligatoria" value="1" @checked($actividad->es_obligatoria) class="rounded">
