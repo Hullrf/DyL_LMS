@@ -110,6 +110,8 @@ const quill = new Quill('#quill-editor', {
     }
 });
 
+traducirQuill(quill);
+
 // Cargar contenido existente
 quill.root.innerHTML = {!! json_encode($leccion->contenido_html ?? '') !!};
 

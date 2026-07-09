@@ -331,6 +331,51 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script>
+    function traducirQuill(quill) {
+        const tb = quill.container.previousElementSibling;
+        if (!tb) return;
+        const tips = {
+            'bold': 'Negrita', 'italic': 'Cursiva', 'underline': 'Subrayado', 'strike': 'Tachado',
+            'blockquote': 'Cita', 'code-block': 'Código',
+            'link': 'Enlace', 'image': 'Imagen', 'formula': 'Fórmula',
+            'clean': 'Limpiar formato',
+            'ql-indent-1': 'Aumentar sangría', 'ql-indent+1': 'Aumentar sangría',
+            'ql-indent--1': 'Disminuir sangría', 'ql-indent-1': 'Disminuir sangría',
+            'ql-align': 'Alinear', 'ql-align-center': 'Centrar', 'ql-align-right': 'Derecha', 'ql-align-justify': 'Justificar',
+            'ql-script-sub': 'Subíndice', 'ql-script-super': 'Superíndice',
+            'ql-list-ordered': 'Lista numerada', 'ql-list-bullet': 'Viñetas',
+            'ql-color': 'Color de texto', 'ql-background': 'Resaltado',
+            'ql-font': 'Fuente', 'ql-size': 'Tamaño', 'ql-header': 'Encabezado',
+        };
+        tb.querySelectorAll('button').forEach(btn => {
+            for (const [cls, tip] of Object.entries(tips)) {
+                if (btn.classList.contains(cls)) { btn.title = tip; break; }
+            }
+        });
+        const fontSel = tb.querySelector('.ql-font');
+        if (fontSel) {
+            ['Sans Serif', 'Serif', 'Monoespacio'].forEach((en, i) => {
+                const opt = fontSel.querySelectorAll('option')[i + 1];
+                if (opt) opt.textContent = ['Sans Serif', 'Serif', 'Monoespacio'][i];
+            });
+        }
+        const sizeSel = tb.querySelector('.ql-size');
+        if (sizeSel) {
+            ['Pequeño', 'Normal', 'Grande', 'Enorme'].forEach((es, i) => {
+                const opt = sizeSel.querySelectorAll('option')[i + 1];
+                if (opt) opt.textContent = es;
+            });
+        }
+        const hSel = tb.querySelector('.ql-header');
+        if (hSel) {
+            ['Título 1', 'Título 2', 'Título 3', 'Normal'].forEach((es, i) => {
+                const opt = hSel.querySelectorAll('option')[i + 1];
+                if (opt) opt.textContent = es;
+            });
+        }
+    }
+    </script>
     @stack('scripts')
 </body>
 </html>

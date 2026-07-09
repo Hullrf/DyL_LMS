@@ -65,6 +65,8 @@
             }
         });
     });
+
+    traducirQuill(quill);
 })();
 </script>
 @endpush

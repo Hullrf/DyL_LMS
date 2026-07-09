@@ -112,6 +112,8 @@ const quill = new Quill('#quill-editor', {
     }
 });
 
+traducirQuill(quill);
+
 // Subida de imagen al servidor para insertarla en el editor
 quill.getModule('toolbar').addHandler('image', function () {
     const input = document.createElement('input');
