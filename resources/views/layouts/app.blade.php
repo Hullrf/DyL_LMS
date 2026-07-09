@@ -7,6 +7,7 @@
     <meta name="description" content="@yield('meta_description', 'DyL Quality Consulting — Plataforma de Aprendizaje')">
     <title>@yield('title', 'LMS DyL')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
     <style>[x-cloak]{display:none!important}</style>
 </head>
 <body class="h-full flex flex-col bg-gray-50">
