@@ -278,11 +278,10 @@
                     </button>
                 </div>
                 <div class="flex-1 overflow-auto" @contextmenu.prevent>
-                    {{-- PDF — iframe con sandbox (sin allow-downloads) + marca de agua --}}
+                    {{-- PDF — iframe nativo + marca de agua --}}
                     <div x-show="visorTipo === 'pdf'" class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
-                        <iframe :src="visorUrl + '#toolbar=0'"
-                                class="w-full h-full min-h-[75vh]" frameborder="0"
-                                sandbox="allow-scripts allow-same-origin"></iframe>
+                        <iframe :src="visorUrl + '#toolbar=0&navpanes=0'"
+                                class="w-full h-full min-h-[75vh]" frameborder="0"></iframe>
                         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                              style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
                         </div>
@@ -292,11 +291,17 @@
                             </span>
                         </div>
                     </div>
-                    {{-- Office — iframe con sandbox (sin allow-downloads) + marca de agua --}}
-                    <div x-show="visorTipo === 'office'" class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
-                        <iframe :src="visorUrl"
-                                class="w-full h-full min-h-[75vh]" frameborder="0"
-                                sandbox="allow-scripts allow-same-origin"></iframe>
+                    {{-- Office — Google Docs Viewer + marca de agua --}}
+                    <div x-show="visorTipo === 'office'" class="w-full min-h-[75vh] select-none relative flex flex-col" @contextmenu.prevent>
+                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(location.origin + visorUrl) + '&embedded=true&rm=minimal'"
+                                class="w-full flex-1 min-h-[60vh]" frameborder="0"
+                                sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+                        <div class="text-center py-3 bg-amber-50 border-t border-amber-200 flex-shrink-0">
+                            <p class="text-sm text-amber-700">
+                                Si el documento no se muestra, el servidor podría no ser accesible desde internet (requisito de Google Docs Viewer).
+                                <br><span class="text-xs text-amber-600">El botón de descarga está deshabilitado por seguridad.</span>
+                            </p>
+                        </div>
                         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                              style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
                         </div>
