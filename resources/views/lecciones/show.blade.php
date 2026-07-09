@@ -178,7 +178,7 @@
                 <h2 class="text-lg font-bold text-gray-900 mb-3">Actividades de esta lección</h2>
                 <div class="space-y-3">
                     @foreach($actividades as $actividad)
-                        @php $respondida = $respuestasIds->contains($actividad->id); @endphp
+                        @php $completada = $actividadesCompletadasIds->contains($actividad->id); @endphp
                         <a href="{{ route('actividades.show', $actividad) }}"
                            class="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-5 py-4 hover:border-blue-300 hover:shadow-sm transition-all group">
                             <div class="flex items-center gap-3">
@@ -195,8 +195,8 @@
                                     <p class="text-xs text-gray-400">{{ ucfirst($actividad->tipo) }} · {{ $actividad->puntaje_maximo }} pts</p>
                                 </div>
                             </div>
-                            @if($respondida)
-                                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">Respondida</span>
+                            @if($completada)
+                                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">Completada</span>
                             @else
                                 <span class="text-gray-400 text-sm group-hover:text-blue-600">&rarr;</span>
                             @endif
@@ -206,20 +206,13 @@
             </div>
         @endif
 
-        {{-- Botón completar lección --}}
+        {{-- Estado de la lección --}}
         @if(!$estaCompletada)
-            <div class="mb-8" x-data="{ segundos: 0 }" x-init="setInterval(() => segundos++, 1000)">
-                <form action="{{ route('lecciones.completar', $leccion) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="tiempo_segundos" :value="segundos">
-                    <button type="submit"
-                            class="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                        Marcar como completada
-                    </button>
-                </form>
+            <div class="mb-8 px-5 py-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-700 flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>Completa todas las actividades de esta lección para marcarla como finalizada.</span>
             </div>
         @endif
 

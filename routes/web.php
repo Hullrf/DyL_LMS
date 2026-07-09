@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
 
     // Actividades — instructor crea/edita, todos pueden ver
     Route::get('/actividades/{actividad}', [ActividadController::class, 'show'])->name('actividades.show');
+    Route::post('/actividades/{actividad}/completar', [ActividadController::class, 'completar'])->name('actividades.completar');
     Route::middleware('instructor')->group(function () {
         Route::get('/lecciones/{leccion}/actividades/crear', [ActividadController::class, 'create'])->name('actividades.create');
         Route::post('/lecciones/{leccion}/actividades', [ActividadController::class, 'store'])->name('actividades.store');

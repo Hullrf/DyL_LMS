@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actividad;
 use App\Models\Notificacion;
+use App\Models\ProgresoActividad;
 use App\Models\RespuestaEstudiante;
 use App\Services\CalificacionService;
 use Illuminate\Http\Request;
@@ -85,6 +86,8 @@ class RespuestaEstudianteController extends Controller
             'estado'          => $estado,
             'fecha_envio'     => now(),
         ]);
+
+        $actividad->completarPara(Auth::id());
 
         $curso     = $actividad->leccion->modulo->curso;
         $estudiante = Auth::user();

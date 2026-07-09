@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Inscripcion;
 use App\Models\Leccion;
 use App\Models\Modulo;
+use App\Models\ProgresoActividad;
 use App\Models\ProgresoLeccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,17 +48,18 @@ class LeccionController extends Controller
         // Actividades de esta lección
         $actividades = $leccion->actividades()->get();
 
-        // Respuestas del usuario en estas actividades
+        // IDs de actividades completadas por el usuario en esta lección
         $actividadesIds = $actividades->pluck('id');
-        $respuestasIds  = Auth::user()->respuestas()
+        $actividadesCompletadasIds = ProgresoActividad::where('user_id', Auth::id())
             ->whereIn('actividad_id', $actividadesIds)
+            ->where('completado', true)
             ->pluck('actividad_id');
 
         return view('lecciones.show', compact(
             'leccion', 'curso', 'modulos',
             'completadasIds', 'estaCompletada', 'tiempoReal',
             'prevLeccion', 'nextLeccion',
-            'actividades', 'respuestasIds'
+            'actividades', 'actividadesCompletadasIds'
         ));
     }
 

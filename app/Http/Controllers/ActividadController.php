@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Models\Inscripcion;
 use App\Models\Leccion;
+use App\Models\ProgresoActividad;
+use App\Models\ProgresoLeccion;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class ActividadController extends Controller
 {
@@ -59,6 +63,11 @@ class ActividadController extends Controller
             ->latest()
             ->first();
 
+        $actividadCompletada = ProgresoActividad::where('user_id', auth()->id())
+            ->where('actividad_id', $actividad->id)
+            ->where('completado', true)
+            ->exists();
+
         $criteriosRubrica = $actividad->usa_rubrica
             ? $actividad->criteriosRubrica()->with('niveles')->get()
             : collect();
@@ -67,7 +76,7 @@ class ActividadController extends Controller
             ? $respuesta->seleccionesRubrica->pluck('nivel_criterio_id', 'criterio_id')
             : collect();
 
-        return view('actividades.show', compact('actividad', 'respuesta', 'criteriosRubrica', 'seleccionesMap'));
+        return view('actividades.show', compact('actividad', 'respuesta', 'actividadCompletada', 'criteriosRubrica', 'seleccionesMap'));
     }
 
     public function edit(Actividad $actividad)
@@ -110,6 +119,15 @@ class ActividadController extends Controller
         return redirect()
             ->route('actividades.edit', $actividad)
             ->with('success', 'Actividad actualizada correctamente');
+    }
+
+    public function completar(Actividad $actividad)
+    {
+        $this->authorize('view', $actividad->leccion->modulo->curso);
+        $actividad->completarPara(auth()->id());
+        return redirect()
+            ->route('actividades.show', $actividad)
+            ->with('success', 'Actividad marcada como completada.');
     }
 
     public function destroy(Actividad $actividad)

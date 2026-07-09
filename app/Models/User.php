@@ -65,6 +65,11 @@ class User extends Authenticatable implements Auditable
         return $this->hasMany(ProgresoLeccion::class);
     }
 
+    public function progresoActividades(): HasMany
+    {
+        return $this->hasMany(ProgresoActividad::class);
+    }
+
     public function certificados(): HasMany
     {
         return $this->hasMany(Certificado::class);

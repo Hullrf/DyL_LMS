@@ -65,6 +65,44 @@ class Actividad extends Model implements Auditable
         return $this->belongsTo(Leccion::class);
     }
 
+    /** Marca la actividad como completada para un usuario y verifica si la lección queda completa. */
+    public function completarPara(int $userId): void
+    {
+        ProgresoActividad::updateOrCreate(
+            ['user_id' => $userId, 'actividad_id' => $this->id],
+            ['completado' => true, 'fecha_completado' => now()]
+        );
+
+        $leccion = $this->leccion;
+        $total = $leccion->actividades()->count();
+        if ($total === 0) return;
+
+        $completadas = ProgresoActividad::where('user_id', $userId)
+            ->whereIn('actividad_id', $leccion->actividades()->pluck('id'))
+            ->where('completado', true)
+            ->count();
+
+        if ($completadas >= $total) {
+            ProgresoLeccion::updateOrCreate(
+                ['user_id' => $userId, 'leccion_id' => $leccion->id],
+                ['completado' => true, 'fecha_completado' => now()]
+            );
+
+            $curso = $leccion->modulo->curso;
+            $totalLecciones = $curso->lecciones()->count();
+            $leccionesCompletadas = ProgresoLeccion::where('user_id', $userId)
+                ->whereIn('leccion_id', $curso->lecciones()->pluck('lecciones.id'))
+                ->where('completado', true)
+                ->count();
+
+            if ($totalLecciones > 0 && $leccionesCompletadas >= $totalLecciones) {
+                Inscripcion::where('user_id', $userId)
+                    ->where('curso_id', $curso->id)
+                    ->update(['estado' => 'completado', 'fecha_fin' => now()->toDateString()]);
+            }
+        }
+    }
+
     public function preguntas(): HasMany
     {
         return $this->hasMany(Pregunta::class)->orderBy('orden');
