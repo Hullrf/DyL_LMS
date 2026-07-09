@@ -93,7 +93,7 @@
               if (window.pdfjsLib) { this.pdfScriptLoaded = true; return; }
               return new Promise((resolve, reject) => {
                   const script = document.createElement('script');
-                  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                  script.src = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
                   script.onload = () => { this.pdfScriptLoaded = true; resolve(); };
                   script.onerror = () => reject(new Error('No se pudo cargar el visor de PDF'));
                   document.head.appendChild(script);
@@ -108,7 +108,7 @@
               this.loading = true;
               try {
                   await this.loadScript();
-                  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
                   const loadingTask = pdfjsLib.getDocument(url);
                   this.pdfDoc = await loadingTask.promise;
                   this.totalPages = this.pdfDoc.numPages;
