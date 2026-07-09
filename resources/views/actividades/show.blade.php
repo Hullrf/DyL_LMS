@@ -323,7 +323,7 @@
                 <div class="flex-1 overflow-auto" @contextmenu.prevent>
                     {{-- PDF — iframe nativo + marca de agua --}}
                     <div x-show="visorTipo === 'pdf'" class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
-                        <iframe :src="visorUrl + '#toolbar=0&navpanes=0'"
+                        <iframe :src="visorTipo === 'pdf' ? visorUrl + '#toolbar=0&navpanes=0' : ''"
                                 class="w-full h-full min-h-[75vh]" frameborder="0"></iframe>
                         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                              style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
