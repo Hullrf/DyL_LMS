@@ -88,7 +88,6 @@
     </div>
 </div>
 
-<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
 const quill = new Quill('#quill-editor', {
