@@ -11,6 +11,9 @@
     <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet">
     @stack('styles')
     <style>[x-cloak]{display:none!important}</style>
+    <style>
+        .desc-justify, .desc-justify * { text-align: justify !important; }
+    </style>
     <script>
     function traducirQuill(quill) {
         const tb = quill.container.previousElementSibling;

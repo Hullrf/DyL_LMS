@@ -1,4 +1,4 @@
-<div style="text-align: justify;">
+<div class="desc-justify" style="text-align: justify;">
     @if(strip_tags($slot) !== $slot)
         {!! $slot !!}
     @else
