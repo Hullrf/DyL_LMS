@@ -83,6 +83,49 @@
     @if($recursos->isNotEmpty())
     <div class="mb-6" x-data="{
          visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '',
+
+         officeLoading: false, officeError: '', officeContent: '',
+
+         async loadOffice(url) {
+             this.officeError = '';
+             this.officeContent = '';
+             this.officeLoading = true;
+             try {
+                 const ext = url.split('.').pop().toLowerCase().split('?')[0];
+                 const resp = await fetch(url);
+                 if (!resp.ok) throw new Error('El archivo no se pudo cargar (HTTP ' + resp.status + ')');
+                 const buf = await resp.arrayBuffer();
+                 if (ext === 'docx') {
+                     if (!window.mammoth) await this.loadLib('https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js', 'mammoth');
+                     const result = await mammoth.convertToHtml({arrayBuffer: buf});
+                     this.officeContent = result.value;
+                 } else if (ext === 'xlsx' || ext === 'xls') {
+                     if (!window.XLSX) await this.loadLib('https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js', 'XLSX');
+                     const wb = XLSX.read(new Uint8Array(buf), {type: 'array'});
+                     this.officeContent = XLSX.utils.sheet_to_html(wb.Sheets[wb.SheetNames[0]], {editable: false});
+                 } else if (ext === 'pptx' || ext === 'ppt') {
+                     throw new Error('La vista previa de presentaciones no está disponible. Contacta al instructor.');
+                 } else {
+                     throw new Error('Formato no soportado para vista previa.');
+                 }
+             } catch(e) {
+                 console.error(e);
+                 this.officeError = e.message || 'Error al cargar el documento';
+             } finally {
+                 this.officeLoading = false;
+             }
+         },
+
+         loadLib(src, global) {
+             return new Promise((resolve, reject) => {
+                 if (window[global]) return resolve();
+                 const s = document.createElement('script');
+                 s.src = src;
+                 s.onload = () => resolve();
+                 s.onerror = () => reject(new Error('No se pudo cargar el visor de Office'));
+                 document.head.appendChild(s);
+             });
+         },
      }"
           @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()">
         <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -291,17 +334,47 @@
                             </span>
                         </div>
                     </div>
-                    {{-- Office — Microsoft Office Viewer (principal) + Google Docs (fallback invisible) + marca de agua --}}
-                    <div x-show="visorTipo === 'office'" class="w-full min-h-[75vh] select-none relative flex flex-col" @contextmenu.prevent>
-                        <iframe :src="'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(location.origin + visorUrl)"
-                                class="w-full flex-1 min-h-[60vh]" frameborder="0"
-                                allow="autoplay"></iframe>
-                        <div class="text-center py-3 bg-amber-50 border-t border-amber-200 flex-shrink-0">
-                            <p class="text-sm text-amber-700">
-                                Si el documento no se muestra, es posible que el servidor no sea accesible desde internet.
-                                <br><span class="text-xs text-amber-600">La descarga directa está bloqueada por seguridad. Contacta al instructor si necesitas el archivo.</span>
-                            </p>
+                    {{-- Office — renderizado client-side con mammoth.js / SheetJS + marca de agua --}}
+                    <div x-show="visorTipo === 'office'"
+                         x-effect="if(visorTipo === 'office' && visorAbierto && visorUrl) { loadOffice(visorUrl); }"
+                         class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
+
+                        {{-- Loading --}}
+                        <div x-show="officeLoading" class="flex items-center justify-center py-20">
+                            <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
                         </div>
+
+                        {{-- Error --}}
+                        <div x-show="officeError" class="flex flex-col items-center justify-center py-16 px-6">
+                            <svg class="w-12 h-12 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-red-600 text-sm font-medium text-center" x-text="officeError"></p>
+                        </div>
+
+                        {{-- Contenido renderizado --}}
+                        <div x-show="officeContent" class="p-6 max-w-3xl mx-auto">
+                            <style>
+                                .office-render table { border-collapse: collapse; width: 100%; font-size: 0.875rem; }
+                                .office-render th, .office-render td { border: 1px solid #d1d5db; padding: 0.5rem 0.75rem; text-align: left; }
+                                .office-render th { background: #f3f4f6; font-weight: 600; }
+                                .office-render tr:nth-child(even) { background: #f9fafb; }
+                                .office-render h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+                                .office-render h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+                                .office-render h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+                                .office-render p { margin-bottom: 0.5rem; line-height: 1.6; }
+                                .office-render ul, .office-render ol { margin-bottom: 0.5rem; padding-left: 1.5rem; }
+                                .office-render li { margin-bottom: 0.25rem; }
+                                .office-render img { max-width: 100%; height: auto; }
+                            </style>
+                            <div class="office-render bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto"
+                                 x-html="officeContent"></div>
+                        </div>
+
+                        {{-- Marca de agua --}}
                         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                              style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
                         </div>
