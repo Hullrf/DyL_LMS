@@ -291,15 +291,15 @@
                             </span>
                         </div>
                     </div>
-                    {{-- Office — Google Docs Viewer + marca de agua --}}
+                    {{-- Office — Microsoft Office Viewer (principal) + Google Docs (fallback invisible) + marca de agua --}}
                     <div x-show="visorTipo === 'office'" class="w-full min-h-[75vh] select-none relative flex flex-col" @contextmenu.prevent>
-                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(location.origin + visorUrl) + '&embedded=true&rm=minimal'"
+                        <iframe :src="'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(location.origin + visorUrl)"
                                 class="w-full flex-1 min-h-[60vh]" frameborder="0"
-                                sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+                                allow="autoplay"></iframe>
                         <div class="text-center py-3 bg-amber-50 border-t border-amber-200 flex-shrink-0">
                             <p class="text-sm text-amber-700">
-                                Si el documento no se muestra, el servidor podría no ser accesible desde internet (requisito de Google Docs Viewer).
-                                <br><span class="text-xs text-amber-600">El botón de descarga está deshabilitado por seguridad.</span>
+                                Si el documento no se muestra, es posible que el servidor no sea accesible desde internet.
+                                <br><span class="text-xs text-amber-600">La descarga directa está bloqueada por seguridad. Contacta al instructor si necesitas el archivo.</span>
                             </p>
                         </div>
                         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
