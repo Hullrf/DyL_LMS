@@ -155,7 +155,6 @@
                 <div class="flex-1 min-w-0">
                     <p class="font-medium text-gray-900">{{ $recurso->titulo }}</p>
                     @if($recurso->descripcion)<p class="text-xs text-gray-500 mt-0.5">{{ $recurso->descripcion }}</p>@endif
-                    <p class="text-xs text-gray-400 mt-1">{{ $recurso->archivoNombre() }}</p>
                 </div>
                 @if($descargaPermitida)
                 <a href="{{ $urlArchivo }}" target="_blank" download
