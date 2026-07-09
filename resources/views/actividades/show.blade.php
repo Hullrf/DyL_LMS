@@ -83,69 +83,6 @@
     @if($recursos->isNotEmpty())
     <div class="mb-6" x-data="{
          visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '',
-          pdfError: '',
-
-          pdfDoc: null, currentPage: 1, totalPages: 0, pdfScale: 1.25, loading: false,
-          pdfScriptLoaded: false,
-
-          async loadScript() {
-              if (this.pdfScriptLoaded) return;
-              if (window.pdfjsLib) { this.pdfScriptLoaded = true; return; }
-              return new Promise((resolve, reject) => {
-                  const script = document.createElement('script');
-                  script.src = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
-                  script.onload = () => { this.pdfScriptLoaded = true; resolve(); };
-                  script.onerror = () => reject(new Error('No se pudo cargar el visor de PDF'));
-                  document.head.appendChild(script);
-              });
-          },
-
-          async loadPdf(url) {
-              this.pdfError = '';
-              this.pdfDoc = null;
-              this.currentPage = 1;
-              this.totalPages = 0;
-              this.loading = true;
-              try {
-                  await this.loadScript();
-                  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-                  const loadingTask = pdfjsLib.getDocument(url);
-                  this.pdfDoc = await loadingTask.promise;
-                  this.totalPages = this.pdfDoc.numPages;
-                  await this.renderPdf();
-              } catch(e) {
-                  console.error('Error al cargar PDF:', e);
-                  this.pdfError = 'Error al cargar el PDF: ' + (e.message || 'Formato no soportado o archivo no accesible');
-              } finally {
-                  this.loading = false;
-              }
-          },
-
-          async renderPdf() {
-              const canvas = document.getElementById('pdf-canvas');
-              if (!canvas || !this.pdfDoc) return;
-             const page = await this.pdfDoc.getPage(this.currentPage);
-             const vp = page.getViewport({scale: this.pdfScale});
-             const container = document.getElementById('pdf-canvas-container');
-             const containerWidth = container ? container.clientWidth : 0;
-             if (containerWidth > 0 && vp.width < containerWidth && this.pdfScale < 1.5) {
-                 const fitScale = (containerWidth - 40) / page.getViewport({scale: 1}).width;
-                 const clamped = Math.min(fitScale, 1.5);
-                 const fitVp = page.getViewport({scale: clamped});
-                 canvas.width = fitVp.width;
-                 canvas.height = fitVp.height;
-                 await page.render({canvasContext: canvas.getContext('2d'), viewport: fitVp}).promise;
-             } else {
-                 canvas.width = vp.width;
-                 canvas.height = vp.height;
-                 await page.render({canvasContext: canvas.getContext('2d'), viewport: vp}).promise;
-             }
-         },
-
-         async pdfZoomIn()  { this.pdfScale = Math.min(this.pdfScale + 0.25, 3.0); await this.renderPdf(); },
-         async pdfZoomOut() { this.pdfScale = Math.max(this.pdfScale - 0.25, 0.75); await this.renderPdf(); },
-         async pdfPrev() { if(this.currentPage > 1) { this.currentPage--; await this.renderPdf(); } },
-         async pdfNext() { if(this.currentPage < this.totalPages) { this.currentPage++; await this.renderPdf(); } },
      }"
           @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()">
         <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -341,71 +278,32 @@
                     </button>
                 </div>
                 <div class="flex-1 overflow-auto" @contextmenu.prevent>
-                    {{-- PDF (pdf.js personalizado, solo zoom) --}}
-                    <div x-show="visorTipo === 'pdf'"
-                         x-effect="if(visorTipo === 'pdf' && visorAbierto && visorUrl) { console.log('[pdf.js] Disparando carga:', visorUrl); loadPdf(visorUrl); }"
-                         class="w-full flex flex-col items-center select-none">
-
-                        {{-- Controles --}}
-                        <div class="flex items-center justify-center gap-2 mb-3 bg-gray-100 rounded-lg px-4 py-2 sticky top-0 z-10"
-                             @contextmenu.prevent>
-                            <button @click="pdfPrev()" :disabled="currentPage <= 1"
-                                    class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                    aria-label="Página anterior">◀</button>
-                            <button @click="pdfZoomOut()"
-                                    class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded font-bold transition-colors"
-                                    aria-label="Alejar">−</button>
-                            <span class="text-sm text-gray-700 min-w-[3.5rem] text-center font-medium" x-text="Math.round(pdfScale * 100) + '%'"></span>
-                            <button @click="pdfZoomIn()"
-                                    class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded font-bold transition-colors"
-                                    aria-label="Acercar">+</button>
-                            <span class="text-sm text-gray-500 mx-2" x-text="currentPage + ' / ' + totalPages"></span>
-                            <button @click="pdfNext()" :disabled="currentPage >= totalPages"
-                                    class="px-2.5 py-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                    aria-label="Página siguiente">▶</button>
+                    {{-- PDF — iframe con sandbox (sin allow-downloads) + marca de agua --}}
+                    <div x-show="visorTipo === 'pdf'" class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
+                        <iframe :src="visorUrl + '#toolbar=0'"
+                                class="w-full h-full min-h-[75vh]" frameborder="0"
+                                sandbox="allow-scripts allow-same-origin"></iframe>
+                        <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
+                             style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
                         </div>
-
-                        {{-- Loading --}}
-                        <div x-show="loading" class="flex items-center justify-center py-20">
-                            <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                            </svg>
-                        </div>
-
-                        {{-- Error --}}
-                        <div x-show="pdfError" class="flex flex-col items-center justify-center py-16 px-6">
-                            <svg class="w-12 h-12 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <p class="text-red-600 text-sm font-medium" x-text="pdfError"></p>
-                        </div>
-
-                        {{-- Canvas + watermark --}}
-                        <div x-show="!loading && !pdfError" id="pdf-canvas-container" class="relative inline-block w-full" @contextmenu.prevent>
-                            <canvas id="pdf-canvas" class="mx-auto shadow-lg max-w-full"></canvas>
-                            <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
-                                 style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
-                            </div>
-                            <div class="absolute inset-0 pointer-events-none select-none flex items-center justify-center overflow-hidden"
-                                 style="background: repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(0,0,0,0.06) 80px, rgba(0,0,0,0.06) 81px);">
-                                <span class="text-gray-900/5 text-[10px] font-mono rotate-[-30deg] whitespace-nowrap select-none" style="text-shadow: 0 0 40px rgba(0,0,0,0.03);">
-                                    {{ auth()->user()->name }} · {{ auth()->user()->email }} · {{ now()->format('d/m/Y') }}
-                                </span>
-                            </div>
+                        <div class="absolute inset-0 pointer-events-none select-none flex items-center justify-center overflow-hidden">
+                            <span class="text-gray-900/5 text-[10px] font-mono rotate-[-30deg] whitespace-nowrap select-none" style="text-shadow: 0 0 40px rgba(0,0,0,0.03);">
+                                {{ auth()->user()->name }} · {{ auth()->user()->email }} · {{ now()->format('d/m/Y') }}
+                            </span>
                         </div>
                     </div>
-                    {{-- Office (Google Docs Viewer + fallback) --}}
-                    <div x-show="visorTipo === 'office'" class="w-full h-full min-h-[75vh] select-none flex flex-col" @contextmenu.prevent>
-                        <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(location.origin + visorUrl) + '&embedded=true&rm=minimal'"
-                                class="w-full flex-1 min-h-[60vh]" frameborder="0"
-                                sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
-                        <div class="text-center py-4 bg-amber-50 border-t border-amber-200">
-                            <p class="text-sm text-amber-700">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Si la vista previa no carga, el servidor no es accesible desde internet (requerido por Google Docs Viewer).
-                                <span class="block mt-1 text-xs text-amber-600">El documento está protegido: no se puede descargar directamente.</span>
-                            </p>
+                    {{-- Office — iframe con sandbox (sin allow-downloads) + marca de agua --}}
+                    <div x-show="visorTipo === 'office'" class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
+                        <iframe :src="visorUrl"
+                                class="w-full h-full min-h-[75vh]" frameborder="0"
+                                sandbox="allow-scripts allow-same-origin"></iframe>
+                        <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
+                             style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
+                        </div>
+                        <div class="absolute inset-0 pointer-events-none select-none flex items-center justify-center overflow-hidden">
+                            <span class="text-gray-900/5 text-[10px] font-mono rotate-[-30deg] whitespace-nowrap select-none" style="text-shadow: 0 0 40px rgba(0,0,0,0.03);">
+                                {{ auth()->user()->name }} · {{ auth()->user()->email }} · {{ now()->format('d/m/Y') }}
+                            </span>
                         </div>
                     </div>
                     {{-- Imagen --}}
