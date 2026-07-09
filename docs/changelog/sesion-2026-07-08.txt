@@ -1,0 +1,14 @@
+Sesion 2026-07-08 — Descarga de adjuntos en actividades
+
+1. Toggle en editar/crear actividad: permitir o no descarga de archivos adjuntos (DB: actividades.permitir_descarga_adjuntos)
+
+2. Vista estudiante: si descarga desactivada, boton "Ver" abre modal en lugar de descargar
+   - PDF: render con pdf.js (CDN), solo controles de zoom y paginacion, sin toolbar de descarga
+   - Office (doc/xls/ppt): Google Docs Viewer en iframe con sandbox
+   - Imagen: visor ampliado en modal
+   - Marca de agua con nombre/email/fecha del usuario
+   - Bloqueo de clic derecho, Ctrl+S, Ctrl+P en el modal
+
+3. Fix deploy Railway: root de Nginx corregido a /app/public para Laravel (nginx.template.conf)
+
+4. Fix: logica pdf.js movida al mismo scope Alpine que el modal para que $watch funcione

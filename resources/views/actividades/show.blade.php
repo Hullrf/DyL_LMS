@@ -82,7 +82,7 @@
     @php $descargaPermitida = $actividad->permitir_descarga_adjuntos ?? true; @endphp
     @if($recursos->isNotEmpty())
     <div class="mb-6" x-data="{
-         visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '', visorTrig: 0,
+         visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '',
 
          pdfDoc: null, currentPage: 1, totalPages: 0, pdfScale: 1.25, loading: false,
          pdfScriptLoaded: false,
@@ -117,9 +117,10 @@
              }
          },
 
-         async renderPdf() {
-             const canvas = document.getElementById('pdf-canvas');
-             if (!canvas || !this.pdfDoc) return;
+          async renderPdf() {
+              await this.$nextTick();
+              const canvas = document.getElementById('pdf-canvas');
+              if (!canvas || !this.pdfDoc) return;
              const page = await this.pdfDoc.getPage(this.currentPage);
              const vp = page.getViewport({scale: this.pdfScale});
              const container = document.getElementById('pdf-canvas-container');
@@ -143,8 +144,7 @@
          async pdfPrev() { if(this.currentPage > 1) { this.currentPage--; await this.renderPdf(); } },
          async pdfNext() { if(this.currentPage < this.totalPages) { this.currentPage++; await this.renderPdf(); } },
      }"
-         @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()"
-         x-init="$watch('visorTrig', () => { if(visorTipo === 'pdf' && visorUrl && visorAbierto) loadPdf(visorUrl); })">
+          @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()">
         <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
             <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
@@ -184,7 +184,7 @@
                 </a>
                 @else
                     @if($esPdf)
-                    <button type="button" @click="visorTipo='pdf'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true; visorTrig++"
+                    <button type="button" @click="visorTipo='pdf'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true; $nextTick(() => this.loadPdf(visorUrl))"
                        class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -193,7 +193,7 @@
                         Ver
                     </button>
                     @elseif($esOffice)
-                    <button type="button" @click="visorTipo='office'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true; visorTrig++"
+                    <button type="button" @click="visorTipo='office'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
                        class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -202,7 +202,7 @@
                         Ver
                     </button>
                     @elseif($esImagenDoc)
-                    <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true; visorTrig++"
+                    <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
                        class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -238,7 +238,7 @@
                          loading="lazy">
                 </a>
                 @else
-                <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $recurso->archivoUrl() }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true; visorTrig++"
+                <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $recurso->archivoUrl() }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
                         class="block bg-gray-50 p-2 w-full cursor-pointer hover:bg-gray-100 transition-colors">
                     <img src="{{ $recurso->archivoUrl() }}"
                          alt="{{ $recurso->titulo }}"
