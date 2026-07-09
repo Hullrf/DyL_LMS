@@ -83,42 +83,45 @@
     @if($recursos->isNotEmpty())
     <div class="mb-6" x-data="{
          visorAbierto: false, visorTipo: '', visorUrl: '', visorTitulo: '',
+          pdfError: '',
 
-         pdfDoc: null, currentPage: 1, totalPages: 0, pdfScale: 1.25, loading: false,
-         pdfScriptLoaded: false,
+          pdfDoc: null, currentPage: 1, totalPages: 0, pdfScale: 1.25, loading: false,
+          pdfScriptLoaded: false,
 
-         async loadScript() {
-             if (this.pdfScriptLoaded) return;
-             if (window.pdfjsLib) { this.pdfScriptLoaded = true; return; }
-             return new Promise((resolve, reject) => {
-                 const script = document.createElement('script');
-                 script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-                 script.onload = () => { this.pdfScriptLoaded = true; resolve(); };
-                 script.onerror = reject;
-                 document.head.appendChild(script);
-             });
-         },
+          async loadScript() {
+              if (this.pdfScriptLoaded) return;
+              if (window.pdfjsLib) { this.pdfScriptLoaded = true; return; }
+              return new Promise((resolve, reject) => {
+                  const script = document.createElement('script');
+                  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                  script.onload = () => { this.pdfScriptLoaded = true; resolve(); };
+                  script.onerror = () => reject(new Error('No se pudo cargar el visor de PDF'));
+                  document.head.appendChild(script);
+              });
+          },
 
-         async loadPdf(url) {
-             this.pdfDoc = null;
-             this.currentPage = 1;
-             this.totalPages = 0;
-             this.loading = true;
-             try {
-                 await this.loadScript();
-                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                 this.pdfDoc = await pdfjsLib.getDocument(url).promise;
-                 this.totalPages = this.pdfDoc.numPages;
-                 await this.renderPdf();
-             } catch(e) {
-                 console.error('Error al cargar PDF:', e);
-             } finally {
-                 this.loading = false;
-             }
-         },
+          async loadPdf(url) {
+              this.pdfError = '';
+              this.pdfDoc = null;
+              this.currentPage = 1;
+              this.totalPages = 0;
+              this.loading = true;
+              try {
+                  await this.loadScript();
+                  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                  const loadingTask = pdfjsLib.getDocument(url);
+                  this.pdfDoc = await loadingTask.promise;
+                  this.totalPages = this.pdfDoc.numPages;
+                  await this.renderPdf();
+              } catch(e) {
+                  console.error('Error al cargar PDF:', e);
+                  this.pdfError = 'Error al cargar el PDF: ' + (e.message || 'Formato no soportado o archivo no accesible');
+              } finally {
+                  this.loading = false;
+              }
+          },
 
           async renderPdf() {
-              await this.$nextTick();
               const canvas = document.getElementById('pdf-canvas');
               if (!canvas || !this.pdfDoc) return;
              const page = await this.pdfDoc.getPage(this.currentPage);
@@ -184,7 +187,7 @@
                 </a>
                 @else
                     @if($esPdf)
-                    <button type="button" @click="visorTipo='pdf'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true; $nextTick(() => this.loadPdf(visorUrl))"
+                    <button type="button" @click="visorTipo='pdf'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
                        class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -340,6 +343,7 @@
                 <div class="flex-1 overflow-auto" @contextmenu.prevent>
                     {{-- PDF (pdf.js personalizado, solo zoom) --}}
                     <div x-show="visorTipo === 'pdf'"
+                         x-effect="if(visorTipo === 'pdf' && visorAbierto && visorUrl) { console.log('[pdf.js] Disparando carga:', visorUrl); loadPdf(visorUrl); }"
                          class="w-full flex flex-col items-center select-none">
 
                         {{-- Controles --}}
@@ -369,8 +373,16 @@
                             </svg>
                         </div>
 
+                        {{-- Error --}}
+                        <div x-show="pdfError" class="flex flex-col items-center justify-center py-16 px-6">
+                            <svg class="w-12 h-12 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-red-600 text-sm font-medium" x-text="pdfError"></p>
+                        </div>
+
                         {{-- Canvas + watermark --}}
-                        <div x-show="!loading" id="pdf-canvas-container" class="relative inline-block w-full" @contextmenu.prevent>
+                        <div x-show="!loading && !pdfError" id="pdf-canvas-container" class="relative inline-block w-full" @contextmenu.prevent>
                             <canvas id="pdf-canvas" class="mx-auto shadow-lg max-w-full"></canvas>
                             <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                                  style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
@@ -383,11 +395,18 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Office (Google Docs Viewer) --}}
-                    <div x-show="visorTipo === 'office'" class="w-full h-full min-h-[75vh] select-none" @contextmenu.prevent>
+                    {{-- Office (Google Docs Viewer + fallback) --}}
+                    <div x-show="visorTipo === 'office'" class="w-full h-full min-h-[75vh] select-none flex flex-col" @contextmenu.prevent>
                         <iframe :src="'https://docs.google.com/viewer?url=' + encodeURIComponent(location.origin + visorUrl) + '&embedded=true&rm=minimal'"
-                                class="w-full h-full min-h-[75vh]" frameborder="0"
+                                class="w-full flex-1 min-h-[60vh]" frameborder="0"
                                 sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+                        <div class="text-center py-4 bg-amber-50 border-t border-amber-200">
+                            <p class="text-sm text-amber-700">
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Si la vista previa no carga, el servidor no es accesible desde internet (requerido por Google Docs Viewer).
+                                <span class="block mt-1 text-xs text-amber-600">El documento está protegido: no se puede descargar directamente.</span>
+                            </p>
+                        </div>
                     </div>
                     {{-- Imagen --}}
                     <div x-show="visorTipo === 'imagen'"
