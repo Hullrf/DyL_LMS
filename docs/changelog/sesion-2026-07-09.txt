@@ -1,0 +1,43 @@
+Sesion 2026-07-09 — Mejoras al LMS
+
+1. Visor de documentos en actividades
+   - PDF: iframe nativo (sin pdf.js) con #toolbar=0, marca de agua, bloqueo Ctrl+S/P y clic derecho dentro del iframe vía contentDocument
+   - Office (DOCX/XLSX): renderizado client-side con mammoth.js (DOCX) y SheetJS (XLSX), sin dependencia de viewers externos
+   - PPTX: mensaje de no disponible
+   - Fix: iframe PDF solo carga src cuando visorTipo === 'pdf', evita descarga de Office por iframe oculto
+   - Oculta nombre original del archivo en vista estudiante
+
+2. Quill (editor de texto enriquecido)
+   - Agregado Quill a TODOS los campos de descripción: cursos, módulos, actividades, foros (crear y editar)
+   - Componente reutilizable quill-init.blade.php con alineación, fuente, tamaño, color, resaltado, sub/superíndice, sangría, fórmulas (KaTeX), link, imagen
+   - Quill CSS movido al layout (head) para que estilos funcionen en vistas de display
+   - Traducción a español de tooltips y dropdowns (función traducirQuill en <head>)
+   - Fix: traducirQuill estaba en footer → movida al head para que exista antes de scripts de vistas
+   - Editor de lecciones: agregados botones de alineación, fuente, tamaño, color, etc.
+   - Fix justificado en display: CSS propio para .ql-align-* sin dependencia de .ql-editor
+
+3. Jerarquía de descargas (permitir_descarga_adjuntos)
+   - Toggle en lección: valor por defecto para sus actividades
+   - Select 3 estados en actividad: Permitir / Bloquear / Usar config. de la lección
+   - Al bloquear en lección → cascada a todas las actividades
+   - Modelo Actividad::descargaPermitida() resuelve herencia (actividad → lección → true)
+   - Migración: nullable en actividades, campo en lecciones
+   - Layout del select: descripción arriba, select abajo (una columna)
+
+4. Progreso por actividad
+   - Nueva tabla progreso_actividades (user_id, actividad_id, completado, fecha_completado)
+   - Actividades con nota: auto-completar al enviar respuesta (RespuestaEstudianteController)
+   - Actividades de consulta: botón "Marcar como completada"
+   - Lección se completa automáticamente cuando TODAS sus actividades están completas
+   - Curso se completa cuando todas las lecciones están completas
+   - Sidebar de lección: cambió "Respondida" → "Completada"
+   - Eliminado botón manual de completar lección (reemplazado por aviso)
+
+5. Varios
+   - Tiempo límite editable en vista de edición de actividad
+   - Edición inline de preguntas de cuestionario (texto, imagen, respuesta correcta) con toggle Alpine
+   - Campo duracion_minutos agregado al edit de actividad
+
+6. Fixes de sesión anterior
+   - nginx.template.conf: root /app/public hardcodeado (sin depender de IS_LARAVEL)
+   - Fix 404 en Railway
