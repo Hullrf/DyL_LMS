@@ -67,7 +67,7 @@ class LeccionController extends Controller
     // Estudiante: marcar lección como completada
     // ---------------------------------------------------------------
 
-    public function completar(Leccion $leccion)
+    public function completar(Request $request, Leccion $leccion)
     {
         $curso = $leccion->modulo->curso;
         $this->authorize('view', $curso);

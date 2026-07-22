@@ -43,11 +43,13 @@ class ActividadController extends Controller
 
         $orden = $leccion->actividades()->max('orden') + 1;
 
+        $descargaRaw = $validated['permitir_descarga_adjuntos'] ?? null;
+
         $actividad = $leccion->actividades()->create([
             ...$validated,
             'puntaje_maximo'  => in_array($request->tipo, Actividad::TIPOS_SIN_NOTA) ? null : ($validated['puntaje_maximo'] ?? null),
             'es_obligatoria'  => $request->boolean('es_obligatoria', true),
-            'permitir_descarga_adjuntos' => $validated['permitir_descarga_adjuntos'] === 'leccion' ? null : (bool) $validated['permitir_descarga_adjuntos'],
+            'permitir_descarga_adjuntos' => in_array($descargaRaw, ['leccion', null], true) ? null : (bool) $descargaRaw,
             'orden'           => $orden,
         ]);
 
@@ -110,10 +112,12 @@ class ActividadController extends Controller
             'permitir_descarga_adjuntos' => 'nullable|in:0,1,leccion',
         ]);
 
+        $descargaRaw = $validated['permitir_descarga_adjuntos'] ?? null;
+
         $actividad->update([
             ...$validated,
             'es_obligatoria'  => $request->boolean('es_obligatoria', true),
-            'permitir_descarga_adjuntos' => $validated['permitir_descarga_adjuntos'] === 'leccion' ? null : (bool) $validated['permitir_descarga_adjuntos'],
+            'permitir_descarga_adjuntos' => in_array($descargaRaw, ['leccion', null], true) ? null : (bool) $descargaRaw,
             'fecha_apertura'  => $request->filled('fecha_apertura') ? $request->fecha_apertura : null,
             'fecha_cierre'    => $request->filled('fecha_cierre')   ? $request->fecha_cierre   : null,
         ]);
