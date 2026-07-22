@@ -137,10 +137,12 @@
                 </div>
 
                 {{-- Sub-filas de actividades --}}
+                <div class="actividades-lista" data-leccion-id="{{ $leccion->id }}">
                 @foreach($leccion->actividades as $actividad)
-                <div class="flex items-center justify-between pl-12 pr-6 py-2 bg-purple-50/40 border-t border-purple-100/60 hover:bg-purple-50">
+                <div class="flex items-center justify-between pl-12 pr-6 py-2 bg-purple-50/40 border-t border-purple-100/60 hover:bg-purple-50"
+                     data-actividad-id="{{ $actividad->id }}">
                     <div class="flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="drag-handle w-3.5 h-3.5 text-purple-400 shrink-0 cursor-grab active:cursor-grabbing" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                         <span class="text-sm text-gray-700">{{ $actividad->titulo }}</span>
@@ -153,6 +155,7 @@
                     </a>
                 </div>
                 @endforeach
+                </div>
                 @endforeach
                 <div class="px-6 py-3 bg-gray-50 rounded-b-lg">
                     <div class="flex gap-4">
@@ -174,3 +177,55 @@
 @endsection
 
 @include('components.quill-init')
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script>
+(function() {
+    const csrfMeta = document.querySelector('meta[name=csrf-token]');
+    const csrfToken = csrfMeta ? csrfMeta.content : '';
+    const cursoId = {{ $curso->id }};
+
+    function idsDe(lista) {
+        return Array.from(lista.children).map(el => parseInt(el.dataset.actividadId, 10));
+    }
+
+    async function guardarMovimiento(destino, origen) {
+        const body = {
+            leccion_destino_id: parseInt(destino.dataset.leccionId, 10),
+            orden_destino: idsDe(destino),
+        };
+        if (origen && origen !== destino) {
+            body.leccion_origen_id = parseInt(origen.dataset.leccionId, 10);
+            body.orden_origen = idsDe(origen);
+        }
+
+        const res = await fetch(`/cursos/${cursoId}/actividades/mover`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!res.ok) {
+            alert('No se pudo guardar el nuevo orden. Se recargará la página.');
+            location.reload();
+        }
+    }
+
+    document.querySelectorAll('.actividades-lista').forEach(function(lista) {
+        new Sortable(lista, {
+            group: 'actividades',
+            handle: '.drag-handle',
+            animation: 150,
+            onEnd: function(evt) {
+                guardarMovimiento(evt.to, evt.from);
+            },
+        });
+    });
+})();
+</script>
+@endpush
