@@ -87,6 +87,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Recursos de actividades
+    Route::get('/recursos/{recurso}/descargar', [RecursoActividadController::class, 'descargar'])->name('recursos.descargar');
     Route::middleware('instructor')->group(function () {
         Route::post('/actividades/{actividad}/recursos', [RecursoActividadController::class, 'store'])->name('recursos.store');
         Route::delete('/recursos/{recurso}', [RecursoActividadController::class, 'destroy'])->name('recursos.destroy');

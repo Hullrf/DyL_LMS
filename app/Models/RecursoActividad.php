@@ -15,7 +15,7 @@ class RecursoActividad extends Model
 
     protected $fillable = [
         'actividad_id', 'tipo', 'titulo', 'descripcion',
-        'contenido', 'archivo_path', 'url', 'orden',
+        'contenido', 'archivo_path', 'archivo_nombre_original', 'url', 'orden',
     ];
 
     public function actividad(): BelongsTo
@@ -33,6 +33,23 @@ class RecursoActividad extends Model
     public function archivoNombre(): ?string
     {
         return $this->archivo_path ? basename($this->archivo_path) : null;
+    }
+
+    /** Nombre con el que se debe descargar el archivo (nombre original de subida, con fallback para recursos antiguos). */
+    public function nombreDescarga(): string
+    {
+        if ($this->archivo_nombre_original) {
+            return $this->archivo_nombre_original;
+        }
+
+        $ext = strtolower(pathinfo((string) $this->archivo_path, PATHINFO_EXTENSION));
+        $base = $this->titulo ?: 'archivo';
+
+        if ($ext && !str_ends_with(strtolower($base), '.' . $ext)) {
+            $base .= '.' . $ext;
+        }
+
+        return $base;
     }
 
     /** Convierte una URL de YouTube/Vimeo a URL embebible. */

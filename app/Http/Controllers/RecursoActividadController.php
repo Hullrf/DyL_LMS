@@ -44,9 +44,10 @@ class RecursoActividadController extends Controller
 
         if (in_array($tipo, ['documento', 'imagen']) && $request->hasFile('archivo')) {
             $slug = Str::slug($actividad->leccion->modulo->curso->titulo);
-            $path = $request->file('archivo')
-                ->store("cursos/{$slug}/recursos/{$actividad->id}", 'public');
+            $archivo = $request->file('archivo');
+            $path = $archivo->store("cursos/{$slug}/recursos/{$actividad->id}", 'public');
             $data['archivo_path'] = $path;
+            $data['archivo_nombre_original'] = $archivo->getClientOriginalName();
         } elseif (in_array($tipo, ['video', 'enlace'])) {
             $data['url'] = $validated['url'];
         } elseif ($tipo === 'texto') {
@@ -58,6 +59,26 @@ class RecursoActividadController extends Controller
         return redirect()
             ->route('actividades.edit', $actividad)
             ->with('success', 'Recurso agregado correctamente.');
+    }
+
+    public function descargar(RecursoActividad $recurso)
+    {
+        $curso = $recurso->actividad->leccion->modulo->curso;
+        $this->authorize('view', $curso);
+
+        if (!in_array($recurso->tipo, ['documento', 'imagen']) || !$recurso->archivo_path) {
+            abort(404);
+        }
+
+        if (!$recurso->actividad->descargaPermitida() && !auth()->user()->can('update', $curso)) {
+            abort(403);
+        }
+
+        if (!Storage::disk('public')->exists($recurso->archivo_path)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->download($recurso->archivo_path, $recurso->nombreDescarga());
     }
 
     public function destroy(RecursoActividad $recurso)
