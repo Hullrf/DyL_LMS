@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Models\Curso;
 use App\Models\Inscripcion;
 use App\Models\Leccion;
 use App\Models\ProgresoActividad;
 use App\Models\ProgresoLeccion;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ActividadController extends Controller
 {
@@ -139,5 +141,45 @@ class ActividadController extends Controller
         return redirect()
             ->route('cursos.edit', $curso)
             ->with('success', 'Actividad eliminada');
+    }
+
+    public function mover(Request $request, Curso $curso)
+    {
+        $this->authorize('update', $curso);
+
+        $validated = $request->validate([
+            'leccion_destino_id'  => 'required|exists:lecciones,id',
+            'orden_destino'       => 'required|array|min:1',
+            'orden_destino.*'     => 'integer|exists:actividades,id',
+            'leccion_origen_id'   => 'nullable|exists:lecciones,id',
+            'orden_origen'        => 'nullable|array',
+            'orden_origen.*'      => 'integer|exists:actividades,id',
+        ]);
+
+        $leccionIds = array_filter([$validated['leccion_destino_id'], $validated['leccion_origen_id'] ?? null]);
+        $leccionesValidas = Leccion::whereIn('id', $leccionIds)
+            ->whereHas('modulo', fn($q) => $q->where('curso_id', $curso->id))
+            ->count();
+        abort_unless($leccionesValidas === count($leccionIds), 422);
+
+        $actividadIds = array_unique(array_merge($validated['orden_destino'], $validated['orden_origen'] ?? []));
+        $actividadesValidas = Actividad::whereIn('id', $actividadIds)
+            ->whereHas('leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
+            ->count();
+        abort_unless($actividadesValidas === count($actividadIds), 422);
+
+        DB::transaction(function () use ($validated) {
+            foreach ($validated['orden_destino'] as $index => $actividadId) {
+                Actividad::where('id', $actividadId)->update([
+                    'leccion_id' => $validated['leccion_destino_id'],
+                    'orden'      => $index,
+                ]);
+            }
+            foreach ($validated['orden_origen'] ?? [] as $index => $actividadId) {
+                Actividad::where('id', $actividadId)->update(['orden' => $index]);
+            }
+        });
+
+        return response()->json(['ok' => true]);
     }
 }

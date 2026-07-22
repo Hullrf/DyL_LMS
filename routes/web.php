@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/actividades/{actividad}/editar', [ActividadController::class, 'edit'])->name('actividades.edit');
         Route::put('/actividades/{actividad}', [ActividadController::class, 'update'])->name('actividades.update');
         Route::delete('/actividades/{actividad}', [ActividadController::class, 'destroy'])->name('actividades.destroy');
+        Route::post('/cursos/{curso}/actividades/mover', [ActividadController::class, 'mover'])->name('actividades.mover');
     });
 
     // Recursos de actividades
