@@ -184,7 +184,7 @@
 (function() {
     const csrfMeta = document.querySelector('meta[name=csrf-token]');
     const csrfToken = csrfMeta ? csrfMeta.content : '';
-    const cursoId = {{ $curso->id }};
+    const urlMover = @json(route('actividades.mover', $curso));
 
     function idsDe(lista) {
         return Array.from(lista.children).map(el => parseInt(el.dataset.actividadId, 10));
@@ -200,18 +200,23 @@
             body.orden_origen = idsDe(origen);
         }
 
-        const res = await fetch(`/cursos/${cursoId}/actividades/mover`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify(body),
-        });
+        try {
+            const res = await fetch(urlMover, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
 
-        if (!res.ok) {
-            alert('No se pudo guardar el nuevo orden. Se recargará la página.');
+            if (!res.ok) {
+                alert('No se pudo guardar el nuevo orden. Se recargará la página.');
+                location.reload();
+            }
+        } catch (e) {
+            alert('No se pudo conectar con el servidor. Se recargará la página.');
             location.reload();
         }
     }
