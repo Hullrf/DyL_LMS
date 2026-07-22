@@ -7,11 +7,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE recurso_actividades MODIFY COLUMN tipo ENUM('documento', 'video', 'texto', 'enlace', 'imagen') NOT NULL");
+        $driver = DB::connection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            DB::statement("ALTER TABLE recurso_actividades MODIFY COLUMN tipo ENUM('documento', 'video', 'texto', 'enlace', 'imagen') NOT NULL");
+        }
+        // SQLite doesn't support ENUM or column modifications, skip
     }
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE recurso_actividades MODIFY COLUMN tipo ENUM('documento', 'video', 'texto', 'enlace') NOT NULL");
+        $driver = DB::connection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            DB::statement("ALTER TABLE recurso_actividades MODIFY COLUMN tipo ENUM('documento', 'video', 'texto', 'enlace') NOT NULL");
+        }
+        // SQLite doesn't support ENUM or column modifications, skip
     }
 };
