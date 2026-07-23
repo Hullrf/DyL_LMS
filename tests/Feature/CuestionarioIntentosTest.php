@@ -376,7 +376,16 @@ class CuestionarioIntentosTest extends TestCase
         $response = $this->actingAs($this->estudiante)->get(route('calificaciones.mis'));
 
         $response->assertOk();
-        $response->assertSee('90%'); // Promedio general: 90/100, no (40+90)/(100+100)=65%
+        // Nota: cada fila de la tabla también muestra un badge con el porcentaje
+        // de ESA respuesta (40% y 90%), independiente del promedio general/por
+        // curso. Por eso "90%" por sí solo NO discrimina el bug: aparece como
+        // badge de fila incluso si el promedio general está mal calculado.
+        // El promedio con bug (sin deduplicar intentos) sería
+        // (40+90)/(100+100) = 65%, un valor que no coincide con ningún badge
+        // de fila individual (40% o 90%) y por tanto solo puede aparecer si
+        // el bug de duplicación está presente.
+        $response->assertDontSee('65%');
+        $response->assertSee('90%'); // Promedio general y por curso: 90/100 (solo el intento oficial)
         $response->assertSee('Cuenta para tu nota');
     }
 }
