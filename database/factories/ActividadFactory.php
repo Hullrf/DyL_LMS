@@ -10,14 +10,17 @@ class ActividadFactory extends Factory
     public function definition(): array
     {
         return [
-            'leccion_id'        => Leccion::factory(),
-            'tipo'              => 'cuestionario',
-            'titulo'            => $this->faker->sentence(3),
-            'descripcion'       => $this->faker->sentence(),
-            'orden'             => $this->faker->numberBetween(0, 9),
-            'puntaje_maximo'    => 100,
-            'duracion_minutos'  => 30,
-            'es_obligatoria'    => true,
+            'leccion_id'                        => Leccion::factory(),
+            'tipo'                              => 'cuestionario',
+            'titulo'                            => $this->faker->sentence(3),
+            'descripcion'                       => $this->faker->sentence(),
+            'orden'                             => $this->faker->numberBetween(0, 9),
+            'puntaje_maximo'                    => 100,
+            'duracion_minutos'                  => 30,
+            'es_obligatoria'                    => true,
+            'intentos_permitidos'               => 1,
+            'criterio_calificacion_intentos'    => 'mas_alto',
+            'mostrar_historial_intentos'        => true,
         ];
     }
 
