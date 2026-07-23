@@ -224,4 +224,42 @@ class CuestionarioIntentosTest extends TestCase
         $this->assertEquals('ultimo', $actividad->criterio_calificacion_intentos);
         $this->assertTrue($actividad->mostrar_historial_intentos);
     }
+
+    public function test_update_preserva_valores_de_intentos_cuando_son_omitidos(): void
+    {
+        // Crear cuestionario con valores no-default
+        $actividad = $this->crearCuestionarioOpcionMultiple(3);
+        $actividad->update([
+            'criterio_calificacion_intentos' => 'ultimo',
+            'mostrar_historial_intentos'     => false,
+        ]);
+        $actividad->refresh();
+
+        // Verificar valores iniciales
+        $this->assertEquals(3, $actividad->intentos_permitidos);
+        $this->assertEquals('ultimo', $actividad->criterio_calificacion_intentos);
+        $this->assertFalse($actividad->mostrar_historial_intentos);
+
+        // UPDATE omitiendo los 3 campos - solo cambiar titulo y puntaje
+        $response = $this->actingAs($this->instructor)->put(
+            route('actividades.update', $actividad),
+            [
+                'titulo'         => 'Nuevo titulo',
+                'puntaje_maximo' => 50,
+                // intentos_permitidos, criterio_calificacion_intentos, mostrar_historial_intentos OMITIDOS
+            ]
+        );
+
+        $response->assertRedirect(route('actividades.edit', $actividad));
+        $actividad->refresh();
+
+        // Verificar que los 3 campos mantienen sus valores originales
+        $this->assertEquals(3, $actividad->intentos_permitidos);
+        $this->assertEquals('ultimo', $actividad->criterio_calificacion_intentos);
+        $this->assertFalse($actividad->mostrar_historial_intentos);
+
+        // Verificar que el titulo si cambio
+        $this->assertEquals('Nuevo titulo', $actividad->titulo);
+        $this->assertEquals(50, $actividad->puntaje_maximo);
+    }
 }
