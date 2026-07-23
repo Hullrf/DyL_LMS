@@ -163,4 +163,65 @@ class CuestionarioIntentosTest extends TestCase
         $segundo->assertSessionHas('error', 'Ya has respondido esta actividad.');
         $this->assertEquals(1, RespuestaEstudiante::count());
     }
+
+    public function test_instructor_puede_configurar_intentos_al_crear_cuestionario(): void
+    {
+        $response = $this->actingAs($this->instructor)->post(
+            route('actividades.store', $this->leccion),
+            [
+                'titulo'                         => 'Quiz con reintentos',
+                'tipo'                            => 'cuestionario',
+                'puntaje_maximo'                  => 100,
+                'intentos_permitidos'             => 3,
+                'criterio_calificacion_intentos'  => 'ultimo',
+                'mostrar_historial_intentos'      => '0',
+            ]
+        );
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('actividades', [
+            'titulo'                         => 'Quiz con reintentos',
+            'intentos_permitidos'            => 3,
+            'criterio_calificacion_intentos' => 'ultimo',
+            'mostrar_historial_intentos'     => 0,
+        ]);
+    }
+
+    public function test_actividad_creada_sin_especificar_intentos_usa_defaults(): void
+    {
+        $response = $this->actingAs($this->instructor)->post(
+            route('actividades.store', $this->leccion),
+            ['titulo' => 'Quiz simple', 'tipo' => 'cuestionario', 'puntaje_maximo' => 100]
+        );
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('actividades', [
+            'titulo'                         => 'Quiz simple',
+            'intentos_permitidos'            => 1,
+            'criterio_calificacion_intentos' => 'mas_alto',
+            'mostrar_historial_intentos'     => 1,
+        ]);
+    }
+
+    public function test_instructor_puede_actualizar_intentos_permitidos(): void
+    {
+        $actividad = $this->crearCuestionarioOpcionMultiple(1);
+
+        $response = $this->actingAs($this->instructor)->put(
+            route('actividades.update', $actividad),
+            [
+                'titulo'                         => $actividad->titulo,
+                'puntaje_maximo'                 => 100,
+                'intentos_permitidos'            => 2,
+                'criterio_calificacion_intentos' => 'ultimo',
+                'mostrar_historial_intentos'     => '1',
+            ]
+        );
+
+        $response->assertRedirect(route('actividades.edit', $actividad));
+        $actividad->refresh();
+        $this->assertEquals(2, $actividad->intentos_permitidos);
+        $this->assertEquals('ultimo', $actividad->criterio_calificacion_intentos);
+        $this->assertTrue($actividad->mostrar_historial_intentos);
+    }
 }
