@@ -11,6 +11,10 @@ use Illuminate\Support\Collection;
 
 class ReporteService
 {
+    public function __construct(private CalificacionService $calificacionService)
+    {
+    }
+
     // ---------------------------------------------------------------
     // KPIs globales (para admin)
     // ---------------------------------------------------------------
@@ -32,10 +36,12 @@ class ReporteService
             : 0;
 
         // Promedio de calificaciones de cuestionarios (calificadas)
-        $promedioCalificacion = RespuestaEstudiante::where('estado', 'calificada')
+        $respuestasCuestionarios = RespuestaEstudiante::where('estado', 'calificada')
             ->whereHas('actividad', fn($q) => $q->where('tipo', 'cuestionario'))
-            ->selectRaw('AVG(calificacion) as avg_cal')
-            ->value('avg_cal');
+            ->with('actividad')
+            ->get();
+        $oficialesCuestionarios = $this->calificacionService->respuestasOficiales($respuestasCuestionarios);
+        $promedioCalificacion   = $oficialesCuestionarios->isNotEmpty() ? $oficialesCuestionarios->avg('calificacion') : null;
 
         return [
             'total_estudiantes'   => $totalEstudiantes,
@@ -87,11 +93,12 @@ class ReporteService
                 ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
                 ->with('actividad')
                 ->get();
+            $respuestasOficiales = $this->calificacionService->respuestasOficiales($respuestas);
 
             $promedio = null;
-            if ($respuestas->isNotEmpty()) {
-                $totalPts    = $respuestas->sum(fn($r) => $r->actividad->puntaje_maximo);
-                $obtenidoPts = $respuestas->sum('calificacion');
+            if ($respuestasOficiales->isNotEmpty()) {
+                $totalPts    = $respuestasOficiales->sum(fn($r) => $r->actividad->puntaje_maximo);
+                $obtenidoPts = $respuestasOficiales->sum('calificacion');
                 $promedio    = $totalPts > 0 ? (int) round(($obtenidoPts / $totalPts) * 100) : null;
             }
 
@@ -156,11 +163,12 @@ class ReporteService
                 ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
                 ->with('actividad')
                 ->get();
+            $respuestasOficiales = $this->calificacionService->respuestasOficiales($respuestas);
 
             $promedio = null;
-            if ($respuestas->isNotEmpty()) {
-                $totalPts    = $respuestas->sum(fn($r) => $r->actividad->puntaje_maximo);
-                $obtenidoPts = $respuestas->sum('calificacion');
+            if ($respuestasOficiales->isNotEmpty()) {
+                $totalPts    = $respuestasOficiales->sum(fn($r) => $r->actividad->puntaje_maximo);
+                $obtenidoPts = $respuestasOficiales->sum('calificacion');
                 $promedio    = $totalPts > 0 ? (int) round(($obtenidoPts / $totalPts) * 100) : null;
             }
 
