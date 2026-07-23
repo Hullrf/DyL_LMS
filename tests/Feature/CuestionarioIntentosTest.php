@@ -355,4 +355,28 @@ class CuestionarioIntentosTest extends TestCase
         $response->assertOk();
         $response->assertDontSee('Intentos permitidos');
     }
+
+    public function test_mis_calificaciones_no_duplica_el_promedio_con_multiples_intentos(): void
+    {
+        $actividad = Actividad::factory()->create([
+            'leccion_id' => $this->leccion->id, 'tipo' => 'cuestionario',
+            'puntaje_maximo' => 100, 'intentos_permitidos' => 2,
+            'criterio_calificacion_intentos' => 'mas_alto',
+        ]);
+
+        RespuestaEstudiante::factory()->create([
+            'user_id' => $this->estudiante->id, 'actividad_id' => $actividad->id,
+            'calificacion' => 40, 'estado' => 'calificada',
+        ]);
+        RespuestaEstudiante::factory()->create([
+            'user_id' => $this->estudiante->id, 'actividad_id' => $actividad->id,
+            'calificacion' => 90, 'estado' => 'calificada',
+        ]);
+
+        $response = $this->actingAs($this->estudiante)->get(route('calificaciones.mis'));
+
+        $response->assertOk();
+        $response->assertSee('90%'); // Promedio general: 90/100, no (40+90)/(100+100)=65%
+        $response->assertSee('Cuenta para tu nota');
+    }
 }

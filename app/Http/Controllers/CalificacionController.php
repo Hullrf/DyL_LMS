@@ -211,6 +211,11 @@ class CalificacionController extends Controller
             ->orderBy('fecha_envio', 'desc')
             ->get();
 
+        $oficialesIds = $this->calificacionService
+            ->respuestasOficiales($respuestas->where('estado', 'calificada'))
+            ->pluck('id')
+            ->all();
+
         // Agrupar por curso, manteniendo el orden cronológico inverso
         $porCurso = $respuestas
             ->groupBy(fn($r) => $r->actividad->leccion->modulo->curso->id)
@@ -222,7 +227,7 @@ class CalificacionController extends Controller
             ->sortByDesc('ultima_envio')
             ->values();
 
-        return view('calificaciones.mis-calificaciones', compact('respuestas', 'porCurso'));
+        return view('calificaciones.mis-calificaciones', compact('respuestas', 'porCurso', 'oficialesIds'));
     }
 
     private function verificarAcceso(RespuestaEstudiante $respuesta): void
