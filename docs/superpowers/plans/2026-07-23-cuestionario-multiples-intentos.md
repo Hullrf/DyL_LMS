@@ -734,6 +734,7 @@ git commit -m "Valida y persiste la configuración de intentos al crear/actualiz
 **Files:**
 - Modify: `app/Http/Controllers/ActividadController.php:61-84` (show)
 - Create: `resources/views/actividades/partials/formulario-cuestionario.blade.php`
+- Create: `resources/views/actividades/partials/estado-plazo-bloqueado.blade.php`
 - Modify: `resources/views/actividades/show.blade.php:480-702`
 - Test: `tests/Feature/CuestionarioIntentosTest.php` (agregar métodos)
 
@@ -867,7 +868,7 @@ En `app/Http/Controllers/ActividadController.php`, reemplazar el método complet
     }
 ```
 
-- [ ] **Step 4: Extraer el formulario de preguntas a un partial**
+- [ ] **Step 4: Extraer a partials el formulario de preguntas y el bloque de plazo bloqueado**
 
 Crear `resources/views/actividades/partials/formulario-cuestionario.blade.php`:
 
@@ -954,6 +955,26 @@ document.getElementById('form-respuesta').addEventListener('submit', function(e)
 </script>
 ```
 
+Crear también `resources/views/actividades/partials/estado-plazo-bloqueado.blade.php` (evita duplicar verbatim el bloque "cerrada/pendiente" entre la rama de múltiples intentos y la rama sin cambios, ambas lo necesitan):
+
+```blade
+<div class="bg-white rounded-lg shadow p-10 text-center">
+    @if($estadoPlazo === 'pendiente')
+        <svg class="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <p class="text-gray-700 font-medium">La actividad estará disponible el</p>
+        <p class="text-xl font-bold text-yellow-600 mt-1">{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</p>
+    @else
+        <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-5V7m0 0V5m0 2h2M12 7H10m10 5a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <p class="text-gray-700 font-medium">El plazo de entrega venció el</p>
+        <p class="text-xl font-bold text-red-600 mt-1">{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</p>
+    @endif
+</div>
+```
+
 - [ ] **Step 5: Reescribir la sección de calificación en `show.blade.php`**
 
 En `resources/views/actividades/show.blade.php`, reemplazar todo el bloque desde la línea 480 (`@if($actividad->tieneCalificacion())`) hasta la línea 702 (`@endsection`) por:
@@ -1033,21 +1054,7 @@ En `resources/views/actividades/show.blade.php`, reemplazar todo el bloque desde
                     </div>
                 </form>
                 @elseif(!$respuesta && !$actividad->estaAbierta())
-                <div class="bg-white rounded-lg shadow p-10 text-center">
-                    @if($estadoPlazo === 'pendiente')
-                        <svg class="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <p class="text-gray-700 font-medium">La actividad estará disponible el</p>
-                        <p class="text-xl font-bold text-yellow-600 mt-1">{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</p>
-                    @else
-                        <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-5V7m0 0V5m0 2h2M12 7H10m10 5a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <p class="text-gray-700 font-medium">El plazo de entrega venció el</p>
-                        <p class="text-xl font-bold text-red-600 mt-1">{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</p>
-                    @endif
-                </div>
+                    @include('actividades.partials.estado-plazo-bloqueado')
                 @endif
             @endif
 
@@ -1077,21 +1084,7 @@ En `resources/views/actividades/show.blade.php`, reemplazar todo el bloque desde
 
         @elseif(!$actividad->estaAbierta())
         {{-- Actividad cerrada o pendiente: no se puede responder --}}
-        <div class="bg-white rounded-lg shadow p-10 text-center">
-            @if($estadoPlazo === 'pendiente')
-                <svg class="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="text-gray-700 font-medium">La actividad estará disponible el</p>
-                <p class="text-xl font-bold text-yellow-600 mt-1">{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</p>
-            @else
-                <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-5V7m0 0V5m0 2h2M12 7H10m10 5a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="text-gray-700 font-medium">El plazo de entrega venció el</p>
-                <p class="text-xl font-bold text-red-600 mt-1">{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</p>
-            @endif
-        </div>
+        @include('actividades.partials.estado-plazo-bloqueado')
 
         @else
         {{-- Formulario de respuesta --}}
@@ -1209,7 +1202,7 @@ Expected: PASS
 - [ ] **Step 8: Commit**
 
 ```bash
-git add app/Http/Controllers/ActividadController.php resources/views/actividades/partials/formulario-cuestionario.blade.php resources/views/actividades/show.blade.php tests/Feature/CuestionarioIntentosTest.php
+git add app/Http/Controllers/ActividadController.php resources/views/actividades/partials/formulario-cuestionario.blade.php resources/views/actividades/partials/estado-plazo-bloqueado.blade.php resources/views/actividades/show.blade.php tests/Feature/CuestionarioIntentosTest.php
 git commit -m "Muestra intento X de Y, historial y bloqueo por revisión en la página de la actividad"
 ```
 
