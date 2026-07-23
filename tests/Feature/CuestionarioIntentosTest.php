@@ -262,4 +262,73 @@ class CuestionarioIntentosTest extends TestCase
         $this->assertEquals('Nuevo titulo', $actividad->titulo);
         $this->assertEquals(50, $actividad->puntaje_maximo);
     }
+
+    public function test_muestra_intento_x_de_y_cuando_hay_multiples_intentos(): void
+    {
+        $actividad = $this->crearCuestionarioOpcionMultiple(3);
+        $this->enviarRespuesta($actividad);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Intento 1 de 3');
+        $response->assertSee('Reintentar', false);
+    }
+
+    public function test_no_muestra_reintentar_cuando_se_agotan_los_intentos_multiples(): void
+    {
+        $actividad = $this->crearCuestionarioOpcionMultiple(2);
+        $this->enviarRespuesta($actividad);
+        $this->enviarRespuesta($actividad);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Intento 2 de 2');
+        $response->assertDontSee('Reintentar');
+    }
+
+    public function test_muestra_bloqueo_por_revision_pendiente(): void
+    {
+        $actividad = Actividad::factory()->create([
+            'leccion_id' => $this->leccion->id, 'tipo' => 'cuestionario',
+            'puntaje_maximo' => 100, 'intentos_permitidos' => 3,
+        ]);
+        Pregunta::factory()->create(['actividad_id' => $actividad->id, 'tipo' => 'respuesta_corta', 'puntaje' => 100]);
+        $pregunta = $actividad->preguntas()->first();
+
+        $this->actingAs($this->estudiante)->post(
+            route('respuestas.store', $actividad),
+            ['respuesta' => json_encode([$pregunta->id => 'texto libre'])]
+        );
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Intento pendiente de revisión');
+        $response->assertDontSee('Reintentar');
+    }
+
+    public function test_historial_de_intentos_se_oculta_si_la_configuracion_lo_indica(): void
+    {
+        $actividad = $this->crearCuestionarioOpcionMultiple(3);
+        $actividad->update(['mostrar_historial_intentos' => false]);
+        $this->enviarRespuesta($actividad);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertDontSee('Historial de intentos');
+    }
+
+    public function test_cuestionario_de_un_intento_mantiene_el_mensaje_actual(): void
+    {
+        $actividad = $this->crearCuestionarioOpcionMultiple(1);
+        $this->enviarRespuesta($actividad);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Ya respondiste esta actividad');
+    }
 }

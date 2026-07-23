@@ -67,11 +67,23 @@ class ActividadController extends Controller
     public function show(Actividad $actividad)
     {
         $this->authorize('view', $actividad->leccion->modulo->curso);
-        $respuesta = $actividad->respuestas()
+
+        $intentos = $actividad->respuestas()
             ->where('user_id', auth()->id())
             ->with('seleccionesRubrica')
-            ->latest()
-            ->first();
+            ->orderBy('fecha_envio')
+            ->get();
+        $intentos->each(fn($r) => $r->setRelation('actividad', $actividad));
+
+        $respuestaOficial = $intentos->isNotEmpty()
+            ? app(\App\Services\CalificacionService::class)->respuestasOficiales($intentos)->first()
+            : null;
+
+        $respuesta = $actividad->tipo === 'cuestionario' ? $respuestaOficial : $intentos->last();
+
+        $intentosUsados         = $intentos->count();
+        $intentosRestantes      = max(0, $actividad->intentos_permitidos - $intentosUsados);
+        $tieneIntentoEnRevision = $intentos->contains('estado', 'en_revision');
 
         $actividadCompletada = ProgresoActividad::where('user_id', auth()->id())
             ->where('actividad_id', $actividad->id)
@@ -86,7 +98,10 @@ class ActividadController extends Controller
             ? $respuesta->seleccionesRubrica->pluck('nivel_criterio_id', 'criterio_id')
             : collect();
 
-        return view('actividades.show', compact('actividad', 'respuesta', 'actividadCompletada', 'criteriosRubrica', 'seleccionesMap'));
+        return view('actividades.show', compact(
+            'actividad', 'respuesta', 'actividadCompletada', 'criteriosRubrica', 'seleccionesMap',
+            'intentos', 'intentosUsados', 'intentosRestantes', 'tieneIntentoEnRevision'
+        ));
     }
 
     public function edit(Actividad $actividad)
