@@ -331,4 +331,28 @@ class CuestionarioIntentosTest extends TestCase
         $response->assertOk();
         $response->assertSee('Ya respondiste esta actividad');
     }
+
+    public function test_formulario_de_edicion_muestra_campos_de_intentos_para_cuestionario(): void
+    {
+        $actividad = $this->crearCuestionarioOpcionMultiple(2);
+
+        $response = $this->actingAs($this->instructor)->get(route('actividades.edit', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Intentos permitidos');
+        $response->assertSee('Cuando hay varios intentos', false);
+        $response->assertSee('Mostrar a los estudiantes el resumen de sus intentos anteriores');
+    }
+
+    public function test_formulario_de_edicion_no_muestra_campos_de_intentos_para_tarea(): void
+    {
+        $actividad = Actividad::factory()->create([
+            'leccion_id' => $this->leccion->id, 'tipo' => 'tarea', 'puntaje_maximo' => 5,
+        ]);
+
+        $response = $this->actingAs($this->instructor)->get(route('actividades.edit', $actividad));
+
+        $response->assertOk();
+        $response->assertDontSee('Intentos permitidos');
+    }
 }

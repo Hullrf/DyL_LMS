@@ -68,6 +68,32 @@
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
+            <div class="mb-6 p-5 bg-blue-50 rounded-xl border border-blue-200" x-show="tipo === 'cuestionario'" x-cloak>
+                <p class="text-sm font-semibold text-gray-800 mb-3">Intentos del cuestionario</p>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Intentos permitidos</label>
+                        <input type="number" name="intentos_permitidos" value="{{ old('intentos_permitidos', 1) }}"
+                               min="1" max="20"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cuando hay varios intentos, ¿cuál cuenta?</label>
+                        <select name="criterio_calificacion_intentos" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="mas_alto" {{ old('criterio_calificacion_intentos', 'mas_alto') === 'mas_alto' ? 'selected' : '' }}>El intento más alto</option>
+                            <option value="ultimo" {{ old('criterio_calificacion_intentos') === 'ultimo' ? 'selected' : '' }}>El último intento</option>
+                        </select>
+                    </div>
+                </div>
+                <label class="flex items-center gap-3 cursor-pointer select-none">
+                    <div class="relative">
+                        <input type="checkbox" name="mostrar_historial_intentos" value="1" {{ old('mostrar_historial_intentos', true) ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-blue rounded-full transition-colors"></div>
+                        <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
+                    </div>
+                    <span class="text-sm text-gray-700">Mostrar a los estudiantes el resumen de sus intentos anteriores</span>
+                </label>
+            </div>
             <div class="mb-6">
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="es_obligatoria" value="1" checked class="rounded">
