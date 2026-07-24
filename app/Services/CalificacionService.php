@@ -137,4 +137,33 @@ class CalificacionService
             })
             ->values();
     }
+
+    /**
+     * Registra un intento de cuestionario vencido sin envío del estudiante (el tiempo se
+     * agotó mientras la pestaña estaba cerrada, por lo que el auto-envío de JS nunca corrió).
+     * Usa la misma lógica de calificación que un envío manual, con respuesta vacía.
+     */
+    public function registrarIntentoExpirado(Actividad $actividad, int $userId): RespuestaEstudiante
+    {
+        if ($this->tienePreguntasCortas($actividad)) {
+            $calificacion = null;
+            $estado       = 'en_revision';
+        } else {
+            $calificacion = $this->calcularCuestionario($actividad, '{}');
+            $estado       = 'calificada';
+        }
+
+        $respuesta = RespuestaEstudiante::create([
+            'user_id'      => $userId,
+            'actividad_id' => $actividad->id,
+            'respuesta'    => '{}',
+            'calificacion' => $calificacion,
+            'estado'       => $estado,
+            'fecha_envio'  => now(),
+        ]);
+
+        $actividad->completarPara($userId);
+
+        return $respuesta;
+    }
 }

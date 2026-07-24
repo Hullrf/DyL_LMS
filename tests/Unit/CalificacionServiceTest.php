@@ -179,4 +179,45 @@ class CalificacionServiceTest extends TestCase
 
         $this->assertCount(2, $oficiales);
     }
+
+    public function test_registrar_intento_expirado_crea_respuesta_calificada_en_cero_sin_preguntas_cortas(): void
+    {
+        $actividad = Actividad::factory()->create(['tipo' => 'cuestionario', 'puntaje_maximo' => 100]);
+        Pregunta::factory()->create(['actividad_id' => $actividad->id, 'tipo' => 'opcion_multiple', 'puntaje' => 100]);
+        $usuario = User::factory()->create();
+
+        $respuesta = $this->service->registrarIntentoExpirado($actividad, $usuario->id);
+
+        $this->assertEquals($usuario->id, $respuesta->user_id);
+        $this->assertEquals($actividad->id, $respuesta->actividad_id);
+        $this->assertEquals('{}', $respuesta->respuesta);
+        $this->assertEquals(0, (float) $respuesta->calificacion);
+        $this->assertEquals('calificada', $respuesta->estado);
+        $this->assertDatabaseHas('respuestas_estudiantes', ['id' => $respuesta->id, 'estado' => 'calificada']);
+    }
+
+    public function test_registrar_intento_expirado_queda_en_revision_si_hay_preguntas_cortas(): void
+    {
+        $actividad = Actividad::factory()->create(['tipo' => 'cuestionario', 'puntaje_maximo' => 100]);
+        Pregunta::factory()->create(['actividad_id' => $actividad->id, 'tipo' => 'respuesta_corta', 'puntaje' => 100]);
+        $usuario = User::factory()->create();
+
+        $respuesta = $this->service->registrarIntentoExpirado($actividad, $usuario->id);
+
+        $this->assertNull($respuesta->calificacion);
+        $this->assertEquals('en_revision', $respuesta->estado);
+    }
+
+    public function test_registrar_intento_expirado_marca_la_actividad_como_completada(): void
+    {
+        $actividad = Actividad::factory()->create(['tipo' => 'cuestionario', 'puntaje_maximo' => 100]);
+        Pregunta::factory()->create(['actividad_id' => $actividad->id, 'tipo' => 'opcion_multiple', 'puntaje' => 100]);
+        $usuario = User::factory()->create();
+
+        $this->service->registrarIntentoExpirado($actividad, $usuario->id);
+
+        $this->assertDatabaseHas('progreso_actividades', [
+            'user_id' => $usuario->id, 'actividad_id' => $actividad->id, 'completado' => 1,
+        ]);
+    }
 }
