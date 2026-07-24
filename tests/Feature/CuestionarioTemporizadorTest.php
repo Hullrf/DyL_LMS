@@ -233,4 +233,68 @@ class CuestionarioTemporizadorTest extends TestCase
         ]);
         $this->assertDatabaseMissing('intentos_en_progreso', ['id' => $intento->id]);
     }
+
+    public function test_pantalla_de_inicio_muestra_intentos_permitidos_preguntas_y_tiempo_limite(): void
+    {
+        $actividad = $this->crearCuestionario(20, 3);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Iniciar cuestionario');
+        $response->assertSee('3'); // intentos_permitidos
+        $response->assertSee('20'); // duracion_minutos
+        $response->assertSee('minutos');
+        $response->assertSee('pregunta'); // singular: crearCuestionario() crea exactamente 1 pregunta
+        $response->assertDontSee('preguntas'); // confirma que no cayó en la rama plural
+    }
+
+    public function test_pantalla_de_inicio_no_muestra_tiempo_limite_si_no_hay(): void
+    {
+        $actividad = $this->crearCuestionario(null);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Iniciar cuestionario');
+        $response->assertDontSee('minutos');
+    }
+
+    public function test_boton_dice_reintentar_si_ya_hubo_un_intento_previo(): void
+    {
+        $actividad = $this->crearCuestionario(20, 3);
+        RespuestaEstudiante::factory()->create([
+            'user_id' => $this->estudiante->id, 'actividad_id' => $actividad->id,
+            'calificacion' => 100, 'estado' => 'calificada',
+        ]);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Reintentar');
+    }
+
+    public function test_formulario_con_intento_en_progreso_muestra_las_preguntas_y_el_cronometro(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('id="form-respuesta"', false);
+        $response->assertSee('mmss', false);
+    }
+
+    public function test_formulario_sin_tiempo_limite_no_muestra_cronometro(): void
+    {
+        $actividad = $this->crearCuestionario(null);
+        $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('id="form-respuesta"', false);
+        $response->assertDontSee('mmss', false);
+    }
 }
