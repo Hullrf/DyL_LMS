@@ -24,9 +24,7 @@ Contenido de la tarjeta de inicio:
 - **Número de preguntas:** conteo de `$actividad->preguntas()->count()`
 - Botón **"Iniciar cuestionario"**
 
-**Sin tiempo límite:** el botón es un toggle de Alpine.js puro (`x-data="{ iniciado: false }"`) — un clic revela el formulario de inmediato, sin ninguna llamada al servidor ni estado persistido. Refrescar la página antes de enviar vuelve a mostrar la pantalla de inicio (mismo comportamiento que hoy: las respuestas no guardadas se pierden al refrescar, esto no cambia).
-
-**Con tiempo límite:** el botón hace `POST` a una nueva ruta (ver sección 2) que registra el inicio del intento en el servidor antes de redirigir de vuelta a la página, que entonces muestra el formulario con el cronómetro ya corriendo.
+**Flujo unificado (con o sin tiempo límite):** el botón siempre hace `POST` a una nueva ruta (ver sección 2) que registra el inicio del intento en el servidor antes de redirigir de vuelta a la página. Esto es necesario para que las preguntas nunca lleguen al HTML antes de iniciar — un toggle puramente client-side obligaría a enviar las preguntas ocultas por CSS, lo cual no oculta nada realmente (un estudiante podría verlas en el código fuente antes de hacer clic). La única diferencia entre un cuestionario con tiempo límite y uno sin él es que este último no calcula ni muestra el cronómetro — el registro del inicio del intento ocurre igual en ambos casos.
 
 ---
 
@@ -61,7 +59,7 @@ Ubicada junto a `actividades.completar` (mismo grupo de middleware, cualquier es
 public function iniciarIntento(Actividad $actividad)
 {
     $this->authorize('view', $actividad->leccion->modulo->curso);
-    abort_unless($actividad->tipo === 'cuestionario' && $actividad->duracion_minutos, 403);
+    abort_unless($actividad->tipo === 'cuestionario', 403);
 
     IntentoEnProgreso::firstOrCreate(
         ['user_id' => auth()->id(), 'actividad_id' => $actividad->id],
@@ -113,15 +111,15 @@ No se envía notificación al instructor en este caso (a diferencia de un envío
 
 ### Cambios en `ActividadController::show()`
 
-Cuando la actividad es `cuestionario` y tiene `duracion_minutos`:
+Cuando la actividad es `cuestionario` (con o sin `duracion_minutos` — el registro de "intento en progreso" aplica a ambos casos; solo el cálculo de segundos restantes depende de que haya tiempo límite):
 
 ```php
-$intentoEnProgreso = ($actividad->tipo === 'cuestionario' && $actividad->duracion_minutos)
+$intentoEnProgreso = ($actividad->tipo === 'cuestionario')
     ? IntentoEnProgreso::where('user_id', auth()->id())->where('actividad_id', $actividad->id)->first()
     : null;
 
 $segundosRestantes = null;
-if ($intentoEnProgreso) {
+if ($intentoEnProgreso && $actividad->duracion_minutos) {
     $segundosRestantes = $actividad->duracion_minutos * 60 - now()->diffInSeconds($intentoEnProgreso->fecha_inicio);
 
     if ($segundosRestantes <= 0) {
@@ -191,7 +189,7 @@ Dentro de `actividades/partials/cuestionario-con-inicio.blade.php`, cuando `$seg
 - Advertencias sonoras o notificaciones del navegador al acercarse el límite de tiempo.
 - Sincronizar el reloj del cliente con el servidor más allá del valor inicial `segundosRestantes` (no hay proteción contra que el estudiante manipule el reloj de su propio navegador vía devtools — la validación real de tiempo vive en el servidor a través de `fecha_inicio`, que es lo único que importa para prevenir trampa).
 - Pantalla de inicio o temporizador para tipos de actividad distintos a `cuestionario`.
-- Persistir el estado de "iniciado" quiz cuando no hay `duracion_minutos` (ese caso queda puramente en el cliente, como se explica en la sección 1).
+- Cronómetro, pausas o extensiones de tiempo cuando no hay `duracion_minutos` — el registro de "intento en progreso" existe igual en ese caso (para ocultar las preguntas hasta iniciar), simplemente no hay segundos que contar ni auto-envío por expiración.
 
 ---
 
@@ -200,9 +198,9 @@ Dentro de `actividades/partials/cuestionario-con-inicio.blade.php`, cuando `$seg
 Nuevo `tests/Feature/CuestionarioTemporizadorTest.php`:
 
 1. La página de un cuestionario muestra la tarjeta de inicio con intentos permitidos, número de preguntas, y (si aplica) tiempo límite, con el botón "Iniciar cuestionario" — y el formulario de preguntas no es lo primero visible.
-2. `POST actividades.iniciarIntento` en un cuestionario con `duracion_minutos` crea la fila en `intentos_en_progreso` con `fecha_inicio` cercano a `now()`.
+2. `POST actividades.iniciarIntento` en cualquier cuestionario (con o sin tiempo límite) crea la fila en `intentos_en_progreso` con `fecha_inicio` cercano a `now()`.
 3. Un segundo `POST` a la misma ruta no cambia `fecha_inicio` de la fila existente (protección contra reinicio del reloj).
-4. `iniciarIntento` responde 403 si la actividad no es `cuestionario` o no tiene `duracion_minutos`.
+4. `iniciarIntento` responde 403 si la actividad no es `cuestionario`.
 5. `ActividadController::show()` con un `IntentoEnProgreso` reciente y tiempo restante > 0 no muestra el botón "Iniciar cuestionario" — muestra el formulario directamente.
 6. `ActividadController::show()` con un `IntentoEnProgreso` cuyo tiempo ya expiró: se crea automáticamente una `RespuestaEstudiante` (calificación 0 y `estado='calificada'` si no hay preguntas de respuesta corta; `estado='en_revision'` si las hay), se borra la fila de `intentos_en_progreso`, y la página redirige mostrando el resultado del intento.
 7. Enviar una respuesta normalmente borra la fila `intentos_en_progreso` correspondiente, si existía.
