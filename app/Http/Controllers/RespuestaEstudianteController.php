@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Models\IntentoEnProgreso;
 use App\Models\Notificacion;
 use App\Models\ProgresoActividad;
 use App\Models\RespuestaEstudiante;
@@ -23,22 +24,13 @@ class RespuestaEstudianteController extends Controller
         abort_if(!$actividad->tieneCalificacion(), 403, 'Esta actividad no admite respuestas.');
 
         if ($actividad->tipo === 'cuestionario') {
-            $intentosUsados = RespuestaEstudiante::where('user_id', Auth::id())
-                ->where('actividad_id', $actividad->id)
-                ->count();
-
-            if ($intentosUsados >= $actividad->intentos_permitidos) {
+            if ($actividad->intentosUsadosPor(Auth::id()) >= $actividad->intentos_permitidos) {
                 return redirect()
                     ->route('actividades.show', $actividad)
                     ->with('error', 'Ya usaste todos los intentos permitidos para este cuestionario.');
             }
 
-            $tieneIntentoEnRevision = RespuestaEstudiante::where('user_id', Auth::id())
-                ->where('actividad_id', $actividad->id)
-                ->where('estado', 'en_revision')
-                ->exists();
-
-            if ($tieneIntentoEnRevision) {
+            if ($actividad->tieneIntentoEnRevisionPara(Auth::id())) {
                 return redirect()
                     ->route('actividades.show', $actividad)
                     ->with('error', 'Tienes un intento pendiente de revisión. Espera a que el instructor lo califique antes de reintentar.');
@@ -109,6 +101,10 @@ class RespuestaEstudianteController extends Controller
             'estado'          => $estado,
             'fecha_envio'     => now(),
         ]);
+
+        IntentoEnProgreso::where('user_id', Auth::id())
+            ->where('actividad_id', $actividad->id)
+            ->delete();
 
         $actividad->completarPara(Auth::id());
 

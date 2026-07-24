@@ -142,4 +142,17 @@ class Actividad extends Model implements Auditable
     {
         return $this->tipo === 'cuestionario' && $this->intentos_permitidos > 1;
     }
+
+    public function intentosUsadosPor(int $userId): int
+    {
+        return $this->respuestas()->where('user_id', $userId)->count();
+    }
+
+    public function tieneIntentoEnRevisionPara(int $userId): bool
+    {
+        return $this->respuestas()
+            ->where('user_id', $userId)
+            ->where('estado', 'en_revision')
+            ->exists();
+    }
 }

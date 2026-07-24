@@ -39,4 +39,32 @@ class ActividadIntentosTest extends TestCase
 
         $this->assertFalse($actividad->permiteMultiplesIntentos());
     }
+
+    public function test_intentos_usados_por_cuenta_las_respuestas_del_usuario(): void
+    {
+        $actividad = Actividad::factory()->create(['tipo' => 'cuestionario']);
+        $usuario   = \App\Models\User::factory()->create();
+        $otro      = \App\Models\User::factory()->create();
+
+        \App\Models\RespuestaEstudiante::factory()->create(['user_id' => $usuario->id, 'actividad_id' => $actividad->id]);
+        \App\Models\RespuestaEstudiante::factory()->create(['user_id' => $usuario->id, 'actividad_id' => $actividad->id]);
+        \App\Models\RespuestaEstudiante::factory()->create(['user_id' => $otro->id, 'actividad_id' => $actividad->id]);
+
+        $this->assertEquals(2, $actividad->intentosUsadosPor($usuario->id));
+        $this->assertEquals(1, $actividad->intentosUsadosPor($otro->id));
+    }
+
+    public function test_tiene_intento_en_revision_para_detecta_respuesta_en_revision_del_usuario(): void
+    {
+        $actividad = Actividad::factory()->create(['tipo' => 'cuestionario']);
+        $usuario   = \App\Models\User::factory()->create();
+
+        $this->assertFalse($actividad->tieneIntentoEnRevisionPara($usuario->id));
+
+        \App\Models\RespuestaEstudiante::factory()->create([
+            'user_id' => $usuario->id, 'actividad_id' => $actividad->id, 'estado' => 'en_revision',
+        ]);
+
+        $this->assertTrue($actividad->tieneIntentoEnRevisionPara($usuario->id));
+    }
 }
