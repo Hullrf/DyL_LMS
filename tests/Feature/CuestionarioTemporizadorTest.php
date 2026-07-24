@@ -139,4 +139,43 @@ class CuestionarioTemporizadorTest extends TestCase
         $response->assertSessionHas('error', 'Tienes un intento pendiente de revisión. Espera a que el instructor lo califique antes de reintentar.');
         $this->assertDatabaseMissing('intentos_en_progreso', ['actividad_id' => $actividad->id]);
     }
+
+    public function test_iniciar_intento_rechaza_si_la_actividad_aun_no_abre(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $fechaApertura = now()->addDay();
+        $actividad->update([
+            'fecha_apertura' => $fechaApertura,
+            'fecha_cierre'   => now()->addDays(2),
+        ]);
+        $actividad->refresh();
+
+        $response = $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response->assertRedirect(route('actividades.show', $actividad));
+        $response->assertSessionHas(
+            'error',
+            'Esta actividad aún no está disponible. Abre el ' . $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') . '.'
+        );
+        $this->assertDatabaseMissing('intentos_en_progreso', ['actividad_id' => $actividad->id]);
+    }
+
+    public function test_iniciar_intento_rechaza_si_el_plazo_ya_vencio(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $actividad->update([
+            'fecha_apertura' => now()->subDays(2),
+            'fecha_cierre'   => now()->subDay(),
+        ]);
+        $actividad->refresh();
+
+        $response = $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response->assertRedirect(route('actividades.show', $actividad));
+        $response->assertSessionHas(
+            'error',
+            'El plazo de entrega venció el ' . $actividad->fecha_cierre->format('d/m/Y \a \l\a\s H:i') . '.'
+        );
+        $this->assertDatabaseMissing('intentos_en_progreso', ['actividad_id' => $actividad->id]);
+    }
 }

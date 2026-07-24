@@ -169,10 +169,16 @@ class ActividadController extends Controller
         $this->authorize('view', $actividad->leccion->modulo->curso);
         abort_unless($actividad->tipo === 'cuestionario', 403);
 
-        if (!$actividad->estaAbierta()) {
+        $estado = $actividad->estadoPlazo();
+        if ($estado === 'pendiente') {
             return redirect()
                 ->route('actividades.show', $actividad)
-                ->with('error', 'Esta actividad no está abierta.');
+                ->with('error', 'Esta actividad aún no está disponible. Abre el ' . $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') . '.');
+        }
+        if ($estado === 'cerrada') {
+            return redirect()
+                ->route('actividades.show', $actividad)
+                ->with('error', 'El plazo de entrega venció el ' . $actividad->fecha_cierre->format('d/m/Y \a \l\a\s H:i') . '.');
         }
 
         if ($actividad->intentosUsadosPor(auth()->id()) >= $actividad->intentos_permitidos) {
