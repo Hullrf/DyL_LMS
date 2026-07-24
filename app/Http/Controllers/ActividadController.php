@@ -69,6 +69,28 @@ class ActividadController extends Controller
     {
         $this->authorize('view', $actividad->leccion->modulo->curso);
 
+        $intentoEnProgreso = null;
+        $segundosRestantes = null;
+
+        if ($actividad->tipo === 'cuestionario') {
+            $intentoEnProgreso = IntentoEnProgreso::where('user_id', auth()->id())
+                ->where('actividad_id', $actividad->id)
+                ->first();
+
+            if ($intentoEnProgreso && $actividad->duracion_minutos) {
+                $segundosRestantes = $actividad->duracion_minutos * 60
+                    - $intentoEnProgreso->fecha_inicio->diffInSeconds(now());
+
+                if ($segundosRestantes <= 0) {
+                    app(\App\Services\CalificacionService::class)
+                        ->registrarIntentoExpirado($actividad, auth()->id());
+                    $intentoEnProgreso->delete();
+
+                    return redirect()->route('actividades.show', $actividad);
+                }
+            }
+        }
+
         $intentos = $actividad->respuestas()
             ->where('user_id', auth()->id())
             ->with('seleccionesRubrica')
@@ -101,7 +123,8 @@ class ActividadController extends Controller
 
         return view('actividades.show', compact(
             'actividad', 'respuesta', 'actividadCompletada', 'criteriosRubrica', 'seleccionesMap',
-            'intentos', 'intentosUsados', 'intentosRestantes', 'tieneIntentoEnRevision'
+            'intentos', 'intentosUsados', 'intentosRestantes', 'tieneIntentoEnRevision',
+            'intentoEnProgreso', 'segundosRestantes'
         ));
     }
 

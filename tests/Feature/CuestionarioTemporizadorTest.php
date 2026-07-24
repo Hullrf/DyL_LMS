@@ -178,4 +178,59 @@ class CuestionarioTemporizadorTest extends TestCase
         );
         $this->assertDatabaseMissing('intentos_en_progreso', ['actividad_id' => $actividad->id]);
     }
+
+    public function test_show_no_expone_las_preguntas_antes_de_iniciar_el_intento(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $pregunta  = $actividad->preguntas()->first();
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertDontSee($pregunta->pregunta_texto);
+        $response->assertDontSee('id="form-respuesta"', false);
+    }
+
+    public function test_show_con_intento_en_progreso_y_tiempo_restante_no_expira(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $pregunta = $actividad->preguntas()->first();
+        $response->assertSee($pregunta->pregunta_texto);
+        $this->assertDatabaseHas('intentos_en_progreso', ['actividad_id' => $actividad->id]);
+    }
+
+    public function test_show_sin_tiempo_limite_no_calcula_segundos_restantes(): void
+    {
+        $actividad = $this->crearCuestionario(null);
+        $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertViewHas('segundosRestantes', fn($value) => $value === null);
+    }
+
+    public function test_show_auto_envia_respuesta_vacia_si_el_intento_ya_expiro(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $intento   = IntentoEnProgreso::create([
+            'user_id'      => $this->estudiante->id,
+            'actividad_id' => $actividad->id,
+            'fecha_inicio' => now()->subMinutes(21),
+        ]);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertRedirect(route('actividades.show', $actividad));
+        $this->assertDatabaseHas('respuestas_estudiantes', [
+            'user_id' => $this->estudiante->id, 'actividad_id' => $actividad->id,
+            'respuesta' => '{}', 'estado' => 'calificada',
+        ]);
+        $this->assertDatabaseMissing('intentos_en_progreso', ['id' => $intento->id]);
+    }
 }
