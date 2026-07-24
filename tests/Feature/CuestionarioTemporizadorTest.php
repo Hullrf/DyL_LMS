@@ -234,6 +234,31 @@ class CuestionarioTemporizadorTest extends TestCase
         $this->assertDatabaseMissing('intentos_en_progreso', ['id' => $intento->id]);
     }
 
+    public function test_store_registra_intento_vencido_si_el_tiempo_ya_expiro_en_vez_de_calificar(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $intento   = IntentoEnProgreso::create([
+            'user_id'      => $this->estudiante->id,
+            'actividad_id' => $actividad->id,
+            'fecha_inicio' => now()->subMinutes(21),
+        ]);
+
+        $pregunta = $actividad->preguntas()->first();
+        $opcionCorrecta = $pregunta->opciones()->where('es_correcta', true)->first();
+
+        $response = $this->actingAs($this->estudiante)->post(route('respuestas.store', $actividad), [
+            'respuesta' => json_encode([$pregunta->id => $opcionCorrecta->id]),
+        ]);
+
+        $response->assertRedirect(route('actividades.show', $actividad));
+        $response->assertSessionHas('error', 'El tiempo para este intento ya se agotó. Se registró como vencido.');
+        $this->assertDatabaseHas('respuestas_estudiantes', [
+            'user_id' => $this->estudiante->id, 'actividad_id' => $actividad->id,
+            'respuesta' => '{}', 'estado' => 'calificada',
+        ]);
+        $this->assertDatabaseMissing('intentos_en_progreso', ['id' => $intento->id]);
+    }
+
     public function test_pantalla_de_inicio_muestra_intentos_permitidos_preguntas_y_tiempo_limite(): void
     {
         $actividad = $this->crearCuestionario(20, 3);

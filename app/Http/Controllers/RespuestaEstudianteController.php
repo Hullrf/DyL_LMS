@@ -24,6 +24,24 @@ class RespuestaEstudianteController extends Controller
         abort_if(!$actividad->tieneCalificacion(), 403, 'Esta actividad no admite respuestas.');
 
         if ($actividad->tipo === 'cuestionario') {
+            $intentoEnProgreso = IntentoEnProgreso::where('user_id', Auth::id())
+                ->where('actividad_id', $actividad->id)
+                ->first();
+
+            if ($intentoEnProgreso && $actividad->duracion_minutos) {
+                $segundosRestantes = $actividad->duracion_minutos * 60
+                    - $intentoEnProgreso->fecha_inicio->diffInSeconds(now());
+
+                if ($segundosRestantes <= 0) {
+                    $this->calificacionService->registrarIntentoExpirado($actividad, Auth::id());
+                    $intentoEnProgreso->delete();
+
+                    return redirect()
+                        ->route('actividades.show', $actividad)
+                        ->with('error', 'El tiempo para este intento ya se agotó. Se registró como vencido.');
+                }
+            }
+
             if ($actividad->intentosUsadosPor(Auth::id()) >= $actividad->intentos_permitidos) {
                 return redirect()
                     ->route('actividades.show', $actividad)

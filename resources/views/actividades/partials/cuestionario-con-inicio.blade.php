@@ -11,7 +11,9 @@
                         this.segundos--;
                         if (this.segundos <= 0) {
                             clearInterval(this.intervalo);
-                            document.getElementById('form-respuesta').requestSubmit();
+                            const form = document.getElementById('form-respuesta');
+                            form.noValidate = true;
+                            form.requestSubmit();
                         }
                     }, 1000);
                 },
