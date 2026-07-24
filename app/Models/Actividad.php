@@ -24,6 +24,7 @@ class Actividad extends Model implements Auditable
         'orden', 'puntaje_maximo', 'duracion_minutos', 'es_obligatoria',
         'fecha_apertura', 'fecha_cierre', 'usa_rubrica',
         'permitir_descarga_adjuntos',
+        'intentos_permitidos', 'criterio_calificacion_intentos', 'mostrar_historial_intentos',
     ];
 
     protected $casts = [
@@ -33,6 +34,7 @@ class Actividad extends Model implements Auditable
         'usa_rubrica'                 => 'boolean',
         'permitir_descarga_adjuntos'  => 'boolean',
         'puntaje_maximo'              => 'decimal:2',
+        'mostrar_historial_intentos'  => 'boolean',
     ];
 
     /**
@@ -134,5 +136,10 @@ class Actividad extends Model implements Auditable
     public function tieneCalificacion(): bool
     {
         return !in_array($this->tipo, self::TIPOS_SIN_NOTA);
+    }
+
+    public function permiteMultiplesIntentos(): bool
+    {
+        return $this->tipo === 'cuestionario' && $this->intentos_permitidos > 1;
     }
 }

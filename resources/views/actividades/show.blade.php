@@ -478,7 +478,85 @@
     @endif
 
     @if($actividad->tieneCalificacion())
-        {{-- Resultado si ya respondió --}}
+        @if($actividad->permiteMultiplesIntentos())
+            {{-- Cuestionario con múltiples intentos --}}
+            @if($tieneIntentoEnRevision)
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                <h2 class="font-bold text-yellow-800 mb-2">Intento pendiente de revisión</h2>
+                <p class="text-gray-600">
+                    Tu intento más reciente incluye preguntas de respuesta corta que el instructor debe revisar
+                    antes de que puedas iniciar un nuevo intento.
+                </p>
+                <div class="mt-4">
+                    <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Volver a la lección
+                    </a>
+                </div>
+            </div>
+            @else
+                @if($respuesta)
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                    <h2 class="font-bold text-green-800 mb-2">
+                        Intento {{ $intentosUsados }} de {{ $actividad->intentos_permitidos }}
+                    </h2>
+                    @if($respuesta->calificacion !== null)
+                        <p class="text-2xl font-bold text-green-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Calificación vigente ({{ $actividad->criterio_calificacion_intentos === 'ultimo' ? 'último intento' : 'intento más alto' }})
+                        </p>
+                    @else
+                        <p class="text-gray-600">Tu respuesta está pendiente de calificación.</p>
+                    @endif
+                    @if($respuesta->feedback)
+                        <div class="mt-3 pt-3 border-t border-green-200">
+                            <p class="text-sm font-medium text-gray-700 mb-1">Retroalimentación:</p>
+                            <p class="text-sm text-gray-600">{{ $respuesta->feedback }}</p>
+                        </div>
+                    @endif
+
+                    @if($actividad->mostrar_historial_intentos)
+                    <div class="mt-4 pt-4 border-t border-green-200">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Historial de intentos</p>
+                        <ul class="space-y-1">
+                            @foreach($intentos as $index => $intento)
+                            <li class="text-sm text-gray-600 flex items-center justify-between gap-3">
+                                <span>Intento {{ $index + 1 }} — {{ $intento->fecha_envio->format('d/m/Y H:i') }}</span>
+                                <span class="font-medium {{ $intento->id === $respuesta->id ? 'text-green-700' : 'text-gray-500' }}">
+                                    {{ $intento->calificacion !== null ? number_format($intento->calificacion, 2) . '/' . $actividad->puntaje_maximo : 'Pendiente' }}
+                                    @if($intento->id === $respuesta->id)<span class="text-xs">(vigente)</span>@endif
+                                </span>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    <div class="mt-4">
+                        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                            Volver a la lección
+                        </a>
+                    </div>
+                </div>
+                @endif
+
+                @if($intentosRestantes > 0 && $actividad->estaAbierta())
+                <form id="form-respuesta" action="{{ route('respuestas.store', $actividad) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @include('actividades.partials.formulario-cuestionario')
+                    <div class="mt-6 flex justify-end">
+                        <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium">
+                            {{ $respuesta ? 'Reintentar' : 'Enviar respuesta' }}
+                        </button>
+                    </div>
+                </form>
+                @elseif(!$respuesta && !$actividad->estaAbierta())
+                @include('actividades.partials.estado-plazo-bloqueado')
+                @endif
+            @endif
+
+        @else
+        {{-- Comportamiento actual sin cambios: cuestionario de 1 intento, ensayo, tarea, practica --}}
         @if($respuesta)
         <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
             <h2 class="font-bold text-green-800 mb-2">Ya respondiste esta actividad</h2>
@@ -503,21 +581,7 @@
 
         @elseif(!$actividad->estaAbierta())
         {{-- Actividad cerrada o pendiente: no se puede responder --}}
-        <div class="bg-white rounded-lg shadow p-10 text-center">
-            @if($estadoPlazo === 'pendiente')
-                <svg class="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="text-gray-700 font-medium">La actividad estará disponible el</p>
-                <p class="text-xl font-bold text-yellow-600 mt-1">{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</p>
-            @else
-                <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-5V7m0 0V5m0 2h2M12 7H10m10 5a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="text-gray-700 font-medium">El plazo de entrega venció el</p>
-                <p class="text-xl font-bold text-red-600 mt-1">{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</p>
-            @endif
-        </div>
+        @include('actividades.partials.estado-plazo-bloqueado')
 
         @else
         {{-- Formulario de respuesta --}}
@@ -525,90 +589,7 @@
             @csrf
 
             @if($actividad->tipo === 'cuestionario')
-                @php
-                    $preguntas  = $actividad->preguntas()->with('opciones')->orderBy('orden')->get();
-                    $oldAnswers = old('respuesta') ? (json_decode(old('respuesta'), true) ?? []) : [];
-                @endphp
-                <div class="space-y-6">
-                    @foreach($preguntas as $index => $pregunta)
-                    @php $oldVal = $oldAnswers[$pregunta->id] ?? null; @endphp
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <p class="font-medium text-gray-900 mb-1">
-                            {{ $index + 1 }}. {{ $pregunta->pregunta_texto }}
-                            <span class="text-xs text-gray-400 ml-2">({{ $pregunta->puntaje }} pts)</span>
-                        </p>
-
-                        @if($pregunta->imagen_path)
-                        <img src="{{ $pregunta->imagenUrl() }}"
-                             alt="Imagen de apoyo"
-                             class="my-4 w-full h-64 object-contain rounded-lg border border-gray-200 bg-gray-50">
-                        @endif
-
-                        @if($pregunta->tipo === 'respuesta_corta')
-                            <input type="text" name="respuesta_{{ $pregunta->id }}"
-                                   value="{{ old('respuesta_' . $pregunta->id) }}"
-                                   class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-
-                        @elseif($pregunta->seleccion_multiple)
-                            <p class="mt-2 text-xs text-blue-600 font-medium">
-                                Selecciona todas las respuestas correctas.
-                            </p>
-                            <div class="mt-2 space-y-2">
-                                @foreach($pregunta->opciones as $opcion)
-                                @php $checked = is_array($oldVal) && in_array((string)$opcion->id, array_map('strval', $oldVal)); @endphp
-                                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox"
-                                           name="respuesta_{{ $pregunta->id }}[]"
-                                           value="{{ $opcion->id }}"
-                                           {{ $checked ? 'checked' : '' }}
-                                           class="w-4 h-4 rounded text-blue-600">
-                                    <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
-                                </label>
-                                @endforeach
-                            </div>
-
-                        @else
-                            <div class="mt-3 space-y-2">
-                                @foreach($pregunta->opciones as $opcion)
-                                @php $checked = $oldVal !== null && (string)$oldVal === (string)$opcion->id; @endphp
-                                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                                    <input type="radio" name="respuesta_{{ $pregunta->id }}" value="{{ $opcion->id }}"
-                                           {{ $checked ? 'checked' : '' }}
-                                           class="text-blue-600">
-                                    <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
-                                </label>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                    @endforeach
-                </div>
-
-                {{-- Serializar respuestas en JSON --}}
-                <input type="hidden" name="respuesta" id="respuesta-json">
-                <script>
-                document.getElementById('form-respuesta').addEventListener('submit', function(e) {
-                    const data = {};
-
-                    // Radios y texto (una sola respuesta)
-                    this.querySelectorAll('[name^="respuesta_"]:not([type=checkbox])').forEach(function(el) {
-                        if (el.type === 'radio' && !el.checked) return;
-                        if (!el.value) return;
-                        const id = el.name.replace('respuesta_', '');
-                        data[id] = el.value;
-                    });
-
-                    // Checkboxes (selección múltiple) — agrupados por pregunta_id
-                    this.querySelectorAll('[name^="respuesta_"][type=checkbox]:checked').forEach(function(el) {
-                        const id = el.name.replace('respuesta_', '').replace('[]', '');
-                        if (!data[id]) data[id] = [];
-                        data[id].push(el.value);
-                    });
-
-                    document.getElementById('respuesta-json').value = JSON.stringify(data);
-                });
-                </script>
-
+                @include('actividades.partials.formulario-cuestionario')
             @else
                 <div class="bg-white rounded-lg shadow p-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tu respuesta</label>
@@ -618,7 +599,6 @@
                     @error('respuesta')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- Adjunto opcional --}}
                 <div class="bg-white rounded-lg shadow p-6" x-data="{ nombre: null, errorArchivo: '' }">
                     <p class="text-sm font-medium text-gray-700 mb-3">
                         Adjuntar archivo
@@ -681,6 +661,7 @@
                 </button>
             </div>
         </form>
+        @endif
         @endif
 
     @else

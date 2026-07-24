@@ -39,6 +39,9 @@ class ActividadController extends Controller
             'duracion_minutos' => 'nullable|integer|min:1',
             'es_obligatoria'   => 'boolean',
             'permitir_descarga_adjuntos' => 'nullable|in:0,1,leccion',
+            'intentos_permitidos'            => 'nullable|integer|min:1|max:20',
+            'criterio_calificacion_intentos'  => 'nullable|in:mas_alto,ultimo',
+            'mostrar_historial_intentos'      => 'boolean',
         ]);
 
         $orden = $leccion->actividades()->max('orden') + 1;
@@ -51,6 +54,9 @@ class ActividadController extends Controller
             'es_obligatoria'  => $request->boolean('es_obligatoria', true),
             'permitir_descarga_adjuntos' => in_array($descargaRaw, ['leccion', null], true) ? null : (bool) $descargaRaw,
             'orden'           => $orden,
+            'intentos_permitidos'            => $validated['intentos_permitidos'] ?? 1,
+            'criterio_calificacion_intentos' => $validated['criterio_calificacion_intentos'] ?? 'mas_alto',
+            'mostrar_historial_intentos'     => $request->boolean('mostrar_historial_intentos', true),
         ]);
 
         return redirect()
@@ -61,11 +67,23 @@ class ActividadController extends Controller
     public function show(Actividad $actividad)
     {
         $this->authorize('view', $actividad->leccion->modulo->curso);
-        $respuesta = $actividad->respuestas()
+
+        $intentos = $actividad->respuestas()
             ->where('user_id', auth()->id())
             ->with('seleccionesRubrica')
-            ->latest()
-            ->first();
+            ->orderBy('fecha_envio')
+            ->get();
+        $intentos->each(fn($r) => $r->setRelation('actividad', $actividad));
+
+        $respuestaOficial = $intentos->isNotEmpty()
+            ? app(\App\Services\CalificacionService::class)->respuestasOficiales($intentos)->first()
+            : null;
+
+        $respuesta = $actividad->tipo === 'cuestionario' ? $respuestaOficial : $intentos->last();
+
+        $intentosUsados         = $intentos->count();
+        $intentosRestantes      = max(0, $actividad->intentos_permitidos - $intentosUsados);
+        $tieneIntentoEnRevision = $intentos->contains('estado', 'en_revision');
 
         $actividadCompletada = ProgresoActividad::where('user_id', auth()->id())
             ->where('actividad_id', $actividad->id)
@@ -80,7 +98,10 @@ class ActividadController extends Controller
             ? $respuesta->seleccionesRubrica->pluck('nivel_criterio_id', 'criterio_id')
             : collect();
 
-        return view('actividades.show', compact('actividad', 'respuesta', 'actividadCompletada', 'criteriosRubrica', 'seleccionesMap'));
+        return view('actividades.show', compact(
+            'actividad', 'respuesta', 'actividadCompletada', 'criteriosRubrica', 'seleccionesMap',
+            'intentos', 'intentosUsados', 'intentosRestantes', 'tieneIntentoEnRevision'
+        ));
     }
 
     public function edit(Actividad $actividad)
@@ -110,6 +131,9 @@ class ActividadController extends Controller
             'fecha_apertura'   => 'nullable|date',
             'fecha_cierre'     => 'nullable|date|after_or_equal:fecha_apertura',
             'permitir_descarga_adjuntos' => 'nullable|in:0,1,leccion',
+            'intentos_permitidos'            => 'nullable|integer|min:1|max:20',
+            'criterio_calificacion_intentos'  => 'nullable|in:mas_alto,ultimo',
+            'mostrar_historial_intentos'      => 'boolean',
         ]);
 
         $descargaRaw = $validated['permitir_descarga_adjuntos'] ?? null;
@@ -120,6 +144,9 @@ class ActividadController extends Controller
             'permitir_descarga_adjuntos' => in_array($descargaRaw, ['leccion', null], true) ? null : (bool) $descargaRaw,
             'fecha_apertura'  => $request->filled('fecha_apertura') ? $request->fecha_apertura : null,
             'fecha_cierre'    => $request->filled('fecha_cierre')   ? $request->fecha_cierre   : null,
+            'intentos_permitidos'            => $validated['intentos_permitidos'] ?? $actividad->intentos_permitidos,
+            'criterio_calificacion_intentos' => $validated['criterio_calificacion_intentos'] ?? $actividad->criterio_calificacion_intentos,
+            'mostrar_historial_intentos'     => $request->boolean('mostrar_historial_intentos', $actividad->mostrar_historial_intentos),
         ]);
 
         return redirect()

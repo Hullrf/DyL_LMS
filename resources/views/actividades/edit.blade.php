@@ -42,6 +42,35 @@
                            class="form-input" required>
                 </div>
                 @endif
+                @if($actividad->tipo === 'cuestionario')
+                <div class="mb-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                    <p class="text-sm font-semibold text-gray-800 mb-3">Intentos del cuestionario</p>
+                    <div class="mb-3">
+                        <label class="form-label">Intentos permitidos</label>
+                        <input type="number" name="intentos_permitidos"
+                               value="{{ old('intentos_permitidos', $actividad->intentos_permitidos) }}"
+                               min="1" max="20" class="form-input">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cuando hay varios intentos, ¿cuál cuenta?</label>
+                        <select name="criterio_calificacion_intentos" class="form-select">
+                            <option value="mas_alto" {{ old('criterio_calificacion_intentos', $actividad->criterio_calificacion_intentos) === 'mas_alto' ? 'selected' : '' }}>El intento más alto</option>
+                            <option value="ultimo" {{ old('criterio_calificacion_intentos', $actividad->criterio_calificacion_intentos) === 'ultimo' ? 'selected' : '' }}>El último intento</option>
+                        </select>
+                    </div>
+                    <label class="flex items-center gap-3 cursor-pointer select-none">
+                        <div class="relative">
+                            <input type="hidden" name="mostrar_historial_intentos" value="0">
+                            <input type="checkbox" name="mostrar_historial_intentos" value="1"
+                                   {{ old('mostrar_historial_intentos', $actividad->mostrar_historial_intentos) ? 'checked' : '' }}
+                                   class="sr-only peer">
+                            <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-blue rounded-full transition-colors"></div>
+                            <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
+                        </div>
+                        <span class="text-sm text-gray-700">Mostrar a los estudiantes el resumen de sus intentos anteriores</span>
+                    </label>
+                </div>
+                @endif
                 <div class="mb-3">
                     <label class="form-label">Tiempo límite <span class="text-gray-400 font-normal">(minutos, opcional)</span></label>
                     <input type="number" name="duracion_minutos"

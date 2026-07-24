@@ -14,7 +14,7 @@
 {{-- Resumen rápido --}}
 @if($respuestas->count() > 0)
 @php
-    $calificadas = $respuestas->where('estado', 'calificada');
+    $calificadas = $respuestas->where('estado', 'calificada')->whereIn('id', $oficialesIds);
     $promedio    = $calificadas->count() > 0
         ? round($calificadas->avg(fn($r) => $r->actividad->puntaje_maximo > 0
             ? ($r->calificacion / $r->actividad->puntaje_maximo) * 100 : 0))
@@ -51,7 +51,7 @@
             {{ $grupo->respuestas->count() }} {{ Str::plural('actividad', $grupo->respuestas->count()) }}
         </span>
         @php
-            $grupoCalificadas = $grupo->respuestas->where('estado', 'calificada');
+            $grupoCalificadas = $grupo->respuestas->where('estado', 'calificada')->whereIn('id', $oficialesIds);
             $promedioCurso    = $grupoCalificadas->count() > 0
                 ? round($grupoCalificadas->avg(fn($r) => $r->actividad->puntaje_maximo > 0
                     ? ($r->calificacion / $r->actividad->puntaje_maximo) * 100 : 0))
@@ -82,6 +82,9 @@
                         <span class="inline-block mt-1 px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded">
                             {{ ucfirst($respuesta->actividad->tipo) }}
                         </span>
+                        @if(in_array($respuesta->id, $oficialesIds) && $grupo->respuestas->where('actividad_id', $respuesta->actividad_id)->count() > 1)
+                            <span class="inline-block mt-1 ml-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded font-medium">Cuenta para tu nota</span>
+                        @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <p class="text-sm text-gray-700">{{ $respuesta->fecha_envio->format('d/m/Y') }}</p>

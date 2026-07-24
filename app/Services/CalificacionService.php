@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Actividad;
 use App\Models\NivelCriterio;
 use App\Models\RespuestaEstudiante;
+use Illuminate\Support\Collection;
 
 class CalificacionService
 {
@@ -117,5 +118,23 @@ class CalificacionService
         $this->calificarManual($respuesta, $calificacion, $feedback);
 
         return $calificacion;
+    }
+
+    /**
+     * Dado un conjunto de respuestas (con 'actividad' cargada), devuelve una sola
+     * respuesta por cada par (user_id, actividad_id), eligiendo según la política
+     * de esa actividad: 'mas_alto' -> mayor calificación, 'ultimo' -> fecha_envio más reciente.
+     */
+    public function respuestasOficiales(Collection $respuestas): Collection
+    {
+        return $respuestas
+            ->groupBy(fn($r) => $r->user_id . '-' . $r->actividad_id)
+            ->map(function ($grupo) {
+                $actividad = $grupo->first()->actividad;
+                return $actividad->criterio_calificacion_intentos === 'ultimo'
+                    ? $grupo->sortByDesc('fecha_envio')->first()
+                    : $grupo->sortByDesc('calificacion')->first();
+            })
+            ->values();
     }
 }

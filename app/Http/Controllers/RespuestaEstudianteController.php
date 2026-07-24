@@ -22,14 +22,37 @@ class RespuestaEstudianteController extends Controller
     {
         abort_if(!$actividad->tieneCalificacion(), 403, 'Esta actividad no admite respuestas.');
 
-        $yaRespondio = RespuestaEstudiante::where('user_id', Auth::id())
-            ->where('actividad_id', $actividad->id)
-            ->exists();
+        if ($actividad->tipo === 'cuestionario') {
+            $intentosUsados = RespuestaEstudiante::where('user_id', Auth::id())
+                ->where('actividad_id', $actividad->id)
+                ->count();
 
-        if ($yaRespondio) {
-            return redirect()
-                ->route('actividades.show', $actividad)
-                ->with('error', 'Ya has respondido esta actividad.');
+            if ($intentosUsados >= $actividad->intentos_permitidos) {
+                return redirect()
+                    ->route('actividades.show', $actividad)
+                    ->with('error', 'Ya usaste todos los intentos permitidos para este cuestionario.');
+            }
+
+            $tieneIntentoEnRevision = RespuestaEstudiante::where('user_id', Auth::id())
+                ->where('actividad_id', $actividad->id)
+                ->where('estado', 'en_revision')
+                ->exists();
+
+            if ($tieneIntentoEnRevision) {
+                return redirect()
+                    ->route('actividades.show', $actividad)
+                    ->with('error', 'Tienes un intento pendiente de revisión. Espera a que el instructor lo califique antes de reintentar.');
+            }
+        } else {
+            $yaRespondio = RespuestaEstudiante::where('user_id', Auth::id())
+                ->where('actividad_id', $actividad->id)
+                ->exists();
+
+            if ($yaRespondio) {
+                return redirect()
+                    ->route('actividades.show', $actividad)
+                    ->with('error', 'Ya has respondido esta actividad.');
+            }
         }
 
         // Verificar ventana de tiempo

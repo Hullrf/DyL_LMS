@@ -13,6 +13,10 @@ use Mpdf\Config\FontVariables;
 
 class CertificadoService
 {
+    public function __construct(private CalificacionService $calificacionService)
+    {
+    }
+
     /**
      * Genera (o recupera) el certificado de un usuario para un curso.
      * Solo procede si la inscripción está en estado 'completado'.
@@ -117,12 +121,14 @@ class CertificadoService
             ->with('actividad')
             ->get();
 
-        if ($respuestas->isEmpty()) {
+        $respuestasOficiales = $this->calificacionService->respuestasOficiales($respuestas);
+
+        if ($respuestasOficiales->isEmpty()) {
             return 100; // Si no hay actividades, aprobado por completar lecciones
         }
 
-        $total   = $respuestas->sum(fn($r) => $r->actividad->puntaje_maximo);
-        $obtenido = $respuestas->sum('calificacion');
+        $total    = $respuestasOficiales->sum(fn($r) => $r->actividad->puntaje_maximo);
+        $obtenido = $respuestasOficiales->sum('calificacion');
 
         if ($total === 0) {
             return 100;

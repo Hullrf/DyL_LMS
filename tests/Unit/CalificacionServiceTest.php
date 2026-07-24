@@ -6,6 +6,7 @@ use App\Models\Actividad;
 use App\Models\Opcion;
 use App\Models\Pregunta;
 use App\Models\RespuestaEstudiante;
+use App\Models\User;
 use App\Services\CalificacionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -119,5 +120,63 @@ class CalificacionServiceTest extends TestCase
 
         $this->assertEquals('calificada', $respuesta->fresh()->estado);
         $this->assertNull($respuesta->fresh()->feedback);
+    }
+
+    public function test_respuestas_oficiales_elige_el_mas_alto_por_defecto(): void
+    {
+        $actividad = Actividad::factory()->create(['tipo' => 'cuestionario', 'criterio_calificacion_intentos' => 'mas_alto']);
+        $usuario   = User::factory()->create();
+
+        RespuestaEstudiante::factory()->create([
+            'user_id' => $usuario->id, 'actividad_id' => $actividad->id,
+            'calificacion' => 60, 'estado' => 'calificada', 'fecha_envio' => now()->subDay(),
+        ]);
+        RespuestaEstudiante::factory()->create([
+            'user_id' => $usuario->id, 'actividad_id' => $actividad->id,
+            'calificacion' => 90, 'estado' => 'calificada', 'fecha_envio' => now(),
+        ]);
+
+        $respuestas = RespuestaEstudiante::with('actividad')->get();
+        $oficiales  = $this->service->respuestasOficiales($respuestas);
+
+        $this->assertCount(1, $oficiales);
+        $this->assertEquals(90, $oficiales->first()->calificacion);
+    }
+
+    public function test_respuestas_oficiales_elige_el_ultimo_cuando_la_politica_lo_indica(): void
+    {
+        $actividad = Actividad::factory()->create(['tipo' => 'cuestionario', 'criterio_calificacion_intentos' => 'ultimo']);
+        $usuario   = User::factory()->create();
+
+        RespuestaEstudiante::factory()->create([
+            'user_id' => $usuario->id, 'actividad_id' => $actividad->id,
+            'calificacion' => 90, 'estado' => 'calificada', 'fecha_envio' => now()->subDay(),
+        ]);
+        $masReciente = RespuestaEstudiante::factory()->create([
+            'user_id' => $usuario->id, 'actividad_id' => $actividad->id,
+            'calificacion' => 60, 'estado' => 'calificada', 'fecha_envio' => now(),
+        ]);
+
+        $respuestas = RespuestaEstudiante::with('actividad')->get();
+        $oficiales  = $this->service->respuestasOficiales($respuestas);
+
+        $this->assertCount(1, $oficiales);
+        $this->assertEquals($masReciente->id, $oficiales->first()->id);
+        $this->assertEquals(60, $oficiales->first()->calificacion);
+    }
+
+    public function test_respuestas_oficiales_mantiene_separadas_distintas_actividades(): void
+    {
+        $usuario = User::factory()->create();
+        $act1 = Actividad::factory()->create(['tipo' => 'cuestionario']);
+        $act2 = Actividad::factory()->create(['tipo' => 'cuestionario']);
+
+        RespuestaEstudiante::factory()->create(['user_id' => $usuario->id, 'actividad_id' => $act1->id, 'calificacion' => 70, 'estado' => 'calificada']);
+        RespuestaEstudiante::factory()->create(['user_id' => $usuario->id, 'actividad_id' => $act2->id, 'calificacion' => 80, 'estado' => 'calificada']);
+
+        $respuestas = RespuestaEstudiante::with('actividad')->get();
+        $oficiales  = $this->service->respuestasOficiales($respuestas);
+
+        $this->assertCount(2, $oficiales);
     }
 }
