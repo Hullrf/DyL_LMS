@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Actividad;
 use App\Models\Curso;
 use App\Models\Inscripcion;
+use App\Models\IntentoEnProgreso;
 use App\Models\Leccion;
 use App\Models\ProgresoActividad;
 use App\Models\ProgresoLeccion;
@@ -161,6 +162,37 @@ class ActividadController extends Controller
         return redirect()
             ->route('actividades.show', $actividad)
             ->with('success', 'Actividad marcada como completada.');
+    }
+
+    public function iniciarIntento(Actividad $actividad)
+    {
+        $this->authorize('view', $actividad->leccion->modulo->curso);
+        abort_unless($actividad->tipo === 'cuestionario', 403);
+
+        if (!$actividad->estaAbierta()) {
+            return redirect()
+                ->route('actividades.show', $actividad)
+                ->with('error', 'Esta actividad no está abierta.');
+        }
+
+        if ($actividad->intentosUsadosPor(auth()->id()) >= $actividad->intentos_permitidos) {
+            return redirect()
+                ->route('actividades.show', $actividad)
+                ->with('error', 'Ya usaste todos los intentos permitidos para este cuestionario.');
+        }
+
+        if ($actividad->tieneIntentoEnRevisionPara(auth()->id())) {
+            return redirect()
+                ->route('actividades.show', $actividad)
+                ->with('error', 'Tienes un intento pendiente de revisión. Espera a que el instructor lo califique antes de reintentar.');
+        }
+
+        IntentoEnProgreso::firstOrCreate(
+            ['user_id' => auth()->id(), 'actividad_id' => $actividad->id],
+            ['fecha_inicio' => now()]
+        );
+
+        return redirect()->route('actividades.show', $actividad);
     }
 
     public function destroy(Actividad $actividad)
