@@ -60,6 +60,7 @@
                     </div>
                     <label class="flex items-center gap-3 cursor-pointer select-none">
                         <div class="relative">
+                            <input type="hidden" name="mostrar_historial_intentos" value="0">
                             <input type="checkbox" name="mostrar_historial_intentos" value="1"
                                    {{ old('mostrar_historial_intentos', $actividad->mostrar_historial_intentos) ? 'checked' : '' }}
                                    class="sr-only peer">

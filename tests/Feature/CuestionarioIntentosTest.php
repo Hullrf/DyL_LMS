@@ -388,4 +388,35 @@ class CuestionarioIntentosTest extends TestCase
         $response->assertSee('90%'); // Promedio general y por curso: 90/100 (solo el intento oficial)
         $response->assertSee('Cuenta para tu nota');
     }
+
+    public function test_formularios_incluyen_input_oculto_para_poder_desactivar_historial_de_intentos(): void
+    {
+        // Sin el input hidden, un checkbox desmarcado no se envía en el POST/PUT
+        // y el toggle nunca puede pasar de true a false a través del formulario.
+        // El input hidden con value="0", ubicado ANTES del checkbox, garantiza que
+        // el navegador siempre envíe un valor explícito (0 o 1) para el campo.
+
+        $crear = $this->actingAs($this->instructor)->get(route('actividades.create', $this->leccion));
+        $crear->assertOk();
+        $htmlCrear = $crear->getContent();
+
+        $posHiddenCrear = strpos($htmlCrear, '<input type="hidden" name="mostrar_historial_intentos" value="0">');
+        $posCheckboxCrear = strpos($htmlCrear, 'type="checkbox" name="mostrar_historial_intentos"');
+
+        $this->assertNotFalse($posHiddenCrear, 'El formulario de creación debe incluir el input oculto de respaldo.');
+        $this->assertNotFalse($posCheckboxCrear, 'El formulario de creación debe incluir el checkbox del historial de intentos.');
+        $this->assertLessThan($posCheckboxCrear, $posHiddenCrear, 'El input oculto debe aparecer antes del checkbox para que gane su valor cuando el checkbox esté marcado.');
+
+        $actividad = $this->crearCuestionarioOpcionMultiple(2);
+        $editar = $this->actingAs($this->instructor)->get(route('actividades.edit', $actividad));
+        $editar->assertOk();
+        $htmlEditar = $editar->getContent();
+
+        $posHiddenEditar = strpos($htmlEditar, '<input type="hidden" name="mostrar_historial_intentos" value="0">');
+        $posCheckboxEditar = strpos($htmlEditar, 'type="checkbox" name="mostrar_historial_intentos"');
+
+        $this->assertNotFalse($posHiddenEditar, 'El formulario de edición debe incluir el input oculto de respaldo.');
+        $this->assertNotFalse($posCheckboxEditar, 'El formulario de edición debe incluir el checkbox del historial de intentos.');
+        $this->assertLessThan($posCheckboxEditar, $posHiddenEditar, 'El input oculto debe aparecer antes del checkbox para que gane su valor cuando el checkbox esté marcado.');
+    }
 }
