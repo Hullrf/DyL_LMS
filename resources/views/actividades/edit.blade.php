@@ -429,6 +429,25 @@
                 </form>
             </div>
 
+            {{-- Importar desde Google Forms --}}
+            <div class="card p-6 mb-4">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Importar desde Google Forms</h3>
+                <p class="text-xs text-gray-500 mb-3">
+                    Exporta tu Google Form a JSON con la plantilla de Apps Script en
+                    <code class="bg-gray-100 px-1 rounded">docs/apps-script/</code> y sube el archivo aquí.
+                    Las preguntas se agregan al final de las que ya existen.
+                </p>
+                <form action="{{ route('preguntas.importar', $actividad) }}" method="POST" enctype="multipart/form-data"
+                      class="flex gap-2 items-start">
+                    @csrf
+                    <input type="file" name="archivo" accept=".json"
+                           class="flex-1 text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                           required>
+                    <button type="submit" class="btn bg-blue-600 text-white hover:bg-blue-700 shrink-0">Importar</button>
+                </form>
+                @error('archivo')<p class="form-error mt-1">{{ $message }}</p>@enderror
+            </div>
+
             {{-- Lista de preguntas --}}
             @forelse($preguntas as $pregunta)
             <div class="card mb-4" x-data="{ editing: false }">
@@ -441,6 +460,9 @@
                             <span class="ml-1 badge badge-gold text-[10px]">{{ $pregunta->puntaje }} pts</span>
                             @if($pregunta->seleccion_multiple)
                                 <span class="ml-2 badge badge-blue text-[10px]">selección múltiple</span>
+                            @endif
+                            @if($pregunta->tipo !== 'respuesta_corta' && !$pregunta->opciones->contains('es_correcta', true))
+                                <span class="ml-2 badge text-[10px] bg-yellow-100 text-yellow-700">Falta marcar la correcta</span>
                             @endif
                             <p class="font-medium text-gray-900 mt-1" x-show="!editing">{{ $pregunta->pregunta_texto }}</p>
 
@@ -537,11 +559,14 @@
                             @foreach($pregunta->opciones as $opcion)
                             <div class="flex items-center justify-between px-3 py-2 rounded-lg {{ $opcion->es_correcta ? 'bg-green-50 border border-green-200' : 'bg-gray-50' }}">
                                 <div class="flex items-center gap-2">
-                                    @if($opcion->es_correcta)
-                                        <span class="text-green-600 font-bold">✓</span>
-                                    @else
-                                        <span class="text-gray-300">○</span>
-                                    @endif
+                                    <form action="{{ route('opciones.marcarCorrecta', $opcion) }}" method="POST">
+                                        @csrf @method('PUT')
+                                        <button type="submit"
+                                                class="text-lg leading-none {{ $opcion->es_correcta ? 'text-green-600 font-bold' : 'text-gray-300 hover:text-gray-400' }}"
+                                                title="{{ $opcion->es_correcta ? 'Correcta' : 'Marcar como correcta' }}">
+                                            {{ $opcion->es_correcta ? '✓' : '○' }}
+                                        </button>
+                                    </form>
                                     <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
                                 </div>
                                 <form action="{{ route('opciones.destroy', $opcion) }}" method="POST"

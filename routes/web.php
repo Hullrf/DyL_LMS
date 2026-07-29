@@ -6,6 +6,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\LeccionController;
 use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\ImportacionCuestionarioController;
 use App\Http\Controllers\PreguntaController;
 use App\Http\Controllers\OpcionController;
 use App\Http\Controllers\RespuestaEstudianteController;
@@ -98,11 +99,13 @@ Route::middleware('auth')->group(function () {
     // Preguntas y Opciones
     Route::middleware('instructor')->group(function () {
         Route::post('/actividades/{actividad}/preguntas', [PreguntaController::class, 'store'])->name('preguntas.store');
+        Route::post('/actividades/{actividad}/preguntas/importar', [ImportacionCuestionarioController::class, 'store'])->name('preguntas.importar');
         Route::put('/preguntas/{pregunta}', [PreguntaController::class, 'update'])->name('preguntas.update');
         Route::delete('/preguntas/{pregunta}', [PreguntaController::class, 'destroy'])->name('preguntas.destroy');
         Route::delete('/preguntas/{pregunta}/imagen', [PreguntaController::class, 'destroyImagen'])->name('preguntas.imagen.destroy');
         Route::post('/preguntas/{pregunta}/opciones', [OpcionController::class, 'store'])->name('opciones.store');
         Route::delete('/opciones/{opcion}', [OpcionController::class, 'destroy'])->name('opciones.destroy');
+        Route::put('/opciones/{opcion}/marcar-correcta', [OpcionController::class, 'marcarCorrecta'])->name('opciones.marcarCorrecta');
     });
 
     // Respuestas de estudiantes

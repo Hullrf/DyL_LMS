@@ -155,4 +155,25 @@ class Actividad extends Model implements Auditable
             ->where('estado', 'en_revision')
             ->exists();
     }
+
+    /**
+     * Reparte el puntaje_maximo de la actividad equitativamente entre
+     * todas sus preguntas. La última pregunta absorbe el residuo del
+     * redondeo para que la suma sea exactamente puntaje_maximo.
+     */
+    public function redistribuirPuntajesPreguntas(): void
+    {
+        $preguntas = $this->preguntas()->orderBy('orden')->get();
+        $total     = $preguntas->count();
+
+        if ($total === 0) return;
+
+        $base    = (int) floor($this->puntaje_maximo / $total);
+        $residuo = $this->puntaje_maximo - ($base * $total);
+
+        foreach ($preguntas as $i => $pregunta) {
+            $puntaje = $base + ($i === $total - 1 ? $residuo : 0);
+            $pregunta->update(['puntaje' => max(1, $puntaje)]);
+        }
+    }
 }

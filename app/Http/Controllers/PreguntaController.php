@@ -48,7 +48,7 @@ class PreguntaController extends Controller
             ]);
         }
 
-        $this->redistribuirPuntajes($actividad);
+        $actividad->redistribuirPuntajesPreguntas();
 
         return redirect()
             ->route('actividades.edit', $actividad)
@@ -114,33 +114,10 @@ class PreguntaController extends Controller
 
         $pregunta->delete();
 
-        $this->redistribuirPuntajes($actividad);
+        $actividad->redistribuirPuntajesPreguntas();
 
         return redirect()
             ->route('actividades.edit', $actividad)
             ->with('success', 'Pregunta eliminada');
-    }
-
-    // ---------------------------------------------------------------
-
-    /**
-     * Reparte el puntaje_maximo de la actividad equitativamente entre
-     * todas sus preguntas. La última pregunta absorbe el residuo del
-     * redondeo para que la suma sea exactamente puntaje_maximo.
-     */
-    private function redistribuirPuntajes(Actividad $actividad): void
-    {
-        $preguntas = $actividad->preguntas()->orderBy('orden')->get();
-        $total     = $preguntas->count();
-
-        if ($total === 0) return;
-
-        $base     = (int) floor($actividad->puntaje_maximo / $total);
-        $residuo  = $actividad->puntaje_maximo - ($base * $total);
-
-        foreach ($preguntas as $i => $pregunta) {
-            $puntaje = $base + ($i === $total - 1 ? $residuo : 0);
-            $pregunta->update(['puntaje' => max(1, $puntaje)]);
-        }
     }
 }

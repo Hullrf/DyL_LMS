@@ -12,6 +12,8 @@ class Opcion extends Model
     protected $table = 'opciones';
     protected $fillable = ['pregunta_id', 'texto', 'es_correcta', 'explicacion', 'orden'];
 
+    protected $casts = ['es_correcta' => 'boolean'];
+
     public function pregunta(): BelongsTo
     {
         return $this->belongsTo(Pregunta::class);
