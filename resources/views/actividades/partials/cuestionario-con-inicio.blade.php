@@ -13,13 +13,15 @@
                             clearInterval(this.intervalo);
                             const form = document.getElementById('form-respuesta');
                             form.noValidate = true;
+                            form.dataset.autoenvio = '1';
                             form.requestSubmit();
                         }
                     }, 1000);
                 },
                 get mmss() {
-                    const m = Math.floor(this.segundos / 60);
-                    const s = this.segundos % 60;
+                    const total = Math.max(0, Math.floor(this.segundos));
+                    const m = Math.floor(total / 60);
+                    const s = total % 60;
                     return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
                 }
              }"

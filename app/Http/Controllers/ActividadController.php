@@ -78,8 +78,9 @@ class ActividadController extends Controller
                 ->first();
 
             if ($intentoEnProgreso && $actividad->duracion_minutos) {
-                $segundosRestantes = $actividad->duracion_minutos * 60
-                    - $intentoEnProgreso->fecha_inicio->diffInSeconds(now());
+                $segundosRestantes = (int) floor(
+                    $actividad->duracion_minutos * 60 - $intentoEnProgreso->fecha_inicio->diffInSeconds(now())
+                );
 
                 if ($segundosRestantes <= 0) {
                     app(\App\Services\CalificacionService::class)

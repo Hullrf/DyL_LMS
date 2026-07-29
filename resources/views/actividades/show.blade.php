@@ -2,7 +2,13 @@
 @section('title', $actividad->titulo . ' - LMS DyL')
 @section('breadcrumbs'){{ Breadcrumbs::render('actividades.show', $actividad) }}@endsection
 @section('content')
+@php
+    // Modo examen: hay un intento de cuestionario activo y a punto de mostrarse.
+    // Se oculta todo lo que no sea el formulario (preguntas, cronómetro, botón).
+    $modoExamen = $actividad->tipo === 'cuestionario' && $intentoEnProgreso && $actividad->estaAbierta();
+@endphp
 <div class="max-w-3xl mx-auto">
+    @unless($modoExamen)
     <div class="mb-4 flex items-center justify-between">
         <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
@@ -401,6 +407,7 @@
 
     </div>
     @endif
+    @endunless
 
     {{-- Estado de completado de la actividad --}}
     @if($actividadCompletada)
@@ -494,6 +501,7 @@
                 </div>
             </div>
             @else
+                @unless($modoExamen)
                 @if($respuesta)
                 <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
                     <h2 class="font-bold text-green-800 mb-2">
@@ -539,6 +547,7 @@
                     </div>
                 </div>
                 @endif
+                @endunless
 
                 @if($intentosRestantes > 0 && $actividad->estaAbierta())
                     @include('actividades.partials.cuestionario-con-inicio')

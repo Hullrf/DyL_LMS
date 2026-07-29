@@ -322,4 +322,83 @@ class CuestionarioTemporizadorTest extends TestCase
         $response->assertSee('id="form-respuesta"', false);
         $response->assertDontSee('mmss', false);
     }
+
+    public function test_segundos_restantes_se_inyecta_como_entero_sin_decimales(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        IntentoEnProgreso::create([
+            'user_id'      => $this->estudiante->id,
+            'actividad_id' => $actividad->id,
+            'fecha_inicio' => now()->subSeconds(3),
+        ]);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        preg_match('/segundos:\s*(-?[0-9.]+),/', $response->getContent(), $matches);
+        $this->assertNotEmpty($matches, 'No se encontró el valor de "segundos" inyectado en la vista.');
+        $this->assertStringNotContainsString('.', $matches[1], 'segundos no debe traer parte decimal: ' . $matches[1]);
+    }
+
+    public function test_formulario_de_opcion_multiple_exige_completar_todas_las_preguntas_antes_de_enviar(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $pregunta  = $actividad->preguntas()->first();
+        $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        // Cada pregunta debe quedar marcada para que el JS pueda validar completitud (Bug 1).
+        $response->assertSee('data-pregunta-id="' . $pregunta->id . '"', false);
+        // Los radios deben forzar selección obligatoria por HTML5 como refuerzo (Bug 1).
+        $response->assertSee('type="radio" name="respuesta_' . $pregunta->id . '"', false);
+        $this->assertMatchesRegularExpression(
+            '/type="radio"[^>]*name="respuesta_' . $pregunta->id . '"[^>]*required/',
+            $response->getContent(),
+            'El radio de la pregunta debe tener el atributo required.'
+        );
+        // Debe pedir confirmación antes de enviar (Bug 4), salvo en el auto-envío por tiempo agotado.
+        $response->assertSee("esAutoenvio", false);
+        $response->assertSee('confirm(', false);
+    }
+
+    public function test_modo_examen_oculta_encabezado_plazo_y_materiales_de_apoyo(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $actividad->recursos()->create([
+            'tipo'   => 'texto',
+            'titulo' => 'Guía de estudio',
+            'contenido' => 'Contenido de apoyo',
+            'orden'  => 1,
+        ]);
+        $this->actingAs($this->estudiante)->post(route('actividades.iniciarIntento', $actividad));
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('id="form-respuesta"', false);
+        $response->assertDontSee('Volver a la lección');
+        $response->assertDontSee('Tiempo límite:');
+        $response->assertDontSee('Materiales de apoyo');
+        $response->assertDontSee('Guía de estudio');
+    }
+
+    public function test_fuera_de_modo_examen_si_se_muestran_encabezado_y_materiales(): void
+    {
+        $actividad = $this->crearCuestionario(20);
+        $actividad->recursos()->create([
+            'tipo'   => 'texto',
+            'titulo' => 'Guía de estudio',
+            'contenido' => 'Contenido de apoyo',
+            'orden'  => 1,
+        ]);
+
+        $response = $this->actingAs($this->estudiante)->get(route('actividades.show', $actividad));
+
+        $response->assertOk();
+        $response->assertSee('Volver a la lección');
+        $response->assertSee('Materiales de apoyo');
+        $response->assertSee('Guía de estudio');
+    }
 }

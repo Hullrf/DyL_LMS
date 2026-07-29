@@ -5,7 +5,7 @@
 <div class="space-y-6">
     @foreach($preguntas as $index => $pregunta)
     @php $oldVal = $oldAnswers[$pregunta->id] ?? null; @endphp
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-6" data-pregunta-id="{{ $pregunta->id }}">
         <p class="font-medium text-gray-900 mb-1">
             {{ $index + 1 }}. {{ $pregunta->pregunta_texto }}
             <span class="text-xs text-gray-400 ml-2">({{ $pregunta->puntaje }} pts)</span>
@@ -47,7 +47,7 @@
                 <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                     <input type="radio" name="respuesta_{{ $pregunta->id }}" value="{{ $opcion->id }}"
                            {{ $checked ? 'checked' : '' }}
-                           class="text-blue-600">
+                           class="text-blue-600" required>
                     <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
                 </label>
                 @endforeach
@@ -60,20 +60,48 @@
 <input type="hidden" name="respuesta" id="respuesta-json">
 <script>
 document.getElementById('form-respuesta').addEventListener('submit', function(e) {
+    const esAutoenvio = this.dataset.autoenvio === '1';
     const data = {};
+    const pendientes = [];
 
-    this.querySelectorAll('[name^="respuesta_"]:not([type=checkbox])').forEach(function(el) {
-        if (el.type === 'radio' && !el.checked) return;
-        if (!el.value) return;
-        const id = el.name.replace('respuesta_', '');
-        data[id] = el.value;
+    this.querySelectorAll('[data-pregunta-id]').forEach(function(contenedor) {
+        const id = contenedor.dataset.preguntaId;
+        const texto = contenedor.querySelector('input[type=text][name="respuesta_' + id + '"]');
+        const marcados = contenedor.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+
+        contenedor.classList.remove('ring-2', 'ring-red-400');
+
+        if (texto) {
+            if (texto.value.trim()) data[id] = texto.value.trim();
+            else pendientes.push(id);
+        } else if (marcados.length > 0) {
+            data[id] = marcados[0].type === 'checkbox'
+                ? Array.from(marcados).map(function(el) { return el.value; })
+                : marcados[0].value;
+        } else {
+            pendientes.push(id);
+        }
     });
 
-    this.querySelectorAll('[name^="respuesta_"][type=checkbox]:checked').forEach(function(el) {
-        const id = el.name.replace('respuesta_', '').replace('[]', '');
-        if (!data[id]) data[id] = [];
-        data[id].push(el.value);
-    });
+    if (!esAutoenvio && pendientes.length > 0) {
+        e.preventDefault();
+        let primero = null;
+        pendientes.forEach(function(id) {
+            const contenedor = document.querySelector('[data-pregunta-id="' + id + '"]');
+            if (contenedor) {
+                contenedor.classList.add('ring-2', 'ring-red-400');
+                if (!primero) primero = contenedor;
+            }
+        });
+        if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        alert('Debes responder todas las preguntas antes de enviar.');
+        return;
+    }
+
+    if (!esAutoenvio && !confirm('¿Seguro que quieres enviar tus respuestas? Esta acción no se puede deshacer.')) {
+        e.preventDefault();
+        return;
+    }
 
     document.getElementById('respuesta-json').value = JSON.stringify(data);
 });
