@@ -106,8 +106,8 @@
                 @foreach($reporte['respuestas_historial'] as $resp)
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-3">
-                        <p class="text-sm font-medium text-gray-800">{{ $resp->actividad->titulo }}</p>
-                        <p class="text-xs text-gray-400">{{ ucfirst($resp->actividad->tipo) }}</p>
+                        <p class="text-sm font-medium text-gray-800">{{ $resp->actividad->titulo ?? 'Actividad eliminada' }}</p>
+                        <p class="text-xs text-gray-400">{{ $resp->actividad ? ucfirst($resp->actividad->tipo) : '—' }}</p>
                     </td>
                     <td class="px-6 py-3 text-sm text-gray-500">
                         {{ $resp->actividad->leccion->modulo->curso->titulo ?? '—' }}
@@ -117,10 +117,10 @@
                     </td>
                     <td class="px-6 py-3 text-center">
                         @if($resp->estado === 'calificada')
-                            @php $pct = $resp->actividad->puntaje_maximo > 0
+                            @php $pct = ($resp->actividad?->puntaje_maximo ?? 0) > 0
                                 ? round(($resp->calificacion / $resp->actividad->puntaje_maximo) * 100) : 0; @endphp
                             <span class="text-sm font-bold {{ $pct >= 60 ? 'text-green-600' : 'text-red-500' }}">
-                                {{ $resp->calificacion }}/{{ $resp->actividad->puntaje_maximo }}
+                                {{ $resp->calificacion }}{{ $resp->actividad ? '/' . $resp->actividad->puntaje_maximo : '' }}
                             </span>
                         @else
                             <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full">Pendiente</span>

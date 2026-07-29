@@ -188,9 +188,18 @@ class ReporteService
             ];
         });
 
-        // Historial de actividades
+        // Historial de actividades. Se usa withTrashed en cada nivel porque
+        // actividad/leccion/modulo/curso son soft-delete: si el instructor borra
+        // la actividad después de que el estudiante respondió, la fila de
+        // respuesta sigue existiendo y el historial debe seguir mostrándola.
         $respuestasHistorial = $usuario->respuestas()
-            ->with(['actividad.leccion.modulo.curso'])
+            ->with(['actividad' => fn($q) => $q->withTrashed()->with([
+                'leccion' => fn($q) => $q->withTrashed()->with([
+                    'modulo' => fn($q) => $q->withTrashed()->with([
+                        'curso' => fn($q) => $q->withTrashed(),
+                    ]),
+                ]),
+            ])])
             ->orderBy('fecha_envio', 'desc')
             ->take(20)
             ->get();
