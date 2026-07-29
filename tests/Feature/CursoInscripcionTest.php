@@ -162,4 +162,29 @@ class CursoInscripcionTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    /**
+     * Reproduce el bug: un estudiante ya inscrito en un curso publicado
+     * no debe perder el acceso si el instructor lo regresa a borrador
+     * (o lo inscribio masivamente mientras seguia en borrador).
+     */
+    public function test_estudiante_inscrito_conserva_acceso_si_curso_pasa_a_borrador(): void
+    {
+        $instructor = $this->crearInstructor();
+        $student = $this->crearEstudiante();
+        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
+
+        Inscripcion::factory()->create([
+            'user_id'  => $student->id,
+            'curso_id' => $curso->id,
+        ]);
+
+        $curso->update(['estado' => 'borrador']);
+
+        $responseCurso = $this->actingAs($student)->get("/cursos/{$curso->id}");
+        $responseCurso->assertStatus(200);
+
+        $responseLeccion = $this->actingAs($student)->get("/lecciones/{$leccion->id}");
+        $responseLeccion->assertStatus(200);
+    }
 }

@@ -14,7 +14,12 @@ class CursoPolicy
 
     public function view(User $user, Curso $curso): bool
     {
-        return $curso->estaPublicado() || $user->esAdmin() || $user->id === $curso->created_by;
+        // Un estudiante ya inscrito conserva acceso aunque el instructor
+        // regrese el curso a borrador/archivado después de la inscripción.
+        return $curso->estaPublicado()
+            || $user->esAdmin()
+            || $user->id === $curso->created_by
+            || $curso->inscripciones()->where('user_id', $user->id)->exists();
     }
 
     public function create(User $user): bool
