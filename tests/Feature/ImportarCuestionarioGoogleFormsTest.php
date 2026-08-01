@@ -10,7 +10,6 @@ use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
 class ImportarCuestionarioGoogleFormsTest extends TestCase
@@ -165,13 +164,11 @@ class ImportarCuestionarioGoogleFormsTest extends TestCase
         $this->assertEquals(0, $actividad->preguntas()->count());
     }
 
-    public function test_descarga_json_de_ejemplo_pasa_la_validacion_del_importador(): void
+    public function test_descarga_json_de_ejemplo_y_se_importa_correctamente(): void
     {
-        $rol = Rol::firstOrCreate(['nombre' => 'Instructor'], ['descripcion' => 'Instructor role']);
-        $instructor = User::factory()->create(['estado' => 'activo']);
-        $instructor->roles()->attach($rol);
+        $actividad = $this->crearInstructorConCuestionario(100);
 
-        $response = $this->actingAs($instructor)->get(route('preguntas.ejemplo'));
+        $response = $this->get(route('preguntas.ejemplo'));
 
         $response->assertOk();
         $this->assertStringContainsString(
@@ -179,20 +176,29 @@ class ImportarCuestionarioGoogleFormsTest extends TestCase
             $response->headers->get('Content-Disposition')
         );
 
-        $contenido = json_decode($response->streamedContent(), true);
+        $contenidoDescargado = $response->streamedContent();
 
-        $validator = Validator::make((array) $contenido, [
-            'version'                         => 'required|integer|in:1',
-            'preguntas'                       => 'required|array|min:1',
-            'preguntas.*.texto'               => 'required|string',
-            'preguntas.*.tipo'                => 'required|in:opcion_multiple,respuesta_corta',
-            'preguntas.*.multiple'            => 'nullable|boolean',
-            'preguntas.*.opciones'            => 'required_if:preguntas.*.tipo,opcion_multiple|array|min:2',
-            'preguntas.*.opciones.*.texto'    => 'required|string',
-            'preguntas.*.opciones.*.correcta' => 'nullable|boolean',
-        ]);
+        $archivo = UploadedFile::fake()->createWithContent('ejemplo-cuestionario.json', $contenidoDescargado);
+        $importResponse = $this->post(route('preguntas.importar', $actividad), ['archivo' => $archivo]);
 
-        $this->assertFalse($validator->fails(), $validator->errors()->first());
-        $this->assertGreaterThanOrEqual(4, count($contenido['preguntas']));
+        $importResponse->assertRedirect(route('actividades.edit', $actividad));
+        $this->assertEquals(4, $actividad->preguntas()->count());
+
+        $francia = $actividad->preguntas()->where('pregunta_texto', '¿Cuál es la capital de Francia?')->first();
+        $this->assertEquals('opcion_multiple', $francia->tipo);
+        $this->assertFalse($francia->seleccion_multiple);
+        $this->assertEquals('París', $francia->opciones()->where('es_correcta', true)->first()->texto);
+
+        $lenguajes = $actividad->preguntas()->where('pregunta_texto', 'Selecciona los lenguajes de programación (puede haber varias correctas)')->first();
+        $this->assertEquals('opcion_multiple', $lenguajes->tipo);
+        $this->assertTrue($lenguajes->seleccion_multiple);
+        $this->assertEquals(2, $lenguajes->opciones()->where('es_correcta', true)->count());
+
+        $sol = $actividad->preguntas()->where('pregunta_texto', 'El sol es una estrella')->first();
+        $this->assertEquals('verdadero_falso', $sol->tipo);
+        $this->assertEquals('Verdadero', $sol->opciones()->where('es_correcta', true)->first()->texto);
+
+        $fotosintesis = $actividad->preguntas()->where('pregunta_texto', 'Explica brevemente qué es la fotosíntesis')->first();
+        $this->assertEquals('respuesta_corta', $fotosintesis->tipo);
     }
 }
