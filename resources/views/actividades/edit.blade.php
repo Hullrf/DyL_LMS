@@ -437,6 +437,13 @@
                     <code class="bg-gray-100 px-1 rounded">docs/apps-script/</code> y sube el archivo aquí.
                     Las preguntas se agregan al final de las que ya existen.
                 </p>
+                <a href="{{ route('preguntas.ejemplo') }}" target="_blank"
+                   class="btn-outline w-full mb-3 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Descargar archivo de ejemplo
+                </a>
                 <form action="{{ route('preguntas.importar', $actividad) }}" method="POST" enctype="multipart/form-data"
                       class="flex gap-2 items-start">
                     @csrf
