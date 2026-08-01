@@ -87,6 +87,54 @@ class ImportacionCuestionarioController extends Controller
             ->with('success', $mensaje);
     }
 
+    public function ejemplo()
+    {
+        $contenido = [
+            'version' => 1,
+            'preguntas' => [
+                [
+                    'texto' => '¿Cuál es la capital de Francia?',
+                    'tipo' => 'opcion_multiple',
+                    'multiple' => false,
+                    'opciones' => [
+                        ['texto' => 'Madrid', 'correcta' => false],
+                        ['texto' => 'París', 'correcta' => true],
+                        ['texto' => 'Roma', 'correcta' => false],
+                    ],
+                ],
+                [
+                    'texto' => 'Selecciona los lenguajes de programación (puede haber varias correctas)',
+                    'tipo' => 'opcion_multiple',
+                    'multiple' => true,
+                    'opciones' => [
+                        ['texto' => 'PHP', 'correcta' => true],
+                        ['texto' => 'Photoshop', 'correcta' => false],
+                        ['texto' => 'JavaScript', 'correcta' => true],
+                    ],
+                ],
+                [
+                    'texto' => 'El sol es una estrella',
+                    'tipo' => 'opcion_multiple',
+                    'multiple' => false,
+                    'opciones' => [
+                        ['texto' => 'Verdadero', 'correcta' => true],
+                        ['texto' => 'Falso', 'correcta' => false],
+                    ],
+                ],
+                [
+                    'texto' => 'Explica brevemente qué es la fotosíntesis',
+                    'tipo' => 'respuesta_corta',
+                ],
+            ],
+        ];
+
+        return response()->streamDownload(
+            fn () => print(json_encode($contenido, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)),
+            'ejemplo-cuestionario.json',
+            ['Content-Type' => 'application/json']
+        );
+    }
+
     private function esVerdaderoFalso(array $opciones): bool
     {
         if (count($opciones) !== 2) return false;

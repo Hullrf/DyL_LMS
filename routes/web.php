@@ -185,6 +185,8 @@ Route::middleware(['auth', 'instructor'])->group(function () {
 });
 Route::middleware('auth')->get('/rubrica/ejemplo', [\App\Http\Controllers\RubricaController::class, 'ejemplo'])
     ->name('rubrica.ejemplo');
+Route::middleware('auth')->get('/preguntas/ejemplo', [ImportacionCuestionarioController::class, 'ejemplo'])
+    ->name('preguntas.ejemplo');
 
 // 2FA (sin middleware 2fa para evitar redirección circular)
 Route::middleware('auth')->group(function () {

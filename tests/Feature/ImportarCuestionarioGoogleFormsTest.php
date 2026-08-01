@@ -10,6 +10,7 @@ use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
 class ImportarCuestionarioGoogleFormsTest extends TestCase
@@ -162,5 +163,36 @@ class ImportarCuestionarioGoogleFormsTest extends TestCase
 
         $response->assertForbidden();
         $this->assertEquals(0, $actividad->preguntas()->count());
+    }
+
+    public function test_descarga_json_de_ejemplo_pasa_la_validacion_del_importador(): void
+    {
+        $rol = Rol::firstOrCreate(['nombre' => 'Instructor'], ['descripcion' => 'Instructor role']);
+        $instructor = User::factory()->create(['estado' => 'activo']);
+        $instructor->roles()->attach($rol);
+
+        $response = $this->actingAs($instructor)->get(route('preguntas.ejemplo'));
+
+        $response->assertOk();
+        $this->assertStringContainsString(
+            'ejemplo-cuestionario.json',
+            $response->headers->get('Content-Disposition')
+        );
+
+        $contenido = json_decode($response->streamedContent(), true);
+
+        $validator = Validator::make((array) $contenido, [
+            'version'                         => 'required|integer|in:1',
+            'preguntas'                       => 'required|array|min:1',
+            'preguntas.*.texto'               => 'required|string',
+            'preguntas.*.tipo'                => 'required|in:opcion_multiple,respuesta_corta',
+            'preguntas.*.multiple'            => 'nullable|boolean',
+            'preguntas.*.opciones'            => 'required_if:preguntas.*.tipo,opcion_multiple|array|min:2',
+            'preguntas.*.opciones.*.texto'    => 'required|string',
+            'preguntas.*.opciones.*.correcta' => 'nullable|boolean',
+        ]);
+
+        $this->assertFalse($validator->fails(), $validator->errors()->first());
+        $this->assertGreaterThanOrEqual(4, count($contenido['preguntas']));
     }
 }
