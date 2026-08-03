@@ -4,7 +4,7 @@
 
 /* ============================================================
    DyL Quality LMS — Design System
-   Paleta:  Navy #1e3a5f · Blue #2563eb · Gold #d97706
+   Paleta:  Naranja #EA580C (dyl-orange-600) · Grafito #0F172A (dyl-graphite-900)
 ============================================================ */
 
 @layer base {
@@ -30,7 +30,7 @@
 
     /* ---- Botones ---- */
     .btn {
-        @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full
                font-medium text-sm transition-all duration-150 focus-visible:ring-2
                focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
     }
@@ -38,21 +38,17 @@
         @apply btn bg-dyl-orange-600 text-white hover:bg-dyl-orange-700
                focus-visible:ring-dyl-orange-600;
     }
-    .btn-navy {
-        @apply btn bg-dyl-graphite-900 text-white hover:bg-dyl-graphite-800
-               focus-visible:ring-dyl-graphite-900;
-    }
-    .btn-gold {
-        @apply btn bg-dyl-orange-500 text-white hover:bg-dyl-orange-700
-               focus-visible:ring-dyl-orange-500;
-    }
     .btn-outline {
-        @apply btn bg-white text-gray-700 border border-gray-300
-               hover:bg-gray-50 focus-visible:ring-gray-400;
+        @apply btn bg-white text-dyl-graphite-700 border border-dyl-graphite-300
+               hover:bg-dyl-graphite-50 focus-visible:ring-dyl-graphite-400;
+    }
+    .btn-ghost {
+        @apply btn bg-dyl-graphite-100 text-dyl-graphite-700 hover:bg-dyl-graphite-200
+               focus-visible:ring-dyl-graphite-400;
     }
     .btn-danger {
-        @apply btn bg-red-600 text-white hover:bg-red-700
-               focus-visible:ring-red-500;
+        @apply btn bg-dyl-graphite-900 text-white hover:bg-dyl-graphite-800
+               focus-visible:ring-dyl-graphite-900;
     }
     .btn-sm {
         @apply px-3 py-1.5 text-xs;
@@ -62,9 +58,7 @@
     }
 
     /* ---- Cards ---- */
-    .card {
-        @apply bg-white rounded-xl shadow-card;
-    }
+    .card { @apply bg-white rounded-2xl shadow-card; }
     .card-hover {
         @apply card transition-shadow hover:shadow-card-hover;
     }
@@ -76,15 +70,21 @@
     }
 
     /* ---- Badges / etiquetas ---- */
-    .badge {
-        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-    }
-    .badge-green  { @apply badge bg-green-100  text-green-800;  }
-    .badge-blue   { @apply badge bg-blue-100   text-blue-800;   }
-    .badge-yellow { @apply badge bg-yellow-100 text-yellow-800; }
-    .badge-red    { @apply badge bg-red-100    text-red-700;    }
-    .badge-gray   { @apply badge bg-gray-100   text-gray-600;   }
-    .badge-gold   { @apply badge bg-dyl-orange-100 text-amber-800; }
+    .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
+    .badge-success { @apply badge bg-dyl-orange-100 text-dyl-orange-700; }
+    .badge-info    { @apply badge bg-dyl-graphite-100 text-dyl-graphite-600; }
+    .badge-warning { @apply badge bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold; }
+    .badge-error   { @apply badge bg-dyl-graphite-800 text-white; }
+
+    /* Alias de compatibilidad — usados hoy en ~14 vistas, apuntan a los mismos valores
+       de arriba. Se pueden renombrar en las vistas y borrar estos alias en una fase
+       posterior; no es necesario para que el color sea correcto. */
+    .badge-green  { @apply badge-success; }
+    .badge-blue   { @apply badge-info; }
+    .badge-yellow { @apply badge-warning; }
+    .badge-red    { @apply badge-error; }
+    .badge-gold   { @apply badge-success; }
+    .badge-gray   { @apply badge-info; }
 
     /* ---- Tablas ---- */
     .table-auto-responsive {
@@ -114,21 +114,17 @@
     .form-select {
         @apply form-input pr-8 cursor-pointer;
     }
-    .form-error {
-        @apply mt-1 text-xs text-red-600;
-    }
+    .form-error { @apply mt-1 text-xs text-dyl-graphite-900 font-semibold; }
     .form-hint {
         @apply mt-1 text-xs text-gray-400;
     }
 
     /* ---- Alertas ---- */
-    .alert {
-        @apply rounded-lg p-4 text-sm border;
-    }
-    .alert-success { @apply alert bg-green-50 border-green-200 text-green-800; }
-    .alert-error   { @apply alert bg-red-50   border-red-200   text-red-700;   }
-    .alert-warning { @apply alert bg-yellow-50 border-yellow-200 text-yellow-800; }
-    .alert-info    { @apply alert bg-blue-50  border-blue-200  text-blue-800;  }
+    .alert { @apply rounded-lg p-4 text-sm border flex items-start gap-3; }
+    .alert-success { @apply alert bg-dyl-orange-50 border-dyl-orange-200 text-dyl-orange-800; }
+    .alert-info    { @apply alert bg-dyl-graphite-50 border-dyl-graphite-200 text-dyl-graphite-700; }
+    .alert-warning { @apply alert bg-dyl-graphite-50 border-2 border-dyl-orange-300 text-dyl-graphite-900 font-medium; }
+    .alert-error   { @apply alert bg-dyl-graphite-900 text-white border-transparent; }
 
     /* ---- Progress bar ---- */
     .progress-bar {
@@ -138,7 +134,7 @@
         @apply h-full rounded-full transition-all duration-500;
     }
     .progress-blue  { @apply progress-fill bg-dyl-orange-600; }
-    .progress-green { @apply progress-fill bg-green-500; }
+    .progress-green { @apply progress-fill bg-dyl-orange-600; }
     .progress-gold  { @apply progress-fill bg-dyl-orange-500; }
 
     /* ---- KPI card ---- */
