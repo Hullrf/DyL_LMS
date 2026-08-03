@@ -152,6 +152,14 @@
     .auth-card {
         @apply bg-white shadow-xl rounded-2xl px-8 py-10 w-full max-w-md mx-auto;
     }
+
+    /* ---- Dropdown (topbar) ---- */
+    .dropdown-item {
+        @apply flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 transition-colors;
+    }
+    .dropdown-item:hover {
+        @apply bg-gray-50;
+    }
 }
 
 @layer utilities {
