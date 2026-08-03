@@ -7,7 +7,7 @@
     <h1 class="text-3xl font-bold text-gray-900">Cursos</h1>
     @if(auth()->user()->esInstructor() || auth()->user()->esAdmin())
         <a href="{{ route('cursos.create') }}"
-           class="bg-dyl-orange text-white px-5 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
+           class="bg-dyl-orange-600 text-white px-5 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
             + Nuevo Curso
         </a>
     @endif
@@ -19,7 +19,7 @@
 @if($inscripciones->isNotEmpty())
 <section class="mb-12">
     <div class="flex items-center gap-3 mb-5">
-        <div class="w-1 h-6 bg-dyl-orange rounded-full"></div>
+        <div class="w-1 h-6 bg-dyl-orange-600 rounded-full"></div>
         <h2 class="text-xl font-bold text-gray-900">Mis Cursos</h2>
         <span class="text-sm text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
             {{ $inscripciones->count() }}
@@ -36,7 +36,7 @@
                 <img src="{{ asset('storage/' . $curso->imagen_portada) }}"
                      alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
             @else
-                <div class="w-full h-44 bg-gradient-to-br from-dyl-orange to-orange-700 flex items-center justify-center">
+                <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-600 to-dyl-orange-700 flex items-center justify-center">
                     <span class="text-5xl">📚</span>
                 </div>
             @endif
@@ -46,7 +46,7 @@
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-medium
                         @if($inscripcion->estado === 'completado') text-green-600 bg-green-100
-                        @else text-dyl-orange bg-orange-100 @endif
+                        @else text-dyl-orange-600 bg-dyl-orange-100 @endif
                         px-2.5 py-0.5 rounded-full">
                         @if($inscripcion->estado === 'completado')
                             ✓ Completado
@@ -65,7 +65,7 @@
 
                 <div class="mt-auto space-y-2">
                     <a href="{{ route('cursos.show', $curso) }}"
-                       class="block w-full text-center py-2 rounded-lg font-medium text-sm bg-dyl-orange text-white hover:bg-dyl-orange-700 transition-colors">
+                       class="block w-full text-center py-2 rounded-lg font-medium text-sm bg-dyl-orange-600 text-white hover:bg-dyl-orange-700 transition-colors">
                         Continuar →
                     </a>
                     @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())

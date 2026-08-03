@@ -64,7 +64,7 @@
                             <input type="checkbox" name="mostrar_historial_intentos" value="1"
                                    {{ old('mostrar_historial_intentos', $actividad->mostrar_historial_intentos) ? 'checked' : '' }}
                                    class="sr-only peer">
-                            <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-blue rounded-full transition-colors"></div>
+                            <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-orange-600 rounded-full transition-colors"></div>
                             <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
                         </div>
                         <span class="text-sm text-gray-700">Mostrar a los estudiantes el resumen de sus intentos anteriores</span>
@@ -104,7 +104,7 @@
                 <div class="mb-4 pt-4 border-t border-gray-100"
                      x-data="{ conPlazo: {{ ($actividad->fecha_apertura || $actividad->fecha_cierre) ? 'true' : 'false' }} }">
                     <label class="flex items-center gap-2 cursor-pointer mb-3">
-                        <input type="checkbox" x-model="conPlazo" class="rounded text-dyl-orange">
+                        <input type="checkbox" x-model="conPlazo" class="rounded text-dyl-orange-600">
                         <span class="text-sm font-medium text-gray-700">Configurar plazo de entrega</span>
                     </label>
                     <div x-show="conPlazo" x-cloak class="space-y-3">
@@ -157,7 +157,7 @@
         {{-- ===== PANEL DE RECURSOS ===== --}}
         <div class="card p-6" x-data="{ tipoRecurso: '{{ old('tipo', 'documento') }}' }">
             <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-dyl-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                 </svg>
                 Agregar recurso
@@ -172,7 +172,7 @@
                     <div class="grid grid-cols-2 gap-2">
                         @foreach(['documento' => ['📄','Documento'], 'imagen' => ['🖼️','Imagen'], 'video' => ['▶️','Video'], 'texto' => ['📝','Texto'], 'enlace' => ['🔗','Enlace']] as $val => [$emoji, $label])
                         <label class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
-                               :class="tipoRecurso === '{{ $val }}' ? 'border-dyl-blue bg-blue-50 text-dyl-blue font-medium' : 'border-gray-200 text-gray-600 hover:border-gray-300'">
+                               :class="tipoRecurso === '{{ $val }}' ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-600 font-medium' : 'border-gray-200 text-gray-600 hover:border-gray-300'">
                             <input type="radio" name="tipo" value="{{ $val }}" x-model="tipoRecurso" class="sr-only">
                             <span>{{ $emoji }}</span> {{ $label }}
                         </label>
@@ -222,7 +222,7 @@
                      x-data="{ archivoError: '', preview: null }">
                     <label class="form-label">Archivo de imagen</label>
                     <input type="file" name="archivo" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
-                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-dyl-orange hover:file:bg-orange-100 cursor-pointer"
+                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-600 hover:file:bg-dyl-orange-100 cursor-pointer"
                            :disabled="tipoRecurso !== 'imagen'"
                            x-on:change="
                                archivoError = '';
@@ -324,7 +324,7 @@
             @php $nPreguntas = $preguntas->count(); @endphp
             @if($nPreguntas > 0)
             <div class="mb-4 flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm">
-                <svg class="w-4 h-4 text-dyl-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-dyl-orange-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span class="text-gray-700">
@@ -356,7 +356,7 @@
                             <span class="text-gray-400 font-normal">(opcional)</span>
                         </label>
                         <input type="file" name="imagen" accept="image/*"
-                               class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-dyl-orange hover:file:bg-orange-100 cursor-pointer"
+                               class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-600 hover:file:bg-dyl-orange-100 cursor-pointer"
                                x-on:change="
                                    errorImagen = '';
                                    preview = null;
@@ -418,7 +418,7 @@
                     <div x-show="tipo === 'opcion_multiple'" x-cloak>
                         <label class="flex items-center gap-2.5 cursor-pointer select-none">
                             <input type="checkbox" name="seleccion_multiple" value="1"
-                                   class="w-4 h-4 rounded text-dyl-blue">
+                                   class="w-4 h-4 rounded text-dyl-orange-600">
                             <span class="text-sm text-gray-700">
                                 Permite <strong>más de una respuesta correcta</strong>
                                 <span class="text-gray-400">(puntaje parcial por cada acierto)</span>
@@ -518,7 +518,7 @@
                         <div class="mb-3">
                             <label class="form-label">Cambiar imagen <span class="text-gray-400 font-normal">(opcional)</span></label>
                             <input type="file" name="imagen" accept="image/*"
-                                   class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-dyl-orange hover:file:bg-orange-100 cursor-pointer">
+                                   class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-600 hover:file:bg-dyl-orange-100 cursor-pointer">
                             <p class="form-hint">JPG, PNG, WebP — máx. 4 MB</p>
                         </div>
 
@@ -743,7 +743,7 @@
                     {{-- Encabezado con toggle --}}
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-dyl-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-dyl-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                             </svg>
                             Rúbrica de evaluación
@@ -752,7 +752,7 @@
                             <span class="text-sm text-gray-600" x-text="usaRubrica ? 'Activa' : 'Inactiva'"></span>
                             <div class="relative">
                                 <input type="checkbox" x-model="usaRubrica" class="sr-only peer">
-                                <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-blue rounded-full transition-colors"></div>
+                                <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-orange-600 rounded-full transition-colors"></div>
                                 <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
                             </div>
                         </label>

@@ -89,7 +89,7 @@
                     <div class="relative">
                         <input type="hidden" name="mostrar_historial_intentos" value="0">
                         <input type="checkbox" name="mostrar_historial_intentos" value="1" {{ old('mostrar_historial_intentos', true) ? 'checked' : '' }} class="sr-only peer">
-                        <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-blue rounded-full transition-colors"></div>
+                        <div class="w-10 h-6 bg-gray-200 peer-checked:bg-dyl-orange-600 rounded-full transition-colors"></div>
                         <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
                     </div>
                     <span class="text-sm text-gray-700">Mostrar a los estudiantes el resumen de sus intentos anteriores</span>

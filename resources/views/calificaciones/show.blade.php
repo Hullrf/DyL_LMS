@@ -87,7 +87,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-{{ min($criterio->niveles->count(), 4) }} divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
                             @foreach($criterio->niveles->sortBy('orden') as $nivel)
                             <label class="cursor-pointer p-3 hover:bg-blue-50 transition-colors"
-                                   :class="selecciones[{{ $criterio->id }}] == {{ $nivel->id }} ? 'bg-blue-50 ring-2 ring-inset ring-dyl-blue' : ''">
+                                   :class="selecciones[{{ $criterio->id }}] == {{ $nivel->id }} ? 'bg-dyl-orange-50 ring-2 ring-inset ring-dyl-orange-600' : ''">
                                 <input type="radio"
                                        name="selecciones[{{ $criterio->id }}]"
                                        value="{{ $nivel->id }}"

@@ -68,7 +68,7 @@
     {{-- Skip to main content (accesibilidad) --}}
     <a href="#main-content"
        class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50
-              focus:bg-dyl-navy focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm">
+              focus:bg-dyl-graphite-900 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm">
         Saltar al contenido principal
     </a>
 
@@ -76,7 +76,7 @@
          NAVEGACIÓN PRINCIPAL
     ================================================================ --}}
     <header role="banner">
-    <nav class="bg-dyl-orange shadow-md"
+    <nav class="bg-dyl-orange-600 shadow-md"
          role="navigation"
          aria-label="Navegación principal"
          x-data="{ mobileOpen: false }">
@@ -87,12 +87,12 @@
                 {{-- Logo --}}
                 <div class="flex items-center gap-8">
                     <a href="{{ route('dashboard') }}"
-                       class="flex items-center gap-2.5 group focus-visible:ring-2 focus-visible:ring-dyl-gold rounded"
+                       class="flex items-center gap-2.5 group focus-visible:ring-2 focus-visible:ring-dyl-orange-500 rounded"
                        aria-label="LMS DyL - Ir al inicio">
                         {{-- Recuadro DyL --}}
-                        <div class="bg-dyl-gold rounded-lg flex items-center justify-center flex-shrink-0 px-2 h-8
-                                    group-hover:bg-dyl-gold-400 transition-colors">
-                            <span class="text-dyl-navy font-bold text-sm leading-none tracking-tight">D&amp;L</span>
+                        <div class="bg-dyl-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 px-2 h-8
+                                    group-hover:bg-dyl-orange-400 transition-colors">
+                            <span class="text-dyl-graphite-900 font-bold text-sm leading-none tracking-tight">D&amp;L</span>
                         </div>
                         <span class="text-white font-bold text-lg tracking-tight leading-none">LMS</span>
                     </a>
@@ -174,7 +174,7 @@
                                     @click.outside="open = false"
                                     class="flex items-center gap-2 text-white/80 hover:text-white
                                            rounded-lg px-3 py-2 transition-colors focus-visible:ring-2
-                                           focus-visible:ring-dyl-gold"
+                                           focus-visible:ring-dyl-orange-500"
                                     aria-haspopup="true"
                                     :aria-expanded="open">
                                 <div class="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center
@@ -362,12 +362,12 @@
     {{-- ================================================================
          FOOTER
     ================================================================ --}}
-    <footer class="bg-dyl-navy mt-auto" role="contentinfo">
+    <footer class="bg-dyl-graphite-900 mt-auto" role="contentinfo">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-2.5">
-                    <div class="bg-dyl-gold rounded-md flex items-center justify-center px-1.5 h-7">
-                        <span class="text-dyl-navy font-bold text-xs tracking-tight">D&amp;L</span>
+                    <div class="bg-dyl-orange-500 rounded-md flex items-center justify-center px-1.5 h-7">
+                        <span class="text-dyl-graphite-900 font-bold text-xs tracking-tight">D&amp;L</span>
                     </div>
                     <span class="text-white/80 font-semibold text-sm">DyL Quality Consulting</span>
                 </div>
