@@ -31,7 +31,7 @@
                 <label for="password" class="form-label mb-0">Contraseña</label>
                 @if(Route::has('password.request'))
                     <a href="{{ route('password.request') }}"
-                       class="text-xs text-dyl-blue hover:underline">
+                       class="text-xs text-dyl-orange-600 hover:underline">
                         ¿Olvidaste tu contraseña?
                     </a>
                 @endif
@@ -47,7 +47,7 @@
 
         <div class="flex items-center gap-2">
             <input id="remember_me" type="checkbox" name="remember"
-                   class="rounded border-gray-300 text-dyl-blue focus:ring-dyl-blue">
+                   class="rounded border-gray-300 text-dyl-orange-600 focus:ring-dyl-orange-600">
             <label for="remember_me" class="text-sm text-gray-600 select-none cursor-pointer">
                 Mantener sesión iniciada
             </label>
@@ -63,7 +63,7 @@
         @if(Route::has('register'))
             <p class="text-center text-sm text-gray-500">
                 ¿No tienes cuenta?
-                <a href="{{ route('register') }}" class="text-dyl-blue font-medium hover:underline">
+                <a href="{{ route('register') }}" class="text-dyl-orange-600 font-medium hover:underline">
                     Regístrate
                 </a>
             </p>

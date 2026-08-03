@@ -18,7 +18,7 @@
 
     /* Focus visible accesible — WCAG 2.1 */
     :focus-visible {
-        @apply outline-none ring-2 ring-dyl-blue ring-offset-2;
+        @apply outline-none ring-2 ring-dyl-orange-600 ring-offset-2;
     }
 
     h1, h2, h3, h4 {
@@ -35,16 +35,16 @@
                focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
     }
     .btn-primary {
-        @apply btn bg-dyl-blue text-white hover:bg-dyl-blue-600
-               focus-visible:ring-dyl-blue;
+        @apply btn bg-dyl-orange-600 text-white hover:bg-dyl-orange-700
+               focus-visible:ring-dyl-orange-600;
     }
     .btn-navy {
-        @apply btn bg-dyl-navy text-white hover:bg-dyl-navy-700
-               focus-visible:ring-dyl-navy;
+        @apply btn bg-dyl-graphite-900 text-white hover:bg-dyl-graphite-800
+               focus-visible:ring-dyl-graphite-900;
     }
     .btn-gold {
-        @apply btn bg-dyl-gold text-white hover:bg-amber-700
-               focus-visible:ring-dyl-gold;
+        @apply btn bg-dyl-orange-500 text-white hover:bg-dyl-orange-700
+               focus-visible:ring-dyl-orange-500;
     }
     .btn-outline {
         @apply btn bg-white text-gray-700 border border-gray-300
@@ -84,7 +84,7 @@
     .badge-yellow { @apply badge bg-yellow-100 text-yellow-800; }
     .badge-red    { @apply badge bg-red-100    text-red-700;    }
     .badge-gray   { @apply badge bg-gray-100   text-gray-600;   }
-    .badge-gold   { @apply badge bg-dyl-gold-100 text-amber-800; }
+    .badge-gold   { @apply badge bg-dyl-orange-100 text-amber-800; }
 
     /* ---- Tablas ---- */
     .table-auto-responsive {
@@ -105,7 +105,7 @@
     .form-input {
         @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
                text-gray-900 placeholder-gray-400 shadow-sm
-               focus:border-dyl-blue focus:ring-1 focus:ring-dyl-blue
+               focus:border-dyl-orange-600 focus:ring-1 focus:ring-dyl-orange-600
                transition-colors;
     }
     .form-textarea {
@@ -137,9 +137,9 @@
     .progress-fill {
         @apply h-full rounded-full transition-all duration-500;
     }
-    .progress-blue  { @apply progress-fill bg-dyl-blue; }
+    .progress-blue  { @apply progress-fill bg-dyl-orange-600; }
     .progress-green { @apply progress-fill bg-green-500; }
-    .progress-gold  { @apply progress-fill bg-dyl-gold; }
+    .progress-gold  { @apply progress-fill bg-dyl-orange-500; }
 
     /* ---- KPI card ---- */
     .kpi-card {

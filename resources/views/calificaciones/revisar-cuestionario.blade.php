@@ -37,7 +37,7 @@
             $esCorta = $pregunta->tipo === 'respuesta_corta';
         @endphp
 
-        <div class="card overflow-hidden {{ $esCorta ? 'ring-2 ring-dyl-blue/30' : '' }}">
+        <div class="card overflow-hidden {{ $esCorta ? 'ring-2 ring-dyl-orange-600/30' : '' }}">
 
             {{-- Cabecera de pregunta --}}
             <div class="px-5 py-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between gap-3">

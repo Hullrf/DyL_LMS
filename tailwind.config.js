@@ -16,16 +16,30 @@ export default {
             },
             colors: {
                 dyl: {
-                    navy:         '#1e3a5f',
-                    'navy-700':   '#172e4c',
-                    'navy-800':   '#0f1e33',
-                    blue:         '#2563eb',
-                    'blue-600':   '#1d4ed8',
-                    gold:         '#d97706',
-                    'gold-400':   '#fbbf24',
-                    'gold-100':   '#fef3c7',
-                    orange:       '#c8682e',   /* naranja teja — navbar */
-                    'orange-700': '#b05820',   /* naranja teja oscuro — menú móvil */
+                    orange: {
+                        50:  '#FFF7ED',
+                        100: '#FFEDD5',
+                        200: '#FED7AA',
+                        300: '#FDBA74',
+                        400: '#FB923C',
+                        500: '#F97316',
+                        600: '#EA580C',
+                        700: '#C2410C',
+                        800: '#9A3412',
+                        900: '#7C2D12',
+                    },
+                    graphite: {
+                        50:  '#F8FAFC',
+                        100: '#F1F5F9',
+                        200: '#E2E8F0',
+                        300: '#CBD5E1',
+                        400: '#94A3B8',
+                        500: '#64748B',
+                        600: '#475569',
+                        700: '#334155',
+                        800: '#1E293B',
+                        900: '#0F172A',
+                    },
                 },
             },
             boxShadow: {

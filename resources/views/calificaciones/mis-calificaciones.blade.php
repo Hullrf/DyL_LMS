@@ -31,7 +31,7 @@
     </div>
     <div class="bg-white p-5 rounded-lg shadow text-center">
         <p class="text-xs text-gray-500 uppercase tracking-wide">Cursos</p>
-        <p class="text-3xl font-bold text-dyl-orange mt-1">{{ $porCurso->count() }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">{{ $porCurso->count() }}</p>
     </div>
     <div class="bg-white p-5 rounded-lg shadow text-center">
         <p class="text-xs text-gray-500 uppercase tracking-wide">Promedio</p>
@@ -45,7 +45,7 @@
 <div class="mb-8">
     {{-- Encabezado del curso --}}
     <div class="flex items-center gap-3 mb-3">
-        <div class="w-2 h-6 bg-dyl-orange rounded-full flex-shrink-0"></div>
+        <div class="w-2 h-6 bg-dyl-orange-600 rounded-full flex-shrink-0"></div>
         <h2 class="text-lg font-bold text-gray-900">{{ $grupo->curso->titulo }}</h2>
         <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
             {{ $grupo->respuestas->count() }} {{ Str::plural('actividad', $grupo->respuestas->count()) }}

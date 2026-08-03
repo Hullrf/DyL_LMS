@@ -18,15 +18,15 @@
 {{-- Filtros --}}
 <div class="flex gap-2 mb-6">
     <a href="{{ route('calificaciones.index', ['estado' => 'pendiente']) }}"
-       class="px-4 py-2 rounded-lg text-sm font-medium {{ $estado === 'pendiente' ? 'bg-dyl-blue text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
+       class="px-4 py-2 rounded-lg text-sm font-medium {{ $estado === 'pendiente' ? 'bg-dyl-orange-600 text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
         Pendientes
     </a>
     <a href="{{ route('calificaciones.index', ['estado' => 'calificada']) }}"
-       class="px-4 py-2 rounded-lg text-sm font-medium {{ $estado === 'calificada' ? 'bg-dyl-blue text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
+       class="px-4 py-2 rounded-lg text-sm font-medium {{ $estado === 'calificada' ? 'bg-dyl-orange-600 text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
         Calificadas
     </a>
     <a href="{{ route('calificaciones.index', ['estado' => 'todas']) }}"
-       class="px-4 py-2 rounded-lg text-sm font-medium {{ $estado === 'todas' ? 'bg-dyl-blue text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
+       class="px-4 py-2 rounded-lg text-sm font-medium {{ $estado === 'todas' ? 'bg-dyl-orange-600 text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
         Todas
     </a>
 </div>
@@ -78,12 +78,12 @@
                 <td class="px-6 py-4">
                     @if($respuesta->estado === 'en_revision')
                         <a href="{{ route('calificaciones.revisar', $respuesta) }}"
-                           class="text-dyl-blue hover:text-dyl-blue-600 text-sm font-medium">
+                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium">
                             Revisar &rarr;
                         </a>
                     @else
                         <a href="{{ route('calificaciones.show', $respuesta) }}"
-                           class="text-dyl-blue hover:text-dyl-blue-600 text-sm font-medium">
+                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium">
                             {{ $respuesta->estado === 'calificada' ? 'Ver / Editar' : 'Calificar' }} &rarr;
                         </a>
                     @endif
