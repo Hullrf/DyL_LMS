@@ -72,7 +72,25 @@
         Saltar al contenido principal
     </a>
 
-    <div class="lg:flex lg:min-h-full">
+    <div class="lg:flex lg:min-h-full"
+         x-data="{
+             collapsed: localStorage.getItem('dyl_sidebar_collapsed') === '1',
+             mobileOpen: false,
+             toggleSidebar() {
+                 this.collapsed = !this.collapsed;
+                 localStorage.setItem('dyl_sidebar_collapsed', this.collapsed ? '1' : '0');
+             }
+         }"
+         @sidebar-open.window="mobileOpen = true">
+
+        {{-- Overlay móvil — sibling de <aside>, no descendiente, para que 'fixed inset-0'
+             se calcule contra el viewport y no contra la caja transformada del sidebar --}}
+        <div x-show="mobileOpen" x-cloak @click="mobileOpen = false"
+             class="lg:hidden fixed inset-0 bg-black/50 z-40"
+             x-transition:enter="transition-opacity ease-out duration-200"
+             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-in duration-150"
+             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
 
         @include('layouts.partials.sidebar')
 

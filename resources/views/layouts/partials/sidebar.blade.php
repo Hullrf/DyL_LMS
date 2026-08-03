@@ -1,26 +1,11 @@
 @auth
+{{-- collapsed/mobileOpen/toggleSidebar() vienen del x-data compartido en el wrapper
+     de layouts/app.blade.php (ver C1/C2 del fix de revisión) --}}
 <aside
-    x-data="{
-        collapsed: localStorage.getItem('dyl_sidebar_collapsed') === '1',
-        mobileOpen: false,
-        toggle() {
-            this.collapsed = !this.collapsed;
-            localStorage.setItem('dyl_sidebar_collapsed', this.collapsed ? '1' : '0');
-        }
-    }"
-    @sidebar-open.window="mobileOpen = true"
     :class="{ 'is-collapsed': collapsed, 'is-open': mobileOpen }"
     class="dyl-sidebar"
     role="navigation"
     aria-label="Navegación principal">
-
-    {{-- Overlay móvil --}}
-    <div x-show="mobileOpen" x-cloak @click="mobileOpen = false"
-         class="lg:hidden fixed inset-0 bg-black/50 z-40"
-         x-transition:enter="transition-opacity ease-out duration-200"
-         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-         x-transition:leave="transition-opacity ease-in duration-150"
-         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
 
     <div class="dyl-sb-top">
         <a href="{{ route('dashboard') }}" class="dyl-sb-logo" aria-label="LMS DyL - Ir al inicio">
@@ -94,7 +79,7 @@
     </nav>
 
     <div class="dyl-sb-bottom">
-        <button @click="toggle()" type="button" class="dyl-collapse-btn" :aria-expanded="!collapsed" aria-label="Colapsar o expandir la navegación">
+        <button @click="toggleSidebar()" type="button" class="dyl-collapse-btn" :aria-expanded="!collapsed" aria-label="Colapsar o expandir la navegación">
             <span class="dyl-sb-ic" x-show="!collapsed" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.2"/><path d="M14.5 4.5v15"/><path d="M11.3 9.5L8.8 12l2.5 2.5"/></svg>
             </span>
@@ -109,7 +94,10 @@
 <style>
 .dyl-sidebar {
     width: 220px;
-    background: theme('colors.dyl.graphite.900');
+    /* Literal en vez de theme(): este <style> es HTML crudo enviado al navegador,
+       no pasa por el pipeline de Tailwind/PostCSS (solo resources/css/app.css lo hace).
+       dyl-graphite-900 = #0F172A (ver tailwind.config.js) */
+    background: #0F172A;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -120,19 +108,21 @@
     transition: width .18s ease, transform .2s ease;
 }
 .dyl-sidebar.is-open { transform: translateX(0); }
+/* Por debajo de 1024px el drawer cerrado se saca del árbol de accesibilidad y del
+   tab order (además del transform que ya lo mueve fuera de pantalla visualmente). */
+@media (max-width: 1023.98px) {
+    .dyl-sidebar:not(.is-open) { visibility: hidden; }
+}
 @media (min-width: 1024px) {
     .dyl-sidebar { position: sticky; top: 0; height: 100vh; transform: none !important; }
     .dyl-sidebar.is-collapsed { width: 72px; }
+    .dyl-sidebar.is-collapsed .dyl-sb-top { justify-content: center; padding: 18px 0; }
+    .dyl-sidebar.is-collapsed .dyl-sb-link { justify-content: center; padding: 9px 0; }
+    .dyl-sidebar.is-collapsed .dyl-collapse-btn { justify-content: center; padding: 9px 0; }
+    .dyl-sidebar.is-collapsed .dyl-sb-label { max-width: 0; opacity: 0; }
 }
 .dyl-sb-top { display: flex; align-items: center; padding: 18px; }
-.dyl-sidebar.is-collapsed .dyl-sb-top { justify-content: center; padding: 18px 0; }
 .dyl-sb-logo { display: flex; align-items: center; gap: 10px; }
-.dyl-sb-sq {
-    width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
-    background: theme('colors.dyl.orange.500'); color: #1E1108;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10.5px; font-weight: 800;
-}
 .dyl-sb-label {
     display: inline-block; overflow: hidden; white-space: nowrap; max-width: 150px;
     opacity: 1; color: #fff; font-weight: 800; font-size: 14px;
@@ -143,21 +133,19 @@
     display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 9px;
     color: #94a3b8; font-size: 13px; font-weight: 500; text-decoration: none; position: relative;
 }
-.dyl-sidebar.is-collapsed .dyl-sb-link { justify-content: center; padding: 9px 0; }
 .dyl-sb-ic { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.55); }
 .dyl-sb-ic svg { width: 18px; height: 18px; }
 .dyl-sb-link:hover .dyl-sb-ic { color: #fff; }
 .dyl-sb-link.active { color: #fff; background: rgba(255,255,255,.08); }
-.dyl-sb-link.active .dyl-sb-ic { color: theme('colors.dyl.orange.500'); }
-.dyl-sb-link.active::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: theme('colors.dyl.orange.500'); }
+/* dyl-orange-500 = #F97316 (ver tailwind.config.js) */
+.dyl-sb-link.active .dyl-sb-ic { color: #F97316; }
+.dyl-sb-link.active::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: #F97316; }
 .dyl-sb-bottom { padding: 12px; border-top: 1px solid rgba(255,255,255,.08); }
 .dyl-collapse-btn {
     width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px;
     background: rgba(255,255,255,.05); color: #94a3b8; font-size: 12px; font-weight: 600;
     border: none; cursor: pointer; font-family: inherit;
 }
-.dyl-sidebar.is-collapsed .dyl-collapse-btn { justify-content: center; padding: 9px 0; }
 .dyl-collapse-btn:hover { color: #fff; background: rgba(255,255,255,.09); }
-.dyl-sidebar.is-collapsed .dyl-sb-label { max-width: 0; opacity: 0; }
 </style>
 @endauth
