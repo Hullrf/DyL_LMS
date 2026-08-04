@@ -61,7 +61,7 @@
                     <td class="tbl-td">
                         @if($audit->new_values)
                         <details class="text-xs cursor-pointer">
-                            <summary class="text-blue-600 hover:text-blue-800 select-none">
+                            <summary class="text-dyl-orange-600 hover:text-dyl-orange-700 select-none">
                                 {{ count($audit->new_values) }} campo(s)
                             </summary>
                             <pre class="bg-gray-50 rounded p-2 mt-1 text-xs overflow-x-auto max-w-xs whitespace-pre-wrap">{{ implode(', ', array_keys($audit->new_values)) }}</pre>

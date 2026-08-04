@@ -4,7 +4,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="flex items-center gap-3 mb-6">
-        <a href="{{ route('admin.usuarios.index') }}" class="text-blue-600 hover:text-blue-800 text-sm">← Usuarios</a>
+        <a href="{{ route('admin.usuarios.index') }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">← Usuarios</a>
         <span class="text-gray-400">/</span>
         <h1 class="text-2xl font-bold text-gray-900">Crear Usuario</h1>
     </div>
@@ -50,7 +50,7 @@
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="roles[]" value="{{ $rol->id }}"
                            @checked(in_array($rol->id, old('roles', [])))
-                           class="rounded text-blue-600">
+                           class="rounded text-dyl-orange-600">
                     <span class="text-sm text-gray-700 font-medium">{{ $rol->nombre }}</span>
                     @if($rol->descripcion)
                         <span class="text-xs text-gray-400">— {{ $rol->descripcion }}</span>
