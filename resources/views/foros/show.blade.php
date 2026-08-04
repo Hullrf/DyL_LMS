@@ -2,7 +2,7 @@
 @section('title', $foro->titulo . ' - LMS DyL')
 @section('content')
 <div class="max-w-3xl mx-auto">
-    <a href="{{ route('foros.index', $foro->curso) }}" class="text-blue-600 hover:text-blue-800 text-sm mb-4 inline-block">&larr; Volver a foros</a>
+    <a href="{{ route('foros.index', $foro->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm mb-4 inline-block">&larr; Volver a foros</a>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
         <h1 class="text-xl font-bold text-gray-900 mb-2">{{ $foro->titulo }}</h1>
@@ -20,12 +20,12 @@
             </div>
             <p class="text-sm text-gray-700">{{ $c->contenido }}</p>
             <div class="mt-2">
-                <button onclick="document.getElementById('reply-{{ $c->id }}').classList.toggle('hidden')" class="text-xs text-blue-600 hover:underline">Responder</button>
+                <button onclick="document.getElementById('reply-{{ $c->id }}').classList.toggle('hidden')" class="text-xs text-dyl-orange-600 hover:underline">Responder</button>
                 <form id="reply-{{ $c->id }}" method="POST" action="{{ route('foros.comentar', $foro) }}" class="hidden mt-2 flex gap-2">
                     @csrf
                     <input type="hidden" name="padre_id" value="{{ $c->id }}">
                     <input type="text" name="contenido" class="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm" placeholder="Escribe una respuesta..." required>
-                    <button type="submit" class="px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Enviar</button>
+                    <button type="submit" class="px-3 py-1.5 bg-dyl-orange-600 text-white text-xs rounded hover:bg-dyl-orange-700">Enviar</button>
                 </form>
             </div>
 
@@ -48,7 +48,7 @@
     <form method="POST" action="{{ route('foros.comentar', $foro) }}" class="mt-4 flex gap-2">
         @csrf
         <input type="text" name="contenido" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Escribe un comentario..." required>
-        <button type="submit" class="px-5 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Comentar</button>
+        <button type="submit" class="px-5 py-2 bg-dyl-orange-600 text-white text-sm rounded-lg hover:bg-dyl-orange-700">Comentar</button>
     </form>
 </div>
 @endsection

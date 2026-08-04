@@ -8,7 +8,7 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 mb-3">
             <div class="flex items-center justify-between mb-2">
                 <div>
-                    <span class="text-xs text-blue-600 font-medium">{{ $a->curso->titulo }}</span>
+                    <span class="text-xs text-dyl-orange-600 font-medium">{{ $a->curso->titulo }}</span>
                     <h3 class="font-semibold text-gray-900 mt-0.5">{{ $a->titulo }}</h3>
                 </div>
                 <span class="text-xs text-gray-400">{{ $a->created_at->diffForHumans() }}</span>
