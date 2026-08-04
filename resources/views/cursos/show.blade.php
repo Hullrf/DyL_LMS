@@ -3,13 +3,6 @@
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.show', $curso) }}@endsection
 @section('content')
 
-@if(session('success'))
-    <div class="alert alert-success mb-6">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-error mb-6">{{ session('error') }}</div>
-@endif
-
 {{-- Hero del curso --}}
 <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
     {{-- Imagen de portada o gradiente --}}
@@ -77,8 +70,7 @@
                             <span class="{{ $porcentaje === 100 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">{{ $porcentaje }}%</span>
                         </div>
                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden mb-3">
-                            <div class="h-full rounded-full transition-all
-                                {{ $porcentaje === 100 ? 'bg-dyl-orange-600' : 'bg-dyl-graphite-400' }}"
+                            <div class="h-full rounded-full transition-all bg-dyl-orange-600"
                                  style="width: {{ $porcentaje }}%"></div>
                         </div>
                         @php

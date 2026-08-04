@@ -13,7 +13,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
                 <input type="text" name="titulo" value="{{ old('titulo', $modulo->titulo) }}"
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
-                @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
+                @error('titulo')<p class="form-error text-sm">{{ $message }}</p>@enderror
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>

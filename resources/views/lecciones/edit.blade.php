@@ -17,7 +17,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Título de la lección</label>
                     <input type="text" name="titulo" value="{{ old('titulo', $leccion->titulo) }}"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
-                    @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('titulo')<p class="form-error text-sm">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
@@ -39,7 +39,7 @@
                 <input type="url" name="video_url" value="{{ old('video_url', $leccion->video_url) }}"
                        placeholder="https://www.youtube.com/watch?v=..."
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
-                @error('video_url')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
+                @error('video_url')<p class="form-error text-sm">{{ $message }}</p>@enderror
             </div>
 
             <div class="mb-6">

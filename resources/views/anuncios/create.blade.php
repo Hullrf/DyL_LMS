@@ -8,12 +8,12 @@
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
             <input type="text" name="titulo" value="{{ old('titulo') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-            @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+            @error('titulo')<p class="form-error">{{ $message }}</p>@enderror
         </div>
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Contenido</label>
             <textarea name="contenido" rows="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>{{ old('contenido') }}</textarea>
-            @error('contenido')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+            @error('contenido')<p class="form-error">{{ $message }}</p>@enderror
         </div>
         <div class="flex justify-between">
             <a href="{{ route('anuncios.index', $curso) }}" class="px-4 py-2 text-sm text-gray-500">Cancelar</a>

@@ -115,6 +115,7 @@
         @apply form-input pr-8 cursor-pointer;
     }
     .form-error { @apply mt-1 text-xs text-dyl-graphite-900 font-semibold; }
+    .form-error::before { content: "✕ "; color: theme('colors.dyl.orange.600'); }
     .form-hint {
         @apply mt-1 text-xs text-gray-400;
     }

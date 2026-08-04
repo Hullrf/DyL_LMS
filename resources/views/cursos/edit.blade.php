@@ -18,13 +18,13 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
                     <input type="text" name="titulo" value="{{ old('titulo', $curso->titulo) }}"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-                    @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+                    @error('titulo')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
                     <div id="quill-descripcion" class="h-48 border border-gray-300 rounded-lg"></div>
                     <input type="hidden" name="descripcion" id="descripcion" value="{{ old('descripcion', $curso->descripcion) }}">
-                    @error('descripcion')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+                    @error('descripcion')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Duración (horas)</label>
@@ -64,7 +64,7 @@
                                }
                            ">
                     <p class="text-xs text-gray-400 mt-1">JPG o PNG — máx. 5 MB</p>
-                    <p x-show="errorPortada" x-text="errorPortada" class="text-dyl-graphite-900 font-semibold text-xs mt-1"></p>
+                    <p x-show="errorPortada" x-text="errorPortada" class="form-error"></p>
                 </div>
                 <button type="submit" class="w-full bg-dyl-orange-600 text-white py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
                     Guardar Cambios
@@ -139,7 +139,7 @@
                 {{-- Sub-filas de actividades --}}
                 <div class="actividades-lista" data-leccion-id="{{ $leccion->id }}">
                 @foreach($leccion->actividades as $actividad)
-                <div class="flex items-center justify-between pl-12 pr-6 py-2 bg-dyl-graphite-50 border-t border-dyl-graphite-200/60 hover:bg-dyl-graphite-100"
+                <div class="flex items-center justify-between pl-12 pr-6 py-2 bg-dyl-graphite-100 border-t border-dyl-graphite-200/60 hover:bg-dyl-graphite-200"
                      data-actividad-id="{{ $actividad->id }}">
                     <div class="flex items-center gap-2">
                         <svg class="drag-handle w-3.5 h-3.5 text-dyl-graphite-400 shrink-0 cursor-grab active:cursor-grabbing" fill="none" stroke="currentColor" viewBox="0 0 24 24">

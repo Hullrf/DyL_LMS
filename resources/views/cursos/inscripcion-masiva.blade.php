@@ -11,10 +11,6 @@
         <a href="{{ route('cursos.edit', $curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">&larr; Volver al curso</a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success mb-4">{{ session('success') }}</div>
-    @endif
-
     {{-- Formulario de búsqueda --}}
     <form method="GET" class="mb-4 flex gap-3">
         <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre o email..."
@@ -60,7 +56,7 @@
                 Inscribir seleccionados
             </button>
         </div>
-        @error('usuarios')<p class="text-dyl-graphite-900 font-semibold text-sm mt-2">{{ $message }}</p>@enderror
+        @error('usuarios')<p class="form-error text-sm mt-2">{{ $message }}</p>@enderror
     </form>
 
     <div class="mt-4">{{ $usuarios->links() }}</div>
