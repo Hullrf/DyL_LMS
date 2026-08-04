@@ -42,14 +42,14 @@
                     <option value="{{ $c->id }}" {{ old('curso_id', $cursoId) == $c->id ? 'selected' : '' }}>{{ $c->titulo }}</option>
                 @endforeach
             </select>
-            @error('curso_id')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+            @error('curso_id')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Destinatarios</label>
 
             <label class="flex items-center gap-2 mb-3 cursor-pointer">
-                <input type="checkbox" x-model="enviarATodos" class="w-4 h-4 rounded text-blue-600">
+                <input type="checkbox" x-model="enviarATodos" class="w-4 h-4 rounded text-dyl-orange-600">
                 <span class="text-sm font-medium text-gray-700">Enviar a todos los estudiantes del curso</span>
             </label>
 
@@ -57,9 +57,9 @@
                 {{-- Chips de seleccionados --}}
                 <div class="flex flex-wrap gap-1.5 min-h-[36px] p-2 border border-gray-300 rounded-lg bg-white">
                     <template x-for="user in seleccionados" :key="user.id">
-                        <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 text-sm px-2.5 py-1 rounded-full">
+                        <span class="inline-flex items-center gap-1 bg-dyl-orange-100 text-dyl-orange-800 text-sm px-2.5 py-1 rounded-full">
                             <span x-text="user.name"></span>
-                            <button type="button" @click="remover(user)" class="text-blue-500 hover:text-blue-700">&times;</button>
+                            <button type="button" @click="remover(user)" class="text-dyl-orange-500 hover:text-dyl-orange-700">&times;</button>
                             <input type="hidden" name="destinatarios[]" :value="user.id">
                         </span>
                     </template>
@@ -74,12 +74,12 @@
                      class="border border-gray-200 rounded-lg shadow-lg bg-white max-h-48 overflow-y-auto z-10">
                     <template x-for="user in sugerencias" :key="user.id">
                         <button type="button" @click="seleccionar(user)"
-                                class="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 flex items-center justify-between">
+                                class="w-full text-left px-3 py-2 text-sm hover:bg-dyl-orange-50 flex items-center justify-between">
                             <span>
                                 <span class="font-medium text-gray-900" x-text="user.name"></span>
                                 <span class="text-gray-400 ml-1.5 text-xs" x-text="user.email"></span>
                             </span>
-                            <span x-show="seleccionados.find(s => s.id === user.id)" class="text-xs text-green-600">Seleccionado</span>
+                            <span x-show="seleccionados.find(s => s.id === user.id)" class="text-xs text-dyl-orange-600">Seleccionado</span>
                         </button>
                     </template>
                 </div>
@@ -90,25 +90,25 @@
                 <input type="hidden" name="destinatarios" value="">
             </template>
 
-            @error('destinatarios')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
-            @error('destinatarios.*')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+            @error('destinatarios')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+            @error('destinatarios.*')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Asunto</label>
             <input type="text" name="asunto" value="{{ old('asunto') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-            @error('asunto')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+            @error('asunto')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Mensaje</label>
             <textarea name="mensaje" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>{{ old('mensaje') }}</textarea>
-            @error('mensaje')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+            @error('mensaje')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="flex justify-between">
             <a href="{{ route('mensajes.bandeja') }}" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</a>
-            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Enviar</button>
+            <button type="submit" class="px-6 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Enviar</button>
         </div>
     </form>
 </div>
