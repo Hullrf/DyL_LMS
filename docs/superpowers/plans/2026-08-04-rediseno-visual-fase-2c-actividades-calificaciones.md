@@ -1301,3 +1301,196 @@ git add -A
 git commit -m "fix: ajustes visuales tras verificacion manual de la sub-fase 2c"
 ```
 (omitir si no hizo falta)
+
+---
+
+### Task 5: Migrar `resources/views/certificados/plantilla-pdf.blade.php` (hallazgo de la revisión final de la Fase 2C)
+
+**Contexto:** La revisión final de whole-branch de la Fase 2C encontró que esta plantilla (la que renderiza el PDF descargable del certificado, vía mPDF) quedó fuera del alcance original del plan porque usa un bloque `<style>` con colores hexadecimales literales, no clases Tailwind — el grep de verificación de las Tasks 1-3 nunca la habría detectado. Resultado antes de esta tarea: la vista en pantalla (`certificados/show.blade.php`, ya migrada en Task 3) se ve naranja/grafito, pero el PDF que se descarga con el botón "Descargar PDF" sigue en dorado/navy viejo — una inconsistencia visible para el usuario entre la previsualización y el archivo real. Decisión del usuario: migrar el PDF ahora, dentro de esta misma rama.
+
+**Files:**
+- Modify: `resources/views/certificados/plantilla-pdf.blade.php`
+
+**Interfaces:** Ninguna — solo cambian valores hex en el bloque `<style>`, no hay lógica ni variables Blade nuevas.
+
+- [ ] **Step 1: Mapeo de color (todo el archivo usa hex literal, no clases Tailwind — no hay `dyl-*` disponible aquí, así que se usa el valor hex exacto del token correspondiente, tomado de `tailwind.config.js`)**
+
+| Hex viejo | Rol en la plantilla | Hex nuevo | Token equivalente |
+|---|---|---|---|
+| `#C9A227` (dorado — marcos, esquinas, línea bajo el logo, título "Certificado", subrayado del nombre, borde de la caja de calificación) | Acento decorativo, mismo rol que el naranja del título "Certificado" en `certificados/show.blade.php` (`text-yellow-500`→`text-dyl-orange-500` en Task 3) | `#F97316` | `dyl-orange-500` |
+| `#1e3a5f` y `#1a1a2e` (navy/casi-negro — logo empresa, nombre del estudiante, nombre del curso, nombre en las firmas, color base del body) | Texto formal estático, mismo rol que `text-blue-900`→`text-dyl-graphite-900` en `certificados/show.blade.php` Task 3 | `#0F172A` | `dyl-graphite-900` |
+| `#f8f4e8` (crema cálido, stop del gradiente de fondo) | Último vestigio del tono cálido/dorado viejo en el fondo decorativo | `#F8FAFC` | `dyl-graphite-50` |
+| `#555`, `#444`, `#666`, `#999` (grises de subtítulo, caja de calificación, cargo de firma, pie de página) | Gris neutro utilitario | *(sin cambios)* | — (`gray-*` fuera de alcance, Global Constraints) |
+| `#ffffff` | Blanco base | *(sin cambios)* | — |
+
+- [ ] **Step 2: Aplicar el mapeo**
+
+```diff
+          body {
+              width: 297mm;
+              height: 210mm;
+              font-family: 'Times New Roman', Times, serif;
+              background: #fff;
+-             color: #1a1a2e;
++             color: #0F172A;
+              position: relative;
+              overflow: hidden;
+          }
+
+          /* Marco exterior dorado */
+          .marco-exterior {
+              position: absolute;
+              top: 8mm;
+              left: 8mm;
+              right: 8mm;
+              bottom: 8mm;
+-             border: 3px solid #C9A227;
++             border: 3px solid #F97316;
+          }
+
+          /* Marco interior */
+          .marco-interior {
+              position: absolute;
+              top: 11mm;
+              left: 11mm;
+              right: 11mm;
+              bottom: 11mm;
+-             border: 1px solid #C9A227;
++             border: 1px solid #F97316;
+          }
+
+          /* Fondo decorativo */
+          .fondo-degradado {
+              position: absolute;
+              top: 0; left: 0; right: 0; bottom: 0;
+-             background: linear-gradient(135deg, #f8f4e8 0%, #ffffff 50%, #f8f4e8 100%);
++             background: linear-gradient(135deg, #F8FAFC 0%, #ffffff 50%, #F8FAFC 100%);
+          }
+
+          /* Esquinas decorativas */
+          .esquina {
+              position: absolute;
+              width: 20mm;
+              height: 20mm;
+-             border-color: #C9A227;
++             border-color: #F97316;
+          }
+```
+(bloque completo: `body`, `.marco-exterior`, `.marco-interior`, `.fondo-degradado`, `.esquina`)
+
+```diff
+          .logo-empresa {
+              font-size: 13pt;
+              font-weight: bold;
+-             color: #1e3a5f;
++             color: #0F172A;
+              letter-spacing: 3px;
+              text-transform: uppercase;
+              margin-bottom: 3mm;
+          }
+
+          .linea-dorada {
+              width: 80mm;
+              height: 0.5mm;
+-             background: #C9A227;
++             background: #F97316;
+              margin: 0 auto 5mm;
+          }
+
+          .titulo-certificado {
+              font-size: 28pt;
+-             color: #C9A227;
++             color: #F97316;
+              letter-spacing: 5px;
+              text-transform: uppercase;
+              margin-bottom: 4mm;
+              font-weight: normal;
+          }
+```
+(bloque: `.logo-empresa`, `.linea-dorada`, `.titulo-certificado` — `.subtitulo` en `#555` no cambia, es gris neutro)
+
+```diff
+          .nombre-estudiante {
+              font-size: 26pt;
+-             color: #1e3a5f;
++             color: #0F172A;
+              font-style: italic;
+              font-weight: bold;
+-             border-bottom: 1px solid #C9A227;
++             border-bottom: 1px solid #F97316;
+              padding-bottom: 2mm;
+              margin-bottom: 5mm;
+              min-width: 120mm;
+          }
+```
+(`.texto-por-completar` en `#444` no cambia, es gris neutro)
+
+```diff
+          .nombre-curso {
+              font-size: 16pt;
+-             color: #1e3a5f;
++             color: #0F172A;
+              font-weight: bold;
+              margin-bottom: 3mm;
+          }
+
+          .calificacion-box {
+              display: inline-block;
+-             border: 1px solid #C9A227;
++             border: 1px solid #F97316;
+              padding: 1mm 5mm;
+              font-size: 10pt;
+              color: #555;
+              margin-bottom: 6mm;
+          }
+```
+(el `color: #555` de `.calificacion-box` no cambia — es texto gris neutro, solo el `border` era dorado)
+
+```diff
+          .firma-nombre {
+              font-size: 9pt;
+              font-weight: bold;
+-             color: #1a1a2e;
++             color: #0F172A;
+          }
+```
+(`.firma-cargo` en `#666` y `.pie-certificado` en `#999` no cambian — grises neutros)
+
+- [ ] **Step 3: Verificar que no queda ningún hex viejo**
+
+Run: `grep -n "C9A227\|#1e3a5f\|#1a1a2e\|f8f4e8" resources/views/certificados/plantilla-pdf.blade.php`
+Expected: sin resultados.
+
+- [ ] **Step 4: Generar un PDF de prueba y confirmar visualmente que coincide con la paleta de `certificados/show.blade.php`**
+
+No hay test automatizado que renderice el PDF a imagen; generarlo y abrirlo basta como verificación manual:
+
+```bash
+php artisan tinker --execute="
+\$cert = App\Models\Certificado::first();
+if (\$cert) {
+    \$html = view('certificados.plantilla-pdf', ['certificado' => \$cert])->render();
+    file_put_contents(storage_path('app/verificacion-plantilla-pdf.html'), \$html);
+    echo 'HTML de verificacion escrito en storage/app/verificacion-plantilla-pdf.html' . PHP_EOL;
+} else {
+    echo 'No hay certificados en la BD para probar — verificar solo que el grep del Step 3 esta limpio.' . PHP_EOL;
+}
+"
+```
+
+Expected: el HTML generado (o una inspección visual del bloque `<style>`) muestra naranja (`#F97316`) donde antes había dorado y grafito oscuro (`#0F172A`) donde antes había navy.
+
+- [ ] **Step 5: Suite y build**
+
+Run: `php artisan test`
+Expected: 153 passed (sin cambios, este archivo no tiene tests directos).
+
+Run: `npm run build`
+Expected: build exitoso (este archivo no pasa por Vite, pero se corre por consistencia con el resto del plan).
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add resources/views/certificados/plantilla-pdf.blade.php
+git commit -m "fix: migrar plantilla-pdf de certificados a naranja/grafito (hallazgo de revision final 2c)"
+```
