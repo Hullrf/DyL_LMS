@@ -5,30 +5,30 @@
 <h1 class="text-3xl font-bold text-gray-900 mb-8">Panel del Instructor</h1>
 
 @if(session('success'))
-    <div class="bg-green-100 border border-green-300 text-green-800 rounded-lg p-4 mb-6 text-sm">{{ session('success') }}</div>
+    <div class="alert alert-success mb-6">{{ session('success') }}</div>
 @endif
 
 {{-- Stats --}}
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-white p-6 rounded-lg shadow">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Mis Cursos</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">{{ $stats['mis_cursos'] }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['mis_cursos'] }}</p>
     </div>
     <div class="bg-white p-6 rounded-lg shadow">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Publicados</p>
-        <p class="text-3xl font-bold text-green-600 mt-1">{{ $stats['cursos_publicados'] }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['cursos_publicados'] }}</p>
     </div>
     <div class="bg-white p-6 rounded-lg shadow">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Estudiantes</p>
-        <p class="text-3xl font-bold text-purple-600 mt-1">{{ $stats['estudiantes_inscritos'] }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['estudiantes_inscritos'] }}</p>
     </div>
     <a href="{{ route('calificaciones.index') }}" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow block">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Por Calificar</p>
-        <p class="text-3xl font-bold mt-1 {{ $stats['pendientes_calificar'] > 0 ? 'text-orange-500' : 'text-gray-400' }}">
+        <p class="text-3xl font-bold mt-1 {{ $stats['pendientes_calificar'] > 0 ? 'text-dyl-orange-500' : 'text-gray-400' }}">
             {{ $stats['pendientes_calificar'] }}
         </p>
         @if($stats['pendientes_calificar'] > 0)
-            <p class="text-xs text-orange-500 mt-1">Ver pendientes &rarr;</p>
+            <p class="text-xs text-dyl-orange-500 mt-1">Ver pendientes &rarr;</p>
         @endif
     </a>
 </div>
@@ -42,7 +42,7 @@
             Calificaciones
         </a>
         <a href="{{ route('cursos.create') }}"
-           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+           class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm">
             + Nuevo Curso
         </a>
     </div>
@@ -54,8 +54,8 @@
             <div class="flex justify-between items-start mb-2">
                 <h3 class="font-bold text-gray-900">{{ $curso->titulo }}</h3>
                 <span class="px-2 py-1 rounded text-xs font-medium ml-2 flex-shrink-0
-                    @if($curso->estado === 'publicado') bg-green-100 text-green-800
-                    @elseif($curso->estado === 'borrador') bg-yellow-100 text-yellow-800
+                    @if($curso->estado === 'publicado') bg-dyl-orange-100 text-dyl-orange-800
+                    @elseif($curso->estado === 'borrador') bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold
                     @else bg-gray-100 text-gray-800 @endif">
                     {{ ucfirst($curso->estado) }}
                 </span>
@@ -67,7 +67,7 @@
                     Ver
                 </a>
                 <a href="{{ route('cursos.edit', $curso) }}"
-                   class="flex-1 text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700 text-sm">
+                   class="flex-1 text-center bg-dyl-orange-600 text-white py-2 rounded hover:bg-dyl-orange-700 text-sm">
                     Editar
                 </a>
             </div>
@@ -75,7 +75,7 @@
     @empty
         <div class="col-span-3 text-center py-12 text-gray-500">
             No tienes cursos aún.
-            <a href="{{ route('cursos.create') }}" class="text-blue-600 hover:underline">Crea tu primer curso</a>
+            <a href="{{ route('cursos.create') }}" class="text-dyl-orange-600 hover:underline">Crea tu primer curso</a>
         </div>
     @endforelse
 </div>
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
             datasets: [{
                 label: 'Progreso (%)',
                 data: @json($stats['progreso_por_curso']),
-                backgroundColor: '#6366F1',
+                backgroundColor: '#EA580C',
                 borderRadius: 6,
             }]
         },
