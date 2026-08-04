@@ -67,7 +67,7 @@
                 @if($esCorta)
                     <div class="mb-4">
                         <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Respuesta del estudiante</p>
-                        <div class="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 text-sm text-gray-800">
+                        <div class="bg-dyl-graphite-50 border border-dyl-graphite-200 rounded-lg px-4 py-3 text-sm text-gray-800">
                             {{ $respuestaEstudiante ?? '— Sin respuesta —' }}
                         </div>
                     </div>
@@ -76,19 +76,19 @@
                         <p class="text-sm font-medium text-gray-700 mr-1">¿Es correcta?</p>
 
                         <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm font-medium transition-colors"
-                               :class="decision === '1' ? 'border-green-500 bg-green-50 text-green-700 ring-1 ring-green-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'">
+                               :class="decision === '1' ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-700 ring-1 ring-dyl-orange-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                             <input type="radio" name="decisiones[{{ $pregunta->id }}]" value="1"
                                    x-model="decision" class="sr-only">
-                            <span :class="decision === '1' ? 'text-green-600' : 'text-gray-300'">✓</span>
+                            <span :class="decision === '1' ? 'text-dyl-orange-600' : 'text-gray-300'">✓</span>
                             Correcto
                             <span class="text-xs font-normal opacity-70">({{ $pregunta->puntaje }} pts)</span>
                         </label>
 
                         <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm font-medium transition-colors"
-                               :class="decision === '0' ? 'border-red-500 bg-red-50 text-red-700 ring-1 ring-red-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'">
+                               :class="decision === '0' ? 'border-dyl-graphite-600 bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold ring-1 ring-dyl-graphite-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                             <input type="radio" name="decisiones[{{ $pregunta->id }}]" value="0"
                                    x-model="decision" class="sr-only">
-                            <span :class="decision === '0' ? 'text-red-500' : 'text-gray-300'">✗</span>
+                            <span :class="decision === '0' ? 'text-dyl-graphite-600' : 'text-gray-300'">✗</span>
                             Incorrecto
                             <span class="text-xs font-normal opacity-70">(0 pts)</span>
                         </label>
@@ -118,30 +118,30 @@
                             $fueElegida  = $seleccionadas->contains((string)$opcion->id);
                         @endphp
                         <div class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm
-                            @if($esCorrecta && $fueElegida) bg-green-50 border border-green-200
-                            @elseif(!$esCorrecta && $fueElegida) bg-red-50 border border-red-200
-                            @elseif($esCorrecta) bg-green-50/50 border border-green-100
+                            @if($esCorrecta && $fueElegida) bg-dyl-orange-50 border border-dyl-orange-200
+                            @elseif(!$esCorrecta && $fueElegida) bg-dyl-graphite-100 border border-dyl-graphite-300
+                            @elseif($esCorrecta) bg-dyl-orange-50/50 border border-dyl-orange-100
                             @else bg-gray-50 border border-gray-100 @endif">
                             <span class="w-4 text-center font-bold shrink-0
-                                @if($esCorrecta) text-green-600
-                                @elseif($fueElegida) text-red-500
+                                @if($esCorrecta) text-dyl-orange-600
+                                @elseif($fueElegida) text-dyl-graphite-600
                                 @else text-gray-300 @endif">
                                 @if($esCorrecta) ✓ @elseif($fueElegida) ✗ @else ○ @endif
                             </span>
                             <span class="{{ $fueElegida ? 'font-medium' : 'text-gray-600' }}">{{ $opcion->texto }}</span>
                             @if($fueElegida && !$esCorrecta)
-                                <span class="ml-auto text-xs text-red-400">Elegida incorrectamente</span>
+                                <span class="ml-auto text-xs text-dyl-graphite-600 font-semibold">Elegida incorrectamente</span>
                             @elseif($esCorrecta && $fueElegida)
-                                <span class="ml-auto text-xs text-green-600">Correcta ✓</span>
+                                <span class="ml-auto text-xs text-dyl-orange-600">Correcta ✓</span>
                             @elseif($esCorrecta)
-                                <span class="ml-auto text-xs text-green-500 opacity-60">Correcta (no elegida)</span>
+                                <span class="ml-auto text-xs text-dyl-orange-500 opacity-60">Correcta (no elegida)</span>
                             @endif
                         </div>
                         @endforeach
                     </div>
 
                     <div class="mt-3 text-right text-sm">
-                        <span class="{{ $ptsObtenidos > 0 ? 'text-green-600 font-semibold' : 'text-gray-400' }}">
+                        <span class="{{ $ptsObtenidos > 0 ? 'text-dyl-orange-600 font-semibold' : 'text-gray-400' }}">
                             {{ $ptsObtenidos }} / {{ $pregunta->puntaje }} pts
                         </span>
                         <span class="text-gray-300 ml-1 text-xs">(auto-calificado)</span>

@@ -8,7 +8,7 @@
 </div>
 
 @if(session('success'))
-    <div class="bg-green-100 border border-green-300 text-green-800 rounded-lg p-4 mb-6 text-sm">{{ session('success') }}</div>
+    <div class="alert alert-success mb-6">{{ session('success') }}</div>
 @endif
 
 {{-- Resumen rápido --}}
@@ -23,11 +23,11 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-white p-5 rounded-lg shadow text-center">
         <p class="text-xs text-gray-500 uppercase tracking-wide">Enviadas</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">{{ $respuestas->count() }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $respuestas->count() }}</p>
     </div>
     <div class="bg-white p-5 rounded-lg shadow text-center">
         <p class="text-xs text-gray-500 uppercase tracking-wide">Calificadas</p>
-        <p class="text-3xl font-bold text-green-600 mt-1">{{ $calificadas->count() }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $calificadas->count() }}</p>
     </div>
     <div class="bg-white p-5 rounded-lg shadow text-center">
         <p class="text-xs text-gray-500 uppercase tracking-wide">Cursos</p>
@@ -35,7 +35,7 @@
     </div>
     <div class="bg-white p-5 rounded-lg shadow text-center">
         <p class="text-xs text-gray-500 uppercase tracking-wide">Promedio</p>
-        <p class="text-3xl font-bold mt-1 {{ $promedio >= 60 ? 'text-green-600' : 'text-red-500' }}">{{ $promedio }}%</p>
+        <p class="text-3xl font-bold mt-1 {{ $promedio >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">{{ $promedio }}%</p>
     </div>
 </div>
 @endif
@@ -58,7 +58,7 @@
                 : null;
         @endphp
         @if($promedioCurso !== null)
-        <span class="ml-auto text-sm font-semibold {{ $promedioCurso >= 60 ? 'text-green-600' : 'text-red-500' }}">
+        <span class="ml-auto text-sm font-semibold {{ $promedioCurso >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
             Promedio: {{ $promedioCurso }}%
         </span>
         @endif
@@ -83,7 +83,7 @@
                             {{ ucfirst($respuesta->actividad->tipo) }}
                         </span>
                         @if(in_array($respuesta->id, $oficialesIds) && $grupo->respuestas->where('actividad_id', $respuesta->actividad_id)->count() > 1)
-                            <span class="inline-block mt-1 ml-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded font-medium">Cuenta para tu nota</span>
+                            <span class="inline-block mt-1 ml-1 px-2 py-0.5 bg-dyl-orange-100 text-dyl-orange-700 text-xs rounded font-medium">Cuenta para tu nota</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -97,23 +97,23 @@
                                 $pct = $max > 0 ? round(($respuesta->calificacion / $max) * 100) : 0;
                             @endphp
                             <div class="flex flex-col items-center">
-                                <span class="text-xl font-bold {{ $pct >= 60 ? 'text-green-600' : 'text-red-500' }}">
+                                <span class="text-xl font-bold {{ $pct >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
                                     {{ number_format($respuesta->calificacion, 2) }}
                                     <span class="text-sm text-gray-400 font-normal">/ {{ number_format($max, 2) }}</span>
                                 </span>
-                                <span class="text-xs {{ $pct >= 60 ? 'text-green-600' : 'text-red-500' }}">{{ $pct }}%</span>
+                                <span class="text-xs {{ $pct >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">{{ $pct }}%</span>
                             </div>
                         @elseif($respuesta->estado === 'en_revision')
-                            <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">En revisión</span>
+                            <span class="px-2 py-1 bg-dyl-graphite-100 text-dyl-graphite-600 text-xs rounded-full font-medium">En revisión</span>
                         @else
-                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium">Pendiente</span>
+                            <span class="px-2 py-1 bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold text-xs rounded-full">Pendiente</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
                         @if($respuesta->feedback)
                             <details class="cursor-pointer">
-                                <summary class="text-blue-600 hover:text-blue-800 text-sm">Ver comentario</summary>
-                                <p class="mt-2 text-gray-700 bg-blue-50 p-3 rounded text-xs whitespace-pre-wrap leading-relaxed">{{ $respuesta->feedback }}</p>
+                                <summary class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver comentario</summary>
+                                <p class="mt-2 text-gray-700 bg-dyl-graphite-50 p-3 rounded text-xs whitespace-pre-wrap leading-relaxed">{{ $respuesta->feedback }}</p>
                             </details>
                         @else
                             <span class="text-gray-400">—</span>
@@ -128,7 +128,7 @@
 @empty
 <div class="bg-white rounded-lg shadow p-16 text-center text-gray-500">
     Todavía no has enviado ninguna actividad.
-    <a href="{{ route('cursos.index') }}" class="text-blue-600 hover:underline ml-1">Ver cursos disponibles</a>
+    <a href="{{ route('cursos.index') }}" class="text-dyl-orange-600 hover:underline ml-1">Ver cursos disponibles</a>
 </div>
 @endforelse
 @endsection
