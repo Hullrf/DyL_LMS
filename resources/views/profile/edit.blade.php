@@ -26,7 +26,7 @@
     </div>
 
     {{-- Eliminar cuenta --}}
-    <div class="card border border-red-200">
+    <div class="card">
         <div class="card-body">
             @include('profile.partials.delete-user-form')
         </div>
@@ -36,7 +36,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-1">Autenticación de dos factores</h2>
         @if(auth()->user()->two_factor_enabled)
-            <p class="text-green-600 text-sm mb-4 flex items-center gap-1">
+            <p class="text-dyl-orange-600 text-sm mb-4 flex items-center gap-1">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                 </svg>

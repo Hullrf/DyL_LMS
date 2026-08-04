@@ -26,7 +26,7 @@
                 autocomplete="name"
             />
             @error('name')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $message }}</p>
             @enderror
         </div>
 
@@ -43,7 +43,7 @@
                 placeholder="Opcional"
             />
             @error('empresa')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $message }}</p>
             @enderror
         </div>
 
@@ -60,19 +60,19 @@
                 autocomplete="username"
             />
             @error('email')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $message }}</p>
             @enderror
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p class="text-sm text-yellow-800">
+                <div class="mt-2 p-3 bg-dyl-graphite-50 border-2 border-dyl-orange-300 rounded-lg">
+                    <p class="text-sm text-dyl-graphite-900 font-medium">
                         Tu dirección de correo no ha sido verificada.
-                        <button form="send-verification" class="underline font-medium hover:text-yellow-900">
+                        <button form="send-verification" class="underline font-medium hover:text-dyl-graphite-700">
                             Haz clic aquí para reenviar el correo de verificación.
                         </button>
                     </p>
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-1 text-sm text-green-700 font-medium">
+                        <p class="mt-1 text-sm text-dyl-orange-700 font-medium">
                             Se envió un nuevo enlace de verificación a tu correo.
                         </p>
                     @endif
@@ -91,7 +91,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2500)"
-                    class="text-sm text-green-600 font-medium"
+                    class="text-sm text-dyl-orange-600 font-medium"
                 >Cambios guardados.</p>
             @endif
         </div>

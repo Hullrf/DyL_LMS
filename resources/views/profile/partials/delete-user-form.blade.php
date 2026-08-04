@@ -1,6 +1,6 @@
 <section x-data="{ confirmar: {{ $errors->userDeletion->isNotEmpty() ? 'true' : 'false' }} }">
     <header class="mb-6">
-        <h2 class="text-lg font-semibold text-red-700">Eliminar cuenta</h2>
+        <h2 class="text-lg font-semibold text-dyl-graphite-900">Eliminar cuenta</h2>
         <p class="mt-1 text-sm text-gray-500">
             Una vez eliminada, todos tus datos serán borrados permanentemente. Esta acción no se puede deshacer.
         </p>
@@ -16,8 +16,8 @@
     </button>
 
     {{-- Panel de confirmación --}}
-    <div x-show="confirmar" x-cloak class="mt-4 p-5 bg-red-50 border border-red-200 rounded-xl space-y-4">
-        <p class="text-sm font-medium text-red-800">
+    <div x-show="confirmar" x-cloak class="mt-4 p-5 bg-dyl-graphite-50 border-2 border-dyl-orange-300 rounded-xl space-y-4">
+        <p class="text-sm font-semibold text-dyl-graphite-900">
             ¿Estás seguro de que quieres eliminar tu cuenta? Ingresa tu contraseña para confirmar.
         </p>
 
@@ -35,7 +35,7 @@
                     placeholder="Tu contraseña actual"
                 />
                 @if ($errors->userDeletion->has('password'))
-                    <p class="mt-1 text-sm text-red-600">{{ $errors->userDeletion->first('password') }}</p>
+                    <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $errors->userDeletion->first('password') }}</p>
                 @endif
             </div>
 

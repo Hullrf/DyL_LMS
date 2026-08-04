@@ -18,7 +18,7 @@
                 autocomplete="current-password"
             />
             @if ($errors->updatePassword->has('current_password'))
-                <p class="mt-1 text-sm text-red-600">{{ $errors->updatePassword->first('current_password') }}</p>
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $errors->updatePassword->first('current_password') }}</p>
             @endif
         </div>
 
@@ -32,7 +32,7 @@
                 autocomplete="new-password"
             />
             @if ($errors->updatePassword->has('password'))
-                <p class="mt-1 text-sm text-red-600">{{ $errors->updatePassword->first('password') }}</p>
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $errors->updatePassword->first('password') }}</p>
             @endif
         </div>
 
@@ -46,7 +46,7 @@
                 autocomplete="new-password"
             />
             @if ($errors->updatePassword->has('password_confirmation'))
-                <p class="mt-1 text-sm text-red-600">{{ $errors->updatePassword->first('password_confirmation') }}</p>
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $errors->updatePassword->first('password_confirmation') }}</p>
             @endif
         </div>
 
@@ -61,7 +61,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2500)"
-                    class="text-sm text-green-600 font-medium"
+                    class="text-sm text-dyl-orange-600 font-medium"
                 >Contraseña actualizada.</p>
             @endif
         </div>
