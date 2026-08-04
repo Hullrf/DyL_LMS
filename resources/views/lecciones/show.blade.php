@@ -25,7 +25,7 @@
 
         {{-- Cabecera sidebar --}}
         <div class="p-4 border-b border-gray-200 bg-gray-50">
-            <a href="{{ route('cursos.show', $curso) }}" class="text-xs text-blue-600 hover:underline">&larr; Ver curso</a>
+            <a href="{{ route('cursos.show', $curso) }}" class="text-xs text-dyl-orange-600 hover:underline">&larr; Ver curso</a>
             <h2 class="text-sm font-bold text-gray-900 mt-1 line-clamp-2">{{ $curso->titulo }}</h2>
 
             {{-- Mini barra de progreso --}}
@@ -38,7 +38,7 @@
                         <span>{{ $pctSidebar }}%</span>
                     </div>
                     <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="h-full bg-blue-500 rounded-full transition-all" style="width: {{ $pctSidebar }}%"></div>
+                        <div class="h-full bg-dyl-orange-600 rounded-full transition-all" style="width: {{ $pctSidebar }}%"></div>
                     </div>
                 </div>
             @endif
@@ -56,19 +56,19 @@
                         @php $isDone   = $completadasIds->contains($lis->id); @endphp
                         <a href="{{ route('lecciones.show', $lis) }}"
                            class="flex items-center px-4 py-2.5 text-sm transition-colors
-                                  {{ $isActual ? 'bg-blue-50 text-blue-700 font-medium border-l-2 border-blue-500' : 'text-gray-700 hover:bg-gray-50' }}">
+                                  {{ $isActual ? 'bg-dyl-orange-50 text-dyl-orange-700 font-medium border-l-2 border-dyl-orange-600' : 'text-gray-700 hover:bg-gray-50' }}">
                             {{-- Icono estado --}}
                             <span class="mr-2.5 flex-shrink-0">
                                 @if($isDone)
-                                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-dyl-orange-600" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                     </svg>
                                 @elseif($isActual)
-                                    <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-dyl-graphite-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-2-4.5l5-3-5-3v6z" clip-rule="evenodd"/>
                                     </svg>
                                 @else
-                                    <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-dyl-graphite-300" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-2-4.5l5-3-5-3v6z" clip-rule="evenodd"/>
                                     </svg>
                                 @endif
@@ -88,12 +88,12 @@
 
         {{-- Mensajes flash --}}
         @if(session('success'))
-            <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-lg p-4 text-sm">
+            <div class="mb-6 alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
-            <div class="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">
+            <div class="mb-6 alert alert-error">
                 {{ session('error') }}
             </div>
         @endif
@@ -103,7 +103,7 @@
             <button @click="sidebarOpen = true" class="p-1.5 -ml-1.5 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100" aria-label="Abrir índice del curso">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
             </button>
-            <a href="{{ route('cursos.show', $curso) }}" class="text-blue-600 hover:underline truncate">{{ $curso->titulo }}</a>
+            <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-600 hover:underline truncate">{{ $curso->titulo }}</a>
             <span class="text-gray-300">/</span>
             <span class="truncate">{{ $leccion->titulo }}</span>
         </div>
@@ -117,7 +117,7 @@
                 <span>·</span>
                 <span>{{ ucfirst($leccion->tipo) }}</span>
                 @if($estaCompletada)
-                    <span class="ml-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">Completada</span>
+                    <span class="ml-1 px-2 py-0.5 bg-dyl-orange-100 text-dyl-orange-700 rounded-full font-medium">Completada</span>
                     @if($tiempoReal)
                         <span class="text-gray-400">· Estudiada {{ $tiempoReal }} min</span>
                     @endif
@@ -151,7 +151,7 @@
         {{-- Contenido HTML de la lección --}}
         @if($leccion->contenido_html)
             <div class="leccion-contenido prose prose-lg max-w-none bg-white rounded-xl shadow-sm p-6 sm:p-8 mb-8 leading-relaxed
-                        prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600">
+                        prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-dyl-orange-600">
                 {!! $leccion->contenido_html !!}
             </div>
             <style>
@@ -167,7 +167,7 @@
                 }
             </style>
         @elseif(!$leccion->video_url)
-            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8 text-center text-yellow-700">
+            <div class="bg-dyl-graphite-50 border-2 border-dyl-orange-300 rounded-xl p-6 mb-8 text-center text-dyl-graphite-900 font-medium">
                 Esta lección aún no tiene contenido.
             </div>
         @endif
@@ -180,7 +180,7 @@
                     @foreach($actividades as $actividad)
                         @php $completada = $actividadesCompletadasIds->contains($actividad->id); @endphp
                         <a href="{{ route('actividades.show', $actividad) }}"
-                           class="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-5 py-4 hover:border-blue-300 hover:shadow-sm transition-all group">
+                           class="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-5 py-4 hover:border-dyl-orange-300 hover:shadow-sm transition-all group">
                             <div class="flex items-center gap-3">
                                 {{-- Icono por tipo --}}
                                 <span class="text-xl">
@@ -191,14 +191,14 @@
                                     @endif
                                 </span>
                                 <div>
-                                    <p class="font-medium text-gray-900 group-hover:text-blue-700">{{ $actividad->titulo }}</p>
+                                    <p class="font-medium text-gray-900 group-hover:text-dyl-orange-700">{{ $actividad->titulo }}</p>
                                     <p class="text-xs text-gray-400">{{ ucfirst($actividad->tipo) }} · {{ $actividad->puntaje_maximo }} pts</p>
                                 </div>
                             </div>
                             @if($completada)
-                                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">Completada</span>
+                                <span class="px-2 py-1 bg-dyl-orange-100 text-dyl-orange-700 text-xs rounded-full font-medium">Completada</span>
                             @else
-                                <span class="text-gray-400 text-sm group-hover:text-blue-600">&rarr;</span>
+                                <span class="text-gray-400 text-sm group-hover:text-dyl-orange-600">&rarr;</span>
                             @endif
                         </a>
                     @endforeach
@@ -208,8 +208,8 @@
 
         {{-- Estado de la lección --}}
         @if(!$estaCompletada)
-            <div class="mb-8 px-5 py-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-700 flex items-start gap-3">
-                <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="mb-8 alert alert-info">
+                <svg class="w-5 h-5 text-dyl-graphite-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span>Completa todas las actividades de esta lección para marcarla como finalizada.</span>
@@ -221,7 +221,7 @@
             <div>
                 @if($prevLeccion)
                     <a href="{{ route('lecciones.show', $prevLeccion) }}"
-                       class="flex items-center gap-2 text-gray-600 hover:text-blue-600 group">
+                       class="flex items-center gap-2 text-gray-600 hover:text-dyl-orange-600 group">
                         <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -235,7 +235,7 @@
             <div class="text-right">
                 @if($nextLeccion)
                     <a href="{{ route('lecciones.show', $nextLeccion) }}"
-                       class="flex items-center gap-2 text-gray-600 hover:text-blue-600 group">
+                       class="flex items-center gap-2 text-gray-600 hover:text-dyl-orange-600 group">
                         <div class="text-right">
                             <p class="text-xs text-gray-400">Siguiente</p>
                             <p class="text-sm font-medium line-clamp-1">{{ $nextLeccion->titulo }}</p>
@@ -246,9 +246,9 @@
                     </a>
                 @else
                     <a href="{{ route('cursos.show', $curso) }}"
-                       class="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium group">
+                       class="flex items-center gap-2 text-dyl-orange-600 hover:text-dyl-orange-700 font-medium group">
                         <div class="text-right">
-                            <p class="text-xs text-green-500">Has terminado el módulo</p>
+                            <p class="text-xs text-dyl-orange-600">Has terminado el módulo</p>
                             <p class="text-sm font-medium">Ver resumen del curso</p>
                         </div>
                         <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -267,7 +267,7 @@
                     Editar lección
                 </a>
                 <a href="{{ route('actividades.create', $leccion) }}"
-                   class="text-sm bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200">
+                   class="text-sm bg-dyl-orange-100 text-dyl-orange-700 px-4 py-2 rounded-lg hover:bg-dyl-orange-200">
                     + Agregar actividad
                 </a>
             </div>
@@ -276,3 +276,5 @@
     </main>
 </div>
 @endsection
+
+

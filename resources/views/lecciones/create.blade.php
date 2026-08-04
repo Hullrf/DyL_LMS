@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-4">
-        <a href="{{ route('cursos.edit', $modulo->curso) }}" class="text-blue-600 hover:text-blue-800 text-sm">&larr; Volver al curso</a>
+        <a href="{{ route('cursos.edit', $modulo->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">&larr; Volver al curso</a>
     </div>
     <div class="bg-white rounded-lg shadow p-8">
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Nueva Lección</h1>
@@ -16,13 +16,13 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Título de la lección</label>
                     <input type="text" name="titulo" value="{{ old('titulo') }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                    @error('titulo')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
+                    @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
                     <select name="tipo" x-model="tipo"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                         <option value="texto">Texto</option>
                         <option value="video">Video</option>
                         <option value="mixto">Mixto (texto + video)</option>
@@ -38,14 +38,14 @@
                 </label>
                 <input type="url" name="video_url" value="{{ old('video_url') }}"
                        placeholder="https://www.youtube.com/watch?v=..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                @error('video_url')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                @error('video_url')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Duración estimada (minutos)</label>
                 <input type="number" name="duracion_minutos" value="{{ old('duracion_minutos', 30) }}" min="1"
-                       class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                       class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
             </div>
 
             {{-- Toggle: permitir descarga de adjuntos (default para actividades de esta lección) --}}
@@ -58,7 +58,7 @@
                     <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                         <input type="hidden" name="permitir_descarga_adjuntos" value="0">
                         <input type="checkbox" name="permitir_descarga_adjuntos" value="1" class="sr-only peer" checked>
-                        <div class="w-11 h-6 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <div class="w-11 h-6 bg-gray-300 peer-focus:ring-2 peer-focus:ring-dyl-orange-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dyl-orange-600"></div>
                     </label>
                 </div>
             </div>
@@ -73,12 +73,12 @@
                     </svg>
                     Las imágenes se mostrarán con altura fija (400 px). Resolución sugerida: <strong class="text-gray-500">1280 × 720 px</strong> o superior.
                 </p>
-                @error('contenido_html')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                @error('contenido_html')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
             </div>
             </div>{{-- /x-show contenido --}}
 
             <div class="flex gap-4">
-                <button type="submit" id="btn-guardar" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                <button type="submit" id="btn-guardar" class="bg-dyl-orange-600 text-white px-6 py-2 rounded-lg hover:bg-dyl-orange-700">
                     Crear Lección
                 </button>
                 <a href="{{ route('cursos.edit', $modulo->curso) }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">
@@ -151,3 +151,4 @@ document.getElementById('form-leccion').addEventListener('submit', function () {
 });
 </script>
 @endsection
+
