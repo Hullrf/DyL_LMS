@@ -10,7 +10,7 @@
             height: 210mm;
             font-family: 'Times New Roman', Times, serif;
             background: #fff;
-            color: #1a1a2e;
+            color: #0F172A;
             position: relative;
             overflow: hidden;
         }
@@ -22,7 +22,7 @@
             left: 8mm;
             right: 8mm;
             bottom: 8mm;
-            border: 3px solid #C9A227;
+            border: 3px solid #F97316;
         }
 
         /* Marco interior */
@@ -32,14 +32,14 @@
             left: 11mm;
             right: 11mm;
             bottom: 11mm;
-            border: 1px solid #C9A227;
+            border: 1px solid #F97316;
         }
 
         /* Fondo decorativo */
         .fondo-degradado {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, #f8f4e8 0%, #ffffff 50%, #f8f4e8 100%);
+            background: linear-gradient(135deg, #F8FAFC 0%, #ffffff 50%, #F8FAFC 100%);
         }
 
         /* Esquinas decorativas */
@@ -47,7 +47,7 @@
             position: absolute;
             width: 20mm;
             height: 20mm;
-            border-color: #C9A227;
+            border-color: #F97316;
         }
         .esquina-tl { top: 13mm; left: 13mm; border-top: 2px solid; border-left: 2px solid; }
         .esquina-tr { top: 13mm; right: 13mm; border-top: 2px solid; border-right: 2px solid; }
@@ -71,7 +71,7 @@
         .logo-empresa {
             font-size: 13pt;
             font-weight: bold;
-            color: #1e3a5f;
+            color: #0F172A;
             letter-spacing: 3px;
             text-transform: uppercase;
             margin-bottom: 3mm;
@@ -80,13 +80,13 @@
         .linea-dorada {
             width: 80mm;
             height: 0.5mm;
-            background: #C9A227;
+            background: #F97316;
             margin: 0 auto 5mm;
         }
 
         .titulo-certificado {
             font-size: 28pt;
-            color: #C9A227;
+            color: #F97316;
             letter-spacing: 5px;
             text-transform: uppercase;
             margin-bottom: 4mm;
@@ -102,10 +102,10 @@
 
         .nombre-estudiante {
             font-size: 26pt;
-            color: #1e3a5f;
+            color: #0F172A;
             font-style: italic;
             font-weight: bold;
-            border-bottom: 1px solid #C9A227;
+            border-bottom: 1px solid #F97316;
             padding-bottom: 2mm;
             margin-bottom: 5mm;
             min-width: 120mm;
@@ -119,14 +119,14 @@
 
         .nombre-curso {
             font-size: 16pt;
-            color: #1e3a5f;
+            color: #0F172A;
             font-weight: bold;
             margin-bottom: 3mm;
         }
 
         .calificacion-box {
             display: inline-block;
-            border: 1px solid #C9A227;
+            border: 1px solid #F97316;
             padding: 1mm 5mm;
             font-size: 10pt;
             color: #555;
@@ -153,7 +153,7 @@
         .firma-nombre {
             font-size: 9pt;
             font-weight: bold;
-            color: #1a1a2e;
+            color: #0F172A;
         }
 
         .firma-cargo {
