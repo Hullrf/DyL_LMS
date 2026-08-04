@@ -15,6 +15,12 @@
                 </svg>
             </button>
         @endauth
+
+        @hasSection('breadcrumbs')
+        <nav aria-label="Breadcrumb" class="hidden sm:block text-sm text-dyl-graphite-500 truncate">
+            @yield('breadcrumbs')
+        </nav>
+        @endif
     </div>
 
     <div class="flex items-center gap-3">
