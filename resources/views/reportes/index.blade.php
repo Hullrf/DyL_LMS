@@ -13,25 +13,25 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Estudiantes</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">{{ $kpis['total_estudiantes'] }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $kpis['total_estudiantes'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Inscripciones</p>
-        <p class="text-3xl font-bold text-purple-600 mt-1">{{ $kpis['total_inscripciones'] }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $kpis['total_inscripciones'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Tasa de completitud</p>
-        <p class="text-3xl font-bold mt-1 {{ $kpis['tasa_completitud'] >= 70 ? 'text-green-600' : 'text-orange-500' }}">
+        <p class="text-3xl font-bold mt-1 {{ $kpis['tasa_completitud'] >= 70 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
             {{ $kpis['tasa_completitud'] }}%
         </p>
         <div class="mt-2 h-1.5 bg-gray-200 rounded-full">
-            <div class="h-full rounded-full {{ $kpis['tasa_completitud'] >= 70 ? 'bg-green-500' : 'bg-orange-400' }}"
+            <div class="h-full rounded-full {{ $kpis['tasa_completitud'] >= 70 ? 'bg-dyl-orange-500' : 'bg-dyl-graphite-400' }}"
                  style="width: {{ min($kpis['tasa_completitud'], 100) }}%"></div>
         </div>
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Certificados emitidos</p>
-        <p class="text-3xl font-bold text-yellow-500 mt-1">{{ $kpis['total_certificados'] }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-500 mt-1">{{ $kpis['total_certificados'] }}</p>
     </div>
 </div>
 
@@ -42,15 +42,15 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Publicados</p>
-        <p class="text-2xl font-bold text-green-600 mt-1">{{ $kpis['cursos_publicados'] }}</p>
+        <p class="text-2xl font-bold text-dyl-orange-600 mt-1">{{ $kpis['cursos_publicados'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Completaron cursos</p>
-        <p class="text-2xl font-bold text-blue-600 mt-1">{{ $kpis['completados'] }}</p>
+        <p class="text-2xl font-bold text-dyl-graphite-700 mt-1">{{ $kpis['completados'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Promedio calificación</p>
-        <p class="text-2xl font-bold mt-1 {{ ($kpis['promedio_calificacion'] ?? 0) >= 60 ? 'text-green-600' : 'text-gray-500' }}">
+        <p class="text-2xl font-bold mt-1 {{ ($kpis['promedio_calificacion'] ?? 0) >= 60 ? 'text-dyl-orange-600' : 'text-gray-500' }}">
             {{ $kpis['promedio_calificacion'] !== null ? $kpis['promedio_calificacion'] . '%' : '—' }}
         </p>
     </div>
@@ -87,8 +87,8 @@
                     @endif
                     <td class="px-6 py-4">
                         <span class="px-2 py-1 text-xs rounded-full font-medium
-                            @if($curso->estado === 'publicado') bg-green-100 text-green-700
-                            @elseif($curso->estado === 'borrador') bg-yellow-100 text-yellow-700
+                            @if($curso->estado === 'publicado') bg-dyl-orange-100 text-dyl-orange-700
+                            @elseif($curso->estado === 'borrador') bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold
                             @else bg-gray-100 text-gray-500 @endif">
                             {{ ucfirst($curso->estado) }}
                         </span>
@@ -98,7 +98,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <a href="{{ route('reportes.curso', $curso) }}"
-                           class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium">
                             Ver reporte &rarr;
                         </a>
                     </td>
@@ -137,7 +137,7 @@
                     <td class="px-6 py-3 text-center text-sm font-bold text-gray-700">{{ $usr->cursos_count }}</td>
                     <td class="px-6 py-3">
                         <a href="{{ route('reportes.estudiante', $usr) }}"
-                           class="text-blue-600 hover:text-blue-800 text-sm">Ver &rarr;</a>
+                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver &rarr;</a>
                     </td>
                 </tr>
                 @endforeach
@@ -173,11 +173,11 @@ document.addEventListener('DOMContentLoaded', function () {
             datasets: [{
                 label: 'Inscripciones',
                 data: @json($chartData['meses_data']),
-                borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59,130,246,0.08)',
+                borderColor: '#EA580C',
+                backgroundColor: 'rgba(234,88,12,0.08)',
                 tension: 0.4,
                 fill: true,
-                pointBackgroundColor: '#3B82F6',
+                pointBackgroundColor: '#EA580C',
             }]
         },
         options: {
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Sin calificar', 'Calificada', 'En revisión'],
             datasets: [{
                 data: @json($chartData['resp_estados']),
-                backgroundColor: ['#FCD34D', '#34D399', '#60A5FA'],
+                backgroundColor: ['#CBD5E1', '#F97316', '#475569'],
                 borderWidth: 0,
             }]
         },

@@ -16,21 +16,21 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Cursos inscritos</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">{{ $reporte['total_cursos'] }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $reporte['total_cursos'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Completados</p>
-        <p class="text-3xl font-bold text-green-600 mt-1">{{ $reporte['completados'] }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $reporte['completados'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Certificados</p>
-        <p class="text-3xl font-bold text-yellow-500 mt-1">
+        <p class="text-3xl font-bold text-dyl-orange-500 mt-1">
             {{ $reporte['cursos']->where('tiene_certificado', true)->count() }}
         </p>
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Actividades enviadas</p>
-        <p class="text-3xl font-bold text-purple-600 mt-1">{{ $reporte['respuestas_historial']->count() }}</p>
+        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $reporte['respuestas_historial']->count() }}</p>
     </div>
 </div>
 
@@ -47,20 +47,20 @@
                     <div class="flex items-center gap-2 mb-1">
                         <h3 class="text-sm font-bold text-gray-900">{{ $cd['curso']->titulo }}</h3>
                         <span class="px-2 py-0.5 text-xs rounded-full font-medium
-                            @if($cd['estado'] === 'completado') bg-green-100 text-green-700
-                            @elseif($cd['estado'] === 'en_progreso') bg-blue-100 text-blue-700
+                            @if($cd['estado'] === 'completado') bg-dyl-orange-100 text-dyl-orange-700
+                            @elseif($cd['estado'] === 'en_progreso') bg-dyl-graphite-100 text-dyl-graphite-600
                             @else bg-gray-100 text-gray-500 @endif">
                             {{ ucfirst(str_replace('_', ' ', $cd['estado'])) }}
                         </span>
                         @if($cd['tiene_certificado'])
-                            <span class="text-yellow-500" title="Certificado emitido">&#127941;</span>
+                            <span class="text-dyl-orange-500" title="Certificado emitido">&#127941;</span>
                         @endif
                     </div>
 
                     {{-- Barra de progreso --}}
                     <div class="flex items-center gap-3 mt-2">
                         <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden max-w-xs">
-                            <div class="h-full rounded-full {{ $cd['progreso_pct'] === 100 ? 'bg-green-500' : 'bg-blue-500' }}"
+                            <div class="h-full rounded-full {{ $cd['progreso_pct'] === 100 ? 'bg-dyl-orange-600' : 'bg-dyl-graphite-400' }}"
                                  style="width: {{ $cd['progreso_pct'] }}%"></div>
                         </div>
                         <span class="text-xs font-medium text-gray-600">{{ $cd['progreso_pct'] }}%</span>
@@ -70,7 +70,7 @@
 
                 <div class="text-right flex-shrink-0">
                     @if($cd['promedio'] !== null)
-                        <p class="text-2xl font-bold {{ $cd['promedio'] >= 60 ? 'text-green-600' : 'text-red-500' }}">
+                        <p class="text-2xl font-bold {{ $cd['promedio'] >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
                             {{ $cd['promedio'] }}%
                         </p>
                         <p class="text-xs text-gray-400">Calificación</p>
@@ -119,11 +119,11 @@
                         @if($resp->estado === 'calificada')
                             @php $pct = ($resp->actividad?->puntaje_maximo ?? 0) > 0
                                 ? round(($resp->calificacion / $resp->actividad->puntaje_maximo) * 100) : 0; @endphp
-                            <span class="text-sm font-bold {{ $pct >= 60 ? 'text-green-600' : 'text-red-500' }}">
+                            <span class="text-sm font-bold {{ $pct >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
                                 {{ $resp->calificacion }}{{ $resp->actividad ? '/' . $resp->actividad->puntaje_maximo : '' }}
                             </span>
                         @else
-                            <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full">Pendiente</span>
+                            <span class="text-xs text-dyl-graphite-900 font-semibold bg-dyl-graphite-100 px-2 py-0.5 rounded-full">Pendiente</span>
                         @endif
                     </td>
                 </tr>
