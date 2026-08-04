@@ -10,7 +10,7 @@
 <div class="max-w-3xl mx-auto">
     @unless($modoExamen)
     <div class="mb-4 flex items-center justify-between">
-        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm">
+        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Volver a la lección
         </a>
@@ -28,7 +28,7 @@
             </div>
             <div class="text-right">
                 @if($actividad->tieneCalificacion())
-                    <p class="text-2xl font-bold text-blue-600">{{ $actividad->puntaje_maximo }}</p>
+                    <p class="text-2xl font-bold text-dyl-orange-600">{{ $actividad->puntaje_maximo }}</p>
                     <p class="text-xs text-gray-500">puntos</p>
                 @else
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
@@ -38,7 +38,7 @@
             </div>
         </div>
         @if($actividad->descripcion)
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-gray-700 text-sm">
+        <div class="bg-dyl-graphite-50 border border-dyl-graphite-200 rounded-lg p-4 text-gray-700 text-sm">
             @include('components.descripcion-render', ['slot' => $actividad->descripcion])
         </div>
         @endif
@@ -51,33 +51,33 @@
     @php $estadoPlazo = $actividad->estadoPlazo(); @endphp
     @if($estadoPlazo !== 'sin_plazo')
     <div class="mb-6 flex items-start gap-3 px-5 py-4 rounded-xl border
-        @if($estadoPlazo === 'abierta')   bg-green-50  border-green-200
-        @elseif($estadoPlazo === 'pendiente') bg-yellow-50 border-yellow-200
-        @else bg-red-50 border-red-200 @endif">
+        @if($estadoPlazo === 'abierta')   bg-dyl-orange-50 border-dyl-orange-200
+        @elseif($estadoPlazo === 'pendiente') bg-dyl-graphite-50 border-dyl-graphite-200
+        @else bg-dyl-graphite-50 border-2 border-dyl-orange-300 @endif">
         {{-- Icono --}}
         <svg class="w-5 h-5 mt-0.5 flex-shrink-0
-            @if($estadoPlazo === 'abierta') text-green-500
-            @elseif($estadoPlazo === 'pendiente') text-yellow-500
-            @else text-red-500 @endif"
+            @if($estadoPlazo === 'abierta') text-dyl-orange-500
+            @elseif($estadoPlazo === 'pendiente') text-dyl-graphite-400
+            @else text-dyl-orange-600 @endif"
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <div class="flex-1 text-sm">
             @if($estadoPlazo === 'abierta')
-                <span class="font-semibold text-green-800">Actividad abierta</span>
+                <span class="font-semibold text-dyl-orange-800">Actividad abierta</span>
                 @if($actividad->fecha_apertura)
-                    <span class="text-green-700"> — disponible desde el {{ $actividad->fecha_apertura->format('d/m/Y H:i') }}</span>
+                    <span class="text-dyl-orange-700"> — disponible desde el {{ $actividad->fecha_apertura->format('d/m/Y H:i') }}</span>
                 @endif
                 @if($actividad->fecha_cierre)
-                    <span class="text-green-700"> · Cierra el <strong>{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</strong></span>
+                    <span class="text-dyl-orange-700"> · Cierra el <strong>{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</strong></span>
                 @endif
             @elseif($estadoPlazo === 'pendiente')
-                <span class="font-semibold text-yellow-800">Aún no disponible</span>
-                <span class="text-yellow-700"> — abre el <strong>{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</strong></span>
+                <span class="font-semibold text-dyl-graphite-700">Aún no disponible</span>
+                <span class="text-dyl-graphite-600"> — abre el <strong>{{ $actividad->fecha_apertura->format('d/m/Y \a \l\a\s H:i') }}</strong></span>
             @else
-                <span class="font-semibold text-red-800">Plazo vencido</span>
-                <span class="text-red-700"> — la entrega cerró el <strong>{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</strong></span>
+                <span class="font-semibold text-dyl-graphite-900">Plazo vencido</span>
+                <span class="text-dyl-graphite-700"> — la entrega cerró el <strong>{{ $actividad->fecha_cierre->format('d/m/Y H:i') }}</strong></span>
             @endif
         </div>
     </div>
@@ -152,9 +152,9 @@
                 $esImagenDoc = in_array($ext, ['jpg','jpeg','png','gif','webp','svg','bmp']);
                 $urlArchivo = $recurso->archivoUrl();
             @endphp
-            <div class="flex items-start gap-4 bg-white border border-gray-200 rounded-xl p-4 hover:border-red-300 hover:shadow-sm transition-all">
-                <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-start gap-4 bg-white border border-gray-200 rounded-xl p-4 hover:border-dyl-graphite-300 hover:shadow-sm transition-all">
+                <div class="w-10 h-10 rounded-lg bg-dyl-graphite-100 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-dyl-graphite-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $recurso->iconoTipo() }}"/>
                     </svg>
                 </div>
@@ -173,7 +173,7 @@
                 @else
                     @if($esPdf)
                     <button type="button" @click="visorTipo='pdf'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
-                       class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
+                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-600 border-dyl-orange-300 hover:bg-dyl-orange-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -182,7 +182,7 @@
                     </button>
                     @elseif($esOffice)
                     <button type="button" @click="visorTipo='office'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
-                       class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
+                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-600 border-dyl-orange-300 hover:bg-dyl-orange-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -191,7 +191,7 @@
                     </button>
                     @elseif($esImagenDoc)
                     <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
-                       class="btn-outline btn-sm flex-shrink-0 text-blue-600 border-blue-300 hover:bg-blue-50">
+                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-600 border-dyl-orange-300 hover:bg-dyl-orange-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -208,8 +208,8 @@
             @elseif($recurso->tipo === 'imagen')
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-sm transition-all">
                 <div class="p-4 flex items-center gap-3 border-b border-gray-100">
-                    <div class="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-9 h-9 rounded-lg bg-dyl-graphite-100 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-dyl-graphite-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $recurso->iconoTipo() }}"/>
                         </svg>
                     </div>
@@ -240,8 +240,8 @@
             @elseif($recurso->tipo === 'video')
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="p-4 flex items-center gap-3 border-b border-gray-100">
-                    <div class="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-9 h-9 rounded-lg bg-dyl-graphite-100 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-dyl-graphite-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $recurso->iconoTipo() }}"/>
                         </svg>
                     </div>
@@ -267,12 +267,12 @@
             {{-- TEXTO --}}
             @elseif($recurso->tipo === 'texto')
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <div class="px-5 py-3 bg-blue-50 border-b border-blue-100 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="px-5 py-3 bg-dyl-graphite-100 border-b border-dyl-graphite-200 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-dyl-graphite-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $recurso->iconoTipo() }}"/>
                     </svg>
-                    <span class="font-medium text-blue-800 text-sm">{{ $recurso->titulo }}</span>
-                    @if($recurso->descripcion)<span class="text-xs text-blue-500 ml-1">— {{ $recurso->descripcion }}</span>@endif
+                    <span class="font-medium text-dyl-graphite-800 text-sm">{{ $recurso->titulo }}</span>
+                    @if($recurso->descripcion)<span class="text-xs text-dyl-graphite-500 ml-1">— {{ $recurso->descripcion }}</span>@endif
                 </div>
                 <div class="px-5 py-4 prose prose-sm max-w-none text-gray-700 leading-relaxed">
                     {!! nl2br(e($recurso->contenido)) !!}
@@ -282,18 +282,18 @@
             {{-- ENLACE EXTERNO --}}
             @elseif($recurso->tipo === 'enlace')
             <a href="{{ $recurso->url }}" target="_blank" rel="noopener noreferrer"
-               class="flex items-center gap-4 bg-white border border-gray-200 rounded-xl p-4 hover:border-green-400 hover:shadow-sm transition-all group">
-                <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
-                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="flex items-center gap-4 bg-white border border-gray-200 rounded-xl p-4 hover:border-dyl-graphite-400 hover:shadow-sm transition-all group">
+                <div class="w-10 h-10 rounded-lg bg-dyl-graphite-100 flex items-center justify-center flex-shrink-0 group-hover:bg-dyl-graphite-200 transition-colors">
+                    <svg class="w-5 h-5 text-dyl-graphite-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $recurso->iconoTipo() }}"/>
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="font-medium text-gray-900 group-hover:text-green-700 transition-colors">{{ $recurso->titulo }}</p>
+                    <p class="font-medium text-gray-900 group-hover:text-dyl-graphite-700 transition-colors">{{ $recurso->titulo }}</p>
                     @if($recurso->descripcion)<p class="text-xs text-gray-500 mt-0.5">{{ $recurso->descripcion }}</p>@endif
                     <p class="text-xs text-gray-400 mt-0.5 truncate">{{ $recurso->url }}</p>
                 </div>
-                <svg class="w-4 h-4 text-gray-400 group-hover:text-green-500 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-gray-400 group-hover:text-dyl-graphite-600 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                 </svg>
             </a>
@@ -347,7 +347,7 @@
 
                         {{-- Loading --}}
                         <div x-show="officeLoading" class="flex items-center justify-center py-20">
-                            <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg class="animate-spin h-8 w-8 text-dyl-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                             </svg>
@@ -355,10 +355,10 @@
 
                         {{-- Error --}}
                         <div x-show="officeError" class="flex flex-col items-center justify-center py-16 px-6">
-                            <svg class="w-12 h-12 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-12 h-12 text-dyl-orange-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <p class="text-red-600 text-sm font-medium text-center" x-text="officeError"></p>
+                            <p class="text-dyl-graphite-900 text-sm font-semibold text-center" x-text="officeError"></p>
                         </div>
 
                         {{-- Contenido renderizado --}}
@@ -411,18 +411,18 @@
 
     {{-- Estado de completado de la actividad --}}
     @if($actividadCompletada)
-    <div class="mb-6 flex items-center gap-3 px-5 py-4 bg-green-50 border border-green-200 rounded-xl">
-        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="mb-6 flex items-center gap-3 px-5 py-4 bg-dyl-orange-50 border border-dyl-orange-200 rounded-xl">
+        <svg class="w-5 h-5 text-dyl-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        <span class="text-sm font-medium text-green-700">Actividad completada</span>
+        <span class="text-sm font-medium text-dyl-orange-700">Actividad completada</span>
     </div>
     @elseif(!$actividad->tieneCalificacion())
     <div class="mb-6">
         <form action="{{ route('actividades.completar', $actividad) }}" method="POST">
             @csrf
             <button type="submit"
-                    class="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center gap-2">
+                    class="w-full sm:w-auto bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
@@ -451,7 +451,7 @@
                         @foreach($criteriosRubrica->first()->niveles as $nivelHeader)
                         <th class="text-center px-3 py-3 font-semibold text-gray-500 text-xs min-w-32">
                             Nivel {{ $loop->iteration }}<br>
-                            <span class="text-green-600 font-bold">{{ number_format($nivelHeader->puntos, 2) }} pts</span>
+                            <span class="text-dyl-orange-600 font-bold">{{ number_format($nivelHeader->puntos, 2) }} pts</span>
                         </th>
                         @endforeach
                     </tr>
@@ -463,12 +463,12 @@
                         @foreach($criterio->niveles as $nivel)
                         @php $estaSeleccionado = $seleccionesMap->get($criterio->id) == $nivel->id; @endphp
                         <td class="px-3 py-4 align-top text-xs text-gray-600 leading-relaxed
-                            {{ $estaSeleccionado ? 'bg-green-50 border-l-2 border-green-400' : '' }}">
+                            {{ $estaSeleccionado ? 'bg-dyl-orange-50 border-l-2 border-dyl-orange-400' : '' }}">
                             @if($estaSeleccionado)
-                                <span class="inline-block mb-1 text-green-600 font-semibold text-[10px] uppercase tracking-wide">✓ Nivel obtenido</span><br>
+                                <span class="inline-block mb-1 text-dyl-orange-600 font-semibold text-[10px] uppercase tracking-wide">✓ Nivel obtenido</span><br>
                             @endif
                             {{ $nivel->descripcion }}
-                            <span class="block mt-2 font-bold text-sm {{ $estaSeleccionado ? 'text-green-600' : 'text-gray-400' }}">
+                            <span class="block mt-2 font-bold text-sm {{ $estaSeleccionado ? 'text-dyl-orange-600' : 'text-gray-400' }}">
                                 {{ number_format($nivel->puntos, 2) }} puntos
                             </span>
                         </td>
@@ -488,14 +488,14 @@
         @if($actividad->permiteMultiplesIntentos())
             {{-- Cuestionario con múltiples intentos --}}
             @if($tieneIntentoEnRevision)
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
-                <h2 class="font-bold text-yellow-800 mb-2">Intento pendiente de revisión</h2>
+            <div class="bg-dyl-graphite-50 border-2 border-dyl-orange-300 rounded-lg p-6 mb-6">
+                <h2 class="font-bold text-dyl-graphite-900 mb-2">Intento pendiente de revisión</h2>
                 <p class="text-gray-600">
                     Tu intento más reciente incluye preguntas de respuesta corta que el instructor debe revisar
                     antes de que puedas iniciar un nuevo intento.
                 </p>
                 <div class="mt-4">
-                    <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-dyl-graphite-800 hover:bg-dyl-graphite-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                         Volver a la lección
                     </a>
                 </div>
@@ -503,12 +503,12 @@
             @else
                 @unless($modoExamen)
                 @if($respuesta)
-                <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-                    <h2 class="font-bold text-green-800 mb-2">
+                <div class="bg-dyl-orange-50 border border-dyl-orange-200 rounded-lg p-6 mb-6">
+                    <h2 class="font-bold text-dyl-orange-800 mb-2">
                         Intento {{ $intentosUsados }} de {{ $actividad->intentos_permitidos }}
                     </h2>
                     @if($respuesta->calificacion !== null)
-                        <p class="text-2xl font-bold text-green-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
+                        <p class="text-2xl font-bold text-dyl-orange-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
                         <p class="text-xs text-gray-500 mt-1">
                             Calificación vigente ({{ $actividad->criterio_calificacion_intentos === 'ultimo' ? 'último intento' : 'intento más alto' }})
                         </p>
@@ -516,20 +516,20 @@
                         <p class="text-gray-600">Tu respuesta está pendiente de calificación.</p>
                     @endif
                     @if($respuesta->feedback)
-                        <div class="mt-3 pt-3 border-t border-green-200">
+                        <div class="mt-3 pt-3 border-t border-dyl-orange-200">
                             <p class="text-sm font-medium text-gray-700 mb-1">Retroalimentación:</p>
                             <p class="text-sm text-gray-600">{{ $respuesta->feedback }}</p>
                         </div>
                     @endif
 
                     @if($actividad->mostrar_historial_intentos)
-                    <div class="mt-4 pt-4 border-t border-green-200">
+                    <div class="mt-4 pt-4 border-t border-dyl-orange-200">
                         <p class="text-sm font-medium text-gray-700 mb-2">Historial de intentos</p>
                         <ul class="space-y-1">
                             @foreach($intentos as $index => $intento)
                             <li class="text-sm text-gray-600 flex items-center justify-between gap-3">
                                 <span>Intento {{ $index + 1 }} — {{ $intento->fecha_envio->format('d/m/Y H:i') }}</span>
-                                <span class="font-medium {{ $intento->id === $respuesta->id ? 'text-green-700' : 'text-gray-500' }}">
+                                <span class="font-medium {{ $intento->id === $respuesta->id ? 'text-dyl-orange-700' : 'text-gray-500' }}">
                                     {{ $intento->calificacion !== null ? number_format($intento->calificacion, 2) . '/' . $actividad->puntaje_maximo : 'Pendiente' }}
                                     @if($intento->id === $respuesta->id)<span class="text-xs">(vigente)</span>@endif
                                 </span>
@@ -540,7 +540,7 @@
                     @endif
 
                     <div class="mt-4">
-                        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-dyl-orange-600 hover:bg-dyl-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                             Volver a la lección
                         </a>
@@ -559,21 +559,21 @@
         @else
         {{-- Comportamiento actual sin cambios: cuestionario de 1 intento, ensayo, tarea, practica --}}
         @if($respuesta)
-        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-            <h2 class="font-bold text-green-800 mb-2">Ya respondiste esta actividad</h2>
+        <div class="bg-dyl-orange-50 border border-dyl-orange-200 rounded-lg p-6 mb-6">
+            <h2 class="font-bold text-dyl-orange-800 mb-2">Ya respondiste esta actividad</h2>
             @if($respuesta->calificacion !== null)
-                <p class="text-2xl font-bold text-green-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
+                <p class="text-2xl font-bold text-dyl-orange-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
             @else
                 <p class="text-gray-600">Tu respuesta está pendiente de calificación.</p>
             @endif
             @if($respuesta->feedback)
-                <div class="mt-3 pt-3 border-t border-green-200">
+                <div class="mt-3 pt-3 border-t border-dyl-orange-200">
                     <p class="text-sm font-medium text-gray-700 mb-1">Retroalimentación:</p>
                     <p class="text-sm text-gray-600">{{ $respuesta->feedback }}</p>
                 </div>
             @endif
             <div class="mt-4">
-                <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-dyl-orange-600 hover:bg-dyl-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     Volver a la lección
                 </a>
@@ -594,9 +594,9 @@
                     <div class="bg-white rounded-lg shadow p-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Tu respuesta</label>
                         <textarea name="respuesta" rows="8"
-                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600"
                                   placeholder="Escribe tu respuesta aquí...">{{ old('respuesta') }}</textarea>
-                        @error('respuesta')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                        @error('respuesta')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="bg-white rounded-lg shadow p-6" x-data="{ nombre: null, errorArchivo: '' }">
@@ -606,10 +606,10 @@
                         </p>
                         <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-colors"
                                :class="nombre && !errorArchivo
-                                   ? 'border-green-400 bg-green-50/40 hover:bg-green-50'
+                                   ? 'border-dyl-orange-400 bg-dyl-orange-50/40 hover:bg-dyl-orange-50'
                                    : errorArchivo
-                                       ? 'border-red-400 bg-red-50/40'
-                                       : 'border-gray-300 bg-gray-50/40 hover:border-blue-400 hover:bg-blue-50/30'">
+                                       ? 'border-dyl-graphite-400 bg-dyl-graphite-100'
+                                       : 'border-gray-300 bg-gray-50/40 hover:border-dyl-orange-400 hover:bg-dyl-orange-50/30'">
                             <div x-show="!nombre && !errorArchivo" class="flex flex-col items-center gap-1.5 text-gray-400 pointer-events-none">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -618,14 +618,14 @@
                                 <p class="text-sm">Haz clic para seleccionar</p>
                                 <p class="text-xs">Imagen, PDF, Word, video — máx. 50 MB</p>
                             </div>
-                            <div x-show="nombre && !errorArchivo" class="flex items-center gap-2 px-4 text-green-700 pointer-events-none">
+                            <div x-show="nombre && !errorArchivo" class="flex items-center gap-2 px-4 text-dyl-orange-700 pointer-events-none">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                                 <span class="text-sm font-medium truncate max-w-xs" x-text="nombre"></span>
                             </div>
-                            <div x-show="errorArchivo" class="flex items-center gap-2 px-4 text-red-600 pointer-events-none">
+                            <div x-show="errorArchivo" class="flex items-center gap-2 px-4 text-dyl-graphite-900 font-semibold pointer-events-none">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -650,12 +650,12 @@
                                        }
                                    ">
                         </label>
-                        <p x-show="errorArchivo" x-text="errorArchivo" class="text-red-600 text-xs mt-1"></p>
-                        @error('archivo_adjunto')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                        <p x-show="errorArchivo" x-text="errorArchivo" class="text-dyl-graphite-900 font-semibold text-xs mt-1"></p>
+                        @error('archivo_adjunto')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="mt-6 flex justify-end">
-                        <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium">
+                        <button type="submit" class="bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
                             Enviar respuesta
                         </button>
                     </div>
@@ -674,7 +674,7 @@
                 <p class="font-medium text-gray-700">Esta actividad es de consulta</p>
                 <p class="text-sm text-gray-500 mt-1">No requiere entrega ni tiene calificación. Revisa los recursos disponibles arriba.</p>
             </div>
-            <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="ml-auto inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium shrink-0">
+            <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="ml-auto inline-flex items-center text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium shrink-0">
                 Continuar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
             </a>
         </div>

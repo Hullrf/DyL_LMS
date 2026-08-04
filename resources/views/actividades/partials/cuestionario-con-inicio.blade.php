@@ -26,7 +26,7 @@
                 }
              }"
              class="sticky top-4 z-10 mb-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-mono text-lg font-bold"
-             :class="segundos <= 60 ? 'bg-red-50 text-red-700 animate-pulse' : 'bg-blue-50 text-blue-700'">
+             :class="segundos <= 60 ? 'bg-dyl-graphite-50 border-2 border-dyl-orange-300 text-dyl-graphite-900 font-bold animate-pulse' : 'bg-dyl-graphite-50 text-dyl-graphite-700'">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
@@ -37,7 +37,7 @@
         @include('actividades.partials.formulario-cuestionario')
 
         <div class="mt-6 flex justify-end">
-            <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium">
+            <button type="submit" class="bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
                 Enviar respuesta
             </button>
         </div>
@@ -45,7 +45,7 @@
 @else
     @php $totalPreguntas = $actividad->preguntas()->count(); @endphp
     <div class="bg-white rounded-lg shadow p-8 text-center">
-        <svg class="w-12 h-12 text-blue-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-12 h-12 text-dyl-graphite-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
         <div class="flex justify-center flex-wrap gap-6 text-sm text-gray-600 mb-6">
@@ -69,7 +69,7 @@
         </div>
         <form action="{{ route('actividades.iniciarIntento', $actividad) }}" method="POST">
             @csrf
-            <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium">
+            <button type="submit" class="bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
                 {{ $respuesta ? 'Reintentar' : 'Iniciar cuestionario' }}
             </button>
         </form>

@@ -2,7 +2,7 @@
 @section('title', 'Editar Actividad - LMS DyL')
 @section('content')
 <div class="mb-4">
-    <a href="{{ route('cursos.edit', $actividad->leccion->modulo->curso) }}" class="text-blue-600 hover:text-blue-800 text-sm">&larr; Volver al curso</a>
+    <a href="{{ route('cursos.edit', $actividad->leccion->modulo->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">&larr; Volver al curso</a>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -15,7 +15,7 @@
             <h2 class="text-lg font-bold text-gray-900 mb-1">{{ $actividad->titulo }}</h2>
             <span class="badge mb-4
                 @if($actividad->tipo === 'cuestionario') badge-blue
-                @elseif($actividad->tipo === 'ensayo') bg-purple-100 text-purple-800
+                @elseif($actividad->tipo === 'ensayo') bg-dyl-graphite-100 text-dyl-graphite-600
                 @elseif($actividad->tipo === 'tarea') badge-yellow
                 @else badge-green @endif">
                 {{ ucfirst($actividad->tipo) }}
@@ -43,7 +43,7 @@
                 </div>
                 @endif
                 @if($actividad->tipo === 'cuestionario')
-                <div class="mb-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                <div class="mb-4 p-4 bg-dyl-graphite-50 rounded-xl border border-dyl-graphite-200">
                     <p class="text-sm font-semibold text-gray-800 mb-3">Intentos del cuestionario</p>
                     <div class="mb-3">
                         <label class="form-label">Intentos permitidos</label>
@@ -127,13 +127,13 @@
                         @php $estadoPlazo = $actividad->estadoPlazo(); @endphp
                         @if($estadoPlazo !== 'sin_plazo')
                         <div class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium
-                            @if($estadoPlazo === 'abierta')  bg-green-50 text-green-700 border border-green-200
-                            @elseif($estadoPlazo === 'pendiente') bg-yellow-50 text-yellow-700 border border-yellow-200
-                            @else bg-red-50 text-red-700 border border-red-200 @endif">
+                            @if($estadoPlazo === 'abierta')  bg-dyl-orange-50 text-dyl-orange-700 border border-dyl-orange-200
+                            @elseif($estadoPlazo === 'pendiente') bg-dyl-graphite-50 text-dyl-graphite-700 border border-dyl-graphite-200
+                            @else bg-dyl-graphite-50 text-dyl-graphite-900 font-semibold border-2 border-dyl-orange-300 @endif">
                             <span class="w-2 h-2 rounded-full flex-shrink-0
-                                @if($estadoPlazo === 'abierta') bg-green-500
-                                @elseif($estadoPlazo === 'pendiente') bg-yellow-500
-                                @else bg-red-500 @endif"></span>
+                                @if($estadoPlazo === 'abierta') bg-dyl-orange-500
+                                @elseif($estadoPlazo === 'pendiente') bg-dyl-graphite-400
+                                @else bg-dyl-orange-600 @endif"></span>
                             @if($estadoPlazo === 'abierta')   Abierta ahora
                             @elseif($estadoPlazo === 'pendiente') Aún no disponible
                             @else Plazo vencido @endif
@@ -202,7 +202,7 @@
                      x-data="{ archivoError: '' }">
                     <label class="form-label">Archivo</label>
                     <input type="file" name="archivo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.html"
-                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
                            :disabled="tipoRecurso !== 'documento'"
                            x-on:change="
                                archivoError = '';
@@ -213,7 +213,7 @@
                                }
                            ">
                     <p class="form-hint">PDF, Word, PowerPoint, Excel, ZIP o HTML — máx. 50 MB</p>
-                    <p x-show="archivoError" x-text="archivoError" class="text-red-600 text-xs mt-1"></p>
+                    <p x-show="archivoError" x-text="archivoError" class="text-dyl-graphite-900 font-semibold text-xs mt-1"></p>
                     @error('archivo')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
 
@@ -239,7 +239,7 @@
                                }
                            ">
                     <p class="form-hint">JPG, PNG, GIF, WebP o SVG — máx. 50 MB</p>
-                    <p x-show="archivoError" x-text="archivoError" class="text-red-600 text-xs mt-1"></p>
+                    <p x-show="archivoError" x-text="archivoError" class="text-dyl-graphite-900 font-semibold text-xs mt-1"></p>
                     <img x-show="preview" x-cloak :src="preview"
                          class="mt-2 w-full h-48 object-contain rounded-lg border border-gray-200 bg-gray-50">
                     @error('archivo')<p class="form-error">{{ $message }}</p>@enderror
@@ -286,12 +286,7 @@
                     <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Recursos agregados ({{ $recursos->count() }})</p>
                     @foreach($recursos as $recurso)
                     <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg group">
-                        <svg class="w-5 h-5 mt-0.5 flex-shrink-0
-                            @if($recurso->tipo === 'documento') text-red-500
-                            @elseif($recurso->tipo === 'imagen') text-orange-500
-                            @elseif($recurso->tipo === 'video') text-purple-500
-                            @elseif($recurso->tipo === 'texto') text-blue-500
-                            @else text-green-500 @endif"
+                        <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-dyl-graphite-500"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $recurso->iconoTipo() }}"/>
                         </svg>
@@ -302,7 +297,7 @@
                         <form action="{{ route('recursos.destroy', $recurso) }}" method="POST"
                               onsubmit="return confirm('¿Eliminar este recurso?');" class="shrink-0">
                             @csrf @method('DELETE')
-                            <button type="submit" class="text-gray-500 hover:text-red-600 transition-colors"
+                            <button type="submit" class="text-gray-500 hover:text-dyl-graphite-900 transition-colors"
                                     title="Eliminar">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -323,7 +318,7 @@
             {{-- Resumen de distribución de puntaje --}}
             @php $nPreguntas = $preguntas->count(); @endphp
             @if($nPreguntas > 0)
-            <div class="mb-4 flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm">
+            <div class="mb-4 flex items-center gap-3 px-4 py-3 bg-dyl-graphite-50 border border-dyl-graphite-100 rounded-xl text-sm">
                 <svg class="w-4 h-4 text-dyl-orange-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -371,7 +366,7 @@
                                    }
                                ">
                         <p class="form-hint">JPG, PNG, WebP — máx. 4 MB · Resolución sugerida: <strong>1280 × 720 px</strong> (16:9)</p>
-                        <p x-show="errorImagen" x-text="errorImagen" class="text-red-600 text-xs mt-1"></p>
+                        <p x-show="errorImagen" x-text="errorImagen" class="text-dyl-graphite-900 font-semibold text-xs mt-1"></p>
                         <img x-show="preview" x-cloak :src="preview"
                              class="mt-2 w-full h-48 object-contain rounded-lg border border-gray-200 bg-gray-50">
                     </div>
@@ -383,7 +378,7 @@
                             <option value="verdadero_falso">Verdadero / Falso</option>
                             <option value="respuesta_corta">Respuesta corta</option>
                         </select>
-                        <button type="submit" class="btn bg-green-600 text-white hover:bg-green-700">
+                        <button type="submit" class="btn bg-dyl-orange-600 text-white hover:bg-dyl-orange-700">
                             + Pregunta
                         </button>
                     </div>
@@ -394,20 +389,20 @@
                         <div class="flex gap-3">
                             <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
                                    :class="correctaVF === 'verdadero'
-                                       ? 'border-green-500 bg-green-50 text-green-700 font-semibold ring-1 ring-green-400'
+                                       ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-700 font-semibold ring-1 ring-dyl-orange-400'
                                        : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                                 <input type="radio" name="correcta_vf" value="verdadero"
                                        x-model="correctaVF" class="sr-only">
-                                <span class="text-base" :class="correctaVF === 'verdadero' ? 'text-green-600' : 'text-gray-300'">✓</span>
+                                <span class="text-base" :class="correctaVF === 'verdadero' ? 'text-dyl-orange-600' : 'text-gray-300'">✓</span>
                                 Verdadero
                             </label>
                             <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
                                    :class="correctaVF === 'falso'
-                                       ? 'border-red-500 bg-red-50 text-red-700 font-semibold ring-1 ring-red-400'
+                                       ? 'border-dyl-graphite-600 bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold ring-1 ring-dyl-graphite-400'
                                        : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                                 <input type="radio" name="correcta_vf" value="falso"
                                        x-model="correctaVF" class="sr-only">
-                                <span class="text-base" :class="correctaVF === 'falso' ? 'text-red-500' : 'text-gray-300'">✗</span>
+                                <span class="text-base" :class="correctaVF === 'falso' ? 'text-dyl-graphite-600' : 'text-gray-300'">✗</span>
                                 Falso
                             </label>
                         </div>
@@ -448,9 +443,9 @@
                       class="flex gap-2 items-start">
                     @csrf
                     <input type="file" name="archivo" accept=".json"
-                           class="flex-1 text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                           class="flex-1 text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
                            required>
-                    <button type="submit" class="btn bg-blue-600 text-white hover:bg-blue-700 shrink-0">Importar</button>
+                    <button type="submit" class="btn bg-dyl-orange-600 text-white hover:bg-dyl-orange-700 shrink-0">Importar</button>
                 </form>
                 @error('archivo')<p class="form-error mt-1">{{ $message }}</p>@enderror
             </div>
@@ -469,7 +464,7 @@
                                 <span class="ml-2 badge badge-blue text-[10px]">selección múltiple</span>
                             @endif
                             @if($pregunta->tipo !== 'respuesta_corta' && !$pregunta->opciones->contains('es_correcta', true))
-                                <span class="ml-2 badge text-[10px] bg-yellow-100 text-yellow-700">Falta marcar la correcta</span>
+                                <span class="ml-2 badge text-[10px] bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold">Falta marcar la correcta</span>
                             @endif
                             <p class="font-medium text-gray-900 mt-1" x-show="!editing">{{ $pregunta->pregunta_texto }}</p>
 
@@ -483,7 +478,7 @@
                                       onsubmit="return confirm('¿Quitar la imagen de esta pregunta?');">
                                     @csrf @method('DELETE')
                                     <button type="submit"
-                                            class="text-xs text-red-400 hover:text-red-600 transition-colors flex items-center gap-1">
+                                            class="text-xs text-dyl-graphite-500 hover:text-dyl-graphite-900 transition-colors flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
@@ -495,7 +490,7 @@
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
                             <button type="button" @click="editing = !editing"
-                                    class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                    class="text-xs text-dyl-orange-600 hover:text-dyl-orange-700 font-medium">
                                 <span x-text="editing ? 'Cancelar' : 'Editar'"></span>
                             </button>
                             <form action="{{ route('preguntas.destroy', $pregunta) }}" method="POST" class="shrink-0"
@@ -528,13 +523,13 @@
                                 <label class="form-label">Respuesta correcta</label>
                                 <div class="flex gap-3">
                                     <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors
-                                        {{ $correctaVF === 'Verdadero' ? 'border-green-400 bg-green-50 text-green-700 font-medium' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
+                                        {{ $correctaVF === 'Verdadero' ? 'border-dyl-orange-500 bg-dyl-orange-50 text-dyl-orange-700 font-medium' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
                                         <input type="radio" name="correcta_vf" value="verdadero"
                                                {{ $correctaVF === 'Verdadero' ? 'checked' : '' }} class="sr-only">
                                         ✓ Verdadero
                                     </label>
                                     <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors
-                                        {{ $correctaVF === 'Falso' ? 'border-red-400 bg-red-50 text-red-700 font-medium' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
+                                        {{ $correctaVF === 'Falso' ? 'border-dyl-graphite-500 bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold' : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
                                         <input type="radio" name="correcta_vf" value="falso"
                                                {{ $correctaVF === 'Falso' ? 'checked' : '' }} class="sr-only">
                                         ✗ Falso
@@ -556,7 +551,7 @@
                         @php $correctaVF = $pregunta->opciones->firstWhere('es_correcta', true)?->texto; @endphp
                         <p class="text-sm text-gray-500">
                             Respuesta correcta:
-                            <span class="font-medium {{ $correctaVF === 'Verdadero' ? 'text-green-700' : 'text-red-700' }}">
+                            <span class="font-medium {{ $correctaVF === 'Verdadero' ? 'text-dyl-orange-700' : 'text-dyl-graphite-900' }}">
                                 {{ $correctaVF ?? '—' }}
                             </span>
                         </p>
@@ -564,12 +559,12 @@
                     @elseif($pregunta->tipo === 'opcion_multiple')
                         <div class="space-y-2 mb-4">
                             @foreach($pregunta->opciones as $opcion)
-                            <div class="flex items-center justify-between px-3 py-2 rounded-lg {{ $opcion->es_correcta ? 'bg-green-50 border border-green-200' : 'bg-gray-50' }}">
+                            <div class="flex items-center justify-between px-3 py-2 rounded-lg {{ $opcion->es_correcta ? 'bg-dyl-orange-50 border border-dyl-orange-200' : 'bg-gray-50' }}">
                                 <div class="flex items-center gap-2">
                                     <form action="{{ route('opciones.marcarCorrecta', $opcion) }}" method="POST">
                                         @csrf @method('PUT')
                                         <button type="submit"
-                                                class="text-lg leading-none {{ $opcion->es_correcta ? 'text-green-600 font-bold' : 'text-gray-300 hover:text-gray-400' }}"
+                                                class="text-lg leading-none {{ $opcion->es_correcta ? 'text-dyl-orange-600 font-bold' : 'text-gray-300 hover:text-gray-400' }}"
                                                 title="{{ $opcion->es_correcta ? 'Correcta' : 'Marcar como correcta' }}">
                                             {{ $opcion->es_correcta ? '✓' : '○' }}
                                         </button>
@@ -579,7 +574,7 @@
                                 <form action="{{ route('opciones.destroy', $opcion) }}" method="POST"
                                       onsubmit="return confirm('¿Eliminar opción?');">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-xs text-red-400 hover:text-red-600">✕</button>
+                                    <button type="submit" class="text-xs text-dyl-graphite-500 hover:text-dyl-graphite-900">✕</button>
                                 </form>
                             </div>
                             @endforeach
@@ -645,7 +640,7 @@
                             </div>
                             <p class="text-sm text-gray-600 line-clamp-3">{{ $resp->respuesta }}</p>
                             @if($resp->calificacion !== null)
-                                <p class="text-sm font-medium text-green-600 mt-1">
+                                <p class="text-sm font-medium text-dyl-orange-600 mt-1">
                                     Calificación: {{ number_format($resp->calificacion, 2) }} / {{ number_format($actividad->puntaje_maximo, 2) }}
                                 </p>
                             @endif
@@ -789,7 +784,7 @@
                                                    class="form-input">
                                         </div>
                                         <button type="button" @click="eliminarCriterio(ci)"
-                                                class="mt-5 text-red-400 hover:text-red-600 transition-colors shrink-0" title="Eliminar criterio">
+                                                class="mt-5 text-dyl-graphite-500 hover:text-dyl-graphite-900 transition-colors shrink-0" title="Eliminar criterio">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
@@ -814,7 +809,7 @@
                                                 </div>
                                                 <button type="button" @click="eliminarNivel(ci, ni)"
                                                         x-show="criterio.niveles.length > 1"
-                                                        class="mt-1 text-gray-300 hover:text-red-400 transition-colors">
+                                                        class="mt-1 text-gray-300 hover:text-dyl-graphite-500 transition-colors">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                                     </svg>
@@ -823,7 +818,7 @@
                                         </template>
                                     </div>
                                     <button type="button" @click="agregarNivel(ci)"
-                                            class="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                                            class="text-xs text-dyl-orange-600 hover:text-dyl-orange-700 flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                         </svg>
@@ -839,9 +834,9 @@
                         </div>
 
                         {{-- Total en tiempo real --}}
-                        <div class="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl">
-                            <span class="text-sm font-medium text-blue-800">Puntaje máximo calculado:</span>
-                            <span class="text-xl font-bold text-blue-700" x-text="totalPuntos + ' pts'"></span>
+                        <div class="flex items-center justify-between px-4 py-3 bg-dyl-orange-50 border border-dyl-orange-200 rounded-xl">
+                            <span class="text-sm font-medium text-dyl-orange-800">Puntaje máximo calculado:</span>
+                            <span class="text-xl font-bold text-dyl-orange-700" x-text="totalPuntos + ' pts'"></span>
                         </div>
 
                         {{-- Formulario para guardar rúbrica --}}
@@ -879,7 +874,7 @@
                         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">Importar rúbrica desde Excel</h3>
 
-                            <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800 space-y-1">
+                            <div class="mb-4 p-4 bg-dyl-graphite-50 border border-dyl-graphite-200 rounded-xl text-sm text-dyl-graphite-700 space-y-1">
                                 <p class="font-semibold">Formato del archivo:</p>
                                 <p>• Columna A: nombre del criterio</p>
                                 <p>• Columnas B, C, D...: niveles (de peor a mejor)</p>
@@ -899,17 +894,17 @@
                                 <input type="file" accept=".xlsx,.xls,.csv"
                                        @change="importarArchivo($event)"
                                        :disabled="importando"
-                                       class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 cursor-pointer">
+                                       class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 cursor-pointer">
                             </div>
 
-                            <p x-show="importando" class="text-sm text-blue-600 mt-1 flex items-center gap-2">
+                            <p x-show="importando" class="text-sm text-dyl-orange-600 mt-1 flex items-center gap-2">
                                 <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                                 </svg>
                                 Procesando archivo...
                             </p>
-                            <p x-show="importError" x-text="importError" class="text-sm text-red-600 mt-1"></p>
+                            <p x-show="importError" x-text="importError" class="text-sm text-dyl-graphite-900 font-semibold mt-1"></p>
 
                             <button type="button" @click="modalImport = false; importError = ''"
                                     class="btn-outline w-full mt-4">Cancelar</button>

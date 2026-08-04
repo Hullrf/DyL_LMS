@@ -23,18 +23,18 @@
                    class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
 
         @elseif($pregunta->seleccion_multiple)
-            <p class="mt-2 text-xs text-blue-600 font-medium">
+            <p class="mt-2 text-xs text-dyl-graphite-600 font-medium">
                 Selecciona todas las respuestas correctas.
             </p>
             <div class="mt-2 space-y-2">
                 @foreach($pregunta->opciones as $opcion)
                 @php $checked = is_array($oldVal) && in_array((string)$opcion->id, array_map('strval', $oldVal)); @endphp
-                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-dyl-orange-50 transition-colors">
                     <input type="checkbox"
                            name="respuesta_{{ $pregunta->id }}[]"
                            value="{{ $opcion->id }}"
                            {{ $checked ? 'checked' : '' }}
-                           class="w-4 h-4 rounded text-blue-600">
+                           class="w-4 h-4 rounded text-dyl-orange-600">
                     <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
                 </label>
                 @endforeach
@@ -47,7 +47,7 @@
                 <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                     <input type="radio" name="respuesta_{{ $pregunta->id }}" value="{{ $opcion->id }}"
                            {{ $checked ? 'checked' : '' }}
-                           class="text-blue-600" required>
+                           class="text-dyl-orange-600" required>
                     <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
                 </label>
                 @endforeach
@@ -69,7 +69,7 @@ document.getElementById('form-respuesta').addEventListener('submit', function(e)
         const texto = contenedor.querySelector('input[type=text][name="respuesta_' + id + '"]');
         const marcados = contenedor.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
 
-        contenedor.classList.remove('ring-2', 'ring-red-400');
+        contenedor.classList.remove('ring-2', 'ring-dyl-graphite-500');
 
         if (texto) {
             if (texto.value.trim()) data[id] = texto.value.trim();
@@ -89,7 +89,7 @@ document.getElementById('form-respuesta').addEventListener('submit', function(e)
         pendientes.forEach(function(id) {
             const contenedor = document.querySelector('[data-pregunta-id="' + id + '"]');
             if (contenedor) {
-                contenedor.classList.add('ring-2', 'ring-red-400');
+                contenedor.classList.add('ring-2', 'ring-dyl-graphite-500');
                 if (!primero) primero = contenedor;
             }
         });

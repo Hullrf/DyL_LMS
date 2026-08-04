@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="mb-4">
-        <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="text-blue-600 hover:text-blue-800 text-sm">&larr; Volver al curso</a>
+        <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">&larr; Volver al curso</a>
     </div>
     <div class="bg-white rounded-lg shadow p-8">
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Nueva Actividad</h1>
@@ -13,7 +13,7 @@
             @csrf
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de actividad</label>
-                <select name="tipo" x-model="tipo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <select name="tipo" x-model="tipo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                     <optgroup label="Con calificación">
                         <option value="cuestionario">Cuestionario (calificación automática)</option>
                         <option value="ensayo">Ensayo (calificación manual)</option>
@@ -28,7 +28,7 @@
                     </optgroup>
                 </select>
                 <p x-show="tipo === 'tarea'" x-cloak
-                   class="mt-2 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 flex items-start gap-2">
+                   class="mt-2 text-xs text-dyl-graphite-700 bg-dyl-graphite-50 border border-dyl-graphite-200 rounded-lg px-3 py-2 flex items-start gap-2">
                     <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -45,8 +45,8 @@
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
                 <input type="text" name="titulo" value="{{ old('titulo') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                @error('titulo')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
+                @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Descripción / Instrucciones</label>
@@ -60,26 +60,26 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Puntaje máximo</label>
                     <input type="number" name="puntaje_maximo" value="{{ old('puntaje_maximo', 5.00) }}"
                            min="0.01" step="0.01"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tiempo límite (minutos)</label>
                     <input type="number" name="duracion_minutos" value="{{ old('duracion_minutos') }}" min="1" placeholder="Sin límite"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                 </div>
             </div>
-            <div class="mb-6 p-5 bg-blue-50 rounded-xl border border-blue-200" x-show="tipo === 'cuestionario'" x-cloak>
+            <div class="mb-6 p-5 bg-dyl-graphite-50 rounded-xl border border-dyl-graphite-200" x-show="tipo === 'cuestionario'" x-cloak>
                 <p class="text-sm font-semibold text-gray-800 mb-3">Intentos del cuestionario</p>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Intentos permitidos</label>
                         <input type="number" name="intentos_permitidos" value="{{ old('intentos_permitidos', 1) }}"
                                min="1" max="20"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Cuando hay varios intentos, ¿cuál cuenta?</label>
-                        <select name="criterio_calificacion_intentos" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <select name="criterio_calificacion_intentos" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                             <option value="mas_alto" {{ old('criterio_calificacion_intentos', 'mas_alto') === 'mas_alto' ? 'selected' : '' }}>El intento más alto</option>
                             <option value="ultimo" {{ old('criterio_calificacion_intentos') === 'ultimo' ? 'selected' : '' }}>El último intento</option>
                         </select>
@@ -113,7 +113,7 @@
                 </select>
             </div>
             <div class="flex gap-4">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                <button type="submit" class="bg-dyl-orange-600 text-white px-6 py-2 rounded-lg hover:bg-dyl-orange-700">
                     Crear y configurar
                 </button>
                 <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">
