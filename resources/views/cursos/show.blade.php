@@ -4,26 +4,26 @@
 @section('content')
 
 @if(session('success'))
-    <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-lg p-4 text-sm">{{ session('success') }}</div>
+    <div class="alert alert-success mb-6">{{ session('success') }}</div>
 @endif
 @if(session('error'))
-    <div class="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">{{ session('error') }}</div>
+    <div class="alert alert-error mb-6">{{ session('error') }}</div>
 @endif
 
 {{-- Hero del curso --}}
 <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
     {{-- Imagen de portada o gradiente --}}
     <div class="h-40 sm:h-56 relative
-        {{ $curso->imagen_portada ? '' : 'bg-gradient-to-br from-blue-500 to-blue-700' }}">
+        {{ $curso->imagen_portada ? '' : 'bg-gradient-to-br from-dyl-orange-500 to-dyl-orange-700' }}">
         @if($curso->imagen_portada)
             <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="{{ $curso->titulo }}"
                  class="w-full h-full object-cover">
         @endif
         <div class="absolute inset-0 bg-black/30 flex items-end p-6">
             <span class="px-3 py-1 rounded-full text-xs font-medium
-                @if($curso->estado === 'publicado') bg-green-500 text-white
-                @elseif($curso->estado === 'borrador') bg-yellow-400 text-gray-900
-                @else bg-gray-500 text-white @endif">
+                @if($curso->estado === 'publicado') bg-dyl-orange-600 text-white
+                @elseif($curso->estado === 'borrador') bg-dyl-graphite-200 text-dyl-graphite-900
+                @else bg-dyl-graphite-600 text-white @endif">
                 {{ ucfirst($curso->estado) }}
             </span>
         </div>
@@ -61,7 +61,7 @@
                 @if(auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
                     {{-- Instructor: botón editar --}}
                     <a href="{{ route('cursos.edit', $curso) }}"
-                       class="block w-full text-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium mb-2">
+                       class="block w-full text-center bg-dyl-orange-600 text-white px-6 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium mb-2">
                         Editar curso
                     </a>
                     <a href="{{ route('cursos.inscripcion-masiva', $curso) }}"
@@ -74,11 +74,11 @@
                         <p class="text-xs text-gray-500 mb-1">Tu progreso</p>
                         <div class="flex justify-between text-sm font-medium mb-1">
                             <span>{{ $completadasIds->count() }}/{{ $totalLecciones }} lecciones</span>
-                            <span class="{{ $porcentaje === 100 ? 'text-green-600' : 'text-blue-600' }}">{{ $porcentaje }}%</span>
+                            <span class="{{ $porcentaje === 100 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">{{ $porcentaje }}%</span>
                         </div>
                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden mb-3">
                             <div class="h-full rounded-full transition-all
-                                {{ $porcentaje === 100 ? 'bg-green-500' : 'bg-blue-500' }}"
+                                {{ $porcentaje === 100 ? 'bg-dyl-orange-600' : 'bg-dyl-graphite-400' }}"
                                  style="width: {{ $porcentaje }}%"></div>
                         </div>
                         @php
@@ -88,11 +88,11 @@
                         @endphp
                         @if($primeraLeccionSinCompletar)
                             <a href="{{ route('lecciones.show', $primeraLeccionSinCompletar) }}"
-                               class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm">
+                               class="block w-full text-center bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
                                 Continuar &rarr;
                             </a>
                         @else
-                            <div class="text-center text-green-600 font-medium text-sm mb-2">
+                            <div class="text-center text-dyl-orange-700 font-medium text-sm mb-2">
                                 &#10003; Curso completado
                             </div>
                             @php
@@ -101,14 +101,14 @@
                             @endphp
                             @if($certExistente)
                                 <a href="{{ route('certificados.show', $certExistente) }}"
-                                   class="block w-full text-center bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 font-medium text-sm">
+                                   class="block w-full text-center bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
                                     &#127941; Ver Certificado
                                 </a>
                             @else
                                 <form action="{{ route('certificados.generar', $curso) }}" method="POST">
                                     @csrf
                                     <button type="submit"
-                                            class="w-full bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 font-medium text-sm">
+                                            class="w-full bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
                                         &#127941; Obtener Certificado
                                     </button>
                                 </form>
@@ -120,7 +120,7 @@
                     <form action="{{ route('cursos.inscribirse', $curso) }}" method="POST">
                         @csrf
                         <button type="submit"
-                                class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium">
+                                class="w-full bg-dyl-orange-600 text-white px-6 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
                             Inscribirse al curso
                         </button>
                     </form>
@@ -167,7 +167,7 @@
                     {{-- Icono completado --}}
                     <span class="mr-3 flex-shrink-0">
                         @if($done)
-                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-dyl-orange-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                         @else
@@ -181,7 +181,7 @@
                     <div class="flex-1 min-w-0">
                         @if($estaInscrito || auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
                             <a href="{{ route('lecciones.show', $leccion) }}"
-                               class="text-sm font-medium {{ $done ? 'text-gray-500 line-through' : 'text-gray-800 hover:text-blue-600' }}">
+                               class="text-sm font-medium {{ $done ? 'text-gray-500 line-through' : 'text-gray-800 hover:text-dyl-orange-600' }}">
                                 {{ $leccion->titulo }}
                             </a>
                         @else

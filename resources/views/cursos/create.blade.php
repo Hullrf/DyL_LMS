@@ -9,25 +9,25 @@
         <div class="mb-6">
             <label for="titulo" class="block text-sm font-medium text-gray-700 mb-2">Título del Curso</label>
             <input type="text" name="titulo" id="titulo" value="{{ old('titulo') }}"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-            @error('titulo')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600 focus:border-transparent" required>
+            @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
             <div id="quill-descripcion" class="h-48 border border-gray-300 rounded-lg"></div>
             <input type="hidden" name="descripcion" id="descripcion" value="{{ old('descripcion') }}">
-            @error('descripcion')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+            @error('descripcion')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="mb-6">
             <label for="duracion_horas" class="block text-sm font-medium text-gray-700 mb-2">Duración (horas)</label>
             <input type="number" name="duracion_horas" id="duracion_horas" value="{{ old('duracion_horas', 1) }}" min="1" max="500"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-            @error('duracion_horas')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600 focus:border-transparent" required>
+            @error('duracion_horas')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="mb-6">
             <label for="categoria_id" class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
             <select name="categoria_id" id="categoria_id"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600 focus:border-transparent">
                 <option value="">Sin categoría</option>
                 @foreach($categorias as $cat)
                     <option value="{{ $cat->id }}" {{ old('categoria_id') == $cat->id ? 'selected' : '' }}>{{ $cat->nombre }}</option>
@@ -47,12 +47,12 @@
                        }
                    ">
             <p class="text-xs text-gray-400 mt-1">JPG o PNG — máx. 5 MB</p>
-            <p x-show="errorPortada" x-text="errorPortada" class="text-red-600 text-xs mt-1"></p>
-            @error('imagen_portada')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
+            <p x-show="errorPortada" x-text="errorPortada" class="text-dyl-graphite-900 font-semibold text-xs mt-1"></p>
+            @error('imagen_portada')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="flex justify-between">
             <a href="{{ route('cursos.index') }}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Cancelar</a>
-            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Crear Curso</button>
+            <button type="submit" class="px-6 py-2 bg-dyl-orange-600 text-white rounded-lg hover:bg-dyl-orange-700">Crear Curso</button>
         </div>
     </form>
 </div>

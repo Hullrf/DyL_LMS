@@ -4,7 +4,7 @@
 @section('content')
 <div class="flex items-center justify-between gap-3 mb-6">
     <h1 class="text-2xl font-bold text-gray-900">Editar Curso</h1>
-    <a href="{{ route('cursos.show', $curso) }}" class="text-blue-600 hover:text-blue-800 text-sm">Ver curso &rarr;</a>
+    <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver curso &rarr;</a>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     {{-- Datos del curso --}}
@@ -18,13 +18,13 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
                     <input type="text" name="titulo" value="{{ old('titulo', $curso->titulo) }}"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-                    @error('titulo')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+                    @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
                     <div id="quill-descripcion" class="h-48 border border-gray-300 rounded-lg"></div>
                     <input type="hidden" name="descripcion" id="descripcion" value="{{ old('descripcion', $curso->descripcion) }}">
-                    @error('descripcion')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+                    @error('descripcion')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Duración (horas)</label>
@@ -64,9 +64,9 @@
                                }
                            ">
                     <p class="text-xs text-gray-400 mt-1">JPG o PNG — máx. 5 MB</p>
-                    <p x-show="errorPortada" x-text="errorPortada" class="text-red-600 text-xs mt-1"></p>
+                    <p x-show="errorPortada" x-text="errorPortada" class="text-dyl-graphite-900 font-semibold text-xs mt-1"></p>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-medium text-sm">
+                <button type="submit" class="w-full bg-dyl-orange-600 text-white py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
                     Guardar Cambios
                 </button>
             </form>
@@ -74,7 +74,7 @@
                 <form action="{{ route('cursos.destroy', $curso) }}" method="POST"
                       onsubmit="return confirm('Eliminar este curso y todo su contenido?');">
                     @csrf @method('DELETE')
-                    <button type="submit" class="w-full bg-red-50 text-red-600 py-2 rounded-lg hover:bg-red-100 text-sm">
+                    <button type="submit" class="w-full bg-dyl-graphite-900 text-white py-2 rounded-lg hover:bg-dyl-graphite-800 text-sm">
                         Eliminar Curso
                     </button>
                 </form>
@@ -90,7 +90,7 @@
                 @csrf
                 <input type="text" name="titulo" placeholder="Nombre del módulo"
                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium">
+                <button type="submit" class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
                     + Módulo
                 </button>
             </form>
@@ -110,7 +110,7 @@
                     <form action="{{ route('modulos.destroy', $modulo) }}" method="POST" class="inline"
                           onsubmit="return confirm('Eliminar este modulo y todas sus lecciones?');">
                         @csrf @method('DELETE')
-                        <button type="submit" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200">Eliminar</button>
+                        <button type="submit" class="text-xs bg-dyl-graphite-900 text-white px-3 py-1 rounded hover:bg-dyl-graphite-800">Eliminar</button>
                     </form>
                 </div>
             </div>
@@ -125,13 +125,13 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('lecciones.edit', $leccion) }}"
-                           class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100">Editar</a>
+                           class="text-xs bg-dyl-orange-50 text-dyl-orange-600 px-3 py-1 rounded hover:bg-dyl-orange-100">Editar</a>
                         <a href="{{ route('actividades.create', $leccion) }}"
-                           class="text-xs bg-purple-50 text-purple-600 px-3 py-1 rounded hover:bg-purple-100">+ Actividad</a>
+                           class="text-xs bg-dyl-orange-50 text-dyl-orange-600 px-3 py-1 rounded hover:bg-dyl-orange-100">+ Actividad</a>
                         <form action="{{ route('lecciones.destroy', $leccion) }}" method="POST" class="inline"
                               onsubmit="return confirm('Eliminar esta leccion?');">
                             @csrf @method('DELETE')
-                            <button type="submit" class="text-xs bg-red-50 text-red-500 px-3 py-1 rounded hover:bg-red-100">Eliminar</button>
+                            <button type="submit" class="text-xs bg-dyl-graphite-900 text-white px-3 py-1 rounded hover:bg-dyl-graphite-800">Eliminar</button>
                         </form>
                     </div>
                 </div>
@@ -139,18 +139,18 @@
                 {{-- Sub-filas de actividades --}}
                 <div class="actividades-lista" data-leccion-id="{{ $leccion->id }}">
                 @foreach($leccion->actividades as $actividad)
-                <div class="flex items-center justify-between pl-12 pr-6 py-2 bg-purple-50/40 border-t border-purple-100/60 hover:bg-purple-50"
+                <div class="flex items-center justify-between pl-12 pr-6 py-2 bg-dyl-graphite-50 border-t border-dyl-graphite-200/60 hover:bg-dyl-graphite-100"
                      data-actividad-id="{{ $actividad->id }}">
                     <div class="flex items-center gap-2">
-                        <svg class="drag-handle w-3.5 h-3.5 text-purple-400 shrink-0 cursor-grab active:cursor-grabbing" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="drag-handle w-3.5 h-3.5 text-dyl-graphite-400 shrink-0 cursor-grab active:cursor-grabbing" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                         <span class="text-sm text-gray-700">{{ $actividad->titulo }}</span>
-                        <span class="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded">{{ ucfirst($actividad->tipo) }}</span>
+                        <span class="text-xs bg-dyl-graphite-100 text-dyl-graphite-600 px-2 py-0.5 rounded">{{ ucfirst($actividad->tipo) }}</span>
                         <span class="text-xs text-gray-400">{{ $actividad->puntaje_maximo }} pts</span>
                     </div>
                     <a href="{{ route('actividades.edit', $actividad) }}"
-                       class="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded hover:bg-purple-200">
+                       class="text-xs bg-dyl-orange-100 text-dyl-orange-700 px-3 py-1 rounded hover:bg-dyl-orange-200">
                         Editar
                     </a>
                 </div>
@@ -160,7 +160,7 @@
                 <div class="px-6 py-3 bg-gray-50 rounded-b-lg">
                     <div class="flex gap-4">
                         <a href="{{ route('lecciones.create', $modulo) }}"
-                           class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                           class="text-sm text-dyl-orange-600 hover:text-dyl-orange-700 font-medium">
                             + Agregar lección
                         </a>
                     </div>

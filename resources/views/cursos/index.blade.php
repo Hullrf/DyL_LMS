@@ -45,8 +45,8 @@
                 {{-- Estado de inscripción --}}
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-medium
-                        @if($inscripcion->estado === 'completado') text-green-600 bg-green-100
-                        @else text-dyl-orange-600 bg-dyl-orange-100 @endif
+                        @if($inscripcion->estado === 'completado') text-dyl-orange-700 bg-dyl-orange-100
+                        @else text-dyl-graphite-600 bg-dyl-graphite-100 @endif
                         px-2.5 py-0.5 rounded-full">
                         @if($inscripcion->estado === 'completado')
                             ✓ Completado
@@ -112,7 +112,7 @@
             <form method="GET" action="{{ route('cursos.index') }}" class="flex flex-wrap items-center gap-3 w-full">
                 @if($categorias->isNotEmpty())
                 <select name="categoria" onchange="this.form.submit()"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-dyl-orange-600">
                     <option value="">Todas las categorías</option>
                     @foreach($categorias as $cat)
                         <option value="{{ $cat->id }}" {{ request('categoria') == $cat->id ? 'selected' : '' }}>{{ $cat->nombre }}</option>
@@ -120,8 +120,8 @@
                 </select>
                 @endif
                 <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar curso..."
-                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px] focus:ring-2 focus:ring-blue-500">
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Buscar</button>
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px] focus:ring-2 focus:ring-dyl-orange-600">
+                <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Buscar</button>
                 @if(request()->anyFilled(['categoria', 'buscar']))
                     <a href="{{ route('cursos.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</a>
                 @endif
@@ -136,7 +136,7 @@
                     <img src="{{ asset('storage/' . $curso->imagen_portada) }}"
                          alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
                 @else
-                    <div class="w-full h-44 bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center">
+                    <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-400 to-dyl-orange-700 flex items-center justify-center">
                         <span class="text-5xl">📚</span>
                     </div>
                 @endif
@@ -144,8 +144,8 @@
                 <div class="p-5 flex flex-col flex-1">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs px-2.5 py-0.5 rounded-full font-medium
-                            @if($curso->estado === 'publicado') bg-green-100 text-green-700
-                            @elseif($curso->estado === 'borrador') bg-yellow-100 text-yellow-700
+                            @if($curso->estado === 'publicado') bg-dyl-orange-100 text-dyl-orange-700
+                            @elseif($curso->estado === 'borrador') bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold
                             @else bg-gray-100 text-gray-500 @endif">
                             {{ ucfirst($curso->estado) }}
                         </span>
@@ -171,7 +171,7 @@
                         </a>
                         @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
                             <a href="{{ route('cursos.edit', $curso) }}"
-                               class="block w-full text-center bg-blue-50 text-blue-700 py-2 rounded-lg hover:bg-blue-100 text-sm">
+                               class="block w-full text-center bg-dyl-orange-50 text-dyl-orange-700 py-2 rounded-lg hover:bg-dyl-orange-100 text-sm">
                                 Editar
                             </a>
                         @endif
