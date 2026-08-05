@@ -24,7 +24,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Certificados</p>
-        <p class="text-3xl font-bold text-dyl-orange-500 mt-1">
+        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">
             {{ $reporte['cursos']->where('tiene_certificado', true)->count() }}
         </p>
     </div>

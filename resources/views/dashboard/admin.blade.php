@@ -20,7 +20,7 @@
     </div>
     <div class="bg-white p-6 rounded-xl shadow">
         <p class="text-gray-400 text-xs uppercase tracking-wide">Instructores</p>
-        <p class="text-3xl font-bold text-dyl-orange-500 mt-1">{{ $stats['total_instructores'] }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">{{ $stats['total_instructores'] }}</p>
     </div>
 </div>
 

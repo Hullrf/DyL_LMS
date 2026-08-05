@@ -31,7 +31,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Certificados emitidos</p>
-        <p class="text-3xl font-bold text-dyl-orange-500 mt-1">{{ $kpis['total_certificados'] }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">{{ $kpis['total_certificados'] }}</p>
     </div>
 </div>
 

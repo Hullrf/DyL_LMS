@@ -24,11 +24,11 @@
     </div>
     <a href="{{ route('calificaciones.index') }}" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow block">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Por Calificar</p>
-        <p class="text-3xl font-bold mt-1 {{ $stats['pendientes_calificar'] > 0 ? 'text-dyl-orange-500' : 'text-gray-400' }}">
+        <p class="text-3xl font-bold mt-1 {{ $stats['pendientes_calificar'] > 0 ? 'text-dyl-orange-600' : 'text-gray-400' }}">
             {{ $stats['pendientes_calificar'] }}
         </p>
         @if($stats['pendientes_calificar'] > 0)
-            <p class="text-xs text-dyl-orange-500 mt-1">Ver pendientes &rarr;</p>
+            <p class="text-xs text-dyl-orange-600 mt-1">Ver pendientes &rarr;</p>
         @endif
     </a>
 </div>
