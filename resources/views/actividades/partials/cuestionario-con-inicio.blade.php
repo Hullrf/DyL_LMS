@@ -4,19 +4,31 @@
 
         @if($segundosRestantes !== null)
         <div x-data="{
+                // Ancladas a una hora límite absoluta (no a un contador que se decrementa)
+                // para que el tiempo mostrado sea siempre correcto sin importar si el
+                // navegador pausó el setInterval mientras la pestaña estuvo en segundo
+                // plano o suspendida.
+                deadline: Date.now() + {{ $segundosRestantes }} * 1000,
                 segundos: {{ $segundosRestantes }},
                 intervalo: null,
+                actualizar() {
+                    this.segundos = Math.max(0, Math.round((this.deadline - Date.now()) / 1000));
+                    if (this.segundos <= 0 && this.intervalo) {
+                        clearInterval(this.intervalo);
+                        this.intervalo = null;
+                        const form = document.getElementById('form-respuesta');
+                        form.noValidate = true;
+                        form.dataset.autoenvio = '1';
+                        form.requestSubmit();
+                    }
+                },
                 init() {
-                    this.intervalo = setInterval(() => {
-                        this.segundos--;
-                        if (this.segundos <= 0) {
-                            clearInterval(this.intervalo);
-                            const form = document.getElementById('form-respuesta');
-                            form.noValidate = true;
-                            form.dataset.autoenvio = '1';
-                            form.requestSubmit();
-                        }
-                    }, 1000);
+                    this.intervalo = setInterval(() => this.actualizar(), 1000);
+                    // Al volver a esta pestaña (tras estar suspendida/en segundo plano),
+                    // recalculamos de inmediato en vez de esperar al siguiente tick.
+                    document.addEventListener('visibilitychange', () => {
+                        if (!document.hidden) this.actualizar();
+                    });
                 },
                 get mmss() {
                     const total = Math.max(0, Math.floor(this.segundos));
