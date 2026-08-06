@@ -122,11 +122,24 @@ class ActividadController extends Controller
             ? $respuesta->seleccionesRubrica->pluck('nivel_criterio_id', 'criterio_id')
             : collect();
 
-        return view('actividades.show', compact(
+        $vista = view('actividades.show', compact(
             'actividad', 'respuesta', 'actividadCompletada', 'criteriosRubrica', 'seleccionesMap',
             'intentos', 'intentosUsados', 'intentosRestantes', 'tieneIntentoEnRevision',
             'intentoEnProgreso', 'segundosRestantes'
         ));
+
+        if ($intentoEnProgreso) {
+            // Un intento de cuestionario está en curso: evitamos que el navegador sirva
+            // una copia cacheada de esta página (p. ej. al restaurar una pestaña suspendida
+            // por inactividad), lo cual mostraría el tiempo restante desactualizado y daría
+            // la impresión de que el temporizador se reinició.
+            return response($vista)->withHeaders([
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma'        => 'no-cache',
+            ]);
+        }
+
+        return $vista;
     }
 
     public function edit(Actividad $actividad)

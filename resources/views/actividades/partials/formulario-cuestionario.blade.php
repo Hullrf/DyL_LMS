@@ -18,9 +18,10 @@
         @endif
 
         @if($pregunta->tipo === 'respuesta_corta')
-            <input type="text" name="respuesta_{{ $pregunta->id }}"
-                   value="{{ old('respuesta_' . $pregunta->id) }}"
-                   class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
+            <textarea name="respuesta_{{ $pregunta->id }}" rows="2"
+                      class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none overflow-hidden"
+                      oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px';"
+                      required>{{ old('respuesta_' . $pregunta->id) }}</textarea>
 
         @elseif($pregunta->seleccion_multiple)
             <p class="mt-2 text-xs text-dyl-graphite-600 font-medium">
@@ -59,6 +60,10 @@
 
 <input type="hidden" name="respuesta" id="respuesta-json">
 <script>
+document.querySelectorAll('#form-respuesta textarea[name^="respuesta_"]').forEach(function(el) {
+    el.style.height = el.scrollHeight + 'px';
+});
+
 document.getElementById('form-respuesta').addEventListener('submit', function(e) {
     const esAutoenvio = this.dataset.autoenvio === '1';
     const data = {};
@@ -66,7 +71,7 @@ document.getElementById('form-respuesta').addEventListener('submit', function(e)
 
     this.querySelectorAll('[data-pregunta-id]').forEach(function(contenedor) {
         const id = contenedor.dataset.preguntaId;
-        const texto = contenedor.querySelector('input[type=text][name="respuesta_' + id + '"]');
+        const texto = contenedor.querySelector('textarea[name="respuesta_' + id + '"]');
         const marcados = contenedor.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
 
         contenedor.classList.remove('ring-2', 'ring-dyl-graphite-500');
