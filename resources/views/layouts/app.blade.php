@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- Bloqueante a propósito: debe correr antes de que el <aside> se pinte, para que si el
+         sidebar estaba colapsado no "nazca" expandido y luego salte a 72px con animación al
+         cargar Alpine (ver .dyl-sb-collapsed en layouts/partials/sidebar.blade.php). --}}
+    <script>
+    (function () {
+        try {
+            if (localStorage.getItem('dyl_sidebar_collapsed') === '1') {
+                document.documentElement.classList.add('dyl-sb-collapsed');
+            }
+        } catch (e) {}
+    })();
+    </script>
     <meta name="description" content="@yield('meta_description', 'DyL Quality Consulting — Plataforma de Aprendizaje')">
     <title>@yield('title', 'LMS DyL')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
