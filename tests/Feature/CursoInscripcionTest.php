@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Actividad;
 use App\Models\Curso;
 use App\Models\Inscripcion;
 use App\Models\Leccion;
@@ -50,37 +51,6 @@ class CursoInscripcionTest extends TestCase
         $response = $this->actingAs($student)->get('/cursos');
 
         $response->assertStatus(200);
-    }
-
-    public function test_estudiante_puede_inscribirse_en_curso(): void
-    {
-        $instructor = $this->crearInstructor();
-        $student = $this->crearEstudiante();
-        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
-
-        $response = $this->actingAs($student)->post("/cursos/{$curso->id}/inscribirse");
-
-        $response->assertRedirect();
-        $this->assertDatabaseHas('inscripciones', [
-            'user_id'  => $student->id,
-            'curso_id' => $curso->id,
-        ]);
-    }
-
-    public function test_inscripcion_es_idempotente(): void
-    {
-        $instructor = $this->crearInstructor();
-        $student = $this->crearEstudiante();
-        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
-
-        // Inscribirse dos veces
-        $this->actingAs($student)->post("/cursos/{$curso->id}/inscribirse");
-        $this->actingAs($student)->post("/cursos/{$curso->id}/inscribirse");
-
-        $this->assertEquals(1, Inscripcion::where([
-            'user_id'  => $student->id,
-            'curso_id' => $curso->id,
-        ])->count());
     }
 
     public function test_estudiante_puede_ver_leccion_si_esta_inscrito(): void
@@ -138,16 +108,89 @@ class CursoInscripcionTest extends TestCase
         $this->assertEquals('completado', $inscripcion->fresh()->estado);
     }
 
-    public function test_no_inscrito_puede_ver_leccion_publicada(): void
+    public function test_no_inscrito_no_puede_ver_leccion_publicada(): void
     {
         $instructor = $this->crearInstructor();
         $student = $this->crearEstudiante();
         [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
 
-        // Course is published: any authenticated user can view it
+        // Curso publicado pero sin inscripción: solo un admin/instructor puede dar acceso.
         $response = $this->actingAs($student)->get("/lecciones/{$leccion->id}");
 
+        $response->assertStatus(403);
+    }
+
+    public function test_no_inscrito_no_puede_completar_leccion(): void
+    {
+        $instructor = $this->crearInstructor();
+        $student = $this->crearEstudiante();
+        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
+
+        $response = $this->actingAs($student)->post("/lecciones/{$leccion->id}/completar");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_no_inscrito_no_puede_ver_actividad(): void
+    {
+        $instructor = $this->crearInstructor();
+        $student = $this->crearEstudiante();
+        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
+        $actividad = Actividad::factory()->create(['leccion_id' => $leccion->id]);
+
+        $response = $this->actingAs($student)->get("/actividades/{$actividad->id}");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_no_inscrito_no_puede_responder_actividad(): void
+    {
+        $instructor = $this->crearInstructor();
+        $student = $this->crearEstudiante();
+        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
+        $actividad = Actividad::factory()->tarea()->create(['leccion_id' => $leccion->id]);
+
+        $response = $this->actingAs($student)->post("/actividades/{$actividad->id}/responder", [
+            'respuesta' => 'Mi respuesta',
+        ]);
+
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('respuestas_estudiantes', [
+            'user_id'      => $student->id,
+            'actividad_id' => $actividad->id,
+        ]);
+    }
+
+    public function test_inscrito_puede_ver_actividad(): void
+    {
+        $instructor = $this->crearInstructor();
+        $student = $this->crearEstudiante();
+        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
+        $actividad = Actividad::factory()->create(['leccion_id' => $leccion->id]);
+
+        Inscripcion::factory()->create([
+            'user_id'  => $student->id,
+            'curso_id' => $curso->id,
+        ]);
+
+        $response = $this->actingAs($student)->get("/actividades/{$actividad->id}");
+
         $response->assertStatus(200);
+    }
+
+    public function test_ruta_auto_inscripcion_ya_no_existe(): void
+    {
+        $instructor = $this->crearInstructor();
+        $student = $this->crearEstudiante();
+        [$curso, $modulo, $leccion] = $this->crearCursoConLeccion($instructor);
+
+        $response = $this->actingAs($student)->post("/cursos/{$curso->id}/inscribirse");
+
+        $response->assertStatus(404);
+        $this->assertDatabaseMissing('inscripciones', [
+            'user_id'  => $student->id,
+            'curso_id' => $curso->id,
+        ]);
     }
 
     public function test_leccion_de_curso_borrador_no_accesible_para_estudiante(): void

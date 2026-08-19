@@ -37,7 +37,6 @@ Route::middleware('auth')->group(function () {
 
     // Rutas con parámetro {curso} después de las estáticas
     Route::get('/cursos/{curso}', [CursoController::class, 'show'])->name('cursos.show');
-    Route::post('/cursos/{curso}/inscribirse', [CursoController::class, 'inscribirse'])->name('cursos.inscribirse');
 
     Route::middleware('instructor')->group(function () {
         Route::get('/cursos/{curso}/inscribir-estudiantes', [CursoController::class, 'inscripcionMasiva'])->name('cursos.inscripcion-masiva');

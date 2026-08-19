@@ -19,7 +19,7 @@ class LeccionController extends Controller
     public function show(Leccion $leccion)
     {
         $curso = $leccion->modulo->curso;
-        $this->authorize('view', $curso);
+        $this->authorize('verContenido', $curso);
 
         // Sidebar: todos los módulos con sus lecciones
         $modulos = $curso->modulos()->with(['lecciones' => fn($q) => $q->orderBy('orden')])->get();
@@ -70,7 +70,7 @@ class LeccionController extends Controller
     public function completar(Request $request, Leccion $leccion)
     {
         $curso = $leccion->modulo->curso;
-        $this->authorize('view', $curso);
+        $this->authorize('verContenido', $curso);
 
         ProgresoLeccion::updateOrCreate(
             ['user_id' => Auth::id(), 'leccion_id' => $leccion->id],

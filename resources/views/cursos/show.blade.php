@@ -108,15 +108,10 @@
                         @endif
                     </div>
                 @else
-                    {{-- No inscrito: botón inscribirse --}}
-                    <form action="{{ route('cursos.inscribirse', $curso) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                                class="w-full bg-dyl-orange-600 text-white px-6 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
-                            Inscribirse al curso
-                        </button>
-                    </form>
-                    <p class="text-xs text-gray-400 text-center mt-2">Acceso inmediato a todos los módulos</p>
+                    {{-- No inscrito: el acceso lo otorga un administrador o el instructor del curso --}}
+                    <div class="w-full text-center bg-gray-100 text-gray-600 px-4 py-3 rounded-lg text-sm">
+                        Aún no tienes acceso a este curso. Contacta a tu administrador o instructor para que te inscriba.
+                    </div>
                 @endif
             </div>
         </div>

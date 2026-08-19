@@ -108,55 +108,6 @@ class CursoController extends Controller
         ));
     }
 
-    public function inscribirse(Curso $curso)
-    {
-        $this->authorize('view', $curso);
-
-        $yaInscrito = Inscripcion::where('user_id', Auth::id())
-            ->where('curso_id', $curso->id)
-            ->exists();
-
-        if ($yaInscrito) {
-            $primeraLeccion = $curso->modulos()
-                ->orderBy('orden')
-                ->with(['lecciones' => fn($q) => $q->orderBy('orden')])
-                ->first()
-                ?->lecciones
-                ->first();
-
-            if ($primeraLeccion) {
-                return redirect()->route('lecciones.show', $primeraLeccion)
-                    ->with('info', 'Ya estás inscrito en este curso. Continuando donde lo dejaste.');
-            }
-            return redirect()->route('cursos.show', $curso)
-                ->with('info', 'Ya estás inscrito en este curso.');
-        }
-
-        Inscripcion::create([
-            'user_id'     => Auth::id(),
-            'curso_id'    => $curso->id,
-            'fecha_inicio' => now()->toDateString(),
-            'estado'       => 'en_progreso',
-        ]);
-
-        $primeraLeccion = $curso->modulos()
-            ->orderBy('orden')
-            ->with(['lecciones' => fn($q) => $q->orderBy('orden')])
-            ->first()
-            ?->lecciones
-            ->first();
-
-        if ($primeraLeccion) {
-            return redirect()
-                ->route('lecciones.show', $primeraLeccion)
-                ->with('success', '¡Te has inscrito en el curso! Comenzando la primera lección.');
-        }
-
-        return redirect()
-            ->route('cursos.show', $curso)
-            ->with('success', '¡Te has inscrito en el curso!');
-    }
-
     public function inscripcionMasiva(Curso $curso, Request $request)
     {
         $this->authorize('update', $curso);

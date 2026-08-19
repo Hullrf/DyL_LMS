@@ -21,6 +21,7 @@ class RespuestaEstudianteController extends Controller
 
     public function store(Request $request, Actividad $actividad)
     {
+        $this->authorize('verContenido', $actividad->leccion->modulo->curso);
         abort_if(!$actividad->tieneCalificacion(), 403, 'Esta actividad no admite respuestas.');
 
         if ($actividad->tipo === 'cuestionario') {
