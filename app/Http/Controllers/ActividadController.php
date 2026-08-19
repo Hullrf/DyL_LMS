@@ -67,7 +67,7 @@ class ActividadController extends Controller
 
     public function show(Actividad $actividad)
     {
-        $this->authorize('view', $actividad->leccion->modulo->curso);
+        $this->authorize('verContenido', $actividad->leccion->modulo->curso);
 
         $intentoEnProgreso = null;
         $segundosRestantes = null;
@@ -194,7 +194,7 @@ class ActividadController extends Controller
 
     public function completar(Actividad $actividad)
     {
-        $this->authorize('view', $actividad->leccion->modulo->curso);
+        $this->authorize('verContenido', $actividad->leccion->modulo->curso);
         $actividad->completarPara(auth()->id());
         return redirect()
             ->route('actividades.show', $actividad)
@@ -203,7 +203,7 @@ class ActividadController extends Controller
 
     public function iniciarIntento(Actividad $actividad)
     {
-        $this->authorize('view', $actividad->leccion->modulo->curso);
+        $this->authorize('verContenido', $actividad->leccion->modulo->curso);
         abort_unless($actividad->tipo === 'cuestionario', 403);
 
         $estado = $actividad->estadoPlazo();

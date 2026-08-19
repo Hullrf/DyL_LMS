@@ -22,6 +22,17 @@ class CursoPolicy
             || $curso->inscripciones()->where('user_id', $user->id)->exists();
     }
 
+    public function verContenido(User $user, Curso $curso): bool
+    {
+        // Acceso al contenido real (lecciones/actividades): solo si un
+        // admin o el instructor creador lo otorgó, o si el estudiante
+        // tiene una inscripción (creada por admin/instructor). Estar
+        // publicado ya NO basta por sí solo.
+        return $user->esAdmin()
+            || $user->id === $curso->created_by
+            || $curso->inscripciones()->where('user_id', $user->id)->exists();
+    }
+
     public function create(User $user): bool
     {
         return $user->esAdmin() || $user->esInstructor();

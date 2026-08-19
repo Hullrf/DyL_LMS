@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $adminRole      = Rol::firstOrCreate(['nombre' => 'Administrador'], ['descripcion' => 'Acceso total al sistema']);
         $instructorRole = Rol::firstOrCreate(['nombre' => 'Instructor'],    ['descripcion' => 'Puede crear y editar cursos']);
-        $studentRole    = Rol::firstOrCreate(['nombre' => 'Estudiante'],    ['descripcion' => 'Puede ver cursos e inscribirse']);
+        $studentRole    = Rol::firstOrCreate(['nombre' => 'Estudiante'],    ['descripcion' => 'Accede a los cursos en los que fue inscrito']);
 
         // Categorías por defecto
         $categorias = [
