@@ -115,11 +115,30 @@
 }
 @media (min-width: 1024px) {
     .dyl-sidebar { position: sticky; top: 0; height: 100vh; transform: none !important; }
-    .dyl-sidebar.is-collapsed { width: 72px; }
-    .dyl-sidebar.is-collapsed .dyl-sb-top { justify-content: center; padding: 18px 0; }
-    .dyl-sidebar.is-collapsed .dyl-sb-link { justify-content: center; padding: 9px 0; }
-    .dyl-sidebar.is-collapsed .dyl-collapse-btn { justify-content: center; padding: 9px 0; }
-    .dyl-sidebar.is-collapsed .dyl-sb-label { max-width: 0; opacity: 0; }
+    /* `html.dyl-sb-collapsed` la fija el script bloqueante en <head> (ver layouts/app.blade.php)
+       ANTES de que Alpine cargue, para que la primera pintura del <aside> ya nazca colapsada
+       y la transition de `width`/`transform` no tenga un "antes" del cual animar en cada
+       navegación de página completa. `.is-collapsed` es la que aplica Alpine en vivo al hacer
+       clic en Colapsar/Expandir dentro de la misma carga de página (ahí sí debe animar). */
+    .dyl-sidebar.is-collapsed,
+    html.dyl-sb-collapsed .dyl-sidebar { width: 72px; }
+    .dyl-sidebar.is-collapsed .dyl-sb-top,
+    html.dyl-sb-collapsed .dyl-sidebar .dyl-sb-top { justify-content: center; padding: 18px 0; }
+    .dyl-sidebar.is-collapsed .dyl-sb-link,
+    html.dyl-sb-collapsed .dyl-sidebar .dyl-sb-link { justify-content: center; padding: 9px 0; }
+    .dyl-sidebar.is-collapsed .dyl-collapse-btn,
+    html.dyl-sb-collapsed .dyl-sidebar .dyl-collapse-btn { justify-content: center; padding: 9px 0; }
+    .dyl-sidebar.is-collapsed .dyl-sb-label,
+    html.dyl-sb-collapsed .dyl-sidebar .dyl-sb-label { max-width: 0; opacity: 0; }
+    /* La etiqueta oculta sigue siendo un item flex con `gap` aunque su ancho sea 0,
+       así que reserva espacio fantasma y descentra el ícono. Sin esto el ícono
+       queda ~6px a la izquierda del centro real del riel de 72px. */
+    .dyl-sidebar.is-collapsed .dyl-sb-logo,
+    html.dyl-sb-collapsed .dyl-sidebar .dyl-sb-logo,
+    .dyl-sidebar.is-collapsed .dyl-sb-link,
+    html.dyl-sb-collapsed .dyl-sidebar .dyl-sb-link,
+    .dyl-sidebar.is-collapsed .dyl-collapse-btn,
+    html.dyl-sb-collapsed .dyl-sidebar .dyl-collapse-btn { gap: 0; }
 }
 .dyl-sb-top { display: flex; align-items: center; padding: 18px; }
 .dyl-sb-logo { display: flex; align-items: center; gap: 10px; }
