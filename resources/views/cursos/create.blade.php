@@ -26,13 +26,7 @@
         </div>
         <div class="mb-6">
             <label for="categoria_id" class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
-            <select name="categoria_id" id="categoria_id"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600 focus:border-transparent">
-                <option value="">Sin categoría</option>
-                @foreach($categorias as $cat)
-                    <option value="{{ $cat->id }}" {{ old('categoria_id') == $cat->id ? 'selected' : '' }}>{{ $cat->nombre }}</option>
-                @endforeach
-            </select>
+            <x-categoria-selector :categorias="$categorias" :selected-id="old('categoria_id')" />
         </div>
         <div class="mb-6" x-data="{ errorPortada: '' }">
             <label for="imagen_portada" class="block text-sm font-medium text-gray-700 mb-2">Imagen de portada (opcional)</label>

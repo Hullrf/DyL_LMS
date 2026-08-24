@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\LeccionController;
 use App\Http\Controllers\ActividadController;
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('instructor')->group(function () {
         Route::get('/cursos/crear', [CursoController::class, 'create'])->name('cursos.create');
         Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
+        Route::post('/categorias', [CategoriaController::class, 'store'])->name('categorias.store');
     });
 
     // Rutas con parámetro {curso} después de las estáticas
