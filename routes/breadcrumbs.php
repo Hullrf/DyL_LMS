@@ -45,8 +45,11 @@ Breadcrumbs::for('actividades.edit', fn(Trail $t, $actividad) =>
 Breadcrumbs::for('calificaciones.index', fn(Trail $t) =>
     $t->parent('dashboard')->push('Calificaciones', route('calificaciones.index'))
 );
+Breadcrumbs::for('calificaciones.curso', fn(Trail $t, $curso) =>
+    $t->parent('calificaciones.index')->push($curso->titulo, route('calificaciones.curso', $curso))
+);
 Breadcrumbs::for('calificaciones.show', fn(Trail $t, $respuesta) =>
-    $t->parent('calificaciones.index')->push('Detalle #' . $respuesta->id)
+    $t->parent('calificaciones.curso', $respuesta->actividad->leccion->modulo->curso)->push('Detalle #' . $respuesta->id)
 );
 Breadcrumbs::for('mis-calificaciones', fn(Trail $t) =>
     $t->parent('dashboard')->push('Mis Calificaciones', route('calificaciones.mis'))

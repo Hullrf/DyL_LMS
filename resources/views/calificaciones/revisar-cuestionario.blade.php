@@ -5,7 +5,7 @@
 <div class="max-w-3xl mx-auto">
 
     <div class="mb-5">
-        <a href="{{ route('calificaciones.index') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Volver a calificaciones</a>
+        <a href="{{ route('calificaciones.curso', $actividad->leccion->modulo->curso) }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Volver a calificaciones</a>
     </div>
 
     {{-- Encabezado --}}
@@ -160,7 +160,7 @@
         </div>
 
         <div class="flex justify-end gap-3 pt-2">
-            <a href="{{ route('calificaciones.index') }}" class="btn-outline">Cancelar</a>
+            <a href="{{ route('calificaciones.curso', $actividad->leccion->modulo->curso) }}" class="btn-outline">Cancelar</a>
             <button type="submit" class="btn-primary">
                 Publicar calificación
             </button>

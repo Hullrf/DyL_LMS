@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Actividad;
+use App\Models\Curso;
+use App\Models\Inscripcion;
 use App\Models\RespuestaEstudiante;
 use App\Models\Notificacion;
 use App\Services\CalificacionService;
@@ -15,34 +18,110 @@ class CalificacionController extends Controller
     }
 
     /**
-     * Instructor: lista de respuestas pendientes de calificación.
-     * Incluye ensayo/tarea/practica (sin_calificar) y cuestionarios (en_revision).
+     * Instructor: lista de cursos donde puede calificar, con conteo de
+     * respuestas pendientes por curso. Punto de entrada hacia la matriz de
+     * calificaciones de cada curso (ver curso()).
      */
-    public function index(Request $request)
+    public function index()
     {
-        $user   = Auth::user();
-        $estado = $request->get('estado', 'pendiente');
+        $user = Auth::user();
 
-        $query = RespuestaEstudiante::with(['usuario', 'actividad.leccion.modulo.curso'])
-            ->whereHas('actividad')
-            ->whereHas('usuario');
+        $cursos = Curso::withCount('inscripciones')
+            ->when(!$user->esAdmin(), fn($q) => $q->where('created_by', $user->id))
+            ->orderBy('titulo')
+            ->get()
+            ->map(function (Curso $curso) {
+                $curso->pendientes_count = RespuestaEstudiante::whereIn('estado', ['sin_calificar', 'en_revision'])
+                    ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
+                    ->count();
+                return $curso;
+            });
 
-        if (!$user->esAdmin()) {
-            $query->whereHas('actividad.leccion.modulo.curso', fn($q) => $q->where('created_by', $user->id));
+        return view('calificaciones.index', compact('cursos'));
+    }
+
+    /**
+     * Instructor: matriz de calificaciones de un curso — filas = estudiantes
+     * inscritos, columnas = actividades calificables del curso. Cada celda
+     * enlaza a la pantalla de calificación/revisión que ya existe para esa
+     * actividad; esta vista es solo el mapa de navegación, no reimplementa
+     * la lógica de calificar.
+     */
+    public function curso(Request $request, Curso $curso)
+    {
+        $this->verificarAccesoCurso($curso);
+
+        $curso->load(['modulos' => fn($q) => $q->when(
+            $request->filled('modulo'),
+            fn($q2) => $q2->where('id', $request->modulo)
+        )->with(['lecciones.actividades' => fn($q2) => $q2->whereNotIn('tipo', Actividad::TIPOS_SIN_NOTA)])]);
+
+        $actividades = $curso->modulos->flatMap->lecciones->flatMap->actividades->values();
+
+        $inscripciones = Inscripcion::with('usuario')
+            ->where('curso_id', $curso->id)
+            ->when($request->filled('buscar'), fn($q) => $q->whereHas('usuario', fn($q2) =>
+                $q2->where('name', 'like', "%{$request->buscar}%")
+                   ->orWhere('email', 'like', "%{$request->buscar}%")
+            ))
+            ->get()
+            ->sortBy(fn($i) => $i->usuario->name)
+            ->values();
+
+        $actividadesIds = $actividades->pluck('id');
+        $estudiantesIds = $inscripciones->pluck('user_id');
+
+        $respuestasRaw = RespuestaEstudiante::whereIn('actividad_id', $actividadesIds)
+            ->whereIn('user_id', $estudiantesIds)
+            ->with('actividad')
+            ->get();
+
+        $respuestasPorCelda = $this->calificacionService
+            ->respuestasOficiales($respuestasRaw)
+            ->keyBy(fn($r) => "{$r->user_id}-{$r->actividad_id}");
+
+        // Fila por estudiante: celdas + promedio ponderado del curso (mismo
+        // criterio que ReporteService::reportePorCurso).
+        $filas = $inscripciones->map(function ($insc) use ($actividades, $respuestasPorCelda) {
+            $celdas = $actividades->map(fn($act) => $respuestasPorCelda->get("{$insc->user_id}-{$act->id}"));
+
+            $calificadas = $celdas->filter(fn($r) => $r && $r->estado === 'calificada');
+            $tienePendientes = $actividades->count() > $calificadas->count();
+
+            $totalPts    = $calificadas->sum(fn($r) => $r->actividad->puntaje_maximo);
+            $obtenidoPts = $calificadas->sum('calificacion');
+            $promedio    = $totalPts > 0 ? (int) round(($obtenidoPts / $totalPts) * 100) : null;
+
+            return (object) [
+                'estudiante'      => $insc->usuario,
+                'celdas'          => $celdas,
+                'promedio'        => $promedio,
+                'tiene_pendientes'=> $tienePendientes,
+            ];
+        });
+
+        if ($request->get('estado') === 'pendientes') {
+            $filas = $filas->where('tiene_pendientes', true)->values();
+        } elseif ($request->get('estado') === 'completos') {
+            $filas = $filas->where('tiene_pendientes', false)->values();
         }
 
-        match ($estado) {
-            'pendiente' => $query->where(function ($q) {
-                $q->where('estado', 'sin_calificar')
-                  ->orWhere('estado', 'en_revision');
-            }),
-            'calificada' => $query->where('estado', 'calificada'),
-            default      => null, // todas
-        };
+        // Promedio general por actividad (fila inferior de la tabla).
+        $promediosPorActividad = $actividades->map(function ($act) use ($respuestasPorCelda, $inscripciones) {
+            $notas = $inscripciones
+                ->map(fn($i) => $respuestasPorCelda->get("{$i->user_id}-{$act->id}"))
+                ->filter(fn($r) => $r && $r->estado === 'calificada')
+                ->pluck('calificacion');
 
-        $respuestas = $query->orderBy('fecha_envio')->paginate(20);
+            return $notas->isNotEmpty() ? round($notas->avg(), 2) : null;
+        });
 
-        return view('calificaciones.index', compact('respuestas', 'estado'));
+        // Lista completa (sin el filtro ?modulo=) para poblar el <select> del filtro.
+        $modulos = $curso->modulos()->get();
+
+        return view('calificaciones.curso', compact(
+            'curso', 'actividades', 'filas', 'promediosPorActividad', 'modulos'
+        ));
     }
 
     /**
@@ -88,7 +167,8 @@ class CalificacionController extends Controller
             route('calificaciones.mis')
         );
 
-        return redirect()->route('calificaciones.index')->with('success', 'Calificación guardada correctamente.');
+        return redirect()->route('calificaciones.curso', $respuesta->actividad->leccion->modulo->curso)
+            ->with('success', 'Calificación guardada correctamente.');
     }
 
     /**
@@ -99,7 +179,7 @@ class CalificacionController extends Controller
         $this->verificarAcceso($respuesta);
 
         if ($respuesta->estado !== 'en_revision') {
-            return redirect()->route('calificaciones.index')
+            return redirect()->route('calificaciones.curso', $respuesta->actividad->leccion->modulo->curso)
                 ->with('error', 'Este cuestionario no está pendiente de revisión.');
         }
 
@@ -154,7 +234,7 @@ class CalificacionController extends Controller
             route('calificaciones.mis')
         );
 
-        return redirect()->route('calificaciones.index')
+        return redirect()->route('calificaciones.curso', $respuesta->actividad->leccion->modulo->curso)
             ->with('success', "Calificación publicada: {$calificacion}/{$respuesta->actividad->puntaje_maximo} pts.");
     }
 
@@ -196,7 +276,7 @@ class CalificacionController extends Controller
             route('calificaciones.mis')
         );
 
-        return redirect()->route('calificaciones.index')
+        return redirect()->route('calificaciones.curso', $actividad->leccion->modulo->curso)
             ->with('success', "Calificación guardada: {$calificacion} / {$actividad->puntaje_maximo} pts.");
     }
 
@@ -238,6 +318,16 @@ class CalificacionController extends Controller
         $creador = $respuesta->actividad->leccion->modulo->curso->created_by;
         if ($creador !== $user->id) {
             abort(403, 'No tienes permiso para calificar esta respuesta.');
+        }
+    }
+
+    private function verificarAccesoCurso(Curso $curso): void
+    {
+        $user = Auth::user();
+        if ($user->esAdmin()) return;
+
+        if ($curso->created_by !== $user->id) {
+            abort(403, 'No tienes permiso para ver las calificaciones de este curso.');
         }
     }
 }

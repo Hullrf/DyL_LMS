@@ -149,7 +149,7 @@ class RubricaTest extends TestCase
             ]
         );
 
-        $response->assertRedirect(route('calificaciones.index'));
+        $response->assertRedirect(route('calificaciones.curso', $this->actividad->leccion->modulo->curso));
         $respuesta->refresh();
         $this->assertEquals(2.5, (float) $respuesta->calificacion);
         $this->assertEquals('calificada', $respuesta->estado);
@@ -205,7 +205,7 @@ class RubricaTest extends TestCase
             ['calificacion' => '3.5', 'feedback' => 'Bien']
         );
 
-        $response->assertRedirect(route('calificaciones.index'));
+        $response->assertRedirect(route('calificaciones.curso', $this->actividad->leccion->modulo->curso));
         $respuesta->refresh();
         $this->assertEquals(3.5, (float) $respuesta->calificacion);
         $this->assertEquals('calificada', $respuesta->estado);

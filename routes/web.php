@@ -115,6 +115,8 @@ Route::middleware('auth')->group(function () {
     // Calificaciones — instructor califica, estudiante ve las suyas
     Route::middleware('instructor')->group(function () {
         Route::get('/calificaciones', [CalificacionController::class, 'index'])->name('calificaciones.index');
+        // Ruta estática antes de {respuesta} para evitar conflicto de binding.
+        Route::get('/calificaciones/curso/{curso}', [CalificacionController::class, 'curso'])->name('calificaciones.curso');
         Route::get('/calificaciones/{respuesta}', [CalificacionController::class, 'show'])->name('calificaciones.show');
         Route::put('/calificaciones/{respuesta}', [CalificacionController::class, 'update'])->name('calificaciones.update');
         Route::get('/calificaciones/{respuesta}/revisar', [CalificacionController::class, 'revisarCuestionario'])->name('calificaciones.revisar');

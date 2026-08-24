@@ -16,7 +16,7 @@
 
     {{-- Encabezado --}}
     <div class="flex items-center gap-4 mb-8">
-        <a href="{{ route('calificaciones.index') }}" class="text-gray-500 hover:text-gray-800 text-xl">&larr;</a>
+        <a href="{{ route('calificaciones.curso', $respuesta->actividad->leccion->modulo->curso) }}" class="text-gray-500 hover:text-gray-800 text-xl">&larr;</a>
         <div>
             <p class="text-xs text-gray-500 uppercase tracking-wide">Calificando actividad</p>
             <h1 class="text-2xl font-bold text-gray-900">{{ $respuesta->actividad->titulo }}</h1>
