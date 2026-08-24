@@ -30,13 +30,24 @@ class ReporteController extends Controller
             abort(403);
         }
 
+        $cursosQuery = ($user->esAdmin() ? Curso::with('creador') : $user->cursosCreados())
+            ->withCount('inscripciones')
+            ->when(request('curso_buscar'), fn($q, $b) => $q->where('titulo', 'like', "%{$b}%"))
+            ->when(request('curso_estado'), fn($q, $e) => $q->where('estado', $e))
+            ->orderBy('titulo');
+
         if ($user->esAdmin()) {
-            $kpis   = $this->reporteService->kpiGenerales();
-            $cursos = Curso::with('creador')->withCount('inscripciones')->get();
-            $usuarios = User::withCount('cursos')->orderBy('name')->get();
+            $kpis     = $this->reporteService->kpiGenerales();
+            $cursos   = $cursosQuery->paginate(20, ['*'], 'cursos_page')->withQueryString();
+            $usuarios = User::withCount('cursos')
+                ->when(request('usuario_buscar'), fn($q, $b) =>
+                    $q->where('name', 'like', "%{$b}%")->orWhere('email', 'like', "%{$b}%"))
+                ->orderBy('name')
+                ->paginate(20, ['*'], 'usuarios_page')
+                ->withQueryString();
         } else {
-            $kpis   = null;
-            $cursos = $user->cursosCreados()->withCount('inscripciones')->get();
+            $kpis     = null;
+            $cursos   = $cursosQuery->paginate(20, ['*'], 'cursos_page')->withQueryString();
             $usuarios = collect();
         }
 

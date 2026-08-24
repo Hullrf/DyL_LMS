@@ -59,8 +59,27 @@
 
 {{-- Tabla de cursos --}}
 <div class="bg-white rounded-xl shadow mb-8">
-    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-        <h2 class="text-lg font-bold text-gray-900">Reportes por Curso</h2>
+    <div class="px-6 py-4 border-b border-gray-100">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Reportes por Curso</h2>
+        <form method="GET" class="flex flex-wrap gap-3">
+            @foreach(['usuario_buscar', 'usuarios_page'] as $preservar)
+                @if(request()->filled($preservar))
+                    <input type="hidden" name="{{ $preservar }}" value="{{ request($preservar) }}">
+                @endif
+            @endforeach
+            <input type="text" name="curso_buscar" value="{{ request('curso_buscar') }}"
+                   placeholder="Buscar curso..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
+            <select name="curso_estado" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                <option value="">Todos los estados</option>
+                <option value="publicado" @selected(request('curso_estado') === 'publicado')>Publicado</option>
+                <option value="borrador"  @selected(request('curso_estado') === 'borrador')>Borrador</option>
+                <option value="archivado" @selected(request('curso_estado') === 'archivado')>Archivado</option>
+            </select>
+            <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Filtrar</button>
+            @if(request()->anyFilled(['curso_buscar', 'curso_estado']))
+                <a href="{{ route('reportes.index') }}" class="text-sm text-gray-500 hover:text-gray-700 self-center">Limpiar</a>
+            @endif
+        </form>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-100">
@@ -111,13 +130,31 @@
             </tbody>
         </table>
     </div>
+    @if($cursos->hasPages())
+    <div class="px-6 py-4 border-t border-gray-100">
+        {{ $cursos->links() }}
+    </div>
+    @endif
 </div>
 
 {{-- Tabla de usuarios (solo admin) --}}
-@if($kpis && $usuarios->isNotEmpty())
+@if($kpis)
 <div class="bg-white rounded-xl shadow">
     <div class="px-6 py-4 border-b border-gray-100">
-        <h2 class="text-lg font-bold text-gray-900">Actividad de Estudiantes</h2>
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Actividad de Estudiantes</h2>
+        <form method="GET" class="flex flex-wrap gap-3">
+            @foreach(['curso_buscar', 'curso_estado', 'cursos_page'] as $preservar)
+                @if(request()->filled($preservar))
+                    <input type="hidden" name="{{ $preservar }}" value="{{ request($preservar) }}">
+                @endif
+            @endforeach
+            <input type="text" name="usuario_buscar" value="{{ request('usuario_buscar') }}"
+                   placeholder="Buscar por nombre o email..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
+            <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Filtrar</button>
+            @if(request()->filled('usuario_buscar'))
+                <a href="{{ route('reportes.index') }}" class="text-sm text-gray-500 hover:text-gray-700 self-center">Limpiar</a>
+            @endif
+        </form>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-100">
@@ -130,7 +167,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-                @foreach($usuarios as $usr)
+                @forelse($usuarios as $usr)
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ $usr->name }}</td>
                     <td class="px-6 py-3 text-sm text-gray-500">{{ $usr->email }}</td>
@@ -140,10 +177,19 @@
                            class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver &rarr;</a>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="4" class="px-6 py-10 text-center text-gray-400">Ningún estudiante coincide con la búsqueda.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+    @if($usuarios->hasPages())
+    <div class="px-6 py-4 border-t border-gray-100">
+        {{ $usuarios->links() }}
+    </div>
+    @endif
 </div>
 @endif
 
