@@ -17,7 +17,6 @@ class CursoFactory extends Factory
             'estado'         => 'publicado',
             'created_by'     => User::factory(),
             'orden'          => $this->faker->numberBetween(0, 10),
-            'tipo_certificado' => 'diploma',
         ];
     }
 

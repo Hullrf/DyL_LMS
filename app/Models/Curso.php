@@ -24,6 +24,9 @@ class Curso extends Model implements Auditable
         'imagen_portada', 'estado', 'created_by', 'orden', 'categoria_id',
         'tipo_certificado',
     ];
+    protected $attributes = [
+        'tipo_certificado' => 'diploma',
+    ];
 
     public function creador(): BelongsTo
     {
