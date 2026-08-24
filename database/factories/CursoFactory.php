@@ -2,11 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\Curso;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CursoFactory extends Factory
 {
+    protected $model = Curso::class;
+
     public function definition(): array
     {
         return [
@@ -18,6 +21,15 @@ class CursoFactory extends Factory
             'created_by'     => User::factory(),
             'orden'          => $this->faker->numberBetween(0, 10),
         ];
+    }
+
+    public function create($attributes = [], $parent = null)
+    {
+        $model = parent::create($attributes, $parent);
+        if ($model instanceof Curso) {
+            $model->refresh();
+        }
+        return $model;
     }
 
     public function borrador(): static
