@@ -17,11 +17,6 @@ class CursosDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        if (Curso::where('titulo', 'Fundamentos de ISO 9001:2015')->exists()) {
-            echo "\n Cursos demo ya existen, omitiendo...\n";
-            return;
-        }
-
         $instructor = User::where('email', 'instructor@dyl-quality.test')->first();
         $estudiante = User::where('email', 'student@dyl-quality.test')->first();
         if (!$instructor || !$estudiante) return;
@@ -29,15 +24,28 @@ class CursosDemoSeeder extends Seeder
         $categorias = Categoria::pluck('id', 'nombre');
 
         // ─── Curso 1: ISO 9001 ──────────────────────────────
-        $c1 = Curso::create([
-            'titulo'         => 'Fundamentos de ISO 9001:2015',
-            'descripcion'    => 'Aprende los principios de gestión de calidad y los requisitos de la norma ISO 9001:2015. Ideal para auditores internos y líderes de proceso.',
-            'duracion_horas' => 20,
-            'estado'         => 'publicado',
-            'created_by'     => $instructor->id,
-            'categoria_id'   => $categorias['Normas ISO'] ?? null,
-            'orden'          => 0,
-        ]);
+        // firstOrCreate (no exists()+create()) porque el startCommand de Railway
+        // corre db:seed en cada reinicio del contenedor (restartPolicyType
+        // ON_FAILURE); un exists()+create() separado es una condición de carrera
+        // (TOCTOU) que puede chocar contra cursos_titulo_unique si dos arranques
+        // se solapan. firstOrCreate atrapa esa UniqueConstraintViolationException
+        // internamente y reintenta la búsqueda en vez de lanzarla.
+        $c1 = Curso::firstOrCreate(
+            ['titulo' => 'Fundamentos de ISO 9001:2015'],
+            [
+                'descripcion'    => 'Aprende los principios de gestión de calidad y los requisitos de la norma ISO 9001:2015. Ideal para auditores internos y líderes de proceso.',
+                'duracion_horas' => 20,
+                'estado'         => 'publicado',
+                'created_by'     => $instructor->id,
+                'categoria_id'   => $categorias['Normas ISO'] ?? null,
+                'orden'          => 0,
+            ]
+        );
+
+        if (! $c1->wasRecentlyCreated) {
+            echo "\n Cursos demo ya existen, omitiendo...\n";
+            return;
+        }
 
         $m1 = Modulo::create(['curso_id' => $c1->id, 'titulo' => 'Contexto y Liderazgo',   'orden' => 0, 'duracion_horas' => 6]);
         $m2 = Modulo::create(['curso_id' => $c1->id, 'titulo' => 'Planificación y Soporte', 'orden' => 1, 'duracion_horas' => 8]);
@@ -69,34 +77,40 @@ class CursosDemoSeeder extends Seeder
         Opcion::create(['pregunta_id' => $p3->id, 'texto' => 'Mejora continua',          'es_correcta' => true,  'orden' => 3]);
 
         // ─── Curso 2: Seguridad ────────────────────────────
-        $c2 = Curso::create([
-            'titulo' => 'Seguridad y Salud Ocupacional',
-            'descripcion' => 'Fundamentos de seguridad industrial, identificación de riesgos y medidas preventivas en el entorno laboral.',
-            'duracion_horas' => 15,
-            'estado' => 'publicado',
-            'created_by' => $instructor->id,
-            'categoria_id' => $categorias['Seguridad y Salud'] ?? null,
-            'orden' => 1,
-        ]);
+        $c2 = Curso::firstOrCreate(
+            ['titulo' => 'Seguridad y Salud Ocupacional'],
+            [
+                'descripcion' => 'Fundamentos de seguridad industrial, identificación de riesgos y medidas preventivas en el entorno laboral.',
+                'duracion_horas' => 15,
+                'estado' => 'publicado',
+                'created_by' => $instructor->id,
+                'categoria_id' => $categorias['Seguridad y Salud'] ?? null,
+                'orden' => 1,
+            ]
+        );
 
-        $m4 = Modulo::create(['curso_id' => $c2->id, 'titulo' => 'Riesgos Laborales', 'orden' => 0, 'duracion_horas' => 8]);
-        $m5 = Modulo::create(['curso_id' => $c2->id, 'titulo' => 'Prevención y EPP',  'orden' => 1, 'duracion_horas' => 7]);
+        if ($c2->wasRecentlyCreated) {
+            $m4 = Modulo::create(['curso_id' => $c2->id, 'titulo' => 'Riesgos Laborales', 'orden' => 0, 'duracion_horas' => 8]);
+            $m5 = Modulo::create(['curso_id' => $c2->id, 'titulo' => 'Prevención y EPP',  'orden' => 1, 'duracion_horas' => 7]);
 
-        Leccion::create(['modulo_id' => $m4->id, 'titulo' => 'Identificación de Peligros', 'contenido_html' => '<p>Todo lugar de trabajo tiene riesgos. Esta lección cubre:</p><ul><li>Tipos de peligros (físicos, químicos, biológicos)</li><li>Metodología de evaluación</li><li>Matriz de riesgos</li></ul>', 'orden' => 0, 'duracion_minutos' => 35, 'tipo' => 'mixto']);
-        Leccion::create(['modulo_id' => $m5->id, 'titulo' => 'Uso de EPP',                  'contenido_html' => '<p>El Equipo de Protección Personal es la última barrera. Incluye:</p><ul><li>Cascos y protección craneal</li><li>Protección ocular y auditiva</li><li>Calzado de seguridad</li></ul>', 'orden' => 0, 'duracion_minutos' => 25, 'tipo' => 'video']);
-        Actividad::create(['leccion_id' => Leccion::where('modulo_id', $m4->id)->first()->id, 'tipo' => 'cuestionario', 'titulo' => 'Quiz: Identificación de Riesgos', 'puntaje_maximo' => 15, 'orden' => 0, 'es_obligatoria' => true]);
-        Actividad::create(['leccion_id' => Leccion::where('modulo_id', $m5->id)->first()->id, 'tipo' => 'practica', 'titulo' => 'Inspección de EPP', 'puntaje_maximo' => 20, 'orden' => 0, 'es_obligatoria' => true]);
+            Leccion::create(['modulo_id' => $m4->id, 'titulo' => 'Identificación de Peligros', 'contenido_html' => '<p>Todo lugar de trabajo tiene riesgos. Esta lección cubre:</p><ul><li>Tipos de peligros (físicos, químicos, biológicos)</li><li>Metodología de evaluación</li><li>Matriz de riesgos</li></ul>', 'orden' => 0, 'duracion_minutos' => 35, 'tipo' => 'mixto']);
+            Leccion::create(['modulo_id' => $m5->id, 'titulo' => 'Uso de EPP',                  'contenido_html' => '<p>El Equipo de Protección Personal es la última barrera. Incluye:</p><ul><li>Cascos y protección craneal</li><li>Protección ocular y auditiva</li><li>Calzado de seguridad</li></ul>', 'orden' => 0, 'duracion_minutos' => 25, 'tipo' => 'video']);
+            Actividad::create(['leccion_id' => Leccion::where('modulo_id', $m4->id)->first()->id, 'tipo' => 'cuestionario', 'titulo' => 'Quiz: Identificación de Riesgos', 'puntaje_maximo' => 15, 'orden' => 0, 'es_obligatoria' => true]);
+            Actividad::create(['leccion_id' => Leccion::where('modulo_id', $m5->id)->first()->id, 'tipo' => 'practica', 'titulo' => 'Inspección de EPP', 'puntaje_maximo' => 20, 'orden' => 0, 'es_obligatoria' => true]);
+        }
 
         // ─── Curso 3: Liderazgo (borrador) ─────────────────
-        Curso::create([
-            'titulo'         => 'Liderazgo Efectivo en Equipos de Calidad',
-            'descripcion'    => 'Desarrolla habilidades de liderazgo para guiar equipos hacia la excelencia operativa y la mejora continua.',
-            'duracion_horas' => 12,
-            'estado'         => 'borrador',
-            'created_by'     => $instructor->id,
-            'categoria_id'   => $categorias['Liderazgo'] ?? null,
-            'orden'          => 2,
-        ]);
+        Curso::firstOrCreate(
+            ['titulo' => 'Liderazgo Efectivo en Equipos de Calidad'],
+            [
+                'descripcion'    => 'Desarrolla habilidades de liderazgo para guiar equipos hacia la excelencia operativa y la mejora continua.',
+                'duracion_horas' => 12,
+                'estado'         => 'borrador',
+                'created_by'     => $instructor->id,
+                'categoria_id'   => $categorias['Liderazgo'] ?? null,
+                'orden'          => 2,
+            ]
+        );
 
         // Inscribir estudiante en los cursos publicados
         Inscripcion::firstOrCreate(
