@@ -214,6 +214,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('usuarios', \App\Http\Controllers\Admin\UsuarioController::class)
         ->except(['show']);
+    Route::resource('categorias', \App\Http\Controllers\Admin\CategoriaController::class)
+        ->except(['show']);
     Route::get('auditoria', [\App\Http\Controllers\Admin\AuditoriaController::class, 'index'])
         ->name('auditoria.index');
 });

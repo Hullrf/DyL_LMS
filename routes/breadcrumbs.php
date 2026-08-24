@@ -79,6 +79,17 @@ Breadcrumbs::for('admin.usuarios.edit', fn(Trail $t, $usuario) =>
     $t->parent('admin.usuarios.index')->push($usuario->name)
 );
 
+// Admin — Categorías
+Breadcrumbs::for('admin.categorias.index', fn(Trail $t) =>
+    $t->parent('dashboard')->push('Categorías', route('admin.categorias.index'))
+);
+Breadcrumbs::for('admin.categorias.create', fn(Trail $t) =>
+    $t->parent('admin.categorias.index')->push('Nueva Categoría')
+);
+Breadcrumbs::for('admin.categorias.edit', fn(Trail $t, $categoria) =>
+    $t->parent('admin.categorias.index')->push($categoria->nombre)
+);
+
 // Admin — Auditoría
 Breadcrumbs::for('admin.auditoria.index', fn(Trail $t) =>
     $t->parent('dashboard')->push('Auditoría', route('admin.auditoria.index'))

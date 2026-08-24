@@ -69,6 +69,12 @@
                 </span>
                 <span class="dyl-sb-label">Usuarios</span>
             </a>
+            <a href="{{ route('admin.categorias.index') }}" class="dyl-sb-link {{ request()->routeIs('admin.categorias.*') ? 'active' : '' }}">
+                <span class="dyl-sb-ic" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+                </span>
+                <span class="dyl-sb-label">Categorías</span>
+            </a>
             <a href="{{ route('admin.auditoria.index') }}" class="dyl-sb-link {{ request()->routeIs('admin.auditoria.*') ? 'active' : '' }}">
                 <span class="dyl-sb-ic" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 4.6-3 8-7 9.5-4-1.5-7-4.9-7-9.5V6l7-3z"/><path d="M9.3 12.2l1.9 1.9 3.5-3.8"/></svg>
