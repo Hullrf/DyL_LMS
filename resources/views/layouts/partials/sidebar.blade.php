@@ -21,17 +21,11 @@
             </span>
             <span class="dyl-sb-label">Cursos</span>
         </a>
-        <a href="{{ route('mensajes.bandeja') }}" class="dyl-sb-link {{ request()->routeIs('mensajes.*') ? 'active' : '' }}">
+        <a href="{{ route('mensajes.bandeja') }}" class="dyl-sb-link {{ request()->routeIs('mensajes.*') || request()->routeIs('anuncios.todos') ? 'active' : '' }}">
             <span class="dyl-sb-ic" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="5.5" width="17.6" height="13" rx="2.2"/><path d="M4 6.8l8 6.4 8-6.4"/></svg>
             </span>
             <span class="dyl-sb-label">Mensajes</span>
-        </a>
-        <a href="{{ route('anuncios.todos') }}" class="dyl-sb-link {{ request()->routeIs('anuncios.*') ? 'active' : '' }}">
-            <span class="dyl-sb-ic" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.2v3.6a1 1 0 001 1h1.8l6.2 3.7V5.5L5.8 9.2H4a1 1 0 00-1 1z"/><path d="M15.5 9.3a3.2 3.2 0 010 5.4"/></svg>
-            </span>
-            <span class="dyl-sb-label">Anuncios</span>
         </a>
         @if(auth()->user()->esInstructor() || auth()->user()->esAdmin())
             <a href="{{ route('calificaciones.index') }}" class="dyl-sb-link {{ request()->routeIs('calificaciones.index') ? 'active' : '' }}">

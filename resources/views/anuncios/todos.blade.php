@@ -2,6 +2,8 @@
 @section('title', 'Todos los anuncios - LMS DyL')
 @section('content')
 <div class="max-w-3xl mx-auto">
+    @include('partials.tabs-comunicacion')
+
     <h1 class="text-2xl font-bold text-gray-900 mb-6">Todos los anuncios</h1>
 
     @forelse($anuncios as $a)
