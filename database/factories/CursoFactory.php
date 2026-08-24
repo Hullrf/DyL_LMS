@@ -17,6 +17,7 @@ class CursoFactory extends Factory
             'estado'         => 'publicado',
             'created_by'     => User::factory(),
             'orden'          => $this->faker->numberBetween(0, 10),
+            'tipo_certificado' => 'diploma',
         ];
     }
 
@@ -28,5 +29,10 @@ class CursoFactory extends Factory
     public function publicado(): static
     {
         return $this->state(['estado' => 'publicado']);
+    }
+
+    public function diplomado(): static
+    {
+        return $this->state(['tipo_certificado' => 'diplomado']);
     }
 }
