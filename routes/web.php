@@ -221,6 +221,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         ->except(['show']);
     Route::get('auditoria', [\App\Http\Controllers\Admin\AuditoriaController::class, 'index'])
         ->name('auditoria.index');
+    Route::get('backups', [\App\Http\Controllers\Admin\BackupController::class, 'index'])
+        ->name('backups.index');
+    Route::post('backups/crear', [\App\Http\Controllers\Admin\BackupController::class, 'crear'])
+        ->name('backups.crear');
+    Route::post('backups/restaurar', [\App\Http\Controllers\Admin\BackupController::class, 'restaurar'])
+        ->name('backups.restaurar');
 });
 
 require __DIR__.'/auth.php';
