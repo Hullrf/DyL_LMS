@@ -51,11 +51,12 @@ class CursoController extends Controller
         $this->authorize('create', Curso::class);
 
         $validated = $request->validate([
-            'titulo'         => 'required|string|max:255|unique:cursos',
-            'descripcion'    => 'required|string|min:20',
-            'duracion_horas' => 'required|integer|min:1|max:500',
-            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
-            'categoria_id'   => 'nullable|exists:categorias,id',
+            'titulo'           => 'required|string|max:255|unique:cursos',
+            'descripcion'      => 'required|string|min:20',
+            'duracion_horas'   => 'required|integer|min:1|max:500',
+            'imagen_portada'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'categoria_id'     => 'nullable|exists:categorias,id',
+            'tipo_certificado' => 'nullable|in:diploma,diplomado',
         ]);
 
         $validated['created_by'] = Auth::id();
@@ -160,12 +161,13 @@ class CursoController extends Controller
         $this->authorize('update', $curso);
 
         $validated = $request->validate([
-            'titulo'         => 'required|string|max:255|unique:cursos,titulo,' . $curso->id,
-            'descripcion'    => 'required|string|min:20',
-            'duracion_horas' => 'required|integer|min:1|max:500',
-            'estado'         => 'required|in:borrador,publicado,archivado',
-            'imagen_portada' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
-            'categoria_id'   => 'nullable|exists:categorias,id',
+            'titulo'           => 'required|string|max:255|unique:cursos,titulo,' . $curso->id,
+            'descripcion'      => 'required|string|min:20',
+            'duracion_horas'   => 'required|integer|min:1|max:500',
+            'estado'           => 'required|in:borrador,publicado,archivado',
+            'imagen_portada'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'categoria_id'     => 'nullable|exists:categorias,id',
+            'tipo_certificado' => 'required|in:diploma,diplomado',
         ]);
 
         if ($request->hasFile('imagen_portada')) {
