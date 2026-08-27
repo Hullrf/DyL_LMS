@@ -136,4 +136,26 @@ class BackupControllerTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_pantalla_de_backups_muestra_los_dos_formularios(): void
+    {
+        $admin = $this->crearUsuario('Administrador');
+
+        $response = $this->actingAs($admin)->get(route('admin.backups.index'));
+
+        $response->assertOk();
+        $response->assertSee('Descargar backup ahora');
+        $response->assertSee('Descargar backup de seguridad del estado actual');
+        $response->assertSee('RESTAURAR', false);
+    }
+
+    public function test_sidebar_muestra_enlace_de_backups_para_admin(): void
+    {
+        $admin = $this->crearUsuario('Administrador');
+
+        $response = $this->actingAs($admin)->get(route('dashboard'));
+
+        $response->assertOk();
+        $response->assertSee(route('admin.backups.index'), false);
+    }
 }

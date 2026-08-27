@@ -97,3 +97,8 @@ Breadcrumbs::for('admin.categorias.edit', fn(Trail $t, $categoria) =>
 Breadcrumbs::for('admin.auditoria.index', fn(Trail $t) =>
     $t->parent('dashboard')->push('Auditoría', route('admin.auditoria.index'))
 );
+
+// Admin — Backups
+Breadcrumbs::for('admin.backups.index', fn(Trail $t) =>
+    $t->parent('dashboard')->push('Backups', route('admin.backups.index'))
+);
