@@ -64,7 +64,9 @@ class BackupService
             } catch (\Throwable $e) {
                 $numero = $i + 1;
                 throw new \RuntimeException(
-                    "Falló la sentencia {$numero} de {$total}: {$e->getMessage()}"
+                    "Falló la sentencia {$numero} de {$total}: {$e->getMessage()}",
+                    0,
+                    $e
                 );
             }
         }
