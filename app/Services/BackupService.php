@@ -23,11 +23,12 @@ class BackupService
         $dsn = "mysql:host={$config['host']};port={$config['port']};dbname={$config['database']};charset={$config['charset']}";
 
         $dump = new Mysqldump($dsn, $config['username'], $config['password'], [
-            'add-drop-table'     => true,
-            'no-data'            => false,
-            'single-transaction' => true,
-            'lock-tables'        => false,
-        ]);
+            'add-drop-table'         => true,
+            'no-data'                => [],
+            'single-transaction'     => true,
+            'lock-tables'            => false,
+            'default-character-set' => $config['charset'],
+        ], $config['options'] ?? []);
 
         $dump->start($destino);
     }
@@ -42,8 +43,12 @@ class BackupService
      * transacción envolvente no serviría para deshacerlo.
      *
      * @return int cantidad de sentencias ejecutadas con éxito
-     * @throws \RuntimeException si el archivo no se puede leer, o si
-     *         alguna sentencia falla (el mensaje incluye cuál).
+     * @throws \RuntimeException si el archivo no se puede leer, si el
+     *         contenido no parece un backup completo y válido (falta el
+     *         pie "-- Dump completed" o no hay ningún CREATE TABLE — caso
+     *         de archivo vacío, truncado o corrupto; se detecta antes de
+     *         ejecutar cualquier sentencia), o si alguna sentencia falla
+     *         (el mensaje incluye cuál).
      */
     public function restaurarDesdeArchivo(string $rutaArchivo): int
     {
@@ -51,6 +56,15 @@ class BackupService
 
         if ($contenido === false) {
             throw new \RuntimeException('No se pudo leer el archivo de backup.');
+        }
+
+        $pareceCompleto = str_contains($contenido, '-- Dump completed')
+            && preg_match('/CREATE TABLE/i', $contenido) === 1;
+
+        if (!$pareceCompleto) {
+            throw new \RuntimeException(
+                'El archivo no parece ser un backup completo y válido. No se ejecutó ninguna sentencia.'
+            );
         }
 
         $sentencias = $this->dividirEnSentencias($contenido);
