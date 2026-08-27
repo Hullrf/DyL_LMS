@@ -61,11 +61,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
         <div class="flex justify-center flex-wrap gap-6 text-sm text-gray-600 mb-6">
+            @php($intentosPermitidosEstudiante = $actividad->intentosPermitidosPara(auth()->id()))
             <span>
-                <strong class="block text-gray-900 text-lg">{{ $actividad->intentos_permitidos }}</strong>
-                {{ $actividad->intentos_permitidos === 1 ? 'intento permitido' : 'intentos permitidos' }}
-                @if($actividad->permiteMultiplesIntentos())
-                    <span class="block text-xs text-gray-400">(ya usaste {{ $intentosUsados }} de {{ $actividad->intentos_permitidos }})</span>
+                <strong class="block text-gray-900 text-lg">{{ $intentosPermitidosEstudiante }}</strong>
+                {{ $intentosPermitidosEstudiante === 1 ? 'intento permitido' : 'intentos permitidos' }}
+                @if($actividad->permiteMultiplesIntentos(auth()->id()))
+                    <span class="block text-xs text-gray-400">(ya usaste {{ $intentosUsados }} de {{ $intentosPermitidosEstudiante }})</span>
                 @endif
             </span>
             @if($actividad->duracion_minutos)

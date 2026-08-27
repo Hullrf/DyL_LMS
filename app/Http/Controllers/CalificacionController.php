@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Actividad;
 use App\Models\Curso;
 use App\Models\Inscripcion;
+use App\Models\IntentoExtra;
 use App\Models\RespuestaEstudiante;
 use App\Models\Notificacion;
+use App\Models\User;
 use App\Services\CalificacionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +82,27 @@ class CalificacionController extends Controller
             ->respuestasOficiales($respuestasRaw)
             ->keyBy(fn($r) => "{$r->user_id}-{$r->actividad_id}");
 
+        // Info de intentos (usados/permitidos/extra) por celda, solo para cuestionarios:
+        // habilita el control de "otorgar intento extra" en la matriz.
+        $intentosUsadosPorCelda = $respuestasRaw->groupBy(fn($r) => "{$r->user_id}-{$r->actividad_id}");
+        $intentosExtraPorCelda  = IntentoExtra::whereIn('actividad_id', $actividadesIds)
+            ->whereIn('user_id', $estudiantesIds)
+            ->get()
+            ->keyBy(fn($e) => "{$e->user_id}-{$e->actividad_id}");
+
+        $intentosPorCelda = [];
+        foreach ($actividades->where('tipo', 'cuestionario') as $act) {
+            foreach ($estudiantesIds as $uid) {
+                $key   = "{$uid}-{$act->id}";
+                $extra = $intentosExtraPorCelda->get($key)->cantidad ?? 0;
+                $intentosPorCelda[$key] = [
+                    'usados'     => $intentosUsadosPorCelda->get($key, collect())->count(),
+                    'permitidos' => $act->intentos_permitidos + $extra,
+                    'extra'      => $extra,
+                ];
+            }
+        }
+
         // Fila por estudiante: celdas + promedio ponderado del curso (mismo
         // criterio que ReporteService::reportePorCurso).
         $filas = $inscripciones->map(function ($insc) use ($actividades, $respuestasPorCelda) {
@@ -120,8 +143,41 @@ class CalificacionController extends Controller
         $modulos = $curso->modulos()->get();
 
         return view('calificaciones.curso', compact(
-            'curso', 'actividades', 'filas', 'promediosPorActividad', 'modulos'
+            'curso', 'actividades', 'filas', 'promediosPorActividad', 'modulos', 'intentosPorCelda'
         ));
+    }
+
+    /**
+     * Instructor: otorga intentos extra a un estudiante puntual para un cuestionario,
+     * por encima del límite global de la actividad. Acumulativo entre otorgamientos.
+     */
+    public function otorgarIntentoExtra(Request $request, Actividad $actividad, User $estudiante)
+    {
+        $this->verificarAccesoCurso($actividad->leccion->modulo->curso);
+        abort_if($actividad->tipo !== 'cuestionario', 403, 'Solo los cuestionarios admiten intentos extra.');
+
+        $validated = $request->validate([
+            'cantidad' => 'required|integer|min:1|max:5',
+        ]);
+
+        $intentoExtra = IntentoExtra::firstOrNew([
+            'user_id'      => $estudiante->id,
+            'actividad_id' => $actividad->id,
+        ]);
+        $intentoExtra->cantidad     = ($intentoExtra->cantidad ?? 0) + $validated['cantidad'];
+        $intentoExtra->otorgado_por = Auth::id();
+        $intentoExtra->save();
+
+        Notificacion::crear(
+            $estudiante->id,
+            'intento_extra',
+            'Intento extra habilitado',
+            "Se te habilitaron {$validated['cantidad']} intento(s) extra para «{$actividad->titulo}».",
+            route('actividades.show', $actividad)
+        );
+
+        return redirect()->route('calificaciones.curso', $actividad->leccion->modulo->curso)
+            ->with('success', "Se otorgaron {$validated['cantidad']} intento(s) extra a {$estudiante->name}.");
     }
 
     /**

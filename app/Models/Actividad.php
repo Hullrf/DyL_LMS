@@ -138,14 +138,36 @@ class Actividad extends Model implements Auditable
         return !in_array($this->tipo, self::TIPOS_SIN_NOTA);
     }
 
-    public function permiteMultiplesIntentos(): bool
+    /**
+     * Sin argumento, evalúa solo el límite global de la actividad (comportamiento
+     * histórico). Pasando $userId, tiene en cuenta también los intentos extra
+     * otorgados puntualmente a ese estudiante.
+     */
+    public function permiteMultiplesIntentos(?int $userId = null): bool
     {
-        return $this->tipo === 'cuestionario' && $this->intentos_permitidos > 1;
+        $permitidos = $userId !== null ? $this->intentosPermitidosPara($userId) : $this->intentos_permitidos;
+        return $this->tipo === 'cuestionario' && $permitidos > 1;
     }
 
     public function intentosUsadosPor(int $userId): int
     {
         return $this->respuestas()->where('user_id', $userId)->count();
+    }
+
+    public function intentosExtra(): HasMany
+    {
+        return $this->hasMany(IntentoExtra::class);
+    }
+
+    public function intentosExtraPara(int $userId): int
+    {
+        return (int) ($this->intentosExtra()->where('user_id', $userId)->value('cantidad') ?? 0);
+    }
+
+    /** Límite de intentos de esta actividad para un estudiante puntual: base + extras otorgados. */
+    public function intentosPermitidosPara(int $userId): int
+    {
+        return $this->intentos_permitidos + $this->intentosExtraPara($userId);
     }
 
     public function tieneIntentoEnRevisionPara(int $userId): bool

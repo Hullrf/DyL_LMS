@@ -43,7 +43,7 @@ class RespuestaEstudianteController extends Controller
                 }
             }
 
-            if ($actividad->intentosUsadosPor(Auth::id()) >= $actividad->intentos_permitidos) {
+            if ($actividad->intentosUsadosPor(Auth::id()) >= $actividad->intentosPermitidosPara(Auth::id())) {
                 return redirect()
                     ->route('actividades.show', $actividad)
                     ->with('error', 'Ya usaste todos los intentos permitidos para este cuestionario.');
