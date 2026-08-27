@@ -71,4 +71,49 @@ class BackupServiceTest extends TestCase
     {
         $this->assertSame([], $this->service->dividirEnSentencias(''));
     }
+
+    public function test_restaurar_rechaza_archivo_vacio_sin_tocar_la_bd(): void
+    {
+        $ruta = tempnam(sys_get_temp_dir(), \Illuminate\Support\Str::random());
+        file_put_contents($ruta, '');
+
+        try {
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessage('El archivo no parece ser un backup completo y válido');
+
+            $this->service->restaurarDesdeArchivo($ruta);
+        } finally {
+            unlink($ruta);
+        }
+    }
+
+    public function test_restaurar_rechaza_archivo_basura_sin_tocar_la_bd(): void
+    {
+        $ruta = tempnam(sys_get_temp_dir(), \Illuminate\Support\Str::random());
+        file_put_contents($ruta, "esto no es un dump valido\njust some garbage text\n");
+
+        try {
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessage('El archivo no parece ser un backup completo y válido');
+
+            $this->service->restaurarDesdeArchivo($ruta);
+        } finally {
+            unlink($ruta);
+        }
+    }
+
+    public function test_restaurar_rechaza_dump_truncado_sin_create_table(): void
+    {
+        $ruta = tempnam(sys_get_temp_dir(), \Illuminate\Support\Str::random());
+        file_put_contents($ruta, "-- mysqldump-php\nSET NAMES utf8mb4;\n-- Dump completed on: today\n");
+
+        try {
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessage('El archivo no parece ser un backup completo y válido');
+
+            $this->service->restaurarDesdeArchivo($ruta);
+        } finally {
+            unlink($ruta);
+        }
+    }
 }
