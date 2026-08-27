@@ -121,6 +121,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/calificaciones/{respuesta}', [CalificacionController::class, 'update'])->name('calificaciones.update');
         Route::get('/calificaciones/{respuesta}/revisar', [CalificacionController::class, 'revisarCuestionario'])->name('calificaciones.revisar');
         Route::post('/calificaciones/{respuesta}/publicar', [CalificacionController::class, 'publicarCuestionario'])->name('calificaciones.publicar');
+        Route::post('/calificaciones/actividades/{actividad}/estudiantes/{estudiante}/intentos-extra', [CalificacionController::class, 'otorgarIntentoExtra'])->name('calificaciones.intentos-extra');
     });
     Route::get('/mis-calificaciones', [CalificacionController::class, 'misCalificaciones'])->name('calificaciones.mis');
 

@@ -106,7 +106,7 @@ class ActividadController extends Controller
         $respuesta = $actividad->tipo === 'cuestionario' ? $respuestaOficial : $intentos->last();
 
         $intentosUsados         = $intentos->count();
-        $intentosRestantes      = max(0, $actividad->intentos_permitidos - $intentosUsados);
+        $intentosRestantes      = max(0, $actividad->intentosPermitidosPara(auth()->id()) - $intentosUsados);
         $tieneIntentoEnRevision = $intentos->contains('estado', 'en_revision');
 
         $actividadCompletada = ProgresoActividad::where('user_id', auth()->id())
@@ -218,7 +218,7 @@ class ActividadController extends Controller
                 ->with('error', 'El plazo de entrega venció el ' . $actividad->fecha_cierre->format('d/m/Y \a \l\a\s H:i') . '.');
         }
 
-        if ($actividad->intentosUsadosPor(auth()->id()) >= $actividad->intentos_permitidos) {
+        if ($actividad->intentosUsadosPor(auth()->id()) >= $actividad->intentosPermitidosPara(auth()->id())) {
             return redirect()
                 ->route('actividades.show', $actividad)
                 ->with('error', 'Ya usaste todos los intentos permitidos para este cuestionario.');

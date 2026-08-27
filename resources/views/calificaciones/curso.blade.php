@@ -69,7 +69,8 @@
                         <p class="font-medium text-gray-900">{{ $fila->estudiante->name }}</p>
                         <p class="text-xs text-gray-400">{{ $fila->estudiante->email }}</p>
                     </td>
-                    @foreach($fila->celdas as $respuesta)
+                    @foreach($actividades as $i => $act)
+                        @php($respuesta = $fila->celdas[$i])
                         <td class="px-4 py-3 whitespace-nowrap">
                             @if(!$respuesta)
                                 <span class="text-gray-300">—</span>
@@ -82,6 +83,30 @@
                                 <a href="{{ route('calificaciones.revisar', $respuesta) }}" class="badge badge-blue">Revisar</a>
                             @else
                                 <a href="{{ route('calificaciones.show', $respuesta) }}" class="badge badge-yellow">Pendiente</a>
+                            @endif
+
+                            @if($act->tipo === 'cuestionario')
+                                @php($info = $intentosPorCelda["{$fila->estudiante->id}-{$act->id}"] ?? ['usados' => 0, 'permitidos' => $act->intentos_permitidos, 'extra' => 0])
+                                <div class="mt-1 flex items-center gap-1.5 text-xs text-gray-400">
+                                    <span>{{ $info['usados'] }}/{{ $info['permitidos'] }} intentos</span>
+                                    @if($info['extra'] > 0)
+                                        <span class="badge badge-green" title="Intentos extra otorgados">+{{ $info['extra'] }}</span>
+                                    @endif
+                                    <details class="relative inline-block">
+                                        <summary class="cursor-pointer text-dyl-orange-600 hover:text-dyl-orange-700 list-none">+ intento extra</summary>
+                                        <form method="POST"
+                                              action="{{ route('calificaciones.intentos-extra', [$act, $fila->estudiante]) }}"
+                                              class="absolute z-10 mt-1 p-2 bg-white border border-gray-200 rounded-lg shadow-lg flex items-center gap-1 whitespace-nowrap">
+                                            @csrf
+                                            <input type="number" name="cantidad" value="1" min="1" max="5"
+                                                   class="w-14 px-1 py-0.5 border border-gray-300 rounded text-xs">
+                                            <button type="submit"
+                                                    class="px-2 py-0.5 bg-dyl-orange-600 text-white rounded text-xs hover:bg-dyl-orange-700">
+                                                Otorgar
+                                            </button>
+                                        </form>
+                                    </details>
+                                </div>
                             @endif
                         </td>
                     @endforeach

@@ -485,7 +485,7 @@
     @endif
 
     @if($actividad->tieneCalificacion())
-        @if($actividad->permiteMultiplesIntentos())
+        @if($actividad->permiteMultiplesIntentos(auth()->id()))
             {{-- Cuestionario con múltiples intentos --}}
             @if($tieneIntentoEnRevision)
             <div class="bg-dyl-graphite-50 border-2 border-dyl-orange-300 rounded-lg p-6 mb-6">
@@ -505,7 +505,7 @@
                 @if($respuesta)
                 <div class="bg-dyl-orange-50 border border-dyl-orange-200 rounded-lg p-6 mb-6">
                     <h2 class="font-bold text-dyl-orange-800 mb-2">
-                        Intento {{ $intentosUsados }} de {{ $actividad->intentos_permitidos }}
+                        Intento {{ $intentosUsados }} de {{ $actividad->intentosPermitidosPara(auth()->id()) }}
                     </h2>
                     @if($respuesta->calificacion !== null)
                         <p class="text-2xl font-bold text-dyl-orange-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
