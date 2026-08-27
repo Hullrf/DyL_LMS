@@ -43,6 +43,7 @@ class ActividadController extends Controller
             'intentos_permitidos'            => 'nullable|integer|min:1|max:20',
             'criterio_calificacion_intentos'  => 'nullable|in:mas_alto,ultimo',
             'mostrar_historial_intentos'      => 'boolean',
+            'max_archivos_adjuntos'          => 'nullable|integer|min:1|max:10',
         ]);
 
         $orden = $leccion->actividades()->max('orden') + 1;
@@ -58,6 +59,7 @@ class ActividadController extends Controller
             'intentos_permitidos'            => $validated['intentos_permitidos'] ?? 1,
             'criterio_calificacion_intentos' => $validated['criterio_calificacion_intentos'] ?? 'mas_alto',
             'mostrar_historial_intentos'     => $request->boolean('mostrar_historial_intentos', true),
+            'max_archivos_adjuntos'          => $validated['max_archivos_adjuntos'] ?? 1,
         ]);
 
         return redirect()
@@ -172,6 +174,7 @@ class ActividadController extends Controller
             'intentos_permitidos'            => 'nullable|integer|min:1|max:20',
             'criterio_calificacion_intentos'  => 'nullable|in:mas_alto,ultimo',
             'mostrar_historial_intentos'      => 'boolean',
+            'max_archivos_adjuntos'          => 'nullable|integer|min:1|max:10',
         ]);
 
         $descargaRaw = $validated['permitir_descarga_adjuntos'] ?? null;
@@ -185,6 +188,7 @@ class ActividadController extends Controller
             'intentos_permitidos'            => $validated['intentos_permitidos'] ?? $actividad->intentos_permitidos,
             'criterio_calificacion_intentos' => $validated['criterio_calificacion_intentos'] ?? $actividad->criterio_calificacion_intentos,
             'mostrar_historial_intentos'     => $request->boolean('mostrar_historial_intentos', $actividad->mostrar_historial_intentos),
+            'max_archivos_adjuntos'          => $validated['max_archivos_adjuntos'] ?? $actividad->max_archivos_adjuntos,
         ]);
 
         return redirect()

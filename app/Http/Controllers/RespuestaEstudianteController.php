@@ -83,23 +83,31 @@ class RespuestaEstudianteController extends Controller
             $request->validate(['respuesta' => 'required|string|min:2']);
         } else {
             $request->validate([
-                'respuesta'       => 'nullable|string',
-                'archivo_adjunto' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,webm,zip|max:51200',
+                'respuesta'          => 'nullable|string',
+                'archivos_adjuntos'   => "nullable|array|max:{$actividad->max_archivos_adjuntos}",
+                'archivos_adjuntos.*' => 'file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,webm,zip|max:51200',
             ]);
-            if (!$request->filled('respuesta') && !$request->hasFile('archivo_adjunto')) {
+            if (!$request->filled('respuesta') && !$request->hasFile('archivos_adjuntos')) {
                 return back()->withErrors(['respuesta' => 'Debes escribir una respuesta o adjuntar un archivo.']);
             }
         }
 
-        $calificacion   = null;
-        $estado         = 'sin_calificar';
-        $archivoPath    = null;
+        $calificacion = null;
+        $estado       = 'sin_calificar';
+        $archivos     = [];
 
-        if ($request->hasFile('archivo_adjunto')) {
-            $slug        = Str::slug($actividad->leccion->modulo->curso->titulo);
-            $userId      = Auth::id();
-            $archivoPath = $request->file('archivo_adjunto')
-                ->store("cursos/{$slug}/respuestas/{$userId}/{$actividad->id}", 'public');
+        if ($request->hasFile('archivos_adjuntos')) {
+            $slug   = Str::slug($actividad->leccion->modulo->curso->titulo);
+            $userId = Auth::id();
+
+            foreach ($request->file('archivos_adjuntos') as $i => $archivo) {
+                $archivos[] = [
+                    'path'            => $archivo->store("cursos/{$slug}/respuestas/{$userId}/{$actividad->id}", 'public'),
+                    'nombre_original' => $archivo->getClientOriginalName(),
+                    'tamano'          => $archivo->getSize(),
+                    'orden'           => $i,
+                ];
+            }
         }
 
         if ($actividad->tipo === 'cuestionario') {
@@ -111,15 +119,18 @@ class RespuestaEstudianteController extends Controller
             }
         }
 
-        RespuestaEstudiante::create([
-            'user_id'         => Auth::id(),
-            'actividad_id'    => $actividad->id,
-            'respuesta'       => $request->respuesta ?? '',
-            'archivo_adjunto' => $archivoPath,
-            'calificacion'    => $calificacion,
-            'estado'          => $estado,
-            'fecha_envio'     => now(),
+        $respuesta = RespuestaEstudiante::create([
+            'user_id'      => Auth::id(),
+            'actividad_id' => $actividad->id,
+            'respuesta'    => $request->respuesta ?? '',
+            'calificacion' => $calificacion,
+            'estado'       => $estado,
+            'fecha_envio'  => now(),
         ]);
+
+        foreach ($archivos as $archivo) {
+            $respuesta->archivos()->create($archivo);
+        }
 
         IntentoEnProgreso::where('user_id', Auth::id())
             ->where('actividad_id', $actividad->id)

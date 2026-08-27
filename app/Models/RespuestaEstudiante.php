@@ -40,4 +40,9 @@ class RespuestaEstudiante extends Model implements Auditable
     {
         return $this->hasMany(SeleccionRubrica::class, 'respuesta_estudiante_id');
     }
+
+    public function archivos(): HasMany
+    {
+        return $this->hasMany(RespuestaArchivo::class, 'respuesta_estudiante_id')->orderBy('orden');
+    }
 }
