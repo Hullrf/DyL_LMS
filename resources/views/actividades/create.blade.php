@@ -95,6 +95,14 @@
                     <span class="text-sm text-gray-700">Mostrar a los estudiantes el resumen de sus intentos anteriores</span>
                 </label>
             </div>
+            <div class="mb-6 p-5 bg-dyl-graphite-50 rounded-xl border border-dyl-graphite-200"
+                 x-show="['ensayo','tarea','practica'].includes(tipo)" x-cloak>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Máximo de archivos por entrega</label>
+                <input type="number" name="max_archivos_adjuntos" value="{{ old('max_archivos_adjuntos', 1) }}"
+                       min="1" max="10"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                <p class="text-xs text-gray-500 mt-1.5">Cuántos archivos puede adjuntar el estudiante en un mismo envío (1–10).</p>
+            </div>
             <div class="mb-6">
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="es_obligatoria" value="1" checked class="rounded">

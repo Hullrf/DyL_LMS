@@ -15,6 +15,7 @@ class Actividad extends Model implements Auditable
     use HasFactory, SoftDeletes, AuditableTrait;
 
     const TIPOS_SIN_NOTA = ['ejercicio', 'lectura', 'encuesta', 'reflexion'];
+    const TIPOS_CON_ENTREGA_ARCHIVO = ['ensayo', 'tarea', 'practica'];
 
     protected $auditExclude = ['updated_at'];
 
@@ -23,7 +24,7 @@ class Actividad extends Model implements Auditable
         'leccion_id', 'tipo', 'titulo', 'descripcion',
         'orden', 'puntaje_maximo', 'duracion_minutos', 'es_obligatoria',
         'fecha_apertura', 'fecha_cierre', 'usa_rubrica',
-        'permitir_descarga_adjuntos',
+        'permitir_descarga_adjuntos', 'max_archivos_adjuntos',
         'intentos_permitidos', 'criterio_calificacion_intentos', 'mostrar_historial_intentos',
     ];
 
@@ -136,6 +137,17 @@ class Actividad extends Model implements Auditable
     public function tieneCalificacion(): bool
     {
         return !in_array($this->tipo, self::TIPOS_SIN_NOTA);
+    }
+
+    /** Si esta actividad admite entrega de archivo(s) por parte del estudiante (ensayo/tarea/practica). */
+    public function permiteEntregaArchivo(): bool
+    {
+        return in_array($this->tipo, self::TIPOS_CON_ENTREGA_ARCHIVO);
+    }
+
+    public function permiteMultiplesArchivos(): bool
+    {
+        return $this->permiteEntregaArchivo() && $this->max_archivos_adjuntos > 1;
     }
 
     /**

@@ -71,6 +71,15 @@
                     </label>
                 </div>
                 @endif
+                @if($actividad->permiteEntregaArchivo())
+                <div class="mb-4 p-4 bg-dyl-graphite-50 rounded-xl border border-dyl-graphite-200">
+                    <label class="form-label">Máximo de archivos por entrega</label>
+                    <input type="number" name="max_archivos_adjuntos"
+                           value="{{ old('max_archivos_adjuntos', $actividad->max_archivos_adjuntos) }}"
+                           min="1" max="10" class="form-input">
+                    <p class="text-xs text-gray-500 mt-1.5">Cuántos archivos puede adjuntar el estudiante en un mismo envío (1–10).</p>
+                </div>
+                @endif
                 <div class="mb-3">
                     <label class="form-label">Tiempo límite <span class="text-gray-400 font-normal">(minutos, opcional)</span></label>
                     <input type="number" name="duracion_minutos"
