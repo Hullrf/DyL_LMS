@@ -47,6 +47,38 @@
             @enderror
         </div>
 
+        {{-- Número de documento --}}
+        <div>
+            <label for="numero_documento" class="form-label">Número de documento (C.C.)</label>
+            <input
+                id="numero_documento"
+                name="numero_documento"
+                type="text"
+                class="form-input mt-1 w-full"
+                value="{{ old('numero_documento', $user->numero_documento) }}"
+                placeholder="Opcional — necesario para certificados de diplomado"
+            />
+            @error('numero_documento')
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Ciudad de expedición --}}
+        <div>
+            <label for="ciudad_expedicion" class="form-label">Ciudad de expedición del documento</label>
+            <input
+                id="ciudad_expedicion"
+                name="ciudad_expedicion"
+                type="text"
+                class="form-input mt-1 w-full"
+                value="{{ old('ciudad_expedicion', $user->ciudad_expedicion) }}"
+                placeholder="Opcional"
+            />
+            @error('ciudad_expedicion')
+                <p class="mt-1 text-sm text-dyl-graphite-900 font-semibold">{{ $message }}</p>
+            @enderror
+        </div>
+
         {{-- Email --}}
         <div>
             <label for="email" class="form-label">Correo electrónico</label>
