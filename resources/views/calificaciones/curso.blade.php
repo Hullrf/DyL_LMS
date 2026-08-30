@@ -43,8 +43,40 @@
 </form>
 
 @if($actividades->isEmpty())
-    <div class="bg-white rounded-xl shadow p-16 text-center text-gray-400">
-        Este curso no tiene actividades calificables todavía.
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 text-center text-gray-400 text-sm">
+        Este curso no tiene actividades calificables todavía. Los estudiantes que completen el curso
+        (por ejemplo, terminando todas las lecciones) igual pueden recibir su certificado abajo.
+    </div>
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-100 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @forelse($filas as $fila)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <p class="font-medium text-gray-900">{{ $fila->estudiante->name }}</p>
+                            <p class="text-xs text-gray-400">{{ $fila->estudiante->email }}</p>
+                        </td>
+                        <td class="px-4 py-3 text-center whitespace-nowrap">
+                            @include('calificaciones.partials.celda-certificado', ['curso' => $curso, 'fila' => $fila])
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="2" class="px-6 py-10 text-center text-gray-400">
+                            Ningún estudiante coincide con el filtro.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 @else
 <div class="bg-white rounded-xl shadow overflow-hidden">
@@ -115,28 +147,7 @@
                         {{ $fila->promedio !== null ? $fila->promedio . '%' : '—' }}
                     </td>
                     <td class="px-4 py-3 text-center whitespace-nowrap">
-                        @if($fila->certificado)
-                            <a href="{{ route('certificados.show', $fila->certificado) }}" class="badge badge-green" title="Aprobado por {{ $fila->certificado->aprobador->name ?? '—' }} el {{ $fila->certificado->created_at->format('d/m/Y') }}">
-                                Certificado emitido
-                            </a>
-                        @elseif($fila->completado && !$fila->tiene_pendientes)
-                            @php($bajoMinimo = $fila->promedio !== null && $fila->promedio < $curso->nota_aprobatoria)
-                            <form method="POST" action="{{ route('calificaciones.aprobarCertificado', [$curso, $fila->estudiante]) }}"
-                                  onclick="return confirm('{{ $bajoMinimo ? '¿Aprobar de todas formas? La nota del estudiante está por debajo del mínimo del curso.' : '¿Aprobar y generar el certificado?' }}')">
-                                @csrf
-                                @if($bajoMinimo)
-                                    <button type="submit" class="btn btn-sm bg-dyl-graphite-700 text-white hover:bg-dyl-graphite-800">
-                                        Aprobar de todas formas
-                                    </button>
-                                @else
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        Aprobar certificado
-                                    </button>
-                                @endif
-                            </form>
-                        @else
-                            <span class="text-gray-300">—</span>
-                        @endif
+                        @include('calificaciones.partials.celda-certificado', ['curso' => $curso, 'fila' => $fila])
                     </td>
                 </tr>
                 @empty

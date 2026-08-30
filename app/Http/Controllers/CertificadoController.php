@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificado;
-use App\Models\Curso;
-use App\Models\Notificacion;
 use App\Services\CertificadoService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -60,13 +58,22 @@ class CertificadoController extends Controller
     }
 
     /**
-     * Solo el dueño del certificado o un admin puede verlo, descargarlo o previsualizarlo.
+     * El dueño del certificado, un admin, o el instructor del curso al que
+     * pertenece pueden verlo, descargarlo o previsualizarlo.
      */
     private function autorizar(Certificado $certificado): void
     {
-        if (Auth::id() !== $certificado->user_id && !Auth::user()->esAdmin()) {
-            abort(403);
+        $user = Auth::user();
+
+        if ($user->id === $certificado->user_id || $user->esAdmin()) {
+            return;
         }
+
+        if ($certificado->curso->created_by === $user->id) {
+            return;
+        }
+
+        abort(403);
     }
 
     /**

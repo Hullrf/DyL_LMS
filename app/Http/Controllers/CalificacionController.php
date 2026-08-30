@@ -86,6 +86,26 @@ class CalificacionController extends Controller
             ->respuestasOficiales($respuestasRaw)
             ->keyBy(fn($r) => "{$r->user_id}-{$r->actividad_id}");
 
+        // Conjunto de actividades SIEMPRE sin filtrar por ?modulo=, usado únicamente
+        // para decidir si procede aprobar el certificado (acción irreversible: nunca
+        // debe depender de una vista parcial/filtrada del curso). Si no hay filtro
+        // activo, $actividades ya es el curso completo y se reutiliza sin consultas extra.
+        $actividadesCompletas = $request->filled('modulo')
+            ? $curso->modulos()->with(['lecciones.actividades' => fn($q) => $q->whereNotIn('tipo', Actividad::TIPOS_SIN_NOTA)])
+                ->get()->flatMap->lecciones->flatMap->actividades->values()
+            : $actividades;
+
+        $respuestasPorCeldaCompletas = !$request->filled('modulo')
+            ? $respuestasPorCelda
+            : $this->calificacionService
+                ->respuestasOficiales(
+                    RespuestaEstudiante::whereIn('actividad_id', $actividadesCompletas->pluck('id'))
+                        ->whereIn('user_id', $estudiantesIds)
+                        ->with('actividad')
+                        ->get()
+                )
+                ->keyBy(fn($r) => "{$r->user_id}-{$r->actividad_id}");
+
         // Info de intentos (usados/permitidos/extra) por celda, solo para cuestionarios:
         // habilita el control de "otorgar intento extra" en la matriz.
         $intentosUsadosPorCelda = $respuestasRaw->groupBy(fn($r) => "{$r->user_id}-{$r->actividad_id}");
@@ -116,7 +136,9 @@ class CalificacionController extends Controller
             ->get()
             ->keyBy('user_id');
 
-        $filas = $inscripciones->map(function ($insc) use ($actividades, $respuestasPorCelda, $certificadosPorEstudiante) {
+        $filas = $inscripciones->map(function ($insc) use (
+            $actividades, $respuestasPorCelda, $actividadesCompletas, $respuestasPorCeldaCompletas, $certificadosPorEstudiante
+        ) {
             $celdas = $actividades->map(fn($act) => $respuestasPorCelda->get("{$insc->user_id}-{$act->id}"));
 
             $calificadas = $celdas->filter(fn($r) => $r && $r->estado === 'calificada');
@@ -126,13 +148,26 @@ class CalificacionController extends Controller
             $obtenidoPts = $calificadas->sum('calificacion');
             $promedio    = $totalPts > 0 ? (int) round(($obtenidoPts / $totalPts) * 100) : null;
 
+            // Mismo cálculo pero SIEMPRE sobre el curso completo (sin filtro ?modulo=):
+            // usado solo por la columna de Certificado, cuya acción es irreversible y
+            // nunca debe decidirse sobre una vista parcial del curso.
+            $celdasCompletas = $actividadesCompletas->map(fn($act) => $respuestasPorCeldaCompletas->get("{$insc->user_id}-{$act->id}"));
+            $calificadasCompletas = $celdasCompletas->filter(fn($r) => $r && $r->estado === 'calificada');
+            $tienePendientesTotal = $actividadesCompletas->count() > $calificadasCompletas->count();
+
+            $totalPtsCompletas    = $calificadasCompletas->sum(fn($r) => $r->actividad->puntaje_maximo);
+            $obtenidoPtsCompletas = $calificadasCompletas->sum('calificacion');
+            $promedioTotal        = $totalPtsCompletas > 0 ? (int) round(($obtenidoPtsCompletas / $totalPtsCompletas) * 100) : null;
+
             return (object) [
-                'estudiante'      => $insc->usuario,
-                'celdas'          => $celdas,
-                'promedio'        => $promedio,
-                'tiene_pendientes'=> $tienePendientes,
-                'completado'      => $insc->estado === 'completado',
-                'certificado'     => $certificadosPorEstudiante->get($insc->user_id),
+                'estudiante'           => $insc->usuario,
+                'celdas'               => $celdas,
+                'promedio'             => $promedio,
+                'tiene_pendientes'     => $tienePendientes,
+                'completado'           => $insc->estado === 'completado',
+                'certificado'          => $certificadosPorEstudiante->get($insc->user_id),
+                'promedio_total'       => $promedioTotal,
+                'tiene_pendientes_total' => $tienePendientesTotal,
             ];
         });
 
