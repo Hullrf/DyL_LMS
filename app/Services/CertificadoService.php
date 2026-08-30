@@ -75,6 +75,14 @@ class CertificadoService
         $rutaPdf = $this->generarPdf($certificado);
         $certificado->update(['archivo_pdf' => $rutaPdf]);
 
+        Notificacion::crear(
+            $usuario->id,
+            'certificado',
+            'Certificado generado',
+            "¡Felicitaciones! Obtuviste el certificado del curso «{$curso->titulo}».",
+            route('certificados.show', $certificado)
+        );
+
         return $certificado;
     }
 
