@@ -60,6 +60,7 @@
                         </th>
                     @endforeach
                     <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Promedio</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -113,10 +114,34 @@
                     <td class="px-4 py-3 text-center font-bold text-gray-700 whitespace-nowrap">
                         {{ $fila->promedio !== null ? $fila->promedio . '%' : '—' }}
                     </td>
+                    <td class="px-4 py-3 text-center whitespace-nowrap">
+                        @if($fila->certificado)
+                            <a href="{{ route('certificados.show', $fila->certificado) }}" class="badge badge-green" title="Aprobado por {{ $fila->certificado->aprobador->name ?? '—' }} el {{ $fila->certificado->created_at->format('d/m/Y') }}">
+                                Certificado emitido
+                            </a>
+                        @elseif($fila->completado && !$fila->tiene_pendientes)
+                            @php($bajoMinimo = $fila->promedio !== null && $fila->promedio < $curso->nota_aprobatoria)
+                            <form method="POST" action="{{ route('calificaciones.aprobarCertificado', [$curso, $fila->estudiante]) }}"
+                                  onclick="return confirm('{{ $bajoMinimo ? '¿Aprobar de todas formas? La nota del estudiante está por debajo del mínimo del curso.' : '¿Aprobar y generar el certificado?' }}')">
+                                @csrf
+                                @if($bajoMinimo)
+                                    <button type="submit" class="btn btn-sm bg-dyl-graphite-700 text-white hover:bg-dyl-graphite-800">
+                                        Aprobar de todas formas
+                                    </button>
+                                @else
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        Aprobar certificado
+                                    </button>
+                                @endif
+                            </form>
+                        @else
+                            <span class="text-gray-300">—</span>
+                        @endif
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="{{ $actividades->count() + 2 }}" class="px-6 py-10 text-center text-gray-400">
+                    <td colspan="{{ $actividades->count() + 3 }}" class="px-6 py-10 text-center text-gray-400">
                         Ningún estudiante coincide con el filtro.
                     </td>
                 </tr>
@@ -129,6 +154,7 @@
                     @foreach($promediosPorActividad as $prom)
                         <td class="px-4 py-3 font-bold text-gray-700 whitespace-nowrap">{{ $prom !== null ? number_format($prom, 2) : '—' }}</td>
                     @endforeach
+                    <td></td>
                     <td></td>
                 </tr>
             </tfoot>

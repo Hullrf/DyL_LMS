@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Models\Certificado;
 use App\Models\Curso;
 use App\Models\Inscripcion;
 use App\Models\IntentoExtra;
@@ -108,7 +109,14 @@ class CalificacionController extends Controller
 
         // Fila por estudiante: celdas + promedio ponderado del curso (mismo
         // criterio que ReporteService::reportePorCurso).
-        $filas = $inscripciones->map(function ($insc) use ($actividades, $respuestasPorCelda) {
+        // Certificados ya emitidos para este curso, precargados para no consultar uno por uno.
+        $certificadosPorEstudiante = Certificado::where('curso_id', $curso->id)
+            ->whereIn('user_id', $estudiantesIds)
+            ->with('aprobador')
+            ->get()
+            ->keyBy('user_id');
+
+        $filas = $inscripciones->map(function ($insc) use ($actividades, $respuestasPorCelda, $certificadosPorEstudiante) {
             $celdas = $actividades->map(fn($act) => $respuestasPorCelda->get("{$insc->user_id}-{$act->id}"));
 
             $calificadas = $celdas->filter(fn($r) => $r && $r->estado === 'calificada');
@@ -123,6 +131,8 @@ class CalificacionController extends Controller
                 'celdas'          => $celdas,
                 'promedio'        => $promedio,
                 'tiene_pendientes'=> $tienePendientes,
+                'completado'      => $insc->estado === 'completado',
+                'certificado'     => $certificadosPorEstudiante->get($insc->user_id),
             ];
         });
 
