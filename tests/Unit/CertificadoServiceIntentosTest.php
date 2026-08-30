@@ -45,7 +45,7 @@ class CertificadoServiceIntentosTest extends TestCase
             'calificacion' => 100, 'estado' => 'calificada',
         ]);
 
-        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso);
+        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso, $instructor);
 
         $this->assertNotNull($certificado);
         $this->assertEquals(100, $certificado->calificacion_final);

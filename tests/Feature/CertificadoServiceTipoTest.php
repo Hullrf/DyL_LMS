@@ -32,7 +32,7 @@ class CertificadoServiceTipoTest extends TestCase
         $curso      = Curso::factory()->create(['created_by' => $instructor->id]); // tipo_certificado = diploma por defecto
         $this->completarInscripcion($estudiante, $curso);
 
-        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso);
+        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso, $instructor);
 
         $this->assertNotNull($certificado);
         $this->assertFileExists(storage_path('app/public/'.$certificado->archivo_pdf));
@@ -47,7 +47,7 @@ class CertificadoServiceTipoTest extends TestCase
         $curso      = Curso::factory()->diplomado()->create(['created_by' => $instructor->id]);
         $this->completarInscripcion($estudiante, $curso);
 
-        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso);
+        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso, $instructor);
 
         $this->assertNotNull($certificado);
         $this->assertFileExists(storage_path('app/public/'.$certificado->archivo_pdf));
@@ -62,7 +62,7 @@ class CertificadoServiceTipoTest extends TestCase
         $curso      = Curso::factory()->diplomado()->create(['created_by' => $instructor->id]);
         $this->completarInscripcion($estudiante, $curso);
 
-        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso);
+        $certificado = app(CertificadoService::class)->generarSiCorresponde($estudiante, $curso, $instructor);
 
         $this->assertNull($certificado);
         $this->assertDatabaseCount('certificados', 0);

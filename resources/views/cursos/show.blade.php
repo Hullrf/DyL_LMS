@@ -97,13 +97,9 @@
                                     &#127941; Ver Certificado
                                 </a>
                             @else
-                                <form action="{{ route('certificados.generar', $curso) }}" method="POST">
-                                    @csrf
-                                    <button type="submit"
-                                            class="w-full bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
-                                        &#127941; Obtener Certificado
-                                    </button>
-                                </form>
+                                <div class="text-center text-gray-600 text-sm px-4 py-3 bg-gray-50 rounded-lg">
+                                    Tu certificado está pendiente de revisión del instructor.
+                                </div>
                             @endif
                         @endif
                     </div>

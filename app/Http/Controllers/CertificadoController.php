@@ -14,35 +14,6 @@ class CertificadoController extends Controller
     public function __construct(private CertificadoService $certificadoService) {}
 
     /**
-     * Genera (o recupera) el certificado del usuario autenticado para un curso.
-     * Solo funciona si la inscripción está completada.
-     */
-    public function generar(Curso $curso)
-    {
-        $usuario = Auth::user();
-
-        $certificado = $this->certificadoService->generarSiCorresponde($usuario, $curso);
-
-        if (!$certificado) {
-            return redirect()
-                ->route('cursos.show', $curso)
-                ->with('error', 'Debes completar todas las lecciones del curso para obtener el certificado.');
-        }
-
-        if ($certificado->wasRecentlyCreated) {
-            Notificacion::crear(
-                $usuario->id,
-                'certificado',
-                'Certificado generado',
-                "¡Felicitaciones! Obtuviste el certificado del curso «{$curso->titulo}».",
-                route('certificados.show', $certificado)
-            );
-        }
-
-        return redirect()->route('certificados.show', $certificado);
-    }
-
-    /**
      * Vista del certificado: previsualización + botón de descarga.
      */
     public function show(Certificado $certificado)

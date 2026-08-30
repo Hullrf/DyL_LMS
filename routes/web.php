@@ -136,7 +136,6 @@ Route::middleware('auth')->group(function () {
 
     // Certificados
     Route::get('/certificados', [CertificadoController::class, 'misCertificados'])->name('certificados.mis');
-    Route::post('/cursos/{curso}/certificado', [CertificadoController::class, 'generar'])->name('certificados.generar');
     Route::get('/certificados/{certificado}', [CertificadoController::class, 'show'])->name('certificados.show');
     Route::get('/certificados/{certificado}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
     Route::get('/certificados/{certificado}/previsualizar', [CertificadoController::class, 'previsualizar'])->name('certificados.previsualizar');

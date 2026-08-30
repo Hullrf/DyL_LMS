@@ -19,11 +19,12 @@ class CertificadoService
     }
 
     /**
-     * Genera (o recupera) el certificado de un usuario para un curso.
+     * Genera (o recupera) el certificado de un usuario para un curso, a
+     * pedido explícito de un instructor/admin que lo aprueba.
      * Solo procede si la inscripción está en estado 'completado'.
      * Retorna el Certificado o null si no corresponde.
      */
-    public function generarSiCorresponde(User $usuario, Curso $curso): ?Certificado
+    public function generarSiCorresponde(User $usuario, Curso $curso, User $aprobadoPor): ?Certificado
     {
         // Ya tiene certificado
         $existente = Certificado::where('user_id', $usuario->id)
@@ -67,6 +68,7 @@ class CertificadoService
             'fecha_emision'       => now()->toDateString(),
             'numero_certificado'  => $this->generarNumero(),
             'calificacion_final'  => $calificacionFinal,
+            'aprobado_por_id'     => $aprobadoPor->id,
         ]);
 
         // Generar PDF y guardar ruta
