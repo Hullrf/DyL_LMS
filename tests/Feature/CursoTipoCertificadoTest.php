@@ -67,6 +67,7 @@ class CursoTipoCertificadoTest extends TestCase
             'duracion_horas'   => $curso->duracion_horas,
             'estado'           => 'publicado',
             'tipo_certificado' => 'diplomado',
+            'nota_aprobatoria' => 80,
         ]);
 
         $response->assertRedirect();
