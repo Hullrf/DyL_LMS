@@ -56,5 +56,42 @@ class CertificadoPlantillaCartaTest extends TestCase
         $this->assertStringContainsString('Julio', $html);
         $this->assertStringContainsString('2026', $html);
         $this->assertStringNotContainsString('100%', $html); // no muestra calificación
+        $this->assertStringContainsString('CERT-2026-TEST0002', $html); // N° de certificado visible en el pie
+    }
+
+    public function test_no_duplica_diplomado_en_cuando_el_titulo_del_curso_ya_lo_incluye(): void
+    {
+        $instructor = User::factory()->create();
+        $estudiante = User::factory()->create([
+            'numero_documento'  => '1000790950',
+            'ciudad_expedicion' => 'Bogotá',
+        ]);
+        $curso = Curso::factory()->diplomado()->create([
+            'created_by'     => $instructor->id,
+            'titulo'         => 'Diplomado en Calidad',
+            'duracion_horas' => 120,
+        ]);
+
+        $certificado = Certificado::create([
+            'user_id'            => $estudiante->id,
+            'curso_id'           => $curso->id,
+            'fecha_emision'      => '2026-07-29',
+            'numero_certificado' => 'CERT-2026-TEST0003',
+            'calificacion_final' => 100,
+        ]);
+        $certificado->load(['usuario', 'curso']);
+
+        $inscripcion = Inscripcion::create([
+            'user_id'      => $estudiante->id,
+            'curso_id'     => $curso->id,
+            'fecha_inicio' => '2026-03-28',
+            'fecha_fin'    => '2026-07-28',
+            'estado'       => 'completado',
+        ]);
+
+        $html = mb_strtoupper(view('certificados.plantilla-carta', compact('certificado', 'inscripcion'))->render());
+
+        $this->assertStringContainsString('DIPLOMADO EN CALIDAD', $html);
+        $this->assertStringNotContainsString('DIPLOMADO EN DIPLOMADO', $html);
     }
 }

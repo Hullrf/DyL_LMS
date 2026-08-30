@@ -87,6 +87,11 @@
         }
         .pie span:last-child { margin-right: 0; }
         .pie strong { font-weight: bold; }
+        .pie .pie-numero {
+            margin-top: 1.5mm;
+            font-size: 8pt;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -107,6 +112,9 @@
     $fechaFin = \Carbon\Carbon::parse($certificado->fecha_emision);
     $diaTexto = \App\Support\NumeroEnPalabras::dia((int) $fechaFin->day);
     $mesTexto = \Illuminate\Support\Str::ucfirst($fechaFin->locale('es')->isoFormat('MMMM'));
+    // Evita "DIPLOMADO EN DIPLOMADO EN X" cuando el título del curso ya
+    // empieza con "Diplomado en".
+    $tituloCurso = preg_replace('/^diplomado\s+en\s+/i', '', $certificado->curso->titulo);
 @endphp
 
 <p class="parrafo">
@@ -118,7 +126,7 @@
         de {{ $certificado->usuario->ciudad_expedicion }},
     @endif
     culminó exitosamente todos los contenidos académicos y aprobó satisfactoriamente la prueba
-    de conocimiento del <strong>DIPLOMADO EN {{ mb_strtoupper($certificado->curso->titulo) }}</strong>,
+    de conocimiento del <strong>DIPLOMADO EN {{ mb_strtoupper($tituloCurso) }}</strong>,
     realizado entre el {{ \Carbon\Carbon::parse($inscripcion->fecha_inicio)->format('d/m/Y') }}
     y el {{ \Carbon\Carbon::parse($inscripcion->fecha_fin)->format('d/m/Y') }}
     con una intensidad de <strong>{{ $certificado->curso->duracion_horas }} horas</strong>.
@@ -140,6 +148,7 @@
     <span><strong>Contacto:</strong> +57 305 442 2705</span>
     <span><strong>Horario:</strong> L-V 8:00 am - 5:00 pm</span>
     <span><strong>Email:</strong> contacto@dylqualityconsulting.com</span>
+    <div class="pie-numero">N° de certificado: {{ $certificado->numero_certificado }}</div>
 </div>
 
 </body>
