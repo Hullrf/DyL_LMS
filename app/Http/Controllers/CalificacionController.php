@@ -10,13 +10,16 @@ use App\Models\RespuestaEstudiante;
 use App\Models\Notificacion;
 use App\Models\User;
 use App\Services\CalificacionService;
+use App\Services\CertificadoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CalificacionController extends Controller
 {
-    public function __construct(private CalificacionService $calificacionService)
-    {
+    public function __construct(
+        private CalificacionService $calificacionService,
+        private CertificadoService $certificadoService,
+    ) {
     }
 
     /**
@@ -178,6 +181,37 @@ class CalificacionController extends Controller
 
         return redirect()->route('calificaciones.curso', $actividad->leccion->modulo->curso)
             ->with('success', "Se otorgaron {$validated['cantidad']} intento(s) extra a {$estudiante->name}.");
+    }
+
+    /**
+     * Instructor/admin: aprueba y genera el certificado de un estudiante que
+     * completó el curso. La nota mínima del curso (Curso::nota_aprobatoria)
+     * es solo informativa en la matriz — este método no la valida, la
+     * decisión de aprobar por debajo del mínimo es del instructor.
+     */
+    public function aprobarCertificado(Curso $curso, User $estudiante)
+    {
+        $this->verificarAccesoCurso($curso);
+
+        $completado = Inscripcion::where('user_id', $estudiante->id)
+            ->where('curso_id', $curso->id)
+            ->where('estado', 'completado')
+            ->exists();
+
+        if (!$completado) {
+            return redirect()->route('calificaciones.curso', $curso)
+                ->with('error', "{$estudiante->name} no ha completado el curso todavía.");
+        }
+
+        $certificado = $this->certificadoService->generarSiCorresponde($estudiante, $curso, Auth::user());
+
+        if (!$certificado) {
+            return redirect()->route('calificaciones.curso', $curso)
+                ->with('error', "No se pudo generar: a {$estudiante->name} le falta el número de documento — se le notificó para que lo complete.");
+        }
+
+        return redirect()->route('calificaciones.curso', $curso)
+            ->with('success', "Certificado aprobado y generado para {$estudiante->name}.");
     }
 
     /**
