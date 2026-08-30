@@ -47,10 +47,7 @@ class CertificadoController extends Controller
      */
     public function show(Certificado $certificado)
     {
-        // Solo el dueño o un admin puede ver
-        if (Auth::id() !== $certificado->user_id && !Auth::user()->esAdmin()) {
-            abort(403);
-        }
+        $this->autorizar($certificado);
 
         return view('certificados.show', compact('certificado'));
     }
@@ -60,21 +57,70 @@ class CertificadoController extends Controller
      */
     public function descargar(Certificado $certificado)
     {
-        // Solo el dueño o admin
-        if (Auth::id() !== $certificado->user_id && !Auth::user()->esAdmin()) {
-            abort(403);
-        }
+        $this->autorizar($certificado);
 
-        // Regenerar si no existe el archivo
-        if (!$certificado->archivo_pdf || !Storage::disk('public')->exists($certificado->archivo_pdf)) {
-            $ruta = $this->certificadoService->generarPdf($certificado);
-            $certificado->update(['archivo_pdf' => $ruta]);
+        try {
+            $this->asegurarArchivoGenerado($certificado);
+        } catch (\RuntimeException $e) {
+            return $this->redirigirPorFaltaDeDatos($certificado);
         }
 
         $rutaAbsoluta = storage_path('app/public/' . $certificado->archivo_pdf);
         $nombre = 'Certificado-' . str_replace(' ', '-', $certificado->curso->titulo) . '.pdf';
 
         return response()->download($rutaAbsoluta, $nombre);
+    }
+
+    /**
+     * Sirve el PDF del certificado en línea (para el iframe de previsualización),
+     * sin exponerlo por una URL pública del disco de storage.
+     */
+    public function previsualizar(Certificado $certificado)
+    {
+        $this->autorizar($certificado);
+
+        try {
+            $this->asegurarArchivoGenerado($certificado);
+        } catch (\RuntimeException $e) {
+            return $this->redirigirPorFaltaDeDatos($certificado);
+        }
+
+        return response()->file(storage_path('app/public/' . $certificado->archivo_pdf));
+    }
+
+    /**
+     * Solo el dueño del certificado o un admin puede verlo, descargarlo o previsualizarlo.
+     */
+    private function autorizar(Certificado $certificado): void
+    {
+        if (Auth::id() !== $certificado->user_id && !Auth::user()->esAdmin()) {
+            abort(403);
+        }
+    }
+
+    /**
+     * Regenera el PDF del certificado si el archivo no existe todavía.
+     *
+     * @throws \RuntimeException si el certificado es de diplomado y falta el
+     *                           número de documento del estudiante.
+     */
+    private function asegurarArchivoGenerado(Certificado $certificado): void
+    {
+        if (!$certificado->archivo_pdf || !Storage::disk('public')->exists($certificado->archivo_pdf)) {
+            $ruta = $this->certificadoService->generarPdf($certificado);
+            $certificado->update(['archivo_pdf' => $ruta]);
+        }
+    }
+
+    /**
+     * Redirige a la vista del certificado con un aviso de que falta completar
+     * el perfil del estudiante para poder generar la carta de diplomado.
+     */
+    private function redirigirPorFaltaDeDatos(Certificado $certificado)
+    {
+        return redirect()
+            ->route('certificados.show', $certificado)
+            ->with('error', 'No pudimos generar tu certificado: falta tu número de documento. Complétalo en tu perfil (' . route('profile.edit') . ') e inténtalo de nuevo.');
     }
 
     /**

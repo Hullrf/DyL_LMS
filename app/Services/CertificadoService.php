@@ -79,6 +79,12 @@ class CertificadoService
     /**
      * Genera el PDF del certificado y lo guarda en storage/app/public/certificados/.
      * Retorna la ruta relativa desde storage/app/public.
+     *
+     * @throws \RuntimeException si el certificado es de diplomado y al estudiante
+     *                            le falta el número de documento (dato obligatorio
+     *                            para la carta). Es una red de seguridad: el flujo
+     *                            normal (generarSiCorresponde) ya filtra este caso
+     *                            antes de llegar aquí.
      */
     public function generarPdf(Certificado $certificado): string
     {
@@ -87,6 +93,12 @@ class CertificadoService
         $esDiplomado = $certificado->curso->tipo_certificado === 'diplomado';
 
         if ($esDiplomado) {
+            if (!$certificado->usuario->numero_documento) {
+                throw new \RuntimeException(
+                    'No se puede generar la carta de diplomado: falta el número de documento del estudiante.'
+                );
+            }
+
             $inscripcion = Inscripcion::where('user_id', $certificado->user_id)
                 ->where('curso_id', $certificado->curso_id)
                 ->first();

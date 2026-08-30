@@ -19,14 +19,20 @@
     </div>
 
     {{-- Previsualización: el PDF real, no un mockup aparte --}}
-    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-dyl-orange-300">
-        <iframe
-            src="{{ Storage::disk('public')->url($certificado->archivo_pdf) }}"
-            class="w-full"
-            style="height: 80vh; border: none;"
-            title="Certificado {{ $certificado->numero_certificado }}"
-        ></iframe>
-    </div>
+    @if($certificado->archivo_pdf && Storage::disk('public')->exists($certificado->archivo_pdf))
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-dyl-orange-300">
+            <iframe
+                src="{{ route('certificados.previsualizar', $certificado) }}"
+                class="w-full"
+                style="height: 80vh; border: none;"
+                title="Certificado {{ $certificado->numero_certificado }}"
+            ></iframe>
+        </div>
+    @else
+        <div class="bg-gray-50 rounded-2xl p-6 mb-6 border-2 border-dashed border-gray-300 text-center text-gray-500">
+            El certificado se está generando o no está disponible en este momento.
+        </div>
+    @endif
 
     {{-- Datos de verificación --}}
     <div class="bg-gray-50 rounded-xl p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
