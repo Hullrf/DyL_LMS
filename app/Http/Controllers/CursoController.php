@@ -57,6 +57,7 @@ class CursoController extends Controller
             'imagen_portada'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
             'categoria_id'     => 'nullable|exists:categorias,id',
             'tipo_certificado' => 'nullable|in:diploma,diplomado',
+            'nota_aprobatoria' => 'nullable|integer|min:0|max:100',
         ]);
 
         $validated['created_by'] = Auth::id();
@@ -168,6 +169,7 @@ class CursoController extends Controller
             'imagen_portada'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
             'categoria_id'     => 'nullable|exists:categorias,id',
             'tipo_certificado' => 'required|in:diploma,diplomado',
+            'nota_aprobatoria' => 'required|integer|min:0|max:100',
         ]);
 
         if ($request->hasFile('imagen_portada')) {

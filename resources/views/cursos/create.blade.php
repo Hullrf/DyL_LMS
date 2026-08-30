@@ -37,6 +37,13 @@
             </select>
             <p class="text-xs text-gray-400 mt-1">Define qué diseño de certificado recibe el estudiante al completar el curso.</p>
         </div>
+        <div class="mb-6">
+            <label for="nota_aprobatoria" class="block text-sm font-medium text-gray-700 mb-2">Nota mínima para aprobar (%)</label>
+            <input type="number" name="nota_aprobatoria" id="nota_aprobatoria" min="0" max="100"
+                   value="{{ old('nota_aprobatoria', 80) }}"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600 focus:border-transparent">
+            <p class="text-xs text-gray-400 mt-1">Guía para el instructor al aprobar certificados — no bloquea la aprobación, solo advierte si la nota del estudiante queda por debajo.</p>
+        </div>
         <div class="mb-6" x-data="{ errorPortada: '' }">
             <label for="imagen_portada" class="block text-sm font-medium text-gray-700 mb-2">Imagen de portada (opcional)</label>
             <input type="file" name="imagen_portada" id="imagen_portada" accept="image/*"

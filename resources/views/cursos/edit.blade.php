@@ -50,6 +50,12 @@
                         <option value="diplomado" @selected(old('tipo_certificado', $curso->tipo_certificado) === 'diplomado')>Diplomado — carta formal (vertical)</option>
                     </select>
                 </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nota mínima para aprobar (%)</label>
+                    <input type="number" name="nota_aprobatoria" min="0" max="100"
+                           value="{{ old('nota_aprobatoria', $curso->nota_aprobatoria) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                </div>
                 <div class="mb-4" x-data="{ errorPortada: '' }">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Imagen de portada</label>
                     @if($curso->imagen_portada)
