@@ -43,6 +43,13 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
                     <x-categoria-selector :categorias="$categorias" :selected-id="old('categoria_id', $curso->categoria_id)" />
                 </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de certificado</label>
+                    <select name="tipo_certificado" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                        <option value="diploma" @selected(old('tipo_certificado', $curso->tipo_certificado) === 'diploma')>Diploma (horizontal)</option>
+                        <option value="diplomado" @selected(old('tipo_certificado', $curso->tipo_certificado) === 'diplomado')>Diplomado — carta formal (vertical)</option>
+                    </select>
+                </div>
                 <div class="mb-4" x-data="{ errorPortada: '' }">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Imagen de portada</label>
                     @if($curso->imagen_portada)

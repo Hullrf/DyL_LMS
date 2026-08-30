@@ -28,6 +28,15 @@
             <label for="categoria_id" class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
             <x-categoria-selector :categorias="$categorias" :selected-id="old('categoria_id')" />
         </div>
+        <div class="mb-6">
+            <label for="tipo_certificado" class="block text-sm font-medium text-gray-700 mb-2">Tipo de certificado</label>
+            <select name="tipo_certificado" id="tipo_certificado"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600 focus:border-transparent">
+                <option value="diploma" {{ old('tipo_certificado', 'diploma') === 'diploma' ? 'selected' : '' }}>Diploma (horizontal)</option>
+                <option value="diplomado" {{ old('tipo_certificado') === 'diplomado' ? 'selected' : '' }}>Diplomado — carta formal (vertical)</option>
+            </select>
+            <p class="text-xs text-gray-400 mt-1">Define qué diseño de certificado recibe el estudiante al completar el curso.</p>
+        </div>
         <div class="mb-6" x-data="{ errorPortada: '' }">
             <label for="imagen_portada" class="block text-sm font-medium text-gray-700 mb-2">Imagen de portada (opcional)</label>
             <input type="file" name="imagen_portada" id="imagen_portada" accept="image/*"

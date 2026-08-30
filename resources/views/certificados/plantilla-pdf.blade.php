@@ -8,221 +8,187 @@
         body {
             width: 297mm;
             height: 210mm;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: Helvetica, Arial, sans-serif;
             background: #fff;
-            color: #0F172A;
+            color: #1F2937;
             position: relative;
             overflow: hidden;
         }
 
-        /* Marco exterior dorado */
-        .marco-exterior {
+        .encabezado {
             position: absolute;
-            top: 8mm;
-            left: 8mm;
-            right: 8mm;
-            bottom: 8mm;
-            border: 3px solid #F97316;
+            top: 14mm;
+            left: 14mm;
+        }
+        .encabezado table {
+            border-collapse: collapse;
+        }
+        .encabezado td {
+            vertical-align: top;
+            padding: 0;
         }
 
-        /* Marco interior */
-        .marco-interior {
-            position: absolute;
-            top: 11mm;
-            left: 11mm;
-            right: 11mm;
-            bottom: 11mm;
-            border: 1px solid #F97316;
+        .logo-circulos {
+            width: 32mm;
+            display: block;
         }
 
-        /* Fondo decorativo */
-        .fondo-degradado {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, #F8FAFC 0%, #ffffff 50%, #F8FAFC 100%);
+        .wordmark {
+            padding-top: 4mm;
+            padding-left: 8mm;
+        }
+        .dl {
+            font-size: 26pt;
+            font-weight: bold;
+            color: #1F2937;
+            letter-spacing: 1px;
+        }
+        .amp { color: #16A34A; }
+        .sub {
+            font-size: 10pt;
+            letter-spacing: 4px;
+            color: #4B5563;
+            text-transform: uppercase;
         }
 
-        /* Esquinas decorativas */
-        .esquina {
+        .decoracion {
             position: absolute;
-            width: 20mm;
-            height: 20mm;
-            border-color: #F97316;
+            top: -40mm;
+            right: -40mm;
+            width: 160mm;
+            opacity: 0.12;
         }
-        .esquina-tl { top: 13mm; left: 13mm; border-top: 2px solid; border-left: 2px solid; }
-        .esquina-tr { top: 13mm; right: 13mm; border-top: 2px solid; border-right: 2px solid; }
-        .esquina-bl { bottom: 13mm; left: 13mm; border-bottom: 2px solid; border-left: 2px solid; }
-        .esquina-br { bottom: 13mm; right: 13mm; border-bottom: 2px solid; border-right: 2px solid; }
 
-        /* Contenido centrado */
         .contenido {
             position: absolute;
-            top: 18mm;
-            left: 18mm;
-            right: 18mm;
-            bottom: 18mm;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            top: 50mm;
+            left: 20mm;
+            right: 55mm;
         }
 
-        .logo-empresa {
+        .hace-constar {
             font-size: 13pt;
-            font-weight: bold;
-            color: #0F172A;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 3mm;
-        }
-
-        .linea-dorada {
-            width: 80mm;
-            height: 0.5mm;
-            background: #F97316;
-            margin: 0 auto 5mm;
-        }
-
-        .titulo-certificado {
-            font-size: 28pt;
-            color: #F97316;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            margin-bottom: 4mm;
-            font-weight: normal;
-        }
-
-        .subtitulo {
-            font-size: 11pt;
-            color: #555;
-            letter-spacing: 2px;
-            margin-bottom: 6mm;
+            color: #374151;
+            margin-bottom: 8mm;
         }
 
         .nombre-estudiante {
-            font-size: 26pt;
-            color: #0F172A;
-            font-style: italic;
+            font-size: 24pt;
             font-weight: bold;
-            border-bottom: 1px solid #F97316;
-            padding-bottom: 2mm;
-            margin-bottom: 5mm;
-            min-width: 120mm;
+            color: #1F2937;
+            text-transform: uppercase;
+            margin-bottom: 2mm;
         }
 
-        .texto-por-completar {
-            font-size: 10pt;
-            color: #444;
-            margin-bottom: 3mm;
+        .cedula {
+            font-size: 11pt;
+            color: #4B5563;
+            margin-bottom: 10mm;
+        }
+
+        .texto-completo {
+            font-size: 12pt;
+            color: #374151;
+            margin-bottom: 4mm;
         }
 
         .nombre-curso {
-            font-size: 16pt;
-            color: #0F172A;
+            font-size: 20pt;
             font-weight: bold;
-            margin-bottom: 3mm;
+            color: #16A34A;
+            text-transform: uppercase;
+            margin-bottom: 10mm;
         }
 
-        .calificacion-box {
-            display: inline-block;
-            border: 1px solid #F97316;
-            padding: 1mm 5mm;
-            font-size: 10pt;
-            color: #555;
-            margin-bottom: 6mm;
+        .datos-fila {
+            font-size: 11pt;
+            color: #374151;
+            margin-bottom: 16mm;
         }
-
-        .firmas {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin-top: 4mm;
-        }
+        .datos-fila span { margin-right: 20mm; }
+        .datos-fila strong { color: #1F2937; }
 
         .firma-bloque {
-            text-align: center;
-            width: 60mm;
+            width: 70mm;
         }
-
+        .firma-img {
+            width: 40mm;
+            margin-bottom: -3mm;
+        }
         .firma-linea {
-            border-top: 1px solid #555;
-            margin-bottom: 1mm;
+            border-top: 1px solid #9CA3AF;
+            margin-bottom: 1.5mm;
         }
-
         .firma-nombre {
-            font-size: 9pt;
+            font-size: 10pt;
             font-weight: bold;
-            color: #0F172A;
+            color: #1F2937;
         }
-
         .firma-cargo {
-            font-size: 8pt;
-            color: #666;
+            font-size: 9pt;
+            color: #6B7280;
         }
 
-        .pie-certificado {
+        .pie {
             position: absolute;
-            bottom: 14mm;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 7pt;
-            color: #999;
-            letter-spacing: 1px;
+            bottom: 10mm;
+            left: 20mm;
+            right: 20mm;
+            font-size: 9pt;
+            color: #16A34A;
+            font-weight: bold;
         }
+        .pie .contacto {
+            font-size: 8pt;
+            color: #6B7280;
+            font-weight: normal;
+        }
+        .pie .contacto a { color: #6B7280; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<div class="fondo-degradado"></div>
-<div class="marco-exterior"></div>
-<div class="marco-interior"></div>
-<div class="esquina esquina-tl"></div>
-<div class="esquina esquina-tr"></div>
-<div class="esquina esquina-bl"></div>
-<div class="esquina esquina-br"></div>
+<img class="decoracion" src="{{ public_path('images/certificados/logo-circulos.jpg') }}">
 
-<div class="contenido">
-
-    <div class="logo-empresa">DyL Quality Consulting</div>
-    <div class="linea-dorada"></div>
-
-    <div class="titulo-certificado">Certificado</div>
-    <div class="subtitulo">DE FINALIZACIÓN</div>
-
-    <div class="texto-por-completar">Este certificado se otorga a</div>
-
-    <div class="nombre-estudiante">{{ $certificado->usuario->name }}</div>
-
-    <div class="texto-por-completar">por haber completado satisfactoriamente el curso</div>
-
-    <div class="nombre-curso">{{ $certificado->curso->titulo }}</div>
-
-    <div class="calificacion-box">
-        Calificación final: {{ $certificado->calificacion_final }}% &nbsp;·&nbsp;
-        Duración: {{ $certificado->curso->duracion_horas }} horas &nbsp;·&nbsp;
-        Fecha: {{ \Carbon\Carbon::parse($certificado->fecha_emision)->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}
-    </div>
-
-    <div class="firmas">
-        <div class="firma-bloque">
-            <div class="firma-linea"></div>
-            <div class="firma-nombre">{{ $certificado->curso->creador->name }}</div>
-            <div class="firma-cargo">Instructor del Curso</div>
-        </div>
-        <div class="firma-bloque">
-            <div class="firma-linea"></div>
-            <div class="firma-nombre">DyL Quality Consulting</div>
-            <div class="firma-cargo">Dirección Académica</div>
-        </div>
-    </div>
-
+<div class="encabezado">
+    <table>
+        <tr>
+            <td><img class="logo-circulos" src="{{ public_path('images/certificados/logo-circulos.jpg') }}"></td>
+            <td class="wordmark">
+                <div class="dl">D<span class="amp">&amp;</span>L</div>
+                <div class="sub">Quality Consulting</div>
+            </td>
+        </tr>
+    </table>
 </div>
 
-<div class="pie-certificado">
-    N° {{ $certificado->numero_certificado }} &nbsp;·&nbsp;
-    Verificar en: {{ url('/verificar-certificado/' . $certificado->numero_certificado) }}
+<div class="contenido">
+    <p class="hace-constar">Hace Constar Que:</p>
+
+    <p class="nombre-estudiante">{{ $certificado->usuario->name }}</p>
+    @if($certificado->usuario->numero_documento)
+        <p class="cedula">C.C. {{ $certificado->usuario->numero_documento }}</p>
+    @endif
+
+    <p class="texto-completo">Completó con éxito la formación y evaluación de</p>
+    <p class="nombre-curso">{{ $certificado->curso->titulo }}</p>
+
+    <div class="datos-fila">
+        <span>Fecha Finalización: <strong>{{ \Carbon\Carbon::parse($certificado->fecha_emision)->format('Y/m/d') }}</strong></span>
+        <span>Intensidad: <strong>{{ $certificado->curso->duracion_horas }} horas</strong></span>
+    </div>
+
+    <div class="firma-bloque">
+        <img class="firma-img" src="{{ public_path('images/certificados/firma-sandra-fajardo.jpg') }}">
+        <div class="firma-linea"></div>
+        <p class="firma-nombre">Sandra Marcela Fajardo</p>
+        <p class="firma-cargo">Directora de Formación</p>
+    </div>
+</div>
+
+<div class="pie">
+    <div>www.dylqualityconsulting.com</div>
+    <div class="contacto">contacto.dylltda@gmail.com &middot; 310 349 1201 &middot; Calle 143 No. 46-55 &middot; N° {{ $certificado->numero_certificado }}</div>
 </div>
 
 </body>

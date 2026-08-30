@@ -18,54 +18,21 @@
         </a>
     </div>
 
-    {{-- Tarjeta previsualización del certificado --}}
-    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-dyl-orange-300">
-
-        {{-- Franja superior decorativa --}}
-        <div class="h-3 bg-gradient-to-r from-dyl-orange-400 via-dyl-orange-500 to-dyl-orange-400"></div>
-
-        <div class="px-10 py-12 text-center">
-
-            <p class="text-xs font-bold tracking-[4px] text-dyl-graphite-900 uppercase mb-1">DyL Quality Consulting</p>
-            <div class="w-24 h-0.5 bg-dyl-orange-400 mx-auto mb-6"></div>
-
-            <h2 class="text-4xl font-serif tracking-[6px] text-dyl-orange-500 uppercase mb-2">Certificado</h2>
-            <p class="text-sm tracking-[3px] text-gray-500 uppercase mb-8">De Finalización</p>
-
-            <p class="text-gray-500 mb-2 text-sm">Este certificado se otorga a</p>
-
-            <p class="text-4xl font-serif italic font-bold text-dyl-graphite-900 border-b border-dyl-orange-400 pb-3 inline-block px-8 mb-6">
-                {{ $certificado->usuario->name }}
-            </p>
-
-            <p class="text-gray-500 mb-2 text-sm">por haber completado satisfactoriamente el curso</p>
-
-            <p class="text-2xl font-bold text-dyl-graphite-900 mb-4">{{ $certificado->curso->titulo }}</p>
-
-            <div class="inline-flex gap-6 text-sm text-gray-500 border border-dyl-orange-300 rounded-lg px-6 py-2 mb-8">
-                <span>Calificación: <strong class="text-dyl-graphite-900">{{ $certificado->calificacion_final }}%</strong></span>
-                <span>·</span>
-                <span>Duración: <strong class="text-dyl-graphite-900">{{ $certificado->curso->duracion_horas }} h</strong></span>
-                <span>·</span>
-                <span>Fecha: <strong class="text-dyl-graphite-900">{{ \Carbon\Carbon::parse($certificado->fecha_emision)->locale('es')->isoFormat('D MMM YYYY') }}</strong></span>
-            </div>
-
-            <div class="flex justify-around mt-2">
-                <div class="text-center">
-                    <div class="border-t border-gray-400 w-40 mb-1 mx-auto"></div>
-                    <p class="text-sm font-semibold text-gray-800">{{ $certificado->curso->creador->name }}</p>
-                    <p class="text-xs text-gray-500">Instructor del Curso</p>
-                </div>
-                <div class="text-center">
-                    <div class="border-t border-gray-400 w-40 mb-1 mx-auto"></div>
-                    <p class="text-sm font-semibold text-gray-800">DyL Quality Consulting</p>
-                    <p class="text-xs text-gray-500">Dirección Académica</p>
-                </div>
-            </div>
+    {{-- Previsualización: el PDF real, no un mockup aparte --}}
+    @if($certificado->archivo_pdf && Storage::disk('public')->exists($certificado->archivo_pdf))
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-dyl-orange-300">
+            <iframe
+                src="{{ route('certificados.previsualizar', $certificado) }}"
+                class="w-full"
+                style="height: 80vh; border: none;"
+                title="Certificado {{ $certificado->numero_certificado }}"
+            ></iframe>
         </div>
-
-        <div class="h-3 bg-gradient-to-r from-dyl-orange-400 via-dyl-orange-500 to-dyl-orange-400"></div>
-    </div>
+    @else
+        <div class="bg-gray-50 rounded-2xl p-6 mb-6 border-2 border-dashed border-gray-300 text-center text-gray-500">
+            El certificado se está generando o no está disponible en este momento.
+        </div>
+    @endif
 
     {{-- Datos de verificación --}}
     <div class="bg-gray-50 rounded-xl p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">

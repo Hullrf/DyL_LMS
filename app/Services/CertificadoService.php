@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Certificado;
 use App\Models\Curso;
 use App\Models\Inscripcion;
+use App\Models\Notificacion;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Mpdf\Mpdf;
@@ -43,6 +44,19 @@ class CertificadoService
             return null;
         }
 
+        // La carta de diplomado necesita el número de documento del estudiante.
+        if ($curso->tipo_certificado === 'diplomado' && !$usuario->numero_documento) {
+            Notificacion::crear(
+                $usuario->id,
+                'certificado',
+                'Completa tu perfil para tu certificado',
+                "Necesitamos tu número de documento para emitir tu certificado de «{$curso->titulo}». Complétalo en tu perfil.",
+                route('profile.edit')
+            );
+
+            return null;
+        }
+
         // Calcular calificación final (promedio de actividades calificadas)
         $calificacionFinal = $this->calcularCalificacionFinal($usuario, $curso);
 
@@ -65,24 +79,56 @@ class CertificadoService
     /**
      * Genera el PDF del certificado y lo guarda en storage/app/public/certificados/.
      * Retorna la ruta relativa desde storage/app/public.
+     *
+     * @throws \RuntimeException si el certificado es de diplomado y al estudiante
+     *                            le falta el número de documento (dato obligatorio
+     *                            para la carta). Es una red de seguridad: el flujo
+     *                            normal (generarSiCorresponde) ya filtra este caso
+     *                            antes de llegar aquí.
      */
     public function generarPdf(Certificado $certificado): string
     {
         $certificado->load(['usuario', 'curso.creador']);
 
-        $html = view('certificados.plantilla-pdf', compact('certificado'))->render();
+        $esDiplomado = $certificado->curso->tipo_certificado === 'diplomado';
 
-        $mpdf = new Mpdf([
-            'mode'         => 'utf-8',
-            'format'       => 'A4-L',
-            'orientation'  => 'L',
-            'margin_top'   => 0,
-            'margin_right' => 0,
-            'margin_bottom'=> 0,
-            'margin_left'  => 0,
-            'tempDir'      => storage_path('app/tmp'),
-        ]);
+        if ($esDiplomado) {
+            if (!$certificado->usuario->numero_documento) {
+                throw new \RuntimeException(
+                    'No se puede generar la carta de diplomado: falta el número de documento del estudiante.'
+                );
+            }
 
+            $inscripcion = Inscripcion::where('user_id', $certificado->user_id)
+                ->where('curso_id', $certificado->curso_id)
+                ->first();
+
+            $html = view('certificados.plantilla-carta', compact('certificado', 'inscripcion'))->render();
+            $mpdfConfig = [
+                'mode'          => 'utf-8',
+                'format'        => 'A4',
+                'orientation'   => 'P',
+                'margin_top'    => 20,
+                'margin_right'  => 20,
+                'margin_bottom' => 25,
+                'margin_left'   => 20,
+                'tempDir'       => storage_path('app/tmp'),
+            ];
+        } else {
+            $html = view('certificados.plantilla-pdf', compact('certificado'))->render();
+            $mpdfConfig = [
+                'mode'          => 'utf-8',
+                'format'        => 'A4-L',
+                'orientation'   => 'L',
+                'margin_top'    => 0,
+                'margin_right'  => 0,
+                'margin_bottom' => 0,
+                'margin_left'   => 0,
+                'tempDir'       => storage_path('app/tmp'),
+            ];
+        }
+
+        $mpdf = new Mpdf($mpdfConfig);
         $mpdf->WriteHTML($html);
 
         $año           = date('Y');
