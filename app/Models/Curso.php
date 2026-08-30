@@ -22,7 +22,7 @@ class Curso extends Model implements Auditable
     protected $fillable = [
         'titulo', 'descripcion', 'duracion_horas',
         'imagen_portada', 'estado', 'created_by', 'orden', 'categoria_id',
-        'tipo_certificado',
+        'tipo_certificado', 'nota_aprobatoria',
     ];
 
     public function creador(): BelongsTo

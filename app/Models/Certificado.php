@@ -11,7 +11,7 @@ class Certificado extends Model
     protected $table = 'certificados';
     protected $fillable = [
         'user_id', 'curso_id', 'fecha_emision',
-        'numero_certificado', 'archivo_pdf', 'calificacion_final',
+        'numero_certificado', 'archivo_pdf', 'calificacion_final', 'aprobado_por_id',
     ];
 
     public function usuario(): BelongsTo
@@ -22,5 +22,10 @@ class Certificado extends Model
     public function curso(): BelongsTo
     {
         return $this->belongsTo(Curso::class);
+    }
+
+    public function aprobador(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'aprobado_por_id');
     }
 }
