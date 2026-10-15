@@ -39,6 +39,12 @@
     </a>
 </div>
 
+<div class="flex items-center justify-between mb-3">
+    <h2 class="text-xl font-bold text-gray-900">Próximas entregas</h2>
+    <a href="{{ route('linea-de-tiempo.index') }}" class="text-sm text-dyl-orange-700 hover:underline">Ver todo</a>
+</div>
+<div class="mb-8">@include('partials.linea-de-tiempo', ['lineaDeTiempo' => $lineaDeTiempo, 'compacto' => true])</div>
+
 <h2 class="text-xl font-bold text-gray-900 mb-4">Mis Cursos</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @forelse($cursos_inscritos as $curso)

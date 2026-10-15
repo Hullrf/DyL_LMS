@@ -173,4 +173,45 @@ class LineaDeTiempoTest extends TestCase
 
         $this->assertTrue($mapa[$curso->id]->equalTo($cercana->fecha_cierre));
     }
+
+    public function test_pagina_muestra_entregas_atrasadas_y_accion(): void
+    {
+        [$user, $curso] = $this->inscrito();
+        $this->actividadEn($curso, ['titulo' => 'Puentes invisibles', 'fecha_cierre' => now()->addDay()->setTime(18, 0)]);
+        $this->actividadEn($curso, ['titulo' => 'Tarea vieja', 'fecha_cierre' => now()->subDays(2)]);
+
+        $this->actingAs($user)->get(route('linea-de-tiempo.index'))
+            ->assertOk()
+            ->assertSee('Puentes invisibles')
+            ->assertSee('18:00')
+            ->assertSee('Entregar')
+            ->assertSee('Atrasadas')
+            ->assertSee('Tarea vieja');
+    }
+
+    public function test_pagina_vacia_muestra_mensaje(): void
+    {
+        [$user] = $this->inscrito();
+
+        $this->actingAs($user)->get(route('linea-de-tiempo.index'))
+            ->assertOk()->assertSee('No tienes entregas próximas');
+    }
+
+    public function test_dias_invalidos_caen_al_valor_por_defecto_y_requiere_login(): void
+    {
+        [$user] = $this->inscrito();
+
+        $this->actingAs($user)->get(route('linea-de-tiempo.index', ['dias' => 'abc']))->assertOk();
+        auth()->logout();
+        $this->get(route('linea-de-tiempo.index'))->assertRedirect(route('login'));
+    }
+
+    public function test_dashboard_del_estudiante_incluye_el_bloque(): void
+    {
+        [$user, $curso] = $this->inscrito();
+        $this->actividadEn($curso, ['titulo' => 'Vence pronto', 'fecha_cierre' => now()->addDay()]);
+
+        $this->actingAs($user)->get('/dashboard')->assertOk()
+            ->assertSee('Próximas entregas')->assertSee('Vence pronto');
+    }
 }

@@ -8,6 +8,11 @@ Breadcrumbs::for('dashboard', fn(Trail $t) =>
     $t->push('Inicio', route('dashboard'))
 );
 
+// Línea de tiempo
+Breadcrumbs::for('linea-de-tiempo.index', fn(Trail $t) =>
+    $t->parent('dashboard')->push('Línea de tiempo', route('linea-de-tiempo.index'))
+);
+
 // Cursos
 Breadcrumbs::for('cursos.index', fn(Trail $t) =>
     $t->parent('dashboard')->push('Cursos', route('cursos.index'))

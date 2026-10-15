@@ -131,6 +131,8 @@ class DashboardController extends Controller
             'progreso_general' => $progreso_general,
         ];
 
-        return view('dashboard.estudiante', compact('cursos_inscritos', 'stats'));
+        $lineaDeTiempo = app(\App\Services\LineaDeTiempoService::class)->para($user);
+
+        return view('dashboard.estudiante', compact('cursos_inscritos', 'stats', 'lineaDeTiempo'));
     }
 }
