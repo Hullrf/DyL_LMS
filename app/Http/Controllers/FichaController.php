@@ -32,7 +32,7 @@ class FichaController extends Controller
             'bibliografia'           => 'nullable|array|max:50',
             'bibliografia.*.autor'     => 'required|string|max:255',
             'bibliografia.*.anio'      => 'nullable|integer|min:1900|max:2100',
-            'bibliografia.*.titulo'    => 'required|string|max:500',
+            'bibliografia.*.titulo'    => 'required|string|max:255',
             'bibliografia.*.editorial' => 'nullable|string|max:255',
         ]);
 

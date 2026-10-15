@@ -85,6 +85,18 @@ class FichaCursoTest extends TestCase
             ->assertSee('Solo esto')->assertDontSee('Bibliografía')->assertDontSee('Prerrequisitos');
     }
 
+    public function test_titulo_de_bibliografia_respeta_el_limite_de_255(): void
+    {
+        $inst = $this->instructor();
+        $curso = Curso::factory()->publicado()->create(['created_by' => $inst->id]);
+        $biblio = fn(int $n) => [['autor' => 'A', 'titulo' => str_repeat('x', $n)]];
+
+        $this->actingAs($inst)->put(route('cursos.ficha.update', $curso), $this->datos(['bibliografia' => $biblio(256)]))
+            ->assertSessionHasErrors('bibliografia.0.titulo');
+        $this->actingAs($inst)->put(route('cursos.ficha.update', $curso), $this->datos(['bibliografia' => $biblio(255)]))
+            ->assertSessionHasNoErrors();
+    }
+
     public function test_validacion_y_permisos(): void
     {
         $inst = $this->instructor();

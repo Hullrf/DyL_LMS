@@ -33,6 +33,19 @@ class PonderacionesTest extends TestCase
         $this->assertEquals(40, $a2->fresh()->ponderacion);
     }
 
+    public function test_claves_de_actividades_de_otro_curso_se_ignoran(): void
+    {
+        [$inst, $curso, $a1, $a2] = $this->escenario();
+        $ajena = $this->actividadEn(\App\Models\Curso::factory()->publicado()->create(), ['puntaje_maximo' => 5, 'ponderacion' => 33]);
+
+        $this->actingAs($inst)->put(route('cursos.ponderaciones.update', $curso), [
+            'ponderaciones' => [$a1->id => '60', $a2->id => '40', $ajena->id => '99'],
+        ])->assertSessionHasNoErrors();
+
+        $this->assertEquals(60, $a1->fresh()->ponderacion);
+        $this->assertEquals(33, $ajena->fresh()->ponderacion);
+    }
+
     public function test_rechaza_suma_distinta_de_100_o_pesos_incompletos(): void
     {
         [$inst, $curso, $a1, $a2] = $this->escenario();
