@@ -22,8 +22,19 @@ class NotaCursoService
         $oficiales = $this->calificaciones
             ->respuestasOficiales($respuestas->where('estado', 'calificada'))
             ->keyBy('actividad_id');
-        $conEnvio = $respuestas->pluck('actividad_id')->flip();
 
+        return $this->calcular($actividades, $oficiales, (int) ($curso->nota_aprobatoria ?? 80), $respuestas->pluck('actividad_id')->flip());
+    }
+
+    /**
+     * Cálculo puro (sin consultas). $actividades = TODAS las calificables del curso (define
+     * modo y pesos); $oficiales = respuesta oficial calificada por actividad_id; $conEnvio =
+     * actividad_id => algo, para distinguir en_revision de pendiente; $soloIds restringe las
+     * filas (p. ej. un módulo) conservando los pesos del curso completo.
+     */
+    public function calcular(Collection $actividades, Collection $oficiales, ?int $aprobatoria = null, ?Collection $conEnvio = null, ?Collection $soloIds = null): array
+    {
+        $conEnvio ??= collect();
         $modo        = $this->esPonderado($actividades) ? 'ponderado' : 'por_puntos';
         $totalPuntos = (float) $actividades->sum(fn($a) => (float) $a->puntaje_maximo);
 
@@ -48,13 +59,16 @@ class NotaCursoService
                 'estado'    => $oficial ? 'calificada' : (isset($conEnvio[$a->id]) ? 'en_revision' : 'pendiente'),
             ];
         })->values();
+        if ($soloIds) {
+            $filas = $filas->filter(fn($f) => $soloIds->contains($f->actividad->id))->values();
+        }
 
         $calificadas   = $filas->where('estado', 'calificada');
         $acumulado     = (float) $calificadas->sum('aporta');
         $pesoCalif     = (float) $calificadas->sum('peso_real');
         $pesoTotal     = (float) $filas->sum('peso_real');
         $pesoPendiente = $pesoTotal - $pesoCalif;
-        $aprobatoria   = (int) ($curso->nota_aprobatoria ?? 80);
+        $aprobatoria   ??= 80;
 
         $requerido = null;
         if ($pesoPendiente > 0.0001) {

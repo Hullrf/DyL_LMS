@@ -9,6 +9,9 @@
                 Cada actividad pesa según su puntaje máximo.
             @endif
         </p>
+        @if($nota['promedio_a_la_fecha'] !== null)
+            <p class="text-sm font-medium text-gray-900 mb-3">Promedio a la fecha: {{ $nota['promedio_a_la_fecha'] }} %</p>
+        @endif
         <table class="min-w-full text-sm">
             <thead>
                 <tr class="text-left text-xs uppercase text-gray-500">

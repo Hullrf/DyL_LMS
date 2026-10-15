@@ -123,4 +123,16 @@ class Curso extends Model implements Auditable
             ->sortBy(fn($a) => [$a->leccion->modulo->orden, $a->leccion->orden, $a->orden])
             ->values();
     }
+
+    /** Hay ponderaciones configuradas pero no forman un esquema válido (faltan o no suman 100): la nota cae a por puntaje. */
+    public function ponderacionIncompleta(): bool
+    {
+        $a = $this->actividadesCalificables();
+        if ($a->whereNotNull('ponderacion')->isEmpty()) {
+            return false;
+        }
+
+        return $a->contains(fn($x) => $x->ponderacion === null)
+            || abs((float) $a->sum(fn($x) => (float) $x->ponderacion) - 100) >= 0.01;
+    }
 }

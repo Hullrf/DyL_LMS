@@ -12,6 +12,7 @@ use App\Models\Notificacion;
 use App\Models\User;
 use App\Services\CalificacionService;
 use App\Services\CertificadoService;
+use App\Services\NotaCursoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -136,28 +137,29 @@ class CalificacionController extends Controller
             ->get()
             ->keyBy('user_id');
 
+        $esFiltrado = $request->filled('modulo');
+        $notas = app(NotaCursoService::class);
+        $aprobatoria = (int) ($curso->nota_aprobatoria ?? 80);
+
         $filas = $inscripciones->map(function ($insc) use (
-            $actividades, $respuestasPorCelda, $actividadesCompletas, $respuestasPorCeldaCompletas, $certificadosPorEstudiante
+            $notas, $aprobatoria, $esFiltrado, $actividades, $respuestasPorCelda, $actividadesCompletas, $respuestasPorCeldaCompletas, $certificadosPorEstudiante
         ) {
             $celdas = $actividades->map(fn($act) => $respuestasPorCelda->get("{$insc->user_id}-{$act->id}"));
 
             $calificadas = $celdas->filter(fn($r) => $r && $r->estado === 'calificada');
             $tienePendientes = $actividades->count() > $calificadas->count();
 
-            $totalPts    = $calificadas->sum(fn($r) => $r->actividad->puntaje_maximo);
-            $obtenidoPts = $calificadas->sum('calificacion');
-            $promedio    = $totalPts > 0 ? (int) round(($obtenidoPts / $totalPts) * 100) : null;
-
-            // Mismo cálculo pero SIEMPRE sobre el curso completo (sin filtro ?modulo=):
-            // usado solo por la columna de Certificado, cuya acción es irreversible y
-            // nunca debe decidirse sobre una vista parcial del curso.
+            // Nota del curso: misma fórmula que el certificado y las vistas del estudiante.
+            // Modo y pesos salen SIEMPRE del curso completo; $promedio solo restringe las filas.
             $celdasCompletas = $actividadesCompletas->map(fn($act) => $respuestasPorCeldaCompletas->get("{$insc->user_id}-{$act->id}"));
             $calificadasCompletas = $celdasCompletas->filter(fn($r) => $r && $r->estado === 'calificada');
             $tienePendientesTotal = $actividadesCompletas->count() > $calificadasCompletas->count();
 
-            $totalPtsCompletas    = $calificadasCompletas->sum(fn($r) => $r->actividad->puntaje_maximo);
-            $obtenidoPtsCompletas = $calificadasCompletas->sum('calificacion');
-            $promedioTotal        = $totalPtsCompletas > 0 ? (int) round(($obtenidoPtsCompletas / $totalPtsCompletas) * 100) : null;
+            $oficiales    = $calificadasCompletas->keyBy('actividad_id');
+            $promedioTotal = $notas->calcular($actividadesCompletas, $oficiales, $aprobatoria)['promedio_a_la_fecha'];
+            $promedio      = $esFiltrado
+                ? $notas->calcular($actividadesCompletas, $oficiales, $aprobatoria, null, $actividades->pluck('id'))['promedio_a_la_fecha']
+                : $promedioTotal;
 
             return (object) [
                 'estudiante'           => $insc->usuario,

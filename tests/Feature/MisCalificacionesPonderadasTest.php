@@ -23,6 +23,7 @@ class MisCalificacionesPonderadasTest extends TestCase
             ->assertSee('Cómo se calcula tu nota')
             ->assertSee('25')                                   // peso
             ->assertSee('parcial')
+            ->assertSee('Promedio a la fecha: 80 %')   // (25 + 15) / 50
             ->assertSee('Necesitas al menos 60%');
     }
 

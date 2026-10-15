@@ -21,6 +21,8 @@
     <div class="alert alert-error mb-6">{{ session('error') }}</div>
 @endif
 
+@include('cursos.partials.aviso-ponderacion')
+
 {{-- Filtros --}}
 <form method="GET" action="{{ route('calificaciones.curso', $curso) }}"
       class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap items-center gap-3">

@@ -2,6 +2,7 @@
 @section('title', 'Editar: ' . $curso->titulo . ' - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.edit', $curso) }}@endsection
 @section('content')
+@include('cursos.partials.aviso-ponderacion')
 @if(count($faltan = $curso->fichaFaltantes()))
     <div class="alert alert-warning mb-5" role="status">
         Ficha académica incompleta: falta {{ implode(', ', $faltan) }}.

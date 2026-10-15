@@ -8,6 +8,8 @@
     Deben sumar 100 %. Si las dejas todas vacías, el peso se reparte según el puntaje máximo de cada actividad.
     Cambiar las ponderaciones recalcula la nota de todos los estudiantes.
 </p>
+<p class="text-sm text-gray-600 mb-4">Modo actual: <strong>{{ $curso->ponderacionIncompleta() || $actividades->whereNotNull('ponderacion')->isEmpty() ? 'por puntaje' : 'por ponderación' }}</strong></p>
+@include('cursos.partials.aviso-ponderacion')
 
 @if($actividades->isEmpty())
     <div class="bg-white rounded-xl shadow p-8 text-center text-gray-500">Este curso aún no tiene actividades con nota.</div>
