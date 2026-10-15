@@ -21,7 +21,7 @@ class Actividad extends Model implements Auditable
 
     protected $table = 'actividades';
     protected $fillable = [
-        'leccion_id', 'tipo', 'titulo', 'descripcion',
+        'leccion_id', 'tipo', 'titulo', 'ronda', 'numero_actividad', 'semana', 'descripcion',
         'orden', 'puntaje_maximo', 'duracion_minutos', 'es_obligatoria',
         'fecha_apertura', 'fecha_cierre', 'usa_rubrica',
         'permitir_descarga_adjuntos', 'max_archivos_adjuntos',
@@ -38,8 +38,42 @@ class Actividad extends Model implements Auditable
         'mostrar_historial_intentos'  => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        // Títulos tipo "R2-A3-S9 Título" (importados o escritos a mano) pasan a campos propios.
+        static::creating(function (self $a) {
+            if ($a->ronda !== null || $a->semana !== null || $a->numero_actividad !== null) return;
+
+            if (preg_match('/^\s*R([1-9])-A(\d{1,2})-S(\d{1,2})\s+(\S.*)$/u', (string) $a->titulo, $m)
+                && (int) $m[2] >= 1 && (int) $m[3] >= 1 && (int) $m[3] <= 52) {
+                $a->ronda            = (int) $m[1];
+                $a->numero_actividad = (int) $m[2];
+                $a->semana           = (int) $m[3];
+                $a->titulo           = trim($m[4]);
+            }
+        });
+    }
+
+    /** "R2-A3-S9" con las partes presentes; null si no hay ninguna. */
+    public function prefijo(): ?string
+    {
+        $partes = array_filter([
+            $this->ronda            ? "R{$this->ronda}"            : null,
+            $this->numero_actividad ? "A{$this->numero_actividad}" : null,
+            $this->semana           ? "S{$this->semana}"           : null,
+        ]);
+
+        return $partes ? implode('-', $partes) : null;
+    }
+
+    public function tituloCompleto(): string
+    {
+        $p = $this->prefijo();
+        return $p ? "{$p} · {$this->titulo}" : $this->titulo;
+    }
+
     /**
-     * 'sin_plazo' | 'pendiente' | 'abierta' | 'cerrada'
+     * 'sin_plazo' |'pendiente' | 'abierta' | 'cerrada'
      */
     public function estadoPlazo(): string
     {

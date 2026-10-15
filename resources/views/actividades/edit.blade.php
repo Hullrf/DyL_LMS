@@ -87,6 +87,23 @@
                            min="1" placeholder="Sin límite"
                            class="form-input">
                 </div>
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ronda</label>
+                        <input type="number" name="ronda" min="1" max="9" value="{{ old('ronda', $actividad->ronda) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">N.º de actividad</label>
+                        <input type="number" name="numero_actividad" min="1" max="99" value="{{ old('numero_actividad', $actividad->numero_actividad) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Semana</label>
+                        <input type="number" name="semana" min="1" max="52" value="{{ old('semana', $actividad->semana) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                    </div>
+                </div>
                 <div class="mb-4">
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="es_obligatoria" value="1" @checked($actividad->es_obligatoria) class="rounded">

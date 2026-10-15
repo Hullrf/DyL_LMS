@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $actividad->titulo . ' - D&L Quality Campus')
+@section('title', $actividad->tituloCompleto() . ' - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('actividades.show', $actividad) }}@endsection
 @section('content')
 @php
@@ -24,7 +24,7 @@
         <div class="flex items-start justify-between mb-4">
             <div>
                 <span class="text-xs font-medium uppercase text-gray-500">{{ $actividad->tipo }}</span>
-                <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $actividad->titulo }}</h1>
+                <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $actividad->tituloCompleto() }}</h1>
             </div>
             <div class="text-right">
                 @if($actividad->tieneCalificacion())
