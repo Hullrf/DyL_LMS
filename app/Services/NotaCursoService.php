@@ -40,6 +40,7 @@ class NotaCursoService
             return (object) [
                 'actividad' => $a,
                 'peso'      => round($peso, 2),
+                'peso_real' => $peso, // sin redondear: las sumas usan este
                 'nota'      => $nota,
                 'max'       => $max,
                 'pct'       => $pct,
@@ -50,8 +51,8 @@ class NotaCursoService
 
         $calificadas   = $filas->where('estado', 'calificada');
         $acumulado     = (float) $calificadas->sum('aporta');
-        $pesoCalif     = (float) $calificadas->sum('peso');
-        $pesoTotal     = (float) $filas->sum('peso');
+        $pesoCalif     = (float) $calificadas->sum('peso_real');
+        $pesoTotal     = (float) $filas->sum('peso_real');
         $pesoPendiente = $pesoTotal - $pesoCalif;
         $aprobatoria   = (int) ($curso->nota_aprobatoria ?? 80);
 
