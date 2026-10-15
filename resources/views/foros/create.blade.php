@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Crear foro - ' . $curso->titulo . ' - LMS DyL')
+@section('title', 'Crear foro - ' . $curso->titulo . ' - D&L Quality Campus')
 @section('content')
 <div class="max-w-2xl mx-auto">
     <h1 class="text-2xl font-bold text-gray-900 mb-6">Nuevo foro en {{ $curso->titulo }}</h1>

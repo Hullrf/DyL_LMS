@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Editar Actividad - LMS DyL')
+@section('title', 'Editar Actividad - D&L Quality Campus')
 @section('content')
 <div class="mb-4">
     <a href="{{ route('cursos.edit', $actividad->leccion->modulo->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">&larr; Volver al curso</a>

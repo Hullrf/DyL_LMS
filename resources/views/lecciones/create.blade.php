@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Nueva Lección - LMS DyL')
+@section('title', 'Nueva Lección - D&L Quality Campus')
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-4">

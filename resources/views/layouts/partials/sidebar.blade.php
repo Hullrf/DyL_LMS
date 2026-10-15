@@ -8,9 +8,9 @@
     aria-label="Navegación principal">
 
     <div class="dyl-sb-top">
-        <a href="{{ route('dashboard') }}" class="dyl-sb-logo" aria-label="LMS DyL - Ir al inicio">
+        <a href="{{ route('dashboard') }}" class="dyl-sb-logo" aria-label="D&amp;L Quality Campus - Ir al inicio">
             <span class="dyl-sb-sq" aria-hidden="true">D&amp;L</span>
-            <span class="dyl-sb-label">LMS</span>
+            <span class="dyl-sb-label">Quality Campus</span>
         </a>
     </div>
 

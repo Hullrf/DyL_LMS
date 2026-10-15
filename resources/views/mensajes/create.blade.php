@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Redactar mensaje - LMS DyL')
+@section('title', 'Redactar mensaje - D&L Quality Campus')
 @section('content')
 <div class="max-w-2xl mx-auto">
     <h1 class="text-2xl font-bold text-gray-900 mb-6">Nuevo mensaje</h1>

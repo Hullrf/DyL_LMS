@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Editar Módulo - LMS DyL')
+@section('title', 'Editar Módulo - D&L Quality Campus')
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="mb-4">

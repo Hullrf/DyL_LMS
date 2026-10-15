@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Backups — LMS DyL')
+@section('title', 'Backups — D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('admin.backups.index') }}@endsection
 @section('content')
 <div class="max-w-3xl mx-auto"

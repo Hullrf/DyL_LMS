@@ -1,5 +1,5 @@
 @extends('layouts.guest')
-@section('title', 'Verificación 2FA — LMS DyL')
+@section('title', 'Verificación 2FA — D&L Quality Campus')
 
 <div class="max-w-sm mx-auto mt-16 px-4">
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
