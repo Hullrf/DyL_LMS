@@ -43,9 +43,14 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @forelse($cursos_inscritos as $curso)
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="w-full h-32 bg-gradient-to-br from-dyl-orange-400 to-dyl-orange-600 flex items-center justify-center">
-                <span class="text-5xl">&#128218;</span>
-            </div>
+            @if($curso->imagen_portada)
+                <img src="{{ asset('storage/' . $curso->imagen_portada) }}"
+                     alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
+            @else
+                <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-400 to-dyl-orange-700 flex items-center justify-center">
+                    <span class="text-5xl">&#128218;</span>
+                </div>
+            @endif
             <div class="p-5">
                 <h3 class="font-bold text-gray-900 mb-1">{{ $curso->titulo }}</h3>
                 <p class="text-xs text-gray-500 mb-4">{{ $curso->duracion_horas }} horas</p>
