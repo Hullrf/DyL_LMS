@@ -191,7 +191,7 @@
                                     @endif
                                 </span>
                                 <div>
-                                    <p class="font-medium text-gray-900 group-hover:text-dyl-orange-700">{{ $actividad->titulo }}</p>
+                                    <p class="font-medium text-gray-900 group-hover:text-dyl-orange-700">{{ $actividad->tituloCompleto() }}</p>
                                     <p class="text-xs text-gray-400">{{ ucfirst($actividad->tipo) }} · {{ $actividad->puntaje_maximo }} pts</p>
                                 </div>
                             </div>

@@ -171,5 +171,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     @stack('scripts')
+    @include('partials.ayuda-flotante')
 </body>
 </html>

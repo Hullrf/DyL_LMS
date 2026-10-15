@@ -20,10 +20,21 @@ class Curso extends Model implements Auditable
 
     protected $table = 'cursos';
     protected $fillable = [
-        'titulo', 'descripcion', 'duracion_horas',
+        'titulo', 'codigo', 'grupo', 'descripcion', 'duracion_horas',
         'imagen_portada', 'estado', 'created_by', 'orden', 'categoria_id',
         'tipo_certificado', 'nota_aprobatoria',
     ];
+
+    /** "CAD612021730 · Grupo 703M" con las partes presentes (FE-1: metadatos fuera del título). */
+    public function subtitulo(): ?string
+    {
+        $partes = array_filter([
+            $this->codigo,
+            $this->grupo ? "Grupo {$this->grupo}" : null,
+        ]);
+
+        return $partes ? implode(' · ', $partes) : null;
+    }
 
     public function creador(): BelongsTo
     {

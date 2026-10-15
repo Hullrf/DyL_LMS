@@ -39,6 +39,12 @@
     </a>
 </div>
 
+<div class="flex items-center justify-between mb-3">
+    <h2 class="text-xl font-bold text-gray-900">Próximas entregas</h2>
+    <a href="{{ route('linea-de-tiempo.index') }}" class="text-sm text-dyl-orange-700 hover:underline">Ver todo</a>
+</div>
+<div class="mb-8">@include('partials.linea-de-tiempo', ['lineaDeTiempo' => $lineaDeTiempo, 'compacto' => true])</div>
+
 <h2 class="text-xl font-bold text-gray-900 mb-4">Mis Cursos</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @forelse($cursos_inscritos as $curso)
@@ -53,6 +59,7 @@
             @endif
             <div class="p-5">
                 <h3 class="font-bold text-gray-900 mb-1">{{ $curso->titulo }}</h3>
+                @include('cursos._resumen', ['curso' => $curso])
                 <p class="text-xs text-gray-500 mb-4">{{ $curso->duracion_horas }} horas</p>
                 <a href="{{ route('cursos.show', $curso) }}"
                    class="block w-full bg-dyl-orange-600 text-white py-2 rounded text-center hover:bg-dyl-orange-700 text-sm font-medium">

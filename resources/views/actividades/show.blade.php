@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $actividad->titulo . ' - D&L Quality Campus')
+@section('title', $actividad->tituloCompleto() . ' - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('actividades.show', $actividad) }}@endsection
 @section('content')
 @php
@@ -24,7 +24,7 @@
         <div class="flex items-start justify-between mb-4">
             <div>
                 <span class="text-xs font-medium uppercase text-gray-500">{{ $actividad->tipo }}</span>
-                <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $actividad->titulo }}</h1>
+                <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $actividad->tituloCompleto() }}</h1>
             </div>
             <div class="text-right">
                 @if($actividad->tieneCalificacion())
@@ -417,6 +417,17 @@
         </svg>
         <span class="text-sm font-medium text-dyl-orange-700">Actividad completada</span>
     </div>
+    @unless($actividad->tieneCalificacion())
+    <div class="mb-6">
+        <form action="{{ route('actividades.descompletar', $actividad) }}" method="POST">
+            @csrf
+            <button type="submit"
+                    class="w-full sm:w-auto border border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors">
+                Desmarcar como completada
+            </button>
+        </form>
+    </div>
+    @endunless
     @elseif(!$actividad->tieneCalificacion())
     <div class="mb-6">
         <form action="{{ route('actividades.completar', $actividad) }}" method="POST">
