@@ -36,10 +36,9 @@ class LineaDeTiempoService
 
         $atrasadas = $base()
             ->where('fecha_cierre', '<', now())
-            ->orderByDesc('fecha_cierre')->limit(self::MAX_ATRASADAS * 2)->get()
-            ->map(fn($a) => $this->item($a, $entregadas, $enProgreso))
-            ->reject(fn($i) => $i->estado === 'entregada')
-            ->take(self::MAX_ATRASADAS)->values();
+            ->whereNotIn('id', $entregadas->keys()->all())
+            ->orderByDesc('fecha_cierre')->limit(self::MAX_ATRASADAS)->get()
+            ->map(fn($a) => $this->item($a, $entregadas, $enProgreso));
 
         return [
             'atrasadas' => $atrasadas,
@@ -67,7 +66,7 @@ class LineaDeTiempoService
             ->whereNotNull('fecha_cierre')
             ->whereHas('leccion.modulo.curso', function (Builder $q) use ($user, $cursoId) {
                 $q->where('estado', 'publicado')
-                  ->whereHas('inscripciones', fn($i) => $i->where('user_id', $user->id))
+                  ->whereHas('inscripciones', fn($i) => $i->where('user_id', $user->id)->where('estado', '!=', 'abandonado'))
                   ->when($cursoId, fn($q2) => $q2->where('cursos.id', $cursoId));
             })
             ->when($buscar, fn($q) => $q->where(fn($w) => $w

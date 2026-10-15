@@ -128,6 +128,40 @@ class LineaDeTiempoTest extends TestCase
         $this->assertSame(['Redes'],      $titulos($svc->para($user, 7, null, false, null, 3)));
     }
 
+    public function test_inscripcion_abandonada_excluida_y_completada_incluida(): void
+    {
+        $user = $this->estudiante();
+        $abandonado = Curso::factory()->publicado()->create();
+        $completado = Curso::factory()->publicado()->create();
+        Inscripcion::factory()->create(['user_id' => $user->id, 'curso_id' => $abandonado->id, 'estado' => 'abandonado']);
+        Inscripcion::factory()->create(['user_id' => $user->id, 'curso_id' => $completado->id, 'estado' => 'completado']);
+        $this->actividadEn($abandonado, ['titulo' => 'Abandonada', 'fecha_cierre' => now()->addDay()]);
+        $this->actividadEn($completado, ['titulo' => 'Completada', 'fecha_cierre' => now()->addDay()]);
+
+        $svc = app(LineaDeTiempoService::class);
+
+        $this->assertSame(['Completada'], $svc->para($user)['dias']->flatten(1)->pluck('actividad.titulo')->all());
+        $mapa = $svc->proximaEntregaPorCurso($user);
+        $this->assertFalse($mapa->has($abandonado->id));
+        $this->assertTrue($mapa->has($completado->id));
+    }
+
+    public function test_atrasadas_excluye_entregadas_antes_del_limite(): void
+    {
+        [$user, $curso] = $this->inscrito();
+        foreach ([1, 2] as $i) {
+            $this->actividadEn($curso, ['titulo' => "Pend$i", 'fecha_cierre' => now()->subDays(10 + $i)]);
+        }
+        foreach ([1, 2, 3] as $i) {
+            $a = $this->actividadEn($curso, ['titulo' => "Hecha$i", 'fecha_cierre' => now()->subDays($i)]);
+            RespuestaEstudiante::factory()->create(['user_id' => $user->id, 'actividad_id' => $a->id]);
+        }
+
+        $r = app(LineaDeTiempoService::class)->para($user);
+
+        $this->assertSame(['Pend1', 'Pend2'], $r['atrasadas']->pluck('actividad.titulo')->all());
+    }
+
     public function test_proxima_entrega_por_curso(): void
     {
         [$user, $curso] = $this->inscrito();
