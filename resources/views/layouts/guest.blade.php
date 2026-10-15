@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ config('app.name', 'LMS D&amp;L') }}</title>
+        <title>{{ config('app.name', 'D&amp;L Quality Campus') }}</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -28,7 +28,7 @@
                     <div class="bg-dyl-orange-500 rounded-xl flex items-center justify-center px-2.5 h-10">
                         <span class="text-dyl-graphite-900 font-bold text-base tracking-tight">D&amp;L</span>
                     </div>
-                    <span class="text-white font-bold text-xl tracking-tight">LMS</span>
+                    <span class="text-white font-bold text-xl tracking-tight">Quality Campus</span>
                 </a>
 
                 {{-- Mensaje central --}}
@@ -64,7 +64,7 @@
                     <div class="bg-dyl-orange-500 rounded-lg flex items-center justify-center px-2 h-9">
                         <span class="text-dyl-graphite-900 font-bold tracking-tight">D&amp;L</span>
                     </div>
-                    <span class="text-dyl-graphite-900 font-bold text-lg">LMS</span>
+                    <span class="text-dyl-graphite-900 font-bold text-lg">Quality Campus</span>
                 </a>
 
                 <div class="w-full max-w-md">

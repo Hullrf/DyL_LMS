@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Todos los anuncios - LMS DyL')
+@section('title', 'Todos los anuncios - D&L Quality Campus')
 @section('content')
 <div class="max-w-3xl mx-auto">
     @include('partials.tabs-comunicacion')

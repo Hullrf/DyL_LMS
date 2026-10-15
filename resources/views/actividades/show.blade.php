@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $actividad->titulo . ' - LMS DyL')
+@section('title', $actividad->titulo . ' - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('actividades.show', $actividad) }}@endsection
 @section('content')
 @php

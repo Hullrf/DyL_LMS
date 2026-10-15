@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Configurar 2FA — LMS DyL')
+@section('title', 'Configurar 2FA — D&L Quality Campus')
 @section('content')
 <div class="max-w-md mx-auto">
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">

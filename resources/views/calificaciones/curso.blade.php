@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $curso->titulo . ' - Calificaciones - LMS DyL')
+@section('title', $curso->titulo . ' - Calificaciones - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('calificaciones.curso', $curso) }}@endsection
 @section('content')
 

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Cursos - LMS DyL')
+@section('title', 'Cursos - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.index') }}@endsection
 @section('content')
 

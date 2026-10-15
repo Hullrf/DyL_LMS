@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Mis Calificaciones - LMS DyL')
+@section('title', 'Mis Calificaciones - D&L Quality Campus')
 
 @section('content')
 <div class="flex justify-between items-center mb-8">

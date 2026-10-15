@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Mi Aprendizaje - LMS DyL')
+@section('title', 'Mi Aprendizaje - D&L Quality Campus')
 
 @section('content')
 <h1 class="text-3xl font-bold text-gray-900 mb-8">Mi Aprendizaje</h1>

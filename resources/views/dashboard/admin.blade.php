@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard Admin - LMS DyL')
+@section('title', 'Dashboard Admin - D&L Quality Campus')
 
 @section('content')
 <h1 class="text-3xl font-bold text-gray-900 mb-8">Dashboard Administrador</h1>

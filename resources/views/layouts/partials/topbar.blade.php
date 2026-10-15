@@ -1,9 +1,9 @@
 <header class="dyl-topbar" role="banner">
     <div class="flex items-center gap-3">
         @guest
-            <a href="{{ route('login') }}" class="flex items-center gap-2.5" aria-label="LMS DyL - Ir al inicio">
+            <a href="{{ route('login') }}" class="flex items-center gap-2.5" aria-label="D&amp;L Quality Campus - Ir al inicio">
                 <span class="dyl-sb-sq" aria-hidden="true">D&amp;L</span>
-                <span class="font-bold text-dyl-graphite-900">LMS</span>
+                <span class="font-bold text-dyl-graphite-900">Quality Campus</span>
             </a>
         @endguest
         @auth

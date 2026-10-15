@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Auditoría del Sistema — LMS DyL')
+@section('title', 'Auditoría del Sistema — D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('admin.auditoria.index') }}@endsection
 @section('content')
 <div class="max-w-7xl mx-auto">

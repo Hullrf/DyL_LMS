@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Editar: ' . $curso->titulo . ' - LMS DyL')
+@section('title', 'Editar: ' . $curso->titulo . ' - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.edit', $curso) }}@endsection
 @section('content')
 <div class="flex items-center justify-between gap-3 mb-6">

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $foro->titulo . ' - LMS DyL')
+@section('title', $foro->titulo . ' - D&L Quality Campus')
 @section('content')
 <div class="max-w-3xl mx-auto">
     <a href="{{ route('foros.index', $foro->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm mb-4 inline-block">&larr; Volver a foros</a>
