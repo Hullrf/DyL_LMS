@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\CursoPlantillaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\LeccionController;
@@ -34,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('instructor')->group(function () {
         Route::get('/cursos/crear', [CursoController::class, 'create'])->name('cursos.create');
         Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
+        Route::post('/cursos/importar', [CursoPlantillaController::class, 'importar'])->name('cursos.importar');
         Route::post('/categorias', [CategoriaController::class, 'store'])->name('categorias.store');
     });
 
@@ -47,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('instructor')->group(function () {
         Route::get('/cursos/{curso}/editar', [CursoController::class, 'edit'])->name('cursos.edit');
+        Route::get('/cursos/{curso}/exportar', [CursoPlantillaController::class, 'exportar'])->name('cursos.exportar');
         Route::put('/cursos/{curso}', [CursoController::class, 'update'])->name('cursos.update');
         Route::delete('/cursos/{curso}', [CursoController::class, 'destroy'])->name('cursos.destroy');
     });
