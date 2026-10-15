@@ -94,21 +94,8 @@ class RespuestaEstudianteController extends Controller
 
         $calificacion = null;
         $estado       = 'sin_calificar';
-        $archivos     = [];
 
-        if ($request->hasFile('archivos_adjuntos')) {
-            $slug   = Str::slug($actividad->leccion->modulo->curso->titulo);
-            $userId = Auth::id();
-
-            foreach ($request->file('archivos_adjuntos') as $i => $archivo) {
-                $archivos[] = [
-                    'path'            => $archivo->store("cursos/{$slug}/respuestas/{$userId}/{$actividad->id}", 'public'),
-                    'nombre_original' => $archivo->getClientOriginalName(),
-                    'tamano'          => $archivo->getSize(),
-                    'orden'           => $i,
-                ];
-            }
-        }
+        $archivos = $this->guardarArchivos($request, $actividad);
 
         if ($actividad->tipo === 'cuestionario') {
             if ($this->calificacionService->tienePreguntasCortas($actividad)) {
@@ -160,5 +147,69 @@ class RespuestaEstudianteController extends Controller
         return redirect()
             ->route('actividades.show', $actividad)
             ->with('success', $mensaje);
+    }
+
+    public function update(Request $request, Actividad $actividad)
+    {
+        $this->authorize('verContenido', $actividad->leccion->modulo->curso);
+        abort_if($actividad->tipo === 'cuestionario', 403);
+
+        $respuesta = RespuestaEstudiante::where('user_id', Auth::id())
+            ->where('actividad_id', $actividad->id)
+            ->firstOrFail();
+
+        $back = redirect()->route('actividades.show', $actividad);
+
+        if ($respuesta->calificacion !== null) {
+            return $back->with('error', 'Tu entrega ya fue calificada y no se puede editar.');
+        }
+        if (!$actividad->estaAbierta()) {
+            return $back->with('error', 'El plazo de entrega ya no está abierto.');
+        }
+
+        $request->validate([
+            'respuesta'           => 'nullable|string',
+            'archivos_adjuntos'   => "nullable|array|max:{$actividad->max_archivos_adjuntos}",
+            'archivos_adjuntos.*' => 'file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,webm,zip|max:51200',
+        ]);
+        if (!$request->filled('respuesta') && !$request->hasFile('archivos_adjuntos') && !$respuesta->archivos()->exists()) {
+            return back()->withErrors(['respuesta' => 'Debes escribir una respuesta o adjuntar un archivo.']);
+        }
+
+        // Archivos nuevos reemplazan por completo a los anteriores; sin archivos nuevos se conservan.
+        if ($request->hasFile('archivos_adjuntos')) {
+            $nuevos = $this->guardarArchivos($request, $actividad);
+            foreach ($respuesta->archivos as $viejo) {
+                Storage::disk('public')->delete($viejo->path);
+                $viejo->delete();
+            }
+            foreach ($nuevos as $archivo) {
+                $respuesta->archivos()->create($archivo);
+            }
+        }
+
+        $respuesta->update(['respuesta' => $request->respuesta ?? '', 'fecha_envio' => now()]);
+
+        return $back->with('success', 'Entrega actualizada.');
+    }
+
+    private function guardarArchivos(Request $request, Actividad $actividad): array
+    {
+        $archivos = [];
+        if ($request->hasFile('archivos_adjuntos')) {
+            $slug   = Str::slug($actividad->leccion->modulo->curso->titulo);
+            $userId = Auth::id();
+
+            foreach ($request->file('archivos_adjuntos') as $i => $archivo) {
+                $archivos[] = [
+                    'path'            => $archivo->store("cursos/{$slug}/respuestas/{$userId}/{$actividad->id}", 'public'),
+                    'nombre_original' => $archivo->getClientOriginalName(),
+                    'tamano'          => $archivo->getSize(),
+                    'orden'           => $i,
+                ];
+            }
+        }
+
+        return $archivos;
     }
 }

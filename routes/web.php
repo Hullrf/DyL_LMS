@@ -111,6 +111,7 @@ Route::middleware('auth')->group(function () {
 
     // Respuestas de estudiantes
     Route::post('/actividades/{actividad}/responder', [RespuestaEstudianteController::class, 'store'])->name('respuestas.store');
+    Route::put('/actividades/{actividad}/responder', [RespuestaEstudianteController::class, 'update'])->name('respuestas.update');
 
     // Calificaciones — instructor califica, estudiante ve las suyas
     Route::middleware('instructor')->group(function () {
