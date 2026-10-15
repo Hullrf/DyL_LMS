@@ -13,3 +13,7 @@
 @if($res['proxima'])
     <p class="text-xs text-gray-600 mb-3">Próxima entrega: <span class="font-medium">{{ $res['proxima']->format('d/m H:i') }}</span></p>
 @endif
+
+@if(($res['nota'] ?? null) !== null)
+    <p class="text-xs text-gray-600 mb-3">Nota actual: <span class="font-medium">{{ $res['nota'] }}%</span></p>
+@endif

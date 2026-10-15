@@ -10,12 +10,13 @@ use App\Models\Modulo;
 use App\Models\ProgresoLeccion;
 use App\Services\ResumenCursosService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\ArmaActividades;
 use Tests\Concerns\ArmaCursoCompleto;
 use Tests\TestCase;
 
 class CursosTarjetaResumenTest extends TestCase
 {
-    use RefreshDatabase, ArmaCursoCompleto;
+    use RefreshDatabase, ArmaCursoCompleto, ArmaActividades;
 
     public function test_subtitulo_combina_codigo_y_grupo(): void
     {
@@ -68,5 +69,21 @@ class CursosTarjetaResumenTest extends TestCase
 
         $this->actingAs($user)->get(route('cursos.index'))->assertOk()
             ->assertSee('50%')->assertSee('Próxima entrega');
+    }
+
+    public function test_tarjeta_muestra_nota_actual_o_nada(): void
+    {
+        $user  = $this->estudiante();
+        $curso = $this->cursoInscrito($user);
+        $a1 = $this->actividadEn($curso, ['puntaje_maximo' => 5]);
+        $this->actividadEn($curso, ['puntaje_maximo' => 5]);
+
+        $this->actingAs($user)->get(route('cursos.index'))->assertOk()->assertDontSee('Nota actual');
+
+        $this->calificar($user, $a1, 4);
+        $r = app(ResumenCursosService::class)->para($user, collect([$curso]));
+        $this->assertSame(80, $r[$curso->id]['nota']);
+
+        $this->actingAs($user)->get(route('cursos.index'))->assertSeeText('Nota actual: 80%');
     }
 }
