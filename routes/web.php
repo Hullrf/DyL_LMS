@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/cursos/{curso}/exportar', [CursoPlantillaController::class, 'exportar'])->name('cursos.exportar');
         Route::get('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'edit'])->name('cursos.ponderaciones.edit');
         Route::put('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'update'])->name('cursos.ponderaciones.update');
+        Route::get('/cursos/{curso}/ficha', [\App\Http\Controllers\FichaController::class, 'edit'])->name('cursos.ficha.edit');
+        Route::put('/cursos/{curso}/ficha', [\App\Http\Controllers\FichaController::class, 'update'])->name('cursos.ficha.update');
         Route::put('/cursos/{curso}', [CursoController::class, 'update'])->name('cursos.update');
         Route::delete('/cursos/{curso}', [CursoController::class, 'destroy'])->name('cursos.destroy');
     });

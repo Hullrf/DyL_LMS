@@ -204,5 +204,7 @@
     </a>
 </div>
 
+@include('cursos.partials.ficha', ['curso' => $curso->loadMissing('ficha', 'bibliografias', 'creador')])
+
 @endsection
 
