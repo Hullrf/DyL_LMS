@@ -36,7 +36,10 @@ class CursoController extends Controller
 
         $categorias = Categoria::orderBy('nombre')->get();
 
-        return view('cursos.index', compact('inscripciones', 'catalogo', 'categorias'));
+        $resumen = app(\App\Services\ResumenCursosService::class)
+            ->para($user, $inscripciones->pluck('curso'));
+
+        return view('cursos.index', compact('inscripciones', 'catalogo', 'categorias', 'resumen'));
     }
 
     public function create()
@@ -52,6 +55,8 @@ class CursoController extends Controller
 
         $validated = $request->validate([
             'titulo'           => 'required|string|max:255|unique:cursos',
+            'codigo'           => 'nullable|string|max:50',
+            'grupo'            => 'nullable|string|max:50',
             'descripcion'      => 'required|string|min:20',
             'duracion_horas'   => 'required|integer|min:1|max:500',
             'imagen_portada'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
@@ -163,6 +168,8 @@ class CursoController extends Controller
 
         $validated = $request->validate([
             'titulo'           => 'required|string|max:255|unique:cursos,titulo,' . $curso->id,
+            'codigo'           => 'nullable|string|max:50',
+            'grupo'            => 'nullable|string|max:50',
             'descripcion'      => 'required|string|min:20',
             'duracion_horas'   => 'required|integer|min:1|max:500',
             'estado'           => 'required|in:borrador,publicado,archivado',

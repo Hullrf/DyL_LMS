@@ -54,6 +54,7 @@
             </div>
             <div class="p-5">
                 <h3 class="font-bold text-gray-900 mb-1">{{ $curso->titulo }}</h3>
+                @include('cursos._resumen', ['curso' => $curso])
                 <p class="text-xs text-gray-500 mb-4">{{ $curso->duracion_horas }} horas</p>
                 <a href="{{ route('cursos.show', $curso) }}"
                    class="block w-full bg-dyl-orange-600 text-white py-2 rounded text-center hover:bg-dyl-orange-700 text-sm font-medium">
