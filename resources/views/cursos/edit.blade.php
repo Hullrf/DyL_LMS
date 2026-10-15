@@ -4,7 +4,14 @@
 @section('content')
 <div class="flex items-center justify-between gap-3 mb-6">
     <h1 class="text-2xl font-bold text-gray-900">Editar Curso</h1>
-    <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver curso &rarr;</a>
+    <div class="flex items-center gap-4">
+        <a href="{{ route('cursos.exportar', $curso) }}"
+           title="Descarga el curso (estructura, configuración y archivos) para respaldarlo o cargarlo en otra instalación"
+           class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">
+            Exportar curso
+        </a>
+        <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver curso &rarr;</a>
+    </div>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     {{-- Datos del curso --}}

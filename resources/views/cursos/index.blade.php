@@ -6,10 +6,21 @@
 <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold text-gray-900">Cursos</h1>
     @if(auth()->user()->esInstructor() || auth()->user()->esAdmin())
-        <a href="{{ route('cursos.create') }}"
-           class="bg-dyl-orange-600 text-white px-5 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
-            + Nuevo Curso
-        </a>
+        <div class="flex items-center gap-3">
+            <form method="POST" action="{{ route('cursos.importar') }}" enctype="multipart/form-data">
+                @csrf
+                <label class="cursor-pointer border border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 font-medium text-sm inline-block"
+                       title="Carga un curso exportado (.zip). Se crea como borrador.">
+                    Importar curso
+                    <input type="file" name="archivo" accept=".zip,application/zip" class="hidden"
+                           onchange="if (this.files.length) this.form.submit()">
+                </label>
+            </form>
+            <a href="{{ route('cursos.create') }}"
+               class="bg-dyl-orange-600 text-white px-5 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
+                + Nuevo Curso
+            </a>
+        </div>
     @endif
 </div>
 
