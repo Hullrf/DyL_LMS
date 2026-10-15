@@ -26,6 +26,9 @@ Breadcrumbs::for('cursos.show', fn(Trail $t, $curso) =>
 Breadcrumbs::for('cursos.edit', fn(Trail $t, $curso) =>
     $t->parent('cursos.show', $curso)->push('Editar')
 );
+Breadcrumbs::for('cursos.ponderaciones', fn(Trail $t, $curso) =>
+    $t->parent('cursos.show', $curso)->push('Ponderaciones')
+);
 
 // Lecciones
 Breadcrumbs::for('lecciones.show', fn(Trail $t, $leccion) =>
