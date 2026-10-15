@@ -87,4 +87,15 @@ class Curso extends Model implements Auditable
     {
         return $this->estado === 'archivado';
     }
+
+    /** Actividades con nota (sin las eliminadas), ordenadas por módulo, lección y actividad. */
+    public function actividadesCalificables(): \Illuminate\Support\Collection
+    {
+        return Actividad::whereHas('leccion.modulo', fn($q) => $q->where('curso_id', $this->id))
+            ->with('leccion.modulo')
+            ->get()
+            ->filter(fn($a) => $a->tieneCalificacion())
+            ->sortBy(fn($a) => [$a->leccion->modulo->orden, $a->leccion->orden, $a->orden])
+            ->values();
+    }
 }
