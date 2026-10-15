@@ -442,7 +442,11 @@ class CalificacionController extends Controller
             ->sortByDesc('ultima_envio')
             ->values();
 
-        return view('calificaciones.mis-calificaciones', compact('respuestas', 'porCurso', 'oficialesIds'));
+        $notasPorCurso = $porCurso->mapWithKeys(fn($g) => [
+            $g->curso->id => app(\App\Services\NotaCursoService::class)->para(Auth::user(), $g->curso),
+        ])->all();
+
+        return view('calificaciones.mis-calificaciones', compact('respuestas', 'porCurso', 'oficialesIds', 'notasPorCurso'));
     }
 
     private function verificarAcceso(RespuestaEstudiante $respuesta): void

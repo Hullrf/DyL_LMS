@@ -64,6 +64,10 @@
         @endif
     </div>
 
+    @isset($notasPorCurso[$grupo->curso->id])
+        @include('calificaciones.partials.resumen-nota-curso', ['nota' => $notasPorCurso[$grupo->curso->id]])
+    @endisset
+
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
