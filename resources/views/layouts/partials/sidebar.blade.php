@@ -28,6 +28,12 @@
             </span>
             <span class="dyl-sb-label">Línea de tiempo</span>
         </a>
+        <a href="{{ route('calendario.index') }}" class="dyl-sb-link {{ request()->routeIs('calendario.*') ? 'active' : '' }}">
+            <span class="dyl-sb-ic" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M14 14h2"/></svg>
+            </span>
+            <span class="dyl-sb-label">Calendario</span>
+        </a>
         @endif
         <a href="{{ route('mensajes.bandeja') }}" class="dyl-sb-link {{ request()->routeIs('mensajes.*') || request()->routeIs('anuncios.todos') ? 'active' : '' }}">
             <span class="dyl-sb-ic" aria-hidden="true">

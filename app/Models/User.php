@@ -44,6 +44,11 @@ class User extends Authenticatable implements Auditable
         return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id');
     }
 
+    public function eventosPersonales(): HasMany
+    {
+        return $this->hasMany(EventoPersonal::class);
+    }
+
     public function cursosCreados(): HasMany
     {
         return $this->hasMany(Curso::class, 'created_by');
