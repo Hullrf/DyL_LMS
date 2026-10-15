@@ -417,6 +417,17 @@
         </svg>
         <span class="text-sm font-medium text-dyl-orange-700">Actividad completada</span>
     </div>
+    @unless($actividad->tieneCalificacion())
+    <div class="mb-6">
+        <form action="{{ route('actividades.descompletar', $actividad) }}" method="POST">
+            @csrf
+            <button type="submit"
+                    class="w-full sm:w-auto border border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors">
+                Desmarcar como completada
+            </button>
+        </form>
+    </div>
+    @endunless
     @elseif(!$actividad->tieneCalificacion())
     <div class="mb-6">
         <form action="{{ route('actividades.completar', $actividad) }}" method="POST">

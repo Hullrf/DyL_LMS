@@ -102,6 +102,22 @@ class Actividad extends Model implements Auditable
         return $this->belongsTo(Leccion::class);
     }
 
+    /** Revierte completarPara: la actividad, su lección y el estado "completado" de la inscripción. */
+    public function descompletarPara(int $userId): void
+    {
+        ProgresoActividad::where('user_id', $userId)->where('actividad_id', $this->id)
+            ->update(['completado' => false, 'fecha_completado' => null]);
+
+        $leccion = $this->leccion;
+        ProgresoLeccion::where('user_id', $userId)->where('leccion_id', $leccion->id)
+            ->update(['completado' => false, 'fecha_completado' => null]);
+
+        Inscripcion::where('user_id', $userId)
+            ->where('curso_id', $leccion->modulo->curso_id)
+            ->where('estado', 'completado')
+            ->update(['estado' => 'en_progreso', 'fecha_fin' => null]);
+    }
+
     /** Marca la actividad como completada para un usuario y verifica si la lección queda completa. */
     public function completarPara(int $userId): void
     {

@@ -211,6 +211,18 @@ class ActividadController extends Controller
             ->with('success', 'Actividad marcada como completada.');
     }
 
+    public function descompletar(Actividad $actividad)
+    {
+        $this->authorize('verContenido', $actividad->leccion->modulo->curso);
+        abort_if($actividad->tieneCalificacion(), 403);
+
+        $actividad->descompletarPara(auth()->id());
+
+        return redirect()
+            ->route('actividades.show', $actividad)
+            ->with('success', 'Actividad desmarcada.');
+    }
+
     public function iniciarIntento(Actividad $actividad)
     {
         $this->authorize('verContenido', $actividad->leccion->modulo->curso);
