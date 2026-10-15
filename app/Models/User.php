@@ -27,7 +27,7 @@ class User extends Authenticatable implements Auditable
     ];
 
     protected $hidden = [
-        'password', 'remember_token', 'two_factor_secret',
+        'password', 'remember_token', 'two_factor_secret', 'calendario_token',
     ];
 
     protected function casts(): array

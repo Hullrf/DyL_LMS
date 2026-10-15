@@ -76,4 +76,23 @@
         <div><button class="rounded-lg bg-dyl-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Agregar</button></div>
     </form>
 </details>
+
+<div class="mt-6 rounded-xl border border-gray-200 bg-white p-4 text-sm">
+    <p class="font-medium text-gray-900 mb-2">Llévalo a tu calendario</p>
+    <div class="flex flex-wrap items-center gap-3">
+        <a href="{{ route('calendario.exportar') }}" class="rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-50">Descargar .ics</a>
+        @if(auth()->user()->calendario_token)
+            <input type="text" readonly value="{{ route('calendario.feed', auth()->user()->calendario_token) }}"
+                   onclick="this.select()" class="min-w-0 flex-1 rounded-lg border-gray-300 text-xs" aria-label="Enlace de suscripción">
+            <form method="POST" action="{{ route('calendario.token.store') }}">@csrf
+                <button class="rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-50">Regenerar</button></form>
+            <form method="POST" action="{{ route('calendario.token.destroy') }}">@csrf @method('DELETE')
+                <button class="rounded-lg border border-gray-300 px-3 py-1.5 text-red-600 hover:bg-red-50">Revocar</button></form>
+        @else
+            <form method="POST" action="{{ route('calendario.token.store') }}">@csrf
+                <button class="rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-50">Crear enlace de suscripción</button></form>
+        @endif
+    </div>
+    <p class="mt-2 text-xs text-gray-500">Quien tenga el enlace de suscripción puede ver tus fechas; regenéralo o revócalo si lo compartiste por error.</p>
+</div>
 @endsection

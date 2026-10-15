@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendario', [\App\Http\Controllers\CalendarioController::class, 'index'])->name('calendario.index');
     Route::post('/calendario/eventos', [\App\Http\Controllers\CalendarioController::class, 'store'])->name('calendario.eventos.store');
     Route::delete('/calendario/eventos/{evento}', [\App\Http\Controllers\CalendarioController::class, 'destroy'])->name('calendario.eventos.destroy');
+    Route::get('/calendario/exportar.ics', [\App\Http\Controllers\CalendarioIcsController::class, 'descargar'])->name('calendario.exportar');
+    Route::post('/calendario/token', [\App\Http\Controllers\CalendarioIcsController::class, 'guardarToken'])->name('calendario.token.store');
+    Route::delete('/calendario/token', [\App\Http\Controllers\CalendarioIcsController::class, 'revocarToken'])->name('calendario.token.destroy');
 
     // Cursos - rutas estáticas primero para evitar conflicto con {curso}
     Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
@@ -189,6 +192,8 @@ Route::middleware('auth')->group(function () {
 
 // Verificación pública de certificados (sin autenticación)
 Route::get('/verificar-certificado/{numero}', [CertificadoController::class, 'verificar'])->name('certificados.verificar');
+Route::get('/calendario/feed/{token}.ics', [\App\Http\Controllers\CalendarioIcsController::class, 'feed'])
+    ->where('token', '[A-Za-z0-9]{64}')->middleware('throttle:60,1')->name('calendario.feed');
 
 // Rúbrica (dentro del grupo auth para tener sesión y CSRF correctos)
 Route::middleware(['auth', 'instructor'])->group(function () {
