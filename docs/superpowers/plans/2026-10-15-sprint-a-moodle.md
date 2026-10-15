@@ -27,6 +27,7 @@
 2. **"Nota actual" en la tarjeta (FE-5):** depende de la ponderación (F4, Sprint B). En Sprint A la tarjeta muestra progreso y próxima entrega; la nota se agrega en Sprint B.
 3. **Prefijo `R#-A#-S#`:** el trigger `creating` de `Actividad` extrae el prefijo de títulos nuevos y lo guarda en los campos; así cubre el formulario, el importador de cursos y futuros caminos sin tocar cada uno.
 4. **Marcar como hecha:** ya existe para actividades sin nota (`actividades.completar`). Falta poder **desmarcar** (Task 6).
+5. **% de progreso por lecciones:** `ResumenCursosService` cuenta lecciones completadas / lecciones totales (igual que `progreso_general` del dashboard y la vista de curso). La spec F3 pide actividades obligatorias; esa fórmula se revisa en Sprint B junto con F4.
 
 ## Review Focus
 

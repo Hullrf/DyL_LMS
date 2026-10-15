@@ -206,6 +206,47 @@ class LineaDeTiempoTest extends TestCase
         $this->get(route('linea-de-tiempo.index'))->assertRedirect(route('login'));
     }
 
+    public function test_parametros_array_no_provocan_500(): void
+    {
+        [$user] = $this->inscrito();
+
+        $this->actingAs($user)->get('/linea-de-tiempo?buscar[]=x&ronda[]=1&curso[]=2&dias[]=7')->assertOk();
+    }
+
+    public function test_dropdown_de_cursos_solo_publicados_y_no_abandonados(): void
+    {
+        [$user, $activo] = $this->inscrito(Curso::factory()->publicado()->create(['titulo' => 'Curso Activo XYZ']));
+        $abandonado = Curso::factory()->publicado()->create(['titulo' => 'Curso Abandonado XYZ']);
+        Inscripcion::factory()->create(['user_id' => $user->id, 'curso_id' => $abandonado->id, 'estado' => 'abandonado']);
+        $borrador = Curso::factory()->borrador()->create(['titulo' => 'Curso Borrador XYZ']);
+        Inscripcion::factory()->create(['user_id' => $user->id, 'curso_id' => $borrador->id]);
+
+        $this->actingAs($user)->get(route('linea-de-tiempo.index'))
+            ->assertOk()->assertSee('Curso Activo XYZ')
+            ->assertDontSee('Curso Abandonado XYZ')->assertDontSee('Curso Borrador XYZ');
+    }
+
+    public function test_dashboard_compacto_muestra_solo_5_atrasadas_y_ver_todo(): void
+    {
+        [$user, $curso] = $this->inscrito();
+        foreach (range(1, 7) as $i) {
+            $this->actividadEn($curso, ['titulo' => "Vencida$i", 'fecha_cierre' => now()->subDays($i)]);
+        }
+
+        $html = $this->actingAs($user)->get('/dashboard')->assertOk()->assertSee('Ver todo (7)')->getContent();
+
+        $this->assertSame(5, preg_match_all('/Vencida\d/', $html));
+    }
+
+    public function test_leccion_muestra_prefijo_de_actividad(): void
+    {
+        [$user, $curso] = $this->inscrito();
+        $a = $this->actividadEn($curso, ['titulo' => 'Mapa mental', 'ronda' => 2, 'numero_actividad' => 3, 'semana' => 9]);
+
+        $this->actingAs($user)->get(route('lecciones.show', $a->leccion_id))
+            ->assertOk()->assertSee('R2-A3-S9 · Mapa mental');
+    }
+
     public function test_dashboard_del_estudiante_incluye_el_bloque(): void
     {
         [$user, $curso] = $this->inscrito();

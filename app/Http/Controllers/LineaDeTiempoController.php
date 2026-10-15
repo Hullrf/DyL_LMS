@@ -13,18 +13,22 @@ class LineaDeTiempoController extends Controller
         $user = $request->user();
         $dias = in_array((int) $request->query('dias'), [7, 30, 180], true) ? (int) $request->query('dias') : 7;
 
-        $lineaDeTiempo = $servicio->para(
-            $user,
-            $dias,
-            $request->integer('curso') ?: null,
-            $request->boolean('entregadas'),
-            $request->filled('buscar') ? trim($request->query('buscar')) : null,
-            $request->integer('ronda') ?: null,
-        );
+        // Solo escalares: ?buscar[]=x etc. se ignoran en vez de provocar un 500.
+        $entero = fn($k) => is_scalar($v = $request->query($k)) ? ((int) $v ?: null) : null;
+        $buscar = is_string($q = $request->query('buscar')) && trim($q) !== '' ? trim($q) : null;
+        $filtros = [
+            'curso'      => $entero('curso'),
+            'ronda'      => $entero('ronda'),
+            'buscar'     => $buscar,
+            'entregadas' => is_scalar($request->query('entregadas')) && $request->boolean('entregadas'),
+        ];
 
-        $cursos = Inscripcion::with('curso:id,titulo')->where('user_id', $user->id)->get()
-            ->pluck('curso')->filter()->sortBy('titulo');
+        $lineaDeTiempo = $servicio->para($user, $dias, $filtros['curso'], $filtros['entregadas'], $buscar, $filtros['ronda']);
 
-        return view('linea-de-tiempo.index', compact('lineaDeTiempo', 'cursos', 'dias'));
+        $cursos = Inscripcion::with('curso:id,titulo,estado')->where('user_id', $user->id)
+            ->where('estado', '!=', 'abandonado')->get()
+            ->pluck('curso')->filter(fn($c) => $c && $c->estado === 'publicado')->sortBy('titulo');
+
+        return view('linea-de-tiempo.index', compact('lineaDeTiempo', 'cursos', 'dias', 'filtros'));
     }
 }

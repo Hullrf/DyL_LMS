@@ -87,7 +87,7 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
                     @foreach($actividades as $act)
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">
-                            {{ $act->titulo }}
+                            {{ $act->tituloCompleto() }}
                             <span class="block normal-case text-gray-400 font-normal">/ {{ number_format($act->puntaje_maximo ?? 0, 0) }} pts</span>
                         </th>
                     @endforeach

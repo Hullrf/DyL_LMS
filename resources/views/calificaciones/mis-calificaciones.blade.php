@@ -78,7 +78,7 @@
                 @foreach($grupo->respuestas as $respuesta)
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4">
-                        <p class="text-sm font-medium text-gray-900">{{ $respuesta->actividad->titulo }}</p>
+                        <p class="text-sm font-medium text-gray-900">{{ $respuesta->actividad->tituloCompleto() }}</p>
                         <span class="inline-block mt-1 px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded">
                             {{ ucfirst($respuesta->actividad->tipo) }}
                         </span>

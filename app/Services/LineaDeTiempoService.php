@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class LineaDeTiempoService
 {
-    private const MAX_ATRASADAS = 50;
+    public const MAX_ATRASADAS = 50;
 
     /** @return array{atrasadas: Collection, dias: Collection} */
     public function para(

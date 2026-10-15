@@ -32,6 +32,7 @@ class AyudaFlotanteTest extends TestCase
 
         $this->assertStringNotContainsString('{{', $html);
         $this->assertStringNotContainsString('mailto:"', $html);
-        $this->assertStringNotContainsString('Horario de atención:</', $html);
+        $this->assertStringNotContainsString('Horario de atención', $html);
+        $this->assertStringNotContainsString('mailto:', $html);
     }
 }

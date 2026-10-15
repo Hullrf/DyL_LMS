@@ -16,18 +16,18 @@
         <select name="curso" class="mt-1 block rounded-lg border-gray-300 text-sm" onchange="this.form.submit()">
             <option value="">Todos</option>
             @foreach($cursos as $c)
-                <option value="{{ $c->id }}" @selected((int) request('curso') === $c->id)>{{ $c->titulo }}</option>
+                <option value="{{ $c->id }}" @selected($filtros['curso'] === $c->id)>{{ $c->titulo }}</option>
             @endforeach
         </select>
     </label>
     <label class="text-sm text-gray-700">Ronda
-        <input type="number" name="ronda" min="1" max="9" value="{{ request('ronda') }}" class="mt-1 block w-20 rounded-lg border-gray-300 text-sm">
+        <input type="number" name="ronda" min="1" max="9" value="{{ $filtros['ronda'] }}" class="mt-1 block w-20 rounded-lg border-gray-300 text-sm">
     </label>
     <label class="text-sm text-gray-700">Buscar
-        <input type="search" name="buscar" value="{{ request('buscar') }}" placeholder="Nombre o tipo" class="mt-1 block rounded-lg border-gray-300 text-sm">
+        <input type="search" name="buscar" value="{{ $filtros['buscar'] }}" placeholder="Nombre o tipo" class="mt-1 block rounded-lg border-gray-300 text-sm">
     </label>
     <label class="flex items-center gap-2 text-sm text-gray-700">
-        <input type="checkbox" name="entregadas" value="1" @checked(request()->boolean('entregadas')) class="rounded" onchange="this.form.submit()">
+        <input type="checkbox" name="entregadas" value="1" @checked($filtros['entregadas']) class="rounded" onchange="this.form.submit()">
         Mostrar entregadas
     </label>
     <button class="rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-700 hover:bg-gray-200">Filtrar</button>
