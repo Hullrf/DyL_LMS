@@ -64,6 +64,27 @@ class CalendarioIcsTest extends TestCase
         $this->get('/calendario/feed/corto.ics')->assertNotFound();
     }
 
+    public function test_token_no_se_guarda_en_la_auditoria(): void
+    {
+        config(['audit.console' => true]); // por defecto la auditoria se omite en consola/tests
+        $u = $this->estudiante();
+        $tokens = [];
+
+        $this->actingAs($u)->post(route('calendario.token.store'));
+        $tokens[] = $u->fresh()->calendario_token;
+        $this->actingAs($u)->post(route('calendario.token.store'));
+        $tokens[] = $u->fresh()->calendario_token;
+        $this->actingAs($u)->delete(route('calendario.token.destroy'));
+
+        $this->assertNotEmpty($tokens[0]);
+        $this->assertGreaterThan(0, \OwenIt\Auditing\Models\Audit::count(), 'la auditoria debe estar activa en este test');
+        $volcado = \OwenIt\Auditing\Models\Audit::all()
+            ->map(fn($a) => json_encode([$a->old_values, $a->new_values]))->implode("\n");
+        foreach ($tokens as $t) {
+            $this->assertStringNotContainsString($t, $volcado);
+        }
+    }
+
     public function test_token_no_aparece_en_json_del_usuario(): void
     {
         $u = $this->estudiante();

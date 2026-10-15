@@ -17,7 +17,7 @@ class User extends Authenticatable implements Auditable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes, AuditableTrait;
 
-    protected $auditExclude   = ['updated_at', 'remember_token', 'two_factor_secret'];
+    protected $auditExclude   = ['updated_at', 'remember_token', 'two_factor_secret', 'calendario_token'];
     protected $auditThreshold = 100;
 
     protected $fillable = [

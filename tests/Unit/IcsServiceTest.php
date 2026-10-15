@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class IcsServiceTest extends TestCase
 {
-    private function evento(string $titulo, string $detalle = null): \stdClass
+    private function evento(string $titulo, ?string $detalle = null): \stdClass
     {
         return (object) [
             'uid' => 'act-1-cierre', 'tipo' => 'cierre', 'titulo' => $titulo, 'detalle' => $detalle,
