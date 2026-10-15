@@ -30,6 +30,8 @@ class CursoImportService
 {
     private const MAX_ENTRADAS = 5000;
     private const MAX_BYTES    = 524288000; // 500 MB descomprimidos
+    private const EXTENSIONES  = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'pdf', 'doc', 'docx', 'ppt', 'pptx',
+        'xls', 'xlsx', 'zip', 'html', 'mp4', 'mov', 'avi', 'webm'];
 
     private ZipArchive $zip;
     private string $dir = '';
@@ -102,7 +104,7 @@ class CursoImportService
     private function crear(array $d, User $usuario): Curso
     {
         $titulo    = $this->tituloLibre($d['titulo']);
-        $this->dir = 'cursos/' . Str::slug($titulo);
+        $this->dir = 'cursos/' . Str::slug($titulo) . '-' . Str::lower(Str::random(6));
 
         // Resuelve marcadores {{archivo:...}} copiando cada archivo una sola vez.
         array_walk_recursive($d, function (&$valor) {
@@ -222,14 +224,23 @@ class CursoImportService
         if (!str_starts_with($entrada, 'archivos/')) {
             throw new CursoImportException("Referencia de archivo no válida: {$entrada}");
         }
+        $partes = explode('.', strtolower(basename($entrada)));
+        $ext    = count($partes) > 1 ? end($partes) : '';
+        if (!in_array($ext, self::EXTENSIONES, true)
+            || array_intersect(array_slice($partes, 1), ['php', 'phtml', 'phar'])) {
+            throw new CursoImportException('Tipo de archivo no permitido dentro del ZIP: ' . basename($entrada) . '.');
+        }
         $flujo = $this->zip->getStream($entrada);
         if ($flujo === false) {
             throw new CursoImportException('Falta el archivo ' . basename($entrada) . ' dentro del ZIP.');
         }
         $nombre = preg_replace('/[^\w.\-]/u', '_', basename($entrada));
         $nueva  = $this->dir . '/' . (count($this->copiados) + 1) . '-' . $nombre;
-        Storage::disk('public')->writeStream($nueva, $flujo);
+        $ok = Storage::disk('public')->writeStream($nueva, $flujo);
         fclose($flujo);
+        if ($ok === false) {
+            throw new \RuntimeException("No se pudo escribir {$nueva}");
+        }
 
         return $this->copiados[$entrada] = $nueva;
     }

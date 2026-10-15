@@ -290,4 +290,98 @@ class CursoImportServiceTest extends TestCase
         $this->assertSame(0, Modulo::count());
         $this->assertSame([], Storage::disk('public')->allFiles());
     }
+
+    public function test_rechaza_extension_ejecutable_en_portada(): void
+    {
+        Storage::fake('public');
+        $zip = $this->zipDe(
+            $this->cursoMinimo(['imagen_portada' => 'archivos/x.php']),
+            ['archivos/x.php' => '<?php']
+        );
+        try {
+            app(CursoImportService::class)->importar($zip, $this->instructor());
+            $this->fail('Debió rechazar x.php');
+        } catch (CursoImportException $e) {
+            $this->assertStringContainsString('x.php', $e->getMessage());
+        } finally {
+            @unlink($zip);
+        }
+        $this->assertSame(0, Curso::withTrashed()->count());
+        $this->assertSame([], Storage::disk('public')->allFiles());
+    }
+
+    public function test_rechaza_marcador_que_apunta_a_php_y_doble_extension_peligrosa(): void
+    {
+        foreach (['x.php', 'x.php.png', 'sin_extension'] as $nombre) {
+            Storage::fake('public');
+            $zip = $this->zipDe($this->cursoMinimo(['modulos' => [['titulo' => 'M', 'lecciones' => [
+                ['titulo' => 'L', 'contenido_html' => '<img src="{{archivo:' . $nombre . '}}">', 'actividades' => []],
+            ]]]]), ['archivos/' . $nombre => 'x']);
+            try {
+                app(CursoImportService::class)->importar($zip, $this->instructor());
+                $this->fail("Debió rechazar {$nombre}");
+            } catch (CursoImportException $e) {
+                $this->assertStringContainsString($nombre, $e->getMessage());
+            } finally {
+                @unlink($zip);
+            }
+            $this->assertSame(0, Curso::count());
+            $this->assertSame([], Storage::disk('public')->allFiles());
+        }
+    }
+
+    public function test_extension_permitida_en_mayusculas_se_importa(): void
+    {
+        $zip = $this->zipDe(
+            $this->cursoMinimo(['imagen_portada' => 'archivos/P.PNG']),
+            ['archivos/P.PNG' => 'IMG']
+        );
+        $curso = app(CursoImportService::class)->importar($zip, $this->instructor());
+        @unlink($zip);
+        $this->assertSame('IMG', Storage::disk('public')->get($curso->imagen_portada));
+    }
+
+    public function test_titulos_con_mismo_slug_no_comparten_carpeta_ni_se_borran(): void
+    {
+        $u = $this->instructor();
+        $mk = fn (string $t, array $extra = [], array $files = []) => $this->zipDe(
+            $this->cursoMinimo(['titulo' => $t, 'imagen_portada' => 'archivos/p.jpg'] + $extra),
+            ['archivos/p.jpg' => $t] + $files
+        );
+        $z1 = $mk('ISO 9001');
+        $a  = app(CursoImportService::class)->importar($z1, $u);
+        $antes = Storage::disk('public')->allFiles();
+        $z2 = $mk('ISO-9001', ['modulos' => [['titulo' => 'M', 'lecciones' => [
+            ['titulo' => 'L', 'tipo' => 'valor-invalido', 'actividades' => []],
+        ]]]]);
+        try {
+            app(CursoImportService::class)->importar($z2, $u);
+            $this->fail('Debió fallar');
+        } catch (CursoImportException $e) {
+        } finally {
+            @unlink($z1);
+            @unlink($z2);
+        }
+        $this->assertSame('ISO 9001', Storage::disk('public')->get($a->imagen_portada));
+        $this->assertEqualsCanonicalizing($antes, Storage::disk('public')->allFiles());
+    }
+
+    public function test_fallo_de_escritura_en_disco_hace_rollback(): void
+    {
+        $disco = \Mockery::mock(\Illuminate\Contracts\Filesystem\Filesystem::class);
+        $disco->shouldReceive('writeStream')->andReturn(false);
+        $disco->shouldReceive('delete');
+        Storage::shouldReceive('disk')->with('public')->andReturn($disco);
+
+        $zip = $this->zipDe($this->cursoMinimo(['imagen_portada' => 'archivos/p.jpg']), ['archivos/p.jpg' => 'P']);
+        try {
+            app(CursoImportService::class)->importar($zip, $this->instructor());
+            $this->fail('Debió fallar');
+        } catch (CursoImportException $e) {
+            $this->assertNotSame('', $e->getMessage());
+        } finally {
+            @unlink($zip);
+        }
+        $this->assertSame(0, Curso::withTrashed()->count());
+    }
 }

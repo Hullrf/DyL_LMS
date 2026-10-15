@@ -33,6 +33,8 @@ class CursoPlantillaController extends Controller
             'archivo' => 'required|file|mimes:zip|max:102400',
         ], [
             'archivo.required' => 'Selecciona el archivo ZIP del curso.',
+            'archivo.uploaded' => 'No se pudo subir el archivo. Puede superar el tamaño máximo permitido por el servidor.',
+            'archivo.file'     => 'No se pudo subir el archivo. Puede superar el tamaño máximo permitido por el servidor.',
             'archivo.mimes'    => 'El archivo debe ser un ZIP exportado desde la plataforma.',
             'archivo.max'      => 'El archivo supera el tamaño máximo de 100 MB.',
         ]);
