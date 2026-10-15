@@ -80,6 +80,22 @@ class CursoExportServiceTest extends TestCase
         }
     }
 
+    public function test_si_falla_la_exportacion_no_deja_archivo_temporal(): void
+    {
+        $curso = $this->cursoCompleto($this->instructor());
+        \Illuminate\Support\Facades\DB::table('lecciones')->update(['contenido_html' => "<p>\xB1\x31</p>"]);
+        $antes = glob(sys_get_temp_dir() . '/curso*') ?: [];
+
+        try {
+            app(CursoExportService::class)->exportar($curso);
+            $this->fail('Debio lanzar excepcion por UTF-8 invalido.');
+        } catch (\JsonException $e) {
+            $this->assertTrue(true);
+        }
+
+        $this->assertSame($antes, glob(sys_get_temp_dir() . '/curso*') ?: []);
+    }
+
     public function test_archivo_faltante_en_disco_no_aborta_y_queda_como_advertencia(): void
     {
         $curso = $this->cursoCompleto($this->instructor());

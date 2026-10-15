@@ -58,23 +58,41 @@ class CursoExportService
 
         $ruta = tempnam(sys_get_temp_dir(), 'curso');
         $this->zip = new ZipArchive();
-        $this->zip->open($ruta, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $abierto = false;
 
-        $datos = $this->curso($curso);
-        // Reescribe URLs de archivos propios dentro de cualquier texto (HTML de lecciones, descripciones...).
-        array_walk_recursive($datos, function (&$valor) {
-            if (is_string($valor)) {
-                $valor = $this->reescribir($valor);
+        try {
+            if ($this->zip->open($ruta, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                throw new \RuntimeException('No se pudo crear el archivo ZIP del curso.');
             }
-        });
+            $abierto = true;
 
-        $this->zip->addFromString('curso.json', json_encode([
-            'version_formato' => self::VERSION_FORMATO,
-            'exportado_en'    => now()->toIso8601String(),
-            'advertencias'    => array_values(array_unique($this->advertencias)),
-            'curso'           => $datos,
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
-        $this->zip->close();
+            $datos = $this->curso($curso);
+            // Reescribe URLs de archivos propios dentro de cualquier texto (HTML de lecciones, descripciones...).
+            array_walk_recursive($datos, function (&$valor) {
+                if (is_string($valor)) {
+                    $valor = $this->reescribir($valor);
+                }
+            });
+
+            $this->zip->addFromString('curso.json', json_encode([
+                'version_formato' => self::VERSION_FORMATO,
+                'exportado_en'    => now()->toIso8601String(),
+                'advertencias'    => array_values(array_unique($this->advertencias)),
+                'curso'           => $datos,
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
+
+            // addFile es perezoso: un archivo ilegible recién falla al cerrar.
+            $abierto = false;
+            if (!$this->zip->close()) {
+                throw new \RuntimeException('No se pudo crear el archivo ZIP del curso.');
+            }
+        } catch (\Throwable $e) {
+            if ($abierto) {
+                @$this->zip->close();
+            }
+            @unlink($ruta);
+            throw $e;
+        }
 
         return $ruta;
     }
