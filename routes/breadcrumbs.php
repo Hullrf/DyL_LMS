@@ -34,6 +34,9 @@ Breadcrumbs::for('cursos.edit', fn(Trail $t, $curso) =>
 Breadcrumbs::for('cursos.ponderaciones', fn(Trail $t, $curso) =>
     $t->parent('cursos.show', $curso)->push('Ponderaciones')
 );
+Breadcrumbs::for('cursos.competencias', fn(Trail $t, $curso) =>
+    $t->parent('cursos.show', $curso)->push('Competencias')
+);
 Breadcrumbs::for('cursos.ficha', fn(Trail $t, $curso) =>
     $t->parent('cursos.show', $curso)->push('Ficha académica')
 );
@@ -81,7 +84,10 @@ Breadcrumbs::for('reportes.index', fn(Trail $t) =>
     $t->parent('dashboard')->push('Reportes', route('reportes.index'))
 );
 Breadcrumbs::for('reportes.curso', fn(Trail $t, $curso) =>
-    $t->parent('reportes.index')->push($curso->titulo)
+    $t->parent('reportes.index')->push($curso->titulo, route('reportes.curso', $curso))
+);
+Breadcrumbs::for('reportes.seguimiento', fn(Trail $t, $curso) =>
+    $t->parent('reportes.curso', $curso)->push('Seguimiento')
 );
 Breadcrumbs::for('reportes.estudiante', fn(Trail $t, $usuario) =>
     $t->parent('reportes.index')->push($usuario->name)

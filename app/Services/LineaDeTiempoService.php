@@ -86,7 +86,7 @@ class LineaDeTiempoService
     }
 
     /** Collection flip: actividad_id => índice (isset() para chequear). */
-    private function idsEntregados(User $user): Collection
+    public function idsEntregados(User $user): Collection
     {
         return RespuestaEstudiante::where('user_id', $user->id)->pluck('actividad_id')
             ->merge(ProgresoActividad::where('user_id', $user->id)->where('completado', true)->pluck('actividad_id'))

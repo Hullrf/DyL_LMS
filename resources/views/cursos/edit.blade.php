@@ -18,6 +18,10 @@
            class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">
             Ponderaciones
         </a>
+        <a href="{{ route('cursos.competencias.index', $curso) }}"
+           class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">
+            Competencias
+        </a>
         <a href="{{ route('cursos.exportar', $curso) }}"
            title="Descarga el curso (estructura, configuración y archivos) para respaldarlo o cargarlo en otra instalación"
            class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">

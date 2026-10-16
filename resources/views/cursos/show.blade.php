@@ -115,7 +115,35 @@
 </div>
 
 {{-- Contenido del curso --}}
-<h2 class="text-xl font-bold text-gray-900 mb-4">Contenido del curso</h2>
+@php
+    $puedeEditar = auth()->user()->can('update', $curso);
+    $modoEdicion = $puedeEditar && session('modo_edicion', false);
+@endphp
+
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <h2 class="text-xl font-bold text-gray-900">Contenido del curso</h2>
+    @if($puedeEditar)
+        <form method="POST" action="{{ route('cursos.modo-edicion', $curso) }}">
+            @csrf
+            <button class="rounded-lg border px-4 py-2 text-sm font-medium {{ $modoEdicion ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                {{ $modoEdicion ? 'Salir del modo de edición' : 'Activar modo de edición' }}
+            </button>
+        </form>
+    @endif
+</div>
+
+@if($modoEdicion)
+    <div class="alert alert-warning mb-4" role="status">
+        Modo de edición activo: ves los controles para editar el curso. Los estudiantes ven la vista normal.
+        <span class="ml-2 inline-flex flex-wrap gap-3 text-sm font-medium">
+            <a class="underline" href="{{ route('cursos.edit', $curso) }}">Editar curso</a>
+            <a class="underline" href="{{ route('cursos.ponderaciones.edit', $curso) }}">Ponderaciones</a>
+            <a class="underline" href="{{ route('cursos.ficha.edit', $curso) }}">Ficha académica</a>
+            <a class="underline" href="{{ route('cursos.competencias.index', $curso) }}">Competencias</a>
+            <a class="underline" href="{{ route('reportes.seguimiento', $curso) }}">Seguimiento</a>
+        </span>
+    </div>
+@endif
 
 @forelse($modulos as $modulo)
     <div class="bg-white rounded-xl shadow mb-4 overflow-hidden" x-data="{ open: true }">
@@ -141,6 +169,13 @@
                 </svg>
             </div>
         </button>
+
+        @if($modoEdicion)
+            <div class="flex flex-wrap gap-3 border-t border-gray-100 bg-dyl-orange-50 px-5 py-2 text-xs font-medium">
+                <a class="text-dyl-orange-800 hover:underline" href="{{ route('modulos.edit', $modulo) }}">Editar módulo</a>
+                <a class="text-dyl-orange-800 hover:underline" href="{{ route('lecciones.create', $modulo) }}">+ Lección</a>
+            </div>
+        @endif
 
         {{-- Lista de lecciones --}}
         <div x-show="open" x-cloak class="border-t border-gray-100">
@@ -179,6 +214,16 @@
                         @endif
                     </div>
 
+                    @if($modoEdicion)
+                        <div class="ml-3 flex flex-shrink-0 flex-wrap items-center gap-2 text-xs font-medium">
+                            <a class="text-dyl-orange-800 hover:underline" href="{{ route('lecciones.edit', $leccion) }}">Editar</a>
+                            <a class="text-dyl-orange-800 hover:underline" href="{{ route('actividades.create', $leccion) }}">+ Actividad</a>
+                            @foreach($leccion->actividades as $act)
+                                <a class="rounded bg-gray-100 px-1.5 py-0.5 text-gray-700 hover:bg-gray-200" href="{{ route('actividades.edit', $act) }}">{{ $act->tituloCompleto() }}</a>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <span class="text-xs text-gray-400 ml-3 flex-shrink-0">{{ $leccion->duracion_minutos }} min</span>
                 </div>
             @empty
@@ -204,6 +249,7 @@
     </a>
 </div>
 
+@include('cursos.partials.competencias', ['curso' => $curso])
 @include('cursos.partials.ficha', ['curso' => $curso->loadMissing('ficha', 'bibliografias', 'creador')])
 
 @endsection
