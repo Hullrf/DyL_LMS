@@ -9,9 +9,9 @@ use Illuminate\Support\Collection;
 
 class ResumenCursosService
 {
-    public function __construct(private LineaDeTiempoService $lineaDeTiempo) {}
+    public function __construct(private LineaDeTiempoService $lineaDeTiempo, private NotaCursoService $notas) {}
 
-    /** @return array<int, array{porcentaje: ?int, proxima: ?\Illuminate\Support\Carbon}> */
+    /** @return array<int, array{porcentaje: ?int, proxima: ?\Illuminate\Support\Carbon, nota: ?int}> */
     public function para(User $user, Collection $cursos): array
     {
         $ids = $cursos->pluck('id');
@@ -25,12 +25,13 @@ class ResumenCursosService
 
         $proximas = $this->lineaDeTiempo->proximaEntregaPorCurso($user);
 
-        return $cursos->mapWithKeys(function ($curso) use ($totales, $completadas, $proximas) {
+        return $cursos->mapWithKeys(function ($curso) use ($user, $totales, $completadas, $proximas) {
             $total = (int) ($totales[$curso->id] ?? 0);
 
             return [$curso->id => [
                 'porcentaje' => $total > 0 ? (int) round((($completadas[$curso->id] ?? 0) / $total) * 100) : null,
                 'proxima'    => $proximas[$curso->id] ?? null,
+                'nota'       => $this->notas->para($user, $curso)['promedio_a_la_fecha'],
             ]];
         })->all();
     }

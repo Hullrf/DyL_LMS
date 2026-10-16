@@ -13,6 +13,11 @@ Breadcrumbs::for('linea-de-tiempo.index', fn(Trail $t) =>
     $t->parent('dashboard')->push('Línea de tiempo', route('linea-de-tiempo.index'))
 );
 
+// Calendario
+Breadcrumbs::for('calendario.index', fn(Trail $t) =>
+    $t->parent('dashboard')->push('Calendario', route('calendario.index'))
+);
+
 // Cursos
 Breadcrumbs::for('cursos.index', fn(Trail $t) =>
     $t->parent('dashboard')->push('Cursos', route('cursos.index'))
@@ -25,6 +30,12 @@ Breadcrumbs::for('cursos.show', fn(Trail $t, $curso) =>
 );
 Breadcrumbs::for('cursos.edit', fn(Trail $t, $curso) =>
     $t->parent('cursos.show', $curso)->push('Editar')
+);
+Breadcrumbs::for('cursos.ponderaciones', fn(Trail $t, $curso) =>
+    $t->parent('cursos.show', $curso)->push('Ponderaciones')
+);
+Breadcrumbs::for('cursos.ficha', fn(Trail $t, $curso) =>
+    $t->parent('cursos.show', $curso)->push('Ficha académica')
 );
 
 // Lecciones

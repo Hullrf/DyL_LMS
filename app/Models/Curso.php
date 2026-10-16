@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,6 +40,30 @@ class Curso extends Model implements Auditable
     public function creador(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function ficha(): HasOne
+    {
+        return $this->hasOne(CursoFicha::class);
+    }
+
+    public function bibliografias(): HasMany
+    {
+        return $this->hasMany(CursoBibliografia::class)->orderBy('orden');
+    }
+
+    /** Etiquetas de lo que falta para considerar completa la ficha académica. */
+    public function fichaFaltantes(): array
+    {
+        $f = $this->ficha;
+        $faltan = [];
+        if (!$f || blank($f->justificacion))           $faltan[] = 'Justificación';
+        if (!$f || blank($f->resultado_aprendizaje))   $faltan[] = 'Resultado de aprendizaje';
+        if (!$f || $f->creditos === null)              $faltan[] = 'Créditos';
+        if (!$f || blank($f->programa))                $faltan[] = 'Programa';
+        if (!$this->bibliografias()->exists())         $faltan[] = 'Bibliografía';
+
+        return $faltan;
     }
 
     public function categoria(): BelongsTo
@@ -86,5 +111,28 @@ class Curso extends Model implements Auditable
     public function estaArchivado(): bool
     {
         return $this->estado === 'archivado';
+    }
+
+    /** Actividades con nota (sin las eliminadas), ordenadas por módulo, lección y actividad. */
+    public function actividadesCalificables(): \Illuminate\Support\Collection
+    {
+        return Actividad::whereHas('leccion.modulo', fn($q) => $q->where('curso_id', $this->id))
+            ->with('leccion.modulo')
+            ->get()
+            ->filter(fn($a) => $a->tieneCalificacion())
+            ->sortBy(fn($a) => [$a->leccion->modulo->orden, $a->leccion->orden, $a->orden])
+            ->values();
+    }
+
+    /** Hay ponderaciones configuradas pero no forman un esquema válido (faltan o no suman 100): la nota cae a por puntaje. */
+    public function ponderacionIncompleta(): bool
+    {
+        $a = $this->actividadesCalificables();
+        if ($a->whereNotNull('ponderacion')->isEmpty()) {
+            return false;
+        }
+
+        return $a->contains(fn($x) => $x->ponderacion === null)
+            || abs((float) $a->sum(fn($x) => (float) $x->ponderacion) - 100) >= 0.01;
     }
 }

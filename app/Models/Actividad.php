@@ -22,7 +22,7 @@ class Actividad extends Model implements Auditable
     protected $table = 'actividades';
     protected $fillable = [
         'leccion_id', 'tipo', 'titulo', 'ronda', 'numero_actividad', 'semana', 'descripcion',
-        'orden', 'puntaje_maximo', 'duracion_minutos', 'es_obligatoria',
+        'orden', 'puntaje_maximo', 'ponderacion', 'duracion_minutos', 'es_obligatoria',
         'fecha_apertura', 'fecha_cierre', 'usa_rubrica',
         'permitir_descarga_adjuntos', 'max_archivos_adjuntos',
         'intentos_permitidos', 'criterio_calificacion_intentos', 'mostrar_historial_intentos',
@@ -35,6 +35,7 @@ class Actividad extends Model implements Auditable
         'usa_rubrica'                 => 'boolean',
         'permitir_descarga_adjuntos'  => 'boolean',
         'puntaje_maximo'              => 'decimal:2',
+        'ponderacion'                 => 'decimal:2',
         'mostrar_historial_intentos'  => 'boolean',
     ];
 

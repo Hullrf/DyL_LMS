@@ -2,9 +2,22 @@
 @section('title', 'Editar: ' . $curso->titulo . ' - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.edit', $curso) }}@endsection
 @section('content')
+@include('cursos.partials.aviso-ponderacion')
+@if(count($faltan = $curso->fichaFaltantes()))
+    <div class="alert alert-warning mb-5" role="status">
+        Ficha académica incompleta: falta {{ implode(', ', $faltan) }}.
+        <a href="{{ route('cursos.ficha.edit', $curso) }}" class="font-medium underline">Completar ficha</a>
+    </div>
+@else
+    <p class="mb-5 text-sm"><a href="{{ route('cursos.ficha.edit', $curso) }}" class="text-dyl-orange-700 hover:underline">Ficha académica</a></p>
+@endif
 <div class="flex items-center justify-between gap-3 mb-6">
     <h1 class="text-2xl font-bold text-gray-900">Editar Curso</h1>
     <div class="flex items-center gap-4">
+        <a href="{{ route('cursos.ponderaciones.edit', $curso) }}"
+           class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">
+            Ponderaciones
+        </a>
         <a href="{{ route('cursos.exportar', $curso) }}"
            title="Descarga el curso (estructura, configuración y archivos) para respaldarlo o cargarlo en otra instalación"
            class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">

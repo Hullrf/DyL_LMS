@@ -17,7 +17,7 @@ class User extends Authenticatable implements Auditable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes, AuditableTrait;
 
-    protected $auditExclude   = ['updated_at', 'remember_token', 'two_factor_secret'];
+    protected $auditExclude   = ['updated_at', 'remember_token', 'two_factor_secret', 'calendario_token'];
     protected $auditThreshold = 100;
 
     protected $fillable = [
@@ -27,7 +27,7 @@ class User extends Authenticatable implements Auditable
     ];
 
     protected $hidden = [
-        'password', 'remember_token', 'two_factor_secret',
+        'password', 'remember_token', 'two_factor_secret', 'calendario_token',
     ];
 
     protected function casts(): array
@@ -42,6 +42,11 @@ class User extends Authenticatable implements Auditable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    public function eventosPersonales(): HasMany
+    {
+        return $this->hasMany(EventoPersonal::class);
     }
 
     public function cursosCreados(): HasMany

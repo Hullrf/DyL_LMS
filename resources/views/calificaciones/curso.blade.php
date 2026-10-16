@@ -8,7 +8,10 @@
         <h1 class="text-2xl font-bold text-gray-900">{{ $curso->titulo }}</h1>
         <p class="text-sm text-gray-500">Calificaciones</p>
     </div>
-    <a href="{{ route('calificaciones.index') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Cursos</a>
+    <div class="flex items-center gap-4">
+        <a href="{{ route('cursos.ponderaciones.edit', $curso) }}" class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">Ponderaciones</a>
+        <a href="{{ route('calificaciones.index') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Cursos</a>
+    </div>
 </div>
 
 @if(session('success'))
@@ -17,6 +20,8 @@
 @if(session('error'))
     <div class="alert alert-error mb-6">{{ session('error') }}</div>
 @endif
+
+@include('cursos.partials.aviso-ponderacion')
 
 {{-- Filtros --}}
 <form method="GET" action="{{ route('calificaciones.curso', $curso) }}"

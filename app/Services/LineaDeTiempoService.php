@@ -7,6 +7,7 @@ use App\Models\IntentoEnProgreso;
 use App\Models\ProgresoActividad;
 use App\Models\RespuestaEstudiante;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -57,6 +58,16 @@ class LineaDeTiempoService
             ->reject(fn($a) => isset($entregadas[$a->id]))
             ->groupBy(fn($a) => $a->leccion->modulo->curso_id)
             ->map(fn($g) => $g->first()->fecha_cierre);
+    }
+
+    /** Actividades visibles cuya apertura o cierre cae en [desde, hasta]. */
+    public function actividadesEnRango(User $user, Carbon $desde, Carbon $hasta, ?int $cursoId = null): Collection
+    {
+        return $this->actividadesVisibles($user, $cursoId)
+            ->where(fn($q) => $q->whereBetween('fecha_cierre', [$desde, $hasta])
+                ->orWhereBetween('fecha_apertura', [$desde, $hasta]))
+            ->orderBy('fecha_cierre')
+            ->get();
     }
 
     private function actividadesVisibles(User $user, ?int $cursoId = null, ?string $buscar = null, ?int $ronda = null): Builder

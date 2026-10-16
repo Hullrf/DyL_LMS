@@ -87,20 +87,7 @@ class ReporteService
                 : 0;
 
             // Promedio de calificaciones en este curso
-            $respuestas = $usuario->respuestas()
-                ->where('estado', 'calificada')
-                ->whereHas('actividad', fn($q) => $q->whereNotNull('puntaje_maximo'))
-                ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
-                ->with('actividad')
-                ->get();
-            $respuestasOficiales = $this->calificacionService->respuestasOficiales($respuestas);
-
-            $promedio = null;
-            if ($respuestasOficiales->isNotEmpty()) {
-                $totalPts    = $respuestasOficiales->sum(fn($r) => $r->actividad->puntaje_maximo);
-                $obtenidoPts = $respuestasOficiales->sum('calificacion');
-                $promedio    = $totalPts > 0 ? (int) round(($obtenidoPts / $totalPts) * 100) : null;
-            }
+            $promedio = $this->promedioCurso($usuario, $curso);
 
             $certificado = Certificado::where('user_id', $usuario->id)
                 ->where('curso_id', $curso->id)
@@ -132,6 +119,12 @@ class ReporteService
         ];
     }
 
+    /** Misma nota que el certificado y las vistas del estudiante (NotaCursoService). */
+    private function promedioCurso(User $usuario, Curso $curso): ?int
+    {
+        return app(NotaCursoService::class)->para($usuario, $curso)['promedio_a_la_fecha'];
+    }
+
     // ---------------------------------------------------------------
     // Reporte por estudiante
     // ---------------------------------------------------------------
@@ -157,20 +150,7 @@ class ReporteService
                 ? (int) round(($completadasCount / $totalLecciones) * 100)
                 : 0;
 
-            $respuestas = $usuario->respuestas()
-                ->where('estado', 'calificada')
-                ->whereHas('actividad', fn($q) => $q->whereNotNull('puntaje_maximo'))
-                ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
-                ->with('actividad')
-                ->get();
-            $respuestasOficiales = $this->calificacionService->respuestasOficiales($respuestas);
-
-            $promedio = null;
-            if ($respuestasOficiales->isNotEmpty()) {
-                $totalPts    = $respuestasOficiales->sum(fn($r) => $r->actividad->puntaje_maximo);
-                $obtenidoPts = $respuestasOficiales->sum('calificacion');
-                $promedio    = $totalPts > 0 ? (int) round(($obtenidoPts / $totalPts) * 100) : null;
-            }
+            $promedio = $this->promedioCurso($usuario, $curso);
 
             $certificado = Certificado::where('user_id', $usuario->id)
                 ->where('curso_id', $curso->id)->first();

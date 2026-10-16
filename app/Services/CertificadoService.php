@@ -14,10 +14,6 @@ use Mpdf\Config\FontVariables;
 
 class CertificadoService
 {
-    public function __construct(private CalificacionService $calificacionService)
-    {
-    }
-
     /**
      * Genera (o recupera) el certificado de un usuario para un curso, a
      * pedido explícito de un instructor/admin que lo aprueba.
@@ -166,30 +162,9 @@ class CertificadoService
         return $numero;
     }
 
-    /**
-     * Promedio ponderado de calificaciones del estudiante en el curso.
-     */
+    /** Misma nota que ve el estudiante; sin nada calificado se aprueba por completar lecciones. */
     private function calcularCalificacionFinal(User $usuario, Curso $curso): int
     {
-        $respuestas = $usuario->respuestas()
-            ->where('estado', 'calificada')
-            ->whereHas('actividad.leccion.modulo', fn($q) => $q->where('curso_id', $curso->id))
-            ->with('actividad')
-            ->get();
-
-        $respuestasOficiales = $this->calificacionService->respuestasOficiales($respuestas);
-
-        if ($respuestasOficiales->isEmpty()) {
-            return 100; // Si no hay actividades, aprobado por completar lecciones
-        }
-
-        $total    = $respuestasOficiales->sum(fn($r) => $r->actividad->puntaje_maximo);
-        $obtenido = $respuestasOficiales->sum('calificacion');
-
-        if ($total === 0) {
-            return 100;
-        }
-
-        return (int) round(($obtenido / $total) * 100);
+        return app(NotaCursoService::class)->para($usuario, $curso)['promedio_a_la_fecha'] ?? 100;
     }
 }
