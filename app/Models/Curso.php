@@ -24,6 +24,7 @@ class Curso extends Model implements Auditable
         'titulo', 'codigo', 'grupo', 'descripcion', 'duracion_horas',
         'imagen_portada', 'estado', 'created_by', 'orden', 'categoria_id',
         'tipo_certificado', 'nota_aprobatoria',
+        'seguimiento_dias_sin_acceso', 'seguimiento_max_atrasadas',
     ];
 
     /** "CAD612021730 · Grupo 703M" con las partes presentes (FE-1: metadatos fuera del título). */

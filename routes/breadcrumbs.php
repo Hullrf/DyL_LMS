@@ -86,7 +86,10 @@ Breadcrumbs::for('reportes.index', fn(Trail $t) =>
 Breadcrumbs::for('reportes.curso', fn(Trail $t, $curso) =>
     $t->parent('reportes.index')->push($curso->titulo)
 );
-Breadcrumbs::for('reportes.estudiante', fn(Trail $t, $usuario) =>
+Breadcrumbs::for('reportes.seguimiento', fn(Trail $t, $curso) =>
+    $t->parent('reportes.curso', $curso)->push('Seguimiento')
+);
+Breadcrumbs::for('reportes.estudiante',fn(Trail $t, $usuario) =>
     $t->parent('reportes.index')->push($usuario->name)
 );
 

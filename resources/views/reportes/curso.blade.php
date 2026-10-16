@@ -10,6 +10,10 @@
         <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $curso->titulo }}</h1>
     </div>
     <div class="flex gap-2">
+        <a href="{{ route('reportes.seguimiento', $curso) }}"
+           class="flex items-center gap-1.5 bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
+            Seguimiento
+        </a>
         <a href="{{ route('reportes.csv', $curso) }}"
            class="flex items-center gap-1.5 bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

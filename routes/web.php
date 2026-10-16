@@ -150,7 +150,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('instructor')->group(function () {
         Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
         Route::get('/reportes/cursos/{curso}', [ReporteController::class, 'curso'])->name('reportes.curso');
-        Route::get('/reportes/cursos/{curso}/csv', [ReporteController::class, 'exportarCsvCurso'])->name('reportes.csv');
+        Route::get('/reportes/cursos/{curso}/seguimiento', [\App\Http\Controllers\SeguimientoController::class, 'index'])->name('reportes.seguimiento');
+        Route::put('/reportes/cursos/{curso}/seguimiento/umbrales', [\App\Http\Controllers\SeguimientoController::class, 'umbrales'])->name('reportes.seguimiento.umbrales');
+        Route::get('/reportes/cursos/{curso}/seguimiento/csv', [\App\Http\Controllers\SeguimientoController::class, 'csv'])->name('reportes.seguimiento.csv');
+        Route::get('/reportes/cursos/{curso}/csv',[ReporteController::class, 'exportarCsvCurso'])->name('reportes.csv');
         Route::get('/reportes/cursos/{curso}/pdf', [ReporteController::class, 'exportarPdfCurso'])->name('reportes.pdf');
         Route::get('/reportes/estudiantes/{usuario}', [ReporteController::class, 'estudiante'])->name('reportes.estudiante');
     });
