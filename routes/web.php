@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('instructor')->group(function () {
         Route::post('/cursos/{curso}/modo-edicion', [\App\Http\Controllers\ModoEdicionController::class, 'alternar'])->name('cursos.modo-edicion');
-        Route::get('/cursos/{curso}/editar',[CursoController::class, 'edit'])->name('cursos.edit');
+        Route::get('/cursos/{curso}/editar', [CursoController::class, 'edit'])->name('cursos.edit');
         Route::get('/cursos/{curso}/exportar', [CursoPlantillaController::class, 'exportar'])->name('cursos.exportar');
         Route::get('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'edit'])->name('cursos.ponderaciones.edit');
         Route::put('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'update'])->name('cursos.ponderaciones.update');
@@ -154,7 +154,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/reportes/cursos/{curso}/seguimiento', [\App\Http\Controllers\SeguimientoController::class, 'index'])->name('reportes.seguimiento');
         Route::put('/reportes/cursos/{curso}/seguimiento/umbrales', [\App\Http\Controllers\SeguimientoController::class, 'umbrales'])->name('reportes.seguimiento.umbrales');
         Route::get('/reportes/cursos/{curso}/seguimiento/csv', [\App\Http\Controllers\SeguimientoController::class, 'csv'])->name('reportes.seguimiento.csv');
-        Route::get('/reportes/cursos/{curso}/csv',[ReporteController::class, 'exportarCsvCurso'])->name('reportes.csv');
+        Route::get('/reportes/cursos/{curso}/csv', [ReporteController::class, 'exportarCsvCurso'])->name('reportes.csv');
         Route::get('/reportes/cursos/{curso}/pdf', [ReporteController::class, 'exportarPdfCurso'])->name('reportes.pdf');
         Route::get('/reportes/estudiantes/{usuario}', [ReporteController::class, 'estudiante'])->name('reportes.estudiante');
     });

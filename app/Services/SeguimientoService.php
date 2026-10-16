@@ -58,7 +58,8 @@ class SeguimientoService
 
             $atrasadas = $vencidasIds->filter(fn($id) => !isset($entregadas["{$u->id}-{$id}"]))->count();
             $senales = array_keys(array_filter([
-                'sin_acceso' => $u->ultimo_acceso === null || $u->ultimo_acceso->lt(now()->subDays($diasSinAcceso)),
+                'sin_acceso' => $insc->estado !== 'completado'
+                    && ($u->ultimo_acceso === null || $u->ultimo_acceso->lt(now()->subDays($diasSinAcceso))),
                 'atrasadas'  => $atrasadas >= $maxAtrasadas,
                 'nota_baja'  => !$nota['alcanzable']
                     || ($nota['promedio_a_la_fecha'] !== null && $nota['promedio_a_la_fecha'] < $aprobatoria),

@@ -116,7 +116,7 @@
 
 {{-- Contenido del curso --}}
 @php
-    $puedeEditar = auth()->user()->esAdmin() || auth()->id() === $curso->created_by;
+    $puedeEditar = auth()->user()->can('update', $curso);
     $modoEdicion = $puedeEditar && session('modo_edicion', false);
 @endphp
 
@@ -250,7 +250,7 @@
 </div>
 
 @include('cursos.partials.competencias', ['curso' => $curso])
-@include('cursos.partials.ficha',['curso' => $curso->loadMissing('ficha', 'bibliografias', 'creador')])
+@include('cursos.partials.ficha', ['curso' => $curso->loadMissing('ficha', 'bibliografias', 'creador')])
 
 @endsection
 

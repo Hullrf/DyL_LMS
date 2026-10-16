@@ -146,7 +146,8 @@ class SeguimientoTest extends TestCase
 
         $this->actingAs($inst)->get(route('reportes.seguimiento', $curso))->assertOk()
             ->assertSee('Ana Riesgo')->assertSee('Beto AlDia')
-            ->assertSee('Atención')->assertSee('Al día')->assertSee('Nunca ha ingresado');
+            ->assertSee('Atención')->assertSee('Al día')->assertSee('Sin registro de ingreso')
+            ->assertSee('La última conexión se registra desde la actualización de octubre de 2026');
     }
 
     public function test_error_del_servicio_muestra_mensaje_con_reintento_no_pantalla_en_blanco(): void
@@ -197,5 +198,28 @@ class SeguimientoTest extends TestCase
             $this->actingAs($this->estudiante())->get(route($ruta, $curso))->assertForbidden();
         }
         $this->actingAs($this->admin())->get(route('reportes.seguimiento', $curso))->assertOk();
+
+        $payload = ['seguimiento_dias_sin_acceso' => 10, 'seguimiento_max_atrasadas' => 3];
+        $this->actingAs($this->instructor())->put(route('reportes.seguimiento.umbrales', $curso), $payload)->assertForbidden();
+        $this->actingAs($this->estudiante())->put(route('reportes.seguimiento.umbrales', $curso), $payload)->assertForbidden();
+    }
+
+    public function test_egresado_completado_no_se_marca_sin_acceso(): void
+    {
+        [, $curso] = $this->curso();
+        $viejo = now()->subDays(30);
+        $egresado = $this->inscribir($curso, $viejo);
+        Inscripcion::where('user_id', $egresado->id)->update(['estado' => 'completado']);
+        $nulo = $this->inscribir($curso, null);
+        Inscripcion::where('user_id', $nulo->id)->update(['estado' => 'completado']);
+        $activo = $this->inscribir($curso, $viejo);
+        Inscripcion::where('user_id', $activo->id)->update(['estado' => 'en_progreso']);
+
+        foreach ([$egresado, $nulo] as $u) {
+            $f = $this->fila($curso, $u);
+            $this->assertNotContains('sin_acceso', $f->senales);
+            $this->assertSame('ok', $f->nivel);
+        }
+        $this->assertContains('sin_acceso', $this->fila($curso, $activo)->senales);
     }
 }

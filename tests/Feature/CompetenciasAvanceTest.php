@@ -86,6 +86,14 @@ class CompetenciasAvanceTest extends TestCase
             ->assertSee('Competencia vacía')->assertSeeText('Sin actividades enlazadas');
     }
 
+    public function test_inscripcion_abandonada_no_ve_la_seccion(): void
+    {
+        [$u, $curso] = $this->escenario();
+        $curso->inscripciones()->where('user_id', $u->id)->update(['estado' => 'abandonado']);
+
+        $this->actingAs($u)->get(route('cursos.show', $curso))->assertOk()->assertDontSee('Competencias del curso');
+    }
+
     public function test_el_instructor_no_ve_la_seccion_de_estudiante(): void
     {
         [$u, $curso] = $this->escenario();

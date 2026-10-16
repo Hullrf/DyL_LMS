@@ -26,6 +26,7 @@
             </div>
         @endforeach
     </div>
+    <p class="mb-6 -mt-3 text-xs text-gray-500">La última conexión se registra desde la actualización de octubre de 2026; los estudiantes sin registro aparecerán como «Atención» hasta su próxima visita.</p>
 
     <form method="POST" action="{{ route('reportes.seguimiento.umbrales', $curso) }}" class="mb-6 flex flex-wrap items-end gap-3 rounded-xl bg-white p-4 shadow text-sm">
         @csrf @method('PUT')
@@ -64,7 +65,7 @@
                             <td class="px-4 py-3">{{ $f->progreso_pct === null ? '—' : $f->progreso_pct . '%' }}</td>
                             <td class="px-4 py-3">{{ $f->promedio === null ? '—' : $f->promedio . '%' }}</td>
                             <td class="px-4 py-3">{{ $f->atrasadas }}</td>
-                            <td class="px-4 py-3">{{ $f->ultimo_acceso ? $f->ultimo_acceso->format('d/m/Y H:i') : 'Nunca ha ingresado' }}</td>
+                            <td class="px-4 py-3">{{ $f->ultimo_acceso ? $f->ultimo_acceso->format('d/m/Y H:i') : 'Sin registro de ingreso' }}</td>
                             <td class="px-4 py-3 text-xs text-gray-600">
                                 @forelse($f->senales as $s){{ $senales[$s] }}@if(!$loop->last) · @endif @empty — @endforelse
                             </td>

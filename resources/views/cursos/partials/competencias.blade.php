@@ -1,6 +1,6 @@
 @php
     $esEstudianteDelCurso = auth()->check() && auth()->id() !== $curso->created_by && !auth()->user()->esAdmin()
-        && $curso->inscripciones()->where('user_id', auth()->id())->exists();
+        && $curso->inscripciones()->where('user_id', auth()->id())->where('estado', '!=', 'abandonado')->exists();
     $avance = $esEstudianteDelCurso ? app(\App\Services\CompetenciasService::class)->avance(auth()->user(), $curso) : collect();
 @endphp
 @if($avance->isNotEmpty())
