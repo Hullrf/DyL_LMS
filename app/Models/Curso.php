@@ -113,15 +113,25 @@ class Curso extends Model implements Auditable
         return $this->estado === 'archivado';
     }
 
-    /** Actividades con nota (sin las eliminadas), ordenadas por módulo, lección y actividad. */
-    public function actividadesCalificables(): \Illuminate\Support\Collection
+    /** Todas las actividades vivas del curso, ordenadas por módulo, lección y actividad. */
+    public function todasLasActividades(): \Illuminate\Support\Collection
     {
         return Actividad::whereHas('leccion.modulo', fn($q) => $q->where('curso_id', $this->id))
             ->with('leccion.modulo')
             ->get()
-            ->filter(fn($a) => $a->tieneCalificacion())
             ->sortBy(fn($a) => [$a->leccion->modulo->orden, $a->leccion->orden, $a->orden])
             ->values();
+    }
+
+    /** Actividades con nota (sin las eliminadas), ordenadas por módulo, lección y actividad. */
+    public function actividadesCalificables(): \Illuminate\Support\Collection
+    {
+        return $this->todasLasActividades()->filter(fn($a) => $a->tieneCalificacion())->values();
+    }
+
+    public function competencias(): HasMany
+    {
+        return $this->hasMany(Competencia::class)->orderBy('orden')->orderBy('id');
     }
 
     /** Hay ponderaciones configuradas pero no forman un esquema válido (faltan o no suman 100): la nota cae a por puntaje. */

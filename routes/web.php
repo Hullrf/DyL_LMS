@@ -59,6 +59,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/cursos/{curso}/exportar', [CursoPlantillaController::class, 'exportar'])->name('cursos.exportar');
         Route::get('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'edit'])->name('cursos.ponderaciones.edit');
         Route::put('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'update'])->name('cursos.ponderaciones.update');
+        Route::get('/cursos/{curso}/competencias', [\App\Http\Controllers\CompetenciaController::class, 'index'])->name('cursos.competencias.index');
+        Route::post('/cursos/{curso}/competencias', [\App\Http\Controllers\CompetenciaController::class, 'store'])->name('cursos.competencias.store');
+        Route::put('/cursos/{curso}/competencias/{competencia}', [\App\Http\Controllers\CompetenciaController::class, 'update'])->name('cursos.competencias.update');
+        Route::delete('/cursos/{curso}/competencias/{competencia}', [\App\Http\Controllers\CompetenciaController::class, 'destroy'])->name('cursos.competencias.destroy');
         Route::get('/cursos/{curso}/ficha', [\App\Http\Controllers\FichaController::class, 'edit'])->name('cursos.ficha.edit');
         Route::put('/cursos/{curso}/ficha', [\App\Http\Controllers\FichaController::class, 'update'])->name('cursos.ficha.update');
         Route::put('/cursos/{curso}', [CursoController::class, 'update'])->name('cursos.update');

@@ -34,6 +34,9 @@ Breadcrumbs::for('cursos.edit', fn(Trail $t, $curso) =>
 Breadcrumbs::for('cursos.ponderaciones', fn(Trail $t, $curso) =>
     $t->parent('cursos.show', $curso)->push('Ponderaciones')
 );
+Breadcrumbs::for('cursos.competencias', fn(Trail $t, $curso) =>
+    $t->parent('cursos.show', $curso)->push('Competencias')
+);
 Breadcrumbs::for('cursos.ficha', fn(Trail $t, $curso) =>
     $t->parent('cursos.show', $curso)->push('Ficha académica')
 );
