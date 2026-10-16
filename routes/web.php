@@ -55,7 +55,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('instructor')->group(function () {
-        Route::get('/cursos/{curso}/editar', [CursoController::class, 'edit'])->name('cursos.edit');
+        Route::post('/cursos/{curso}/modo-edicion', [\App\Http\Controllers\ModoEdicionController::class, 'alternar'])->name('cursos.modo-edicion');
+        Route::get('/cursos/{curso}/editar',[CursoController::class, 'edit'])->name('cursos.edit');
         Route::get('/cursos/{curso}/exportar', [CursoPlantillaController::class, 'exportar'])->name('cursos.exportar');
         Route::get('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'edit'])->name('cursos.ponderaciones.edit');
         Route::put('/cursos/{curso}/ponderaciones', [\App\Http\Controllers\PonderacionController::class, 'update'])->name('cursos.ponderaciones.update');
