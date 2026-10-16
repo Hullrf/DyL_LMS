@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'instructor' => \App\Http\Middleware\IsInstructor::class,
             '2fa'        => \App\Http\Middleware\TwoFactorMiddleware::class,
         ]);
+        $middleware->appendToGroup('web', \App\Http\Middleware\RegistrarUltimoAcceso::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -36,6 +36,7 @@ class User extends Authenticatable implements Auditable
             'email_verified_at'  => 'datetime',
             'password'           => 'hashed',
             'two_factor_enabled' => 'boolean',
+            'ultimo_acceso'      => 'datetime',
         ];
     }
 
