@@ -67,6 +67,7 @@ class CalificacionController extends Controller
 
         $inscripciones = Inscripcion::with('usuario')
             ->where('curso_id', $curso->id)
+            ->whereHas('usuario') // excluye usuarios eliminados (soft delete)
             ->when($request->filled('buscar'), fn($q) => $q->whereHas('usuario', fn($q2) =>
                 $q2->where('name', 'like', "%{$request->buscar}%")
                    ->orWhere('email', 'like', "%{$request->buscar}%")

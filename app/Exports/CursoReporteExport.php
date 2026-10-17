@@ -20,7 +20,7 @@ class CursoReporteExport implements FromCollection, WithHeadings, WithTitle, Wit
         $leccionIds     = $this->curso->lecciones->pluck('id');
         $totalLecciones = $leccionIds->count();
 
-        return $this->curso->inscripciones()->with('usuario')->get()
+        return $this->curso->inscripciones()->with('usuario')->whereHas('usuario')->get()
             ->map(function ($insc) use ($leccionIds, $totalLecciones) {
                 $completadas = ProgresoLeccion::where('user_id', $insc->user_id)
                     ->whereIn('leccion_id', $leccionIds)

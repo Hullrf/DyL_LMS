@@ -63,6 +63,7 @@ class ReporteService
     {
         $inscripciones = Inscripcion::with('usuario')
             ->where('curso_id', $curso->id)
+            ->whereHas('usuario') // excluye usuarios eliminados (soft delete)
             ->get();
 
         $totalInscritos   = $inscripciones->count();

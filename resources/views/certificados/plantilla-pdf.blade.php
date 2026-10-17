@@ -63,7 +63,8 @@
             position: absolute;
             top: 50mm;
             left: 20mm;
-            right: 55mm;
+            right: 20mm;
+            text-align: center;
         }
 
         .hace-constar {
@@ -105,11 +106,12 @@
             color: #374151;
             margin-bottom: 16mm;
         }
-        .datos-fila span { margin-right: 20mm; }
+        .datos-fila span { margin: 0 10mm; }
         .datos-fila strong { color: #1F2937; }
 
         .firma-bloque {
             width: 70mm;
+            margin: 0 auto;
         }
         .firma-img {
             width: 40mm;
@@ -134,6 +136,7 @@
             bottom: 10mm;
             left: 20mm;
             right: 20mm;
+            text-align: center;
             font-size: 9pt;
             color: #16A34A;
             font-weight: bold;
