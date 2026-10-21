@@ -9,20 +9,32 @@
             <a href="{{ route('certificados.mis') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Mis certificados</a>
             <h1 class="text-2xl font-bold text-gray-900 mt-1">Certificado de Finalización</h1>
         </div>
-        <a href="{{ route('certificados.descargar', $certificado) }}"
-           class="flex items-center gap-2 bg-dyl-orange-600 text-white px-5 py-2.5 rounded-lg hover:bg-dyl-orange-700 font-medium">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            Descargar PDF
-        </a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('certificados.descargar', $certificado) }}"
+               class="flex items-center gap-2 bg-dyl-orange-600 text-white px-5 py-2.5 rounded-lg hover:bg-dyl-orange-700 font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Descargar PDF
+            </a>
+            @if(auth()->user()->esAdmin() || $certificado->curso->created_by === auth()->id())
+                <form method="POST" action="{{ route('certificados.regenerar', $certificado) }}"
+                      onsubmit="return confirm('¿Regenerar el PDF con la plantilla actual?')">
+                    @csrf
+                    <button type="submit"
+                            class="flex items-center gap-2 border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 font-medium">
+                        Regenerar PDF
+                    </button>
+                </form>
+            @endif
+        </div>
     </div>
 
     {{-- Previsualización: el PDF real, no un mockup aparte --}}
     @if($certificado->archivo_pdf && Storage::disk('public')->exists($certificado->archivo_pdf))
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-dyl-orange-300">
             <iframe
-                src="{{ route('certificados.previsualizar', $certificado) }}"
+                src="{{ route('certificados.previsualizar', $certificado) }}?v={{ $certificado->updated_at?->timestamp }}"
                 class="w-full"
                 style="height: 80vh; border: none;"
                 title="Certificado {{ $certificado->numero_certificado }}"

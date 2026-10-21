@@ -58,6 +58,35 @@ class CertificadoController extends Controller
     }
 
     /**
+     * Rehace el PDF con la plantilla vigente. Solo admin o instructor dueño
+     * del curso (el estudiante dueño del certificado NO puede).
+     */
+    public function regenerar(Certificado $certificado)
+    {
+        $user = Auth::user();
+
+        if (!$user->esAdmin() && $certificado->curso->created_by !== $user->id) {
+            abort(403);
+        }
+
+        try {
+            $ruta = $this->certificadoService->generarPdf($certificado);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', 'No se pudo regenerar: falta el número de documento de '
+                . $certificado->usuario->name . '; pídele que lo complete en su perfil.');
+        }
+
+        $anterior = $certificado->archivo_pdf;
+        if ($anterior && $anterior !== $ruta) {
+            Storage::disk('public')->delete($anterior);
+        }
+
+        $certificado->update(['archivo_pdf' => $ruta]);
+
+        return back()->with('success', 'Certificado regenerado con la plantilla actual.');
+    }
+
+    /**
      * El dueño del certificado, un admin, o el instructor del curso al que
      * pertenece pueden verlo, descargarlo o previsualizarlo.
      */

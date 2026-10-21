@@ -164,6 +164,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/certificados/{certificado}', [CertificadoController::class, 'show'])->name('certificados.show');
     Route::get('/certificados/{certificado}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
     Route::get('/certificados/{certificado}/previsualizar', [CertificadoController::class, 'previsualizar'])->name('certificados.previsualizar');
+    Route::post('/certificados/{certificado}/regenerar', [CertificadoController::class, 'regenerar'])->name('certificados.regenerar');
 
     // Anuncios
     Route::get('/anuncios', [AnuncioController::class, 'todos'])->name('anuncios.todos');
