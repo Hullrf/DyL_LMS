@@ -34,7 +34,7 @@
     @if($certificado->archivo_pdf && Storage::disk('public')->exists($certificado->archivo_pdf))
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-dyl-orange-300">
             <iframe
-                src="{{ route('certificados.previsualizar', $certificado) }}"
+                src="{{ route('certificados.previsualizar', $certificado) }}?v={{ $certificado->updated_at?->timestamp }}"
                 class="w-full"
                 style="height: 80vh; border: none;"
                 title="Certificado {{ $certificado->numero_certificado }}"

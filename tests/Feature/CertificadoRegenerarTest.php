@@ -169,4 +169,19 @@ class CertificadoRegenerarTest extends TestCase
             ->assertOk()
             ->assertDontSee('Regenerar PDF');
     }
+
+    public function test_iframe_de_previsualizacion_cambia_de_url_al_regenerar(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('certificados/2026/certificado-CERT-REG.pdf', 'pdf');
+        $instructor  = User::factory()->create();
+        $certificado = $this->crearCertificado($instructor, 'certificados/2026/certificado-CERT-REG.pdf');
+        $certificado->forceFill(['updated_at' => now()->subDay()])->saveQuietly();
+
+        $url = route('certificados.previsualizar', $certificado) . '?v=' . $certificado->fresh()->updated_at->timestamp;
+
+        $this->actingAs($instructor)
+            ->get(route('certificados.show', $certificado))
+            ->assertSee($url, false);
+    }
 }
