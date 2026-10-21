@@ -16,12 +16,9 @@
 
             {{-- Panel izquierdo decorativo (oculto en móvil) --}}
             <div class="hidden lg:flex lg:w-1/2 bg-dyl-graphite-900 flex-col justify-between p-12 relative overflow-hidden">
-                {{-- Patrón de fondo --}}
-                <div class="absolute inset-0 opacity-5">
-                    <div class="absolute top-10 left-10 w-64 h-64 rounded-full border-[40px] border-white"></div>
-                    <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full border-[60px] border-white"></div>
-                    <div class="absolute top-1/2 left-1/3 w-48 h-48 rounded-full border-[30px] border-white"></div>
-                </div>
+                {{-- Imagen de fondo + degradado para legibilidad --}}
+                <img src="{{ asset('images/login-hero.png') }}" alt="" class="absolute inset-0 w-full h-full object-cover" aria-hidden="true">
+                <div class="absolute inset-0 bg-gradient-to-b from-dyl-graphite-900/80 via-dyl-graphite-900/40 to-dyl-graphite-900/90"></div>
 
                 {{-- Logo --}}
                 <a href="/" class="flex items-center gap-3 relative z-10">
