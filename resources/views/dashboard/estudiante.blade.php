@@ -4,10 +4,6 @@
 @section('content')
 <h1 class="text-3xl font-bold text-gray-900 mb-8">Mi Aprendizaje</h1>
 
-@if(session('success'))
-    <div class="alert alert-success mb-6">{{ session('success') }}</div>
-@endif
-
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
     <div class="bg-white p-6 rounded-lg shadow">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Cursos Activos</p>

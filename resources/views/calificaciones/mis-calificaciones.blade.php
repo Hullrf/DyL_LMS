@@ -7,10 +7,6 @@
     <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm">&larr; Dashboard</a>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success mb-6">{{ session('success') }}</div>
-@endif
-
 {{-- Resumen rápido --}}
 @if($respuestas->count() > 0)
 @php

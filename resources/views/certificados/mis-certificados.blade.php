@@ -7,13 +7,6 @@
     <a href="{{ route('dashboard') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Dashboard</a>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success mb-6">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-error mb-6">{{ session('error') }}</div>
-@endif
-
 @forelse($certificados as $cert)
     <div class="bg-white rounded-xl shadow hover:shadow-md transition-shadow mb-4 overflow-hidden border-l-4 border-dyl-orange-400">
         <div class="p-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">

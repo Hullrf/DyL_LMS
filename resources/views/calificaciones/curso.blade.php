@@ -14,13 +14,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success mb-6">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-error mb-6">{{ session('error') }}</div>
-@endif
-
 @include('cursos.partials.aviso-ponderacion')
 
 {{-- Filtros --}}

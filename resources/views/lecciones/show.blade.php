@@ -87,17 +87,6 @@
     <main class="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-6 max-w-4xl">
 
         {{-- Mensajes flash --}}
-        @if(session('success'))
-            <div class="mb-6 alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="mb-6 alert alert-error">
-                {{ session('error') }}
-            </div>
-        @endif
-
         {{-- Breadcrumb móvil --}}
         <div class="lg:hidden mb-4 flex items-center gap-2 text-sm text-gray-500">
             <button @click="sidebarOpen = true" class="p-1.5 -ml-1.5 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100" aria-label="Abrir índice del curso">

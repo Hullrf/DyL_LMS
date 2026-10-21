@@ -8,13 +8,6 @@
     <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm">&#8592; Dashboard</a>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success mb-6">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-error mb-6">{{ session('error') }}</div>
-@endif
-
 <div class="bg-white rounded-xl shadow mb-8">
     <div class="px-6 py-4 border-b border-gray-100">
         <h2 class="text-lg font-bold text-gray-900">Elige un curso para calificar</h2>

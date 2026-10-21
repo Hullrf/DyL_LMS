@@ -9,10 +9,6 @@
         <a href="{{ route('mensajes.create') }}" class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-dyl-orange-700">+ Nuevo mensaje</a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success mb-4">{{ session('success') }}</div>
-    @endif
-
     @forelse($recibidos as $m)
         <a href="{{ route('mensajes.conversacion', $m) }}"
            class="block bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-3 hover:shadow-md transition-shadow {{ $m->leido ? '' : 'border-l-4 border-l-dyl-orange-500' }}">
