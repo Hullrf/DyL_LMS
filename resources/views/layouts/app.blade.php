@@ -150,7 +150,7 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div class="flex items-center gap-2.5">
-                            <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-8 h-8" aria-hidden="true">
+                            <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-12 h-12" aria-hidden="true">
                             <span class="text-white/80 font-semibold text-sm">DyL Quality Consulting</span>
                         </div>
                         <p class="text-white/40 text-xs">
