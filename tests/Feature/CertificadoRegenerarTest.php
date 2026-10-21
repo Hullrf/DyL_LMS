@@ -145,4 +145,28 @@ class CertificadoRegenerarTest extends TestCase
             }
         }
     }
+
+    public function test_boton_visible_para_admin_y_dueno_del_curso(): void
+    {
+        $instructor  = User::factory()->create();
+        $certificado = $this->crearCertificado($instructor);
+
+        foreach ([$this->admin(), $instructor] as $usuario) {
+            $this->actingAs($usuario)
+                ->get(route('certificados.show', $certificado))
+                ->assertOk()
+                ->assertSee('Regenerar PDF')
+                ->assertSee(route('certificados.regenerar', $certificado), false);
+        }
+    }
+
+    public function test_boton_oculto_para_el_estudiante(): void
+    {
+        $certificado = $this->crearCertificado(User::factory()->create());
+
+        $this->actingAs($certificado->usuario)
+            ->get(route('certificados.show', $certificado))
+            ->assertOk()
+            ->assertDontSee('Regenerar PDF');
+    }
 }
