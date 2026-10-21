@@ -9,7 +9,7 @@
 
     <div class="dyl-sb-top">
         <a href="{{ route('dashboard') }}" class="dyl-sb-logo" aria-label="D&amp;L Quality Campus - Ir al inicio">
-            <span class="dyl-sb-sq" aria-hidden="true">D&amp;L</span>
+            <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-8 h-8 flex-shrink-0" aria-hidden="true">
             <span class="dyl-sb-label">Quality Campus</span>
         </a>
     </div>

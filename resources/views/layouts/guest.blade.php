@@ -22,9 +22,7 @@
 
                 {{-- Logo --}}
                 <a href="/" class="flex items-center gap-3 relative z-10">
-                    <div class="bg-dyl-orange-500 rounded-xl flex items-center justify-center px-2.5 h-10">
-                        <span class="text-dyl-graphite-900 font-bold text-base tracking-tight">D&amp;L</span>
-                    </div>
+                    <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-12 h-12" aria-hidden="true">
                     <span class="text-white font-bold text-xl tracking-tight">Quality Campus</span>
                 </a>
 
@@ -58,9 +56,7 @@
 
                 {{-- Logo móvil --}}
                 <a href="/" class="flex items-center gap-2 mb-8 lg:hidden">
-                    <div class="bg-dyl-orange-500 rounded-lg flex items-center justify-center px-2 h-9">
-                        <span class="text-dyl-graphite-900 font-bold tracking-tight">D&amp;L</span>
-                    </div>
+                    <img src="{{ asset('images/logo/logo-icon-light-256.png') }}" alt="" class="w-10 h-10" aria-hidden="true">
                     <span class="text-dyl-graphite-900 font-bold text-lg">Quality Campus</span>
                 </a>
 
