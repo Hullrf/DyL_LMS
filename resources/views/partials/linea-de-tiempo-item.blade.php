@@ -10,7 +10,7 @@
     </div>
     <a href="{{ route('actividades.show', $i->actividad) }}"
        class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium
-              {{ $i->estado === 'entregada' ? 'border border-gray-300 text-gray-700 hover:bg-gray-50' : 'bg-dyl-orange-600 text-white hover:bg-dyl-orange-700' }}">
+              {{ $i->estado === 'entregada' ? 'border border-gray-300 text-gray-700 hover:bg-gray-50' : 'bg-dyl-orange-700 text-white hover:bg-dyl-orange-800' }}">
         {{ $i->accion }}
     </a>
 </li>

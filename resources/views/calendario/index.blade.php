@@ -73,7 +73,7 @@
         <label class="text-sm text-gray-700 sm:col-span-2">Descripción (opcional)
             <textarea name="descripcion" rows="2" maxlength="2000" class="mt-1 block w-full rounded-lg border-gray-300 text-sm">{{ old('descripcion') }}</textarea>
         </label>
-        <div><button class="rounded-lg bg-dyl-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Agregar</button></div>
+        <div><button class="rounded-lg bg-dyl-orange-700 px-4 py-2 text-sm font-medium text-white hover:bg-dyl-orange-800">Agregar</button></div>
     </form>
 </details>
 

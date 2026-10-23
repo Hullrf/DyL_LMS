@@ -59,7 +59,7 @@
     </div>
 
     <div class="mt-4 flex gap-3">
-        <button type="submit" class="rounded-lg bg-dyl-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Guardar</button>
+        <button type="submit" class="rounded-lg bg-dyl-orange-700 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-800">Guardar</button>
         <button type="button" @click="limpiar()" class="rounded-lg border border-gray-300 px-5 py-2 text-sm text-gray-700 hover:bg-gray-50">Repartir por puntaje</button>
         <a href="{{ route('calificaciones.curso', $curso) }}" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">Volver a calificaciones</a>
     </div>

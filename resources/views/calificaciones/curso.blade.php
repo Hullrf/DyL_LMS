@@ -34,7 +34,7 @@
         @endforeach
     </select>
     @endif
-    <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Filtrar</button>
+    <button type="submit" class="px-4 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Filtrar</button>
     @if(request()->anyFilled(['buscar', 'estado', 'modulo']))
         <a href="{{ route('calificaciones.curso', $curso) }}" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</a>
     @endif
@@ -107,7 +107,7 @@
                                 <span class="text-gray-300">—</span>
                             @elseif($respuesta->estado === 'calificada')
                                 <a href="{{ route('calificaciones.show', $respuesta) }}"
-                                   class="text-dyl-orange-600 hover:text-dyl-orange-700 font-semibold">
+                                   class="text-dyl-orange-700 hover:text-dyl-orange-800 font-semibold">
                                     {{ number_format($respuesta->calificacion, 2) }}
                                 </a>
                             @elseif($respuesta->estado === 'en_revision')
@@ -124,7 +124,7 @@
                                         <span class="badge badge-green" title="Intentos extra otorgados">+{{ $info['extra'] }}</span>
                                     @endif
                                     <details class="relative inline-block">
-                                        <summary class="cursor-pointer text-dyl-orange-600 hover:text-dyl-orange-700 list-none">+ intento extra</summary>
+                                        <summary class="cursor-pointer text-dyl-orange-700 hover:text-dyl-orange-800 list-none">+ intento extra</summary>
                                         <form method="POST"
                                               action="{{ route('calificaciones.intentos-extra', [$act, $fila->estudiante]) }}"
                                               class="absolute z-10 mt-1 p-2 bg-white border border-gray-200 rounded-lg shadow-lg flex items-center gap-1 whitespace-nowrap">
@@ -132,7 +132,7 @@
                                             <input type="number" name="cantidad" value="1" min="1" max="5"
                                                    class="w-14 px-1 py-0.5 border border-gray-300 rounded text-xs">
                                             <button type="submit"
-                                                    class="px-2 py-0.5 bg-dyl-orange-600 text-white rounded text-xs hover:bg-dyl-orange-700">
+                                                    class="px-2 py-0.5 bg-dyl-orange-700 text-white rounded text-xs hover:bg-dyl-orange-800">
                                                 Otorgar
                                             </button>
                                         </form>

@@ -2,7 +2,7 @@
 @section('title', 'Editar Actividad - D&L Quality Campus')
 @section('content')
 <div class="mb-4">
-    <a href="{{ route('cursos.edit', $actividad->leccion->modulo->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">&larr; Volver al curso</a>
+    <a href="{{ route('cursos.edit', $actividad->leccion->modulo->curso) }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">&larr; Volver al curso</a>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -130,7 +130,7 @@
                 <div class="mb-4 pt-4 border-t border-gray-100"
                      x-data="{ conPlazo: {{ ($actividad->fecha_apertura || $actividad->fecha_cierre) ? 'true' : 'false' }} }">
                     <label class="flex items-center gap-2 cursor-pointer mb-3">
-                        <input type="checkbox" x-model="conPlazo" class="rounded text-dyl-orange-600">
+                        <input type="checkbox" x-model="conPlazo" class="rounded text-dyl-orange-700">
                         <span class="text-sm font-medium text-gray-700">Configurar plazo de entrega</span>
                     </label>
                     <div x-show="conPlazo" x-cloak class="space-y-3">
@@ -183,7 +183,7 @@
         {{-- ===== PANEL DE RECURSOS ===== --}}
         <div class="card p-6" x-data="{ tipoRecurso: '{{ old('tipo', 'documento') }}' }">
             <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-dyl-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-dyl-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                 </svg>
                 Agregar recurso
@@ -198,7 +198,7 @@
                     <div class="grid grid-cols-2 gap-2">
                         @foreach(['documento' => ['📄','Documento'], 'imagen' => ['🖼️','Imagen'], 'video' => ['▶️','Video'], 'texto' => ['📝','Texto'], 'enlace' => ['🔗','Enlace']] as $val => [$emoji, $label])
                         <label class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
-                               :class="tipoRecurso === '{{ $val }}' ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-600 font-medium' : 'border-gray-200 text-gray-600 hover:border-gray-300'">
+                               :class="tipoRecurso === '{{ $val }}' ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-700 font-medium' : 'border-gray-200 text-gray-600 hover:border-gray-300'">
                             <input type="radio" name="tipo" value="{{ $val }}" x-model="tipoRecurso" class="sr-only">
                             <span>{{ $emoji }}</span> {{ $label }}
                         </label>
@@ -248,7 +248,7 @@
                      x-data="{ archivoError: '', preview: null }">
                     <label class="form-label">Archivo de imagen</label>
                     <input type="file" name="archivo" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
-                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-600 hover:file:bg-dyl-orange-100 cursor-pointer"
+                           class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
                            :disabled="tipoRecurso !== 'imagen'"
                            x-on:change="
                                archivoError = '';
@@ -345,7 +345,7 @@
             @php $nPreguntas = $preguntas->count(); @endphp
             @if($nPreguntas > 0)
             <div class="mb-4 flex items-center gap-3 px-4 py-3 bg-dyl-graphite-50 border border-dyl-graphite-100 rounded-xl text-sm">
-                <svg class="w-4 h-4 text-dyl-orange-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-dyl-orange-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span class="text-gray-700">
@@ -377,7 +377,7 @@
                             <span class="text-gray-400 font-normal">(opcional)</span>
                         </label>
                         <input type="file" name="imagen" accept="image/*"
-                               class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-600 hover:file:bg-dyl-orange-100 cursor-pointer"
+                               class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
                                x-on:change="
                                    errorImagen = '';
                                    preview = null;
@@ -404,7 +404,7 @@
                             <option value="verdadero_falso">Verdadero / Falso</option>
                             <option value="respuesta_corta">Respuesta corta</option>
                         </select>
-                        <button type="submit" class="btn bg-dyl-orange-600 text-white hover:bg-dyl-orange-700">
+                        <button type="submit" class="btn bg-dyl-orange-700 text-white hover:bg-dyl-orange-800">
                             + Pregunta
                         </button>
                     </div>
@@ -419,7 +419,7 @@
                                        : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                                 <input type="radio" name="correcta_vf" value="verdadero"
                                        x-model="correctaVF" class="sr-only">
-                                <span class="text-base" :class="correctaVF === 'verdadero' ? 'text-dyl-orange-600' : 'text-gray-300'">✓</span>
+                                <span class="text-base" :class="correctaVF === 'verdadero' ? 'text-dyl-orange-700' : 'text-gray-300'">✓</span>
                                 Verdadero
                             </label>
                             <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
@@ -439,7 +439,7 @@
                     <div x-show="tipo === 'opcion_multiple'" x-cloak>
                         <label class="flex items-center gap-2.5 cursor-pointer select-none">
                             <input type="checkbox" name="seleccion_multiple" value="1"
-                                   class="w-4 h-4 rounded text-dyl-orange-600">
+                                   class="w-4 h-4 rounded text-dyl-orange-700">
                             <span class="text-sm text-gray-700">
                                 Permite <strong>más de una respuesta correcta</strong>
                                 <span class="text-gray-400">(puntaje parcial por cada acierto)</span>
@@ -471,7 +471,7 @@
                     <input type="file" name="archivo" accept=".json"
                            class="flex-1 text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
                            required>
-                    <button type="submit" class="btn bg-dyl-orange-600 text-white hover:bg-dyl-orange-700 shrink-0">Importar</button>
+                    <button type="submit" class="btn bg-dyl-orange-700 text-white hover:bg-dyl-orange-800 shrink-0">Importar</button>
                 </form>
                 @error('archivo')<p class="form-error mt-1">{{ $message }}</p>@enderror
             </div>
@@ -516,7 +516,7 @@
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
                             <button type="button" @click="editing = !editing"
-                                    class="text-xs text-dyl-orange-600 hover:text-dyl-orange-700 font-medium">
+                                    class="text-xs text-dyl-orange-700 hover:text-dyl-orange-800 font-medium">
                                 <span x-text="editing ? 'Cancelar' : 'Editar'"></span>
                             </button>
                             <form action="{{ route('preguntas.destroy', $pregunta) }}" method="POST" class="shrink-0"
@@ -539,7 +539,7 @@
                         <div class="mb-3">
                             <label class="form-label">Cambiar imagen <span class="text-gray-400 font-normal">(opcional)</span></label>
                             <input type="file" name="imagen" accept="image/*"
-                                   class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-600 hover:file:bg-dyl-orange-100 cursor-pointer">
+                                   class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer">
                             <p class="form-hint">JPG, PNG, WebP — máx. 4 MB</p>
                         </div>
 
@@ -590,7 +590,7 @@
                                     <form action="{{ route('opciones.marcarCorrecta', $opcion) }}" method="POST">
                                         @csrf @method('PUT')
                                         <button type="submit"
-                                                class="text-lg leading-none {{ $opcion->es_correcta ? 'text-dyl-orange-600 font-bold' : 'text-gray-300 hover:text-gray-400' }}"
+                                                class="text-lg leading-none {{ $opcion->es_correcta ? 'text-dyl-orange-700 font-bold' : 'text-gray-300 hover:text-gray-400' }}"
                                                 title="{{ $opcion->es_correcta ? 'Correcta' : 'Marcar como correcta' }}">
                                             {{ $opcion->es_correcta ? '✓' : '○' }}
                                         </button>
@@ -666,7 +666,7 @@
                             </div>
                             <p class="text-sm text-gray-600 line-clamp-3">{{ $resp->respuesta }}</p>
                             @if($resp->calificacion !== null)
-                                <p class="text-sm font-medium text-dyl-orange-600 mt-1">
+                                <p class="text-sm font-medium text-dyl-orange-700 mt-1">
                                     Calificación: {{ number_format($resp->calificacion, 2) }} / {{ number_format($actividad->puntaje_maximo, 2) }}
                                 </p>
                             @endif
@@ -764,7 +764,7 @@
                     {{-- Encabezado con toggle --}}
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-dyl-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-dyl-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                             </svg>
                             Rúbrica de evaluación
@@ -844,7 +844,7 @@
                                         </template>
                                     </div>
                                     <button type="button" @click="agregarNivel(ci)"
-                                            class="text-xs text-dyl-orange-600 hover:text-dyl-orange-700 flex items-center gap-1">
+                                            class="text-xs text-dyl-orange-700 hover:text-dyl-orange-800 flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                         </svg>
@@ -923,7 +923,7 @@
                                        class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 cursor-pointer">
                             </div>
 
-                            <p x-show="importando" class="text-sm text-dyl-orange-600 mt-1 flex items-center gap-2">
+                            <p x-show="importando" class="text-sm text-dyl-orange-700 mt-1 flex items-center gap-2">
                                 <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>

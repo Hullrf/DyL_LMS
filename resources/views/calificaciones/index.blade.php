@@ -41,7 +41,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <a href="{{ route('calificaciones.curso', $curso) }}"
-                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium">
+                           class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm font-medium">
                             Ver calificaciones &rarr;
                         </a>
                     </td>

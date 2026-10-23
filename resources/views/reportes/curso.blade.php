@@ -11,25 +11,25 @@
     </div>
     <div class="flex gap-2">
         <a href="{{ route('reportes.seguimiento', $curso) }}"
-           class="flex items-center gap-1.5 bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
+           class="flex items-center gap-1.5 bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 text-sm font-medium">
             Seguimiento
         </a>
         <a href="{{ route('reportes.csv', $curso) }}"
-           class="flex items-center gap-1.5 bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
+           class="flex items-center gap-1.5 bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 text-sm font-medium">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
             </svg>
             Exportar CSV
         </a>
         <a href="{{ route('reportes.pdf', $curso) }}"
-           class="flex items-center gap-1.5 bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
+           class="flex items-center gap-1.5 bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 text-sm font-medium">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
             </svg>
             Exportar PDF
         </a>
         <a href="{{ route('reportes.excel.curso', $curso) }}"
-           class="flex items-center gap-1.5 bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
+           class="flex items-center gap-1.5 bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 text-sm font-medium">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
             </svg>
@@ -46,7 +46,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Completados</p>
-        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">{{ $reporte['completados'] }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">{{ $reporte['completados'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">En progreso</p>
@@ -58,7 +58,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Promedio global</p>
-        <p class="text-3xl font-bold mt-1 {{ ($reporte['promedio_global'] ?? 0) >= 60 ? 'text-dyl-orange-600' : 'text-gray-400' }}">
+        <p class="text-3xl font-bold mt-1 {{ ($reporte['promedio_global'] ?? 0) >= 60 ? 'text-dyl-orange-700' : 'text-gray-400' }}">
             {{ $reporte['promedio_global'] !== null ? $reporte['promedio_global'] . '%' : '—' }}
         </p>
     </div>
@@ -70,7 +70,7 @@
 <div class="bg-white rounded-xl shadow p-5 mb-8">
     <div class="flex justify-between text-sm font-medium text-gray-700 mb-2">
         <span>Tasa de completitud del curso</span>
-        <span class="{{ $tasaCurso >= 70 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">{{ $tasaCurso }}%</span>
+        <span class="{{ $tasaCurso >= 70 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">{{ $tasaCurso }}%</span>
     </div>
     <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
         <div class="h-full rounded-full {{ $tasaCurso >= 70 ? 'bg-dyl-orange-500' : 'bg-dyl-graphite-400' }}"
@@ -126,7 +126,7 @@
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($e['promedio'] !== null)
-                            <span class="text-sm font-bold {{ $e['promedio'] >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
+                            <span class="text-sm font-bold {{ $e['promedio'] >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
                                 {{ $e['promedio'] }}%
                             </span>
                         @else
@@ -145,7 +145,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <a href="{{ route('reportes.estudiante', $e['usuario']) }}"
-                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-xs">Ver &rarr;</a>
+                           class="text-dyl-orange-700 hover:text-dyl-orange-800 text-xs">Ver &rarr;</a>
                     </td>
                 </tr>
                 @empty

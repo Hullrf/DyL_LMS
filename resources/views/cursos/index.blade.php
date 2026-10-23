@@ -17,7 +17,7 @@
                 </label>
             </form>
             <a href="{{ route('cursos.create') }}"
-               class="bg-dyl-orange-600 text-white px-5 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
+               class="bg-dyl-orange-700 text-white px-5 py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
                 + Nuevo Curso
             </a>
         </div>
@@ -77,7 +77,7 @@
 
                 <div class="mt-auto space-y-2">
                     <a href="{{ route('cursos.show', $curso) }}"
-                       class="block w-full text-center py-2 rounded-lg font-medium text-sm bg-dyl-orange-600 text-white hover:bg-dyl-orange-700 transition-colors">
+                       class="block w-full text-center py-2 rounded-lg font-medium text-sm bg-dyl-orange-700 text-white hover:bg-dyl-orange-800 transition-colors">
                         Continuar →
                     </a>
                     @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
@@ -133,13 +133,13 @@
                 @endif
                 @if(auth()->user()->esAdmin())
                     <a href="{{ route('admin.categorias.index') }}"
-                       class="text-sm text-gray-500 hover:text-dyl-orange-600 whitespace-nowrap">
+                       class="text-sm text-gray-500 hover:text-dyl-orange-700 whitespace-nowrap">
                         Gestionar categorías
                     </a>
                 @endif
                 <input aria-label="Buscar curso..." type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar curso..."
                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px] focus:ring-2 focus:ring-dyl-orange-600">
-                <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Buscar</button>
+                <button type="submit" class="px-4 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Buscar</button>
                 @if(request()->anyFilled(['categoria', 'buscar']))
                     <a href="{{ route('cursos.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</a>
                 @endif

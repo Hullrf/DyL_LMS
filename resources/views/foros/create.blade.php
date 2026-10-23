@@ -26,7 +26,7 @@
         </div>
         <div class="flex justify-between">
             <a href="{{ route('foros.index', $curso) }}" class="px-4 py-2 text-sm text-gray-500">Cancelar</a>
-            <button type="submit" class="px-6 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Crear foro</button>
+            <button type="submit" class="px-6 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Crear foro</button>
         </div>
     </form>
 </div>

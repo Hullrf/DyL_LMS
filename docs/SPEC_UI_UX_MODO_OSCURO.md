@@ -22,6 +22,7 @@ Marca que se conserva: naranja `#EA580C` / grafito `#0F172A`, Figtree. No se ado
 | D10 | Fase 2 · bloque 1: A4 (footer libera el botón Ayuda), A5 (separadores de tabla), A6 (`aria-pressed` real), A7 (halo de foco), M5 (`rel=noopener`), M6 (badges 12px), M7 (checkbox/radio), M8 (scrim del modal), M11 (borrado `welcome.blade.php`); además campana con nombre accesible y 44px | varios |
 | D11 | Fase 2 · bloque 2: A1 (Quill en oscuro), A2 (Chart.js: defaults por tema, sin animación con reduced-motion, redibujo al alternar, series con más contraste), M10 parcial (CSS de `.office-render`, `.leccion-contenido` y neutralización de negro/blanco inline de Quill) | `app.css`, `app.js`, layouts, dashboards, reportes |
 | D12 | Fase 3: M3 (`scope="col"` en 76 `<th`, scroll horizontal en 6 tablas), M4 (`aria-label` en buscadores, comentarios, bibliografía y módulo; **no** en inputs con etiqueta visible ni con placeholders de ejemplo), M13 (tema por defecto = preferencia del SO si no hay elección guardada; sincroniza entre pestañas vía evento `storage`), M14 (tooltip `title` en el riel colapsado; drawer móvil con Esc, `inert` en el resto de la página, bloqueo de scroll, foco al abrir y retorno al botón) | varios |
+| D13 | A3 (decisión: botón en `#C2410C`): `.btn-primary` y 61 botones/avatares con texto blanco pasan a `orange-700` (hover `orange-800`), 5.18:1; texto naranja sobre claro `orange-600` → `orange-700` (~96 usos). `orange-600` queda solo en acentos sin texto (barras, toggles, puntos, foco). En oscuro el texto naranja pasa a `#FB923C` (≈9:1) | `app.css`, ~50 vistas |
 | D8 | Corregidos en oscuro: badge "En progreso", pista de progreso, textarea/select/input sin clase, dropzone `bg-gray-50/40`, tarjetas sin borde | `app.css` |
 
 Pruebas: `php artisan test` → 459 passed tras D1–D7.
@@ -52,7 +53,7 @@ Esfuerzo: S ≤ 1 h · M ≤ half-day · L ≥ 1 día.
 **Fix:** helper único en `resources/js/app.js` (`dylChartTheme()`): aplica defaults según `html.dark`, `Chart.defaults.animation = false` si `prefers-reduced-motion`, y escucha un evento `themechange` que `dylToggleTheme()` ya puede disparar para `chart.update()`. Paleta de series con ≥3:1 en ambos temas; no depender solo del color (leyenda visible ya existe).
 **Aceptación:** ejes/leyenda legibles en ambos temas; alternar tema actualiza sin recargar. Verificar con datos reales (hoy todas las barras están en 0).
 
-### A3 — Contraste de la marca en modo claro · A · M (decisión de marca)
+### A3 — ✅ Contraste de la marca en modo claro · A · M (decisión de marca)
 Cálculo WCAG:
 
 | Par | Ratio | AA texto normal (4.5) |
@@ -65,7 +66,7 @@ Cálculo WCAG:
 
 (En oscuro: naranja-600 sobre fondo/tarjeta 5.26 / 4.84 ✓; el botón blanco-sobre-600 sigue en 3.56 ✗.)
 **Fix propuesto:** `.btn-primary` base `orange-700`, hover `orange-800`; en vistas `text-dyl-orange-600` → `text-dyl-orange-700` para texto sobre claro (búsqueda/reemplazo acotado; el naranja-600 queda para barras, bordes, íconos y fondos grandes). En oscuro mantener texto `600`.
-**Decisión pendiente:** confirmar con quien lleve la marca que el botón pase a `#C2410C`. Alternativa: texto del botón en `#0F172A` sobre `orange-600` (5.3:1), sin tocar el color de marca.
+**Decisión tomada:** botón en `#C2410C` (ver D13).
 
 ### A4 — ✅  Botón flotante "Ayuda" tapa contenido · A · S
 **Visto en:** todas las páginas (captura): cubre el enlace "Dashboard" del footer y los últimos elementos al final del scroll.

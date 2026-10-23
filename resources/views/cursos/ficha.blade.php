@@ -49,6 +49,6 @@
         @error('bibliografia.*.titulo')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
     </fieldset>
 
-    <button class="rounded-lg bg-dyl-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Guardar ficha</button>
+    <button class="rounded-lg bg-dyl-orange-700 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-800">Guardar ficha</button>
 </form>
 @endsection

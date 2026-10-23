@@ -61,7 +61,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2500)"
-                    class="text-sm text-dyl-orange-600 font-medium"
+                    class="text-sm text-dyl-orange-700 font-medium"
                 >Contraseña actualizada.</p>
             @endif
         </div>

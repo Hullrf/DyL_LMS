@@ -20,14 +20,14 @@
     </div>
     <div class="bg-white p-6 rounded-xl shadow">
         <p class="text-gray-400 text-xs uppercase tracking-wide">Instructores</p>
-        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">{{ $stats['total_instructores'] }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">{{ $stats['total_instructores'] }}</p>
     </div>
 </div>
 
 {{-- Accesos rápidos --}}
 <div class="flex gap-3 mb-8">
     <a href="{{ route('reportes.index') }}"
-       class="bg-dyl-orange-600 text-white px-5 py-2.5 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
+       class="bg-dyl-orange-700 text-white px-5 py-2.5 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
         Ver Reportes
     </a>
     <a href="{{ route('calificaciones.index') }}"
@@ -44,7 +44,7 @@
 <div class="bg-white rounded-xl shadow">
     <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
         <h2 class="text-lg font-bold text-gray-900">Cursos Recientes</h2>
-        <a href="{{ route('reportes.index') }}" class="text-sm text-dyl-orange-600 hover:underline">Ver todos los reportes</a>
+        <a href="{{ route('reportes.index') }}" class="text-sm text-dyl-orange-700 hover:underline">Ver todos los reportes</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full">
@@ -70,7 +70,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 flex gap-3">
-                            <a href="{{ route('reportes.curso', $curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Reporte</a>
+                            <a href="{{ route('reportes.curso', $curso) }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">Reporte</a>
                             <a href="{{ route('cursos.edit', $curso) }}" class="text-gray-600 hover:text-gray-900 text-sm">Editar</a>
                         </td>
                     </tr>

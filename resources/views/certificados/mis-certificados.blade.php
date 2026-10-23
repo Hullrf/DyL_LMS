@@ -21,7 +21,7 @@
                     <div class="flex gap-3 text-xs text-gray-500 mt-1">
                         <span>Emitido: {{ \Carbon\Carbon::parse($cert->fecha_emision)->locale('es')->isoFormat('D MMM YYYY') }}</span>
                         <span>·</span>
-                        <span>Calificación: <strong class="text-dyl-orange-600">{{ $cert->calificacion_final }}%</strong></span>
+                        <span>Calificación: <strong class="text-dyl-orange-700">{{ $cert->calificacion_final }}%</strong></span>
                         <span>·</span>
                         <span class="font-mono">{{ $cert->numero_certificado }}</span>
                     </div>
@@ -33,7 +33,7 @@
                     Ver
                 </a>
                 <a href="{{ route('certificados.descargar', $cert) }}"
-                   class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg hover:bg-dyl-orange-700 text-sm font-medium flex items-center gap-1">
+                   class="px-4 py-2 bg-dyl-orange-700 text-white rounded-lg hover:bg-dyl-orange-800 text-sm font-medium flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                     </svg>
@@ -51,7 +51,7 @@
         </div>
         <h3 class="text-lg font-bold text-gray-700 mb-2">Aún no tienes certificados</h3>
         <p class="text-gray-500 mb-6">Completa un curso para obtener tu certificado.</p>
-        <a href="{{ route('cursos.index') }}" class="bg-dyl-orange-600 text-white px-6 py-2.5 rounded-lg hover:bg-dyl-orange-700 font-medium">
+        <a href="{{ route('cursos.index') }}" class="bg-dyl-orange-700 text-white px-6 py-2.5 rounded-lg hover:bg-dyl-orange-800 font-medium">
             Ver cursos disponibles
         </a>
     </div>

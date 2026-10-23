@@ -83,7 +83,7 @@
     </div>
 
     <div class="mt-6 flex justify-end">
-        <button type="submit" class="bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
+        <button type="submit" class="bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium">
             {{ $respuesta ? 'Guardar cambios' : 'Enviar respuesta' }}
         </button>
     </div>

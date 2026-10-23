@@ -38,7 +38,7 @@
                     </div>
                     <div class="flex justify-between py-3 border-b border-gray-100">
                         <span class="text-sm text-gray-500">Calificación final</span>
-                        <span class="text-sm font-semibold text-dyl-orange-600">{{ $certificado->calificacion_final }}%</span>
+                        <span class="text-sm font-semibold text-dyl-orange-700">{{ $certificado->calificacion_final }}%</span>
                     </div>
                     <div class="flex justify-between py-3 border-b border-gray-100">
                         <span class="text-sm text-gray-500">Fecha de emisión</span>

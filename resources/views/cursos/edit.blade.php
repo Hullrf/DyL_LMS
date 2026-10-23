@@ -27,7 +27,7 @@
            class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">
             Exportar curso
         </a>
-        <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver curso &rarr;</a>
+        <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">Ver curso &rarr;</a>
     </div>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -113,7 +113,7 @@
                     <p class="text-xs text-gray-400 mt-1">JPG o PNG — máx. 5 MB</p>
                     <p x-show="errorPortada" x-text="errorPortada" class="form-error"></p>
                 </div>
-                <button type="submit" class="w-full bg-dyl-orange-600 text-white py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
+                <button type="submit" class="w-full bg-dyl-orange-700 text-white py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
                     Guardar Cambios
                 </button>
             </form>
@@ -137,7 +137,7 @@
                 @csrf
                 <input aria-label="Nombre del módulo" type="text" name="titulo" placeholder="Nombre del módulo"
                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-                <button type="submit" class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
+                <button type="submit" class="bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 text-sm font-medium">
                     + Módulo
                 </button>
             </form>
@@ -172,9 +172,9 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('lecciones.edit', $leccion) }}"
-                           class="text-xs bg-dyl-orange-50 text-dyl-orange-600 px-3 py-1 rounded hover:bg-dyl-orange-100">Editar</a>
+                           class="text-xs bg-dyl-orange-50 text-dyl-orange-700 px-3 py-1 rounded hover:bg-dyl-orange-100">Editar</a>
                         <a href="{{ route('actividades.create', $leccion) }}"
-                           class="text-xs bg-dyl-orange-50 text-dyl-orange-600 px-3 py-1 rounded hover:bg-dyl-orange-100">+ Actividad</a>
+                           class="text-xs bg-dyl-orange-50 text-dyl-orange-700 px-3 py-1 rounded hover:bg-dyl-orange-100">+ Actividad</a>
                         <form action="{{ route('lecciones.destroy', $leccion) }}" method="POST" class="inline"
                               onsubmit="return confirm('Eliminar esta leccion?');">
                             @csrf @method('DELETE')
@@ -207,7 +207,7 @@
                 <div class="px-6 py-3 bg-gray-50 rounded-b-lg">
                     <div class="flex gap-4">
                         <a href="{{ route('lecciones.create', $modulo) }}"
-                           class="text-sm text-dyl-orange-600 hover:text-dyl-orange-700 font-medium">
+                           class="text-sm text-dyl-orange-700 hover:text-dyl-orange-800 font-medium">
                             + Agregar lección
                         </a>
                     </div>

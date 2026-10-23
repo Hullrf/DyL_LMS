@@ -10,7 +10,7 @@
 <div class="max-w-3xl mx-auto">
     @unless($modoExamen)
     <div class="mb-4 flex items-center justify-between">
-        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">
+        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Volver a la lección
         </a>
@@ -28,7 +28,7 @@
             </div>
             <div class="text-right">
                 @if($actividad->tieneCalificacion())
-                    <p class="text-2xl font-bold text-dyl-orange-600">{{ $actividad->puntaje_maximo }}</p>
+                    <p class="text-2xl font-bold text-dyl-orange-700">{{ $actividad->puntaje_maximo }}</p>
                     <p class="text-xs text-gray-500">puntos</p>
                 @else
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
@@ -58,7 +58,7 @@
         <svg class="w-5 h-5 mt-0.5 flex-shrink-0
             @if($estadoPlazo === 'abierta') text-dyl-orange-500
             @elseif($estadoPlazo === 'pendiente') text-dyl-graphite-400
-            @else text-dyl-orange-600 @endif"
+            @else text-dyl-orange-700 @endif"
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -135,7 +135,7 @@
      }"
           @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()">
         <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <svg class="w-5 h-5 text-dyl-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-dyl-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
             </svg>
             Materiales de apoyo
@@ -173,7 +173,7 @@
                 @else
                     @if($esPdf)
                     <button type="button" @click="visorTipo='pdf'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
-                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-600 border-dyl-orange-300 hover:bg-dyl-orange-50">
+                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-700 border-dyl-orange-300 hover:bg-dyl-orange-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -182,7 +182,7 @@
                     </button>
                     @elseif($esOffice)
                     <button type="button" @click="visorTipo='office'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
-                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-600 border-dyl-orange-300 hover:bg-dyl-orange-50">
+                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-700 border-dyl-orange-300 hover:bg-dyl-orange-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -191,7 +191,7 @@
                     </button>
                     @elseif($esImagenDoc)
                     <button type="button" @click="visorTipo='imagen'; visorUrl='{{ $urlArchivo }}'; visorTitulo='{{ e($recurso->titulo) }}'; visorAbierto=true"
-                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-600 border-dyl-orange-300 hover:bg-dyl-orange-50">
+                       class="btn-outline btn-sm flex-shrink-0 text-dyl-orange-700 border-dyl-orange-300 hover:bg-dyl-orange-50">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -347,7 +347,7 @@
 
                         {{-- Loading --}}
                         <div x-show="officeLoading" class="flex items-center justify-center py-20">
-                            <svg class="animate-spin h-8 w-8 text-dyl-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg class="animate-spin h-8 w-8 text-dyl-orange-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                             </svg>
@@ -355,7 +355,7 @@
 
                         {{-- Error --}}
                         <div x-show="officeError" class="flex flex-col items-center justify-center py-16 px-6">
-                            <svg class="w-12 h-12 text-dyl-orange-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-12 h-12 text-dyl-orange-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <p class="text-dyl-graphite-900 text-sm font-semibold text-center" x-text="officeError"></p>
@@ -433,7 +433,7 @@
         <form action="{{ route('actividades.completar', $actividad) }}" method="POST">
             @csrf
             <button type="submit"
-                    class="w-full sm:w-auto bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium transition-colors flex items-center gap-2">
+                    class="w-full sm:w-auto bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
@@ -448,7 +448,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
             <h2 class="font-bold text-gray-900 flex items-center gap-2">
-                <svg class="w-5 h-5 text-dyl-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-dyl-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
                 Criterios de calificación
@@ -462,7 +462,7 @@
                         @foreach($criteriosRubrica->first()->niveles as $nivelHeader)
                         <th scope="col" class="text-center px-3 py-3 font-semibold text-gray-500 text-xs min-w-32">
                             Nivel {{ $loop->iteration }}<br>
-                            <span class="text-dyl-orange-600 font-bold">{{ number_format($nivelHeader->puntos, 2) }} pts</span>
+                            <span class="text-dyl-orange-700 font-bold">{{ number_format($nivelHeader->puntos, 2) }} pts</span>
                         </th>
                         @endforeach
                     </tr>
@@ -476,10 +476,10 @@
                         <td class="px-3 py-4 align-top text-xs text-gray-600 leading-relaxed
                             {{ $estaSeleccionado ? 'bg-dyl-orange-50 border-l-2 border-dyl-orange-400' : '' }}">
                             @if($estaSeleccionado)
-                                <span class="inline-block mb-1 text-dyl-orange-600 font-semibold text-xs uppercase tracking-wide">✓ Nivel obtenido</span><br>
+                                <span class="inline-block mb-1 text-dyl-orange-700 font-semibold text-xs uppercase tracking-wide">✓ Nivel obtenido</span><br>
                             @endif
                             {{ $nivel->descripcion }}
-                            <span class="block mt-2 font-bold text-sm {{ $estaSeleccionado ? 'text-dyl-orange-600' : 'text-gray-400' }}">
+                            <span class="block mt-2 font-bold text-sm {{ $estaSeleccionado ? 'text-dyl-orange-700' : 'text-gray-400' }}">
                                 {{ number_format($nivel->puntos, 2) }} puntos
                             </span>
                         </td>
@@ -551,7 +551,7 @@
                     @endif
 
                     <div class="mt-4">
-                        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-dyl-orange-600 hover:bg-dyl-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-dyl-orange-700 hover:bg-dyl-orange-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                             Volver a la lección
                         </a>
@@ -595,7 +595,7 @@
             </div>
             @endif
             <div class="mt-4">
-                <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-dyl-orange-600 hover:bg-dyl-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="inline-flex items-center bg-dyl-orange-700 hover:bg-dyl-orange-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     Volver a la lección
                 </a>
@@ -626,7 +626,7 @@
                 <p class="font-medium text-gray-700">Esta actividad es de consulta</p>
                 <p class="text-sm text-gray-500 mt-1">No requiere entrega ni tiene calificación. Revisa los recursos disponibles arriba.</p>
             </div>
-            <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="ml-auto inline-flex items-center text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium shrink-0">
+            <a href="{{ route('lecciones.show', $actividad->leccion) }}" class="ml-auto inline-flex items-center text-dyl-orange-700 hover:text-dyl-orange-800 text-sm font-medium shrink-0">
                 Continuar <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
             </a>
         </div>

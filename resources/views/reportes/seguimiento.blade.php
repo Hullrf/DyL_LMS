@@ -19,7 +19,7 @@
     </div>
 @else
     <div class="mb-6 grid grid-cols-3 gap-4">
-        @foreach(['riesgo' => 'text-red-700', 'atencion' => 'text-dyl-orange-600', 'ok' => 'text-dyl-graphite-700'] as $nivel => $color)
+        @foreach(['riesgo' => 'text-red-700', 'atencion' => 'text-dyl-orange-700', 'ok' => 'text-dyl-graphite-700'] as $nivel => $color)
             <div class="rounded-xl bg-white p-4 text-center shadow">
                 <p class="text-xs uppercase tracking-wide text-gray-400">{{ $niveles[$nivel] }}</p>
                 <p class="mt-1 text-3xl font-bold {{ $color }}">{{ $datos['resumen'][$nivel] }}</p>
