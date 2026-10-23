@@ -48,7 +48,7 @@
                      alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
             @else
                 <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-600 to-dyl-orange-700 flex items-center justify-center">
-                    <span class="text-5xl">📚</span>
+                    <x-icon name="libro" class="w-14 h-14 text-white/90"/>
                 </div>
             @endif
 
@@ -155,7 +155,7 @@
                          alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
                 @else
                     <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-400 to-dyl-orange-700 flex items-center justify-center">
-                        <span class="text-5xl">📚</span>
+                        <x-icon name="libro" class="w-14 h-14 text-white/90"/>
                     </div>
                 @endif
 
@@ -170,7 +170,8 @@
                         <span class="text-xs text-gray-400">{{ $curso->duracion_horas }} h</span>
                     </div>
                     @if($curso->categoria)
-                        <span class="inline-block text-xs px-2 py-0.5 rounded font-medium mb-2" style="background-color: {{ $curso->categoria->color }}20; color: {{ $curso->categoria->color }}">
+                        <span class="inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full font-medium mb-2 bg-gray-100 text-gray-700">
+                            <span class="w-2 h-2 rounded-full" style="background-color: {{ $curso->categoria->color }}" aria-hidden="true"></span>
                             {{ $curso->categoria->nombre }}
                         </span>
                     @endif

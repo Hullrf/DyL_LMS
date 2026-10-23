@@ -23,6 +23,7 @@ Marca que se conserva: naranja `#EA580C` / grafito `#0F172A`, Figtree. No se ado
 | D11 | Fase 2 · bloque 2: A1 (Quill en oscuro), A2 (Chart.js: defaults por tema, sin animación con reduced-motion, redibujo al alternar, series con más contraste), M10 parcial (CSS de `.office-render`, `.leccion-contenido` y neutralización de negro/blanco inline de Quill) | `app.css`, `app.js`, layouts, dashboards, reportes |
 | D12 | Fase 3: M3 (`scope="col"` en 76 `<th`, scroll horizontal en 6 tablas), M4 (`aria-label` en buscadores, comentarios, bibliografía y módulo; **no** en inputs con etiqueta visible ni con placeholders de ejemplo), M13 (tema por defecto = preferencia del SO si no hay elección guardada; sincroniza entre pestañas vía evento `storage`), M14 (tooltip `title` en el riel colapsado; drawer móvil con Esc, `inert` en el resto de la página, bloqueo de scroll, foco al abrir y retorno al botón) | varios |
 | D13 | A3 (decisión: botón en `#C2410C`): `.btn-primary` y 61 botones/avatares con texto blanco pasan a `orange-700` (hover `orange-800`), 5.18:1; texto naranja sobre claro `orange-600` → `orange-700` (~96 usos). `orange-600` queda solo en acentos sin texto (barras, toggles, puntos, foco). En oscuro el texto naranja pasa a `#FB923C` (≈9:1) | `app.css`, ~50 vistas |
+| D14 | Fase 4 (consistencia): M1 (componente `x-icon` con los paths Heroicons del modelo `RecursoActividad`; sustituye los emojis de portada, medalla, tipo de actividad y tipo de recurso; los glifos `✓ ✗ ○ ✕` se dejan por ser tipográficos), M2 (solo desentonaban `admin/categorias` 5xl→7xl y `notificaciones` 2xl→3xl; resto ya era coherente: formularios 2xl, listas 3xl, edición 4xl), M9 (punto de color + texto neutro, y validación `regex:#RRGGBB` en las categorías, que antes aceptaba cualquier cadena de ≤20 caracteres en un `style`), M12 (páginas 403/404/419/429/500/503 en español con layout propio sin consultas a BD), B2 (CSS de topbar, sidebar y `.desc-justify` movido a `app.css`), B3 (éxito se descarta a los 5 s; errores con botón de cerrar). 3 tests nuevos (462 en total) | varios |
 | D8 | Corregidos en oscuro: badge "En progreso", pista de progreso, textarea/select/input sin clase, dropzone `bg-gray-50/40`, tarjetas sin borde | `app.css` |
 
 Pruebas: `php artisan test` → 459 passed tras D1–D7.
@@ -88,12 +89,12 @@ El botón nace con `aria-pressed="false"` fijo; tras recargar en oscuro el lecto
 
 ---
 
-### M1 — Emojis como iconos (20 apariciones) · M · M
+### M1 — ✅ Emojis como iconos (20 apariciones) · M · M
 `actividades/edit` (10: selector "Tipo de recurso" 📄🖼▶…), `calificaciones/revisar-cuestionario` (5), `cursos/index` (3), `actividades/show` (1), `admin/backups/index` (1). Además el 📚 de las tarjetas sin portada (dashboard y catálogo).
 Regla de la skill: SVG de una sola familia (los del sidebar ya son stroke 1.8). Los emojis varían por SO y no heredan color de tema.
 **Fix:** componente `x-icon name="..."` (Blade) con ~10 SVG, o SVG inline; sustituir.
 
-### M2 — Anchos de contenedor inconsistentes · M · M
+### M2 — ✅ Anchos de contenedor inconsistentes · M · M
 `max-w-2xl` ×15, `3xl` ×14, `4xl` ×7, `5xl` ×2, `6xl` ×1, `7xl` ×5. Visto: `admin/usuarios` ancho completo, `backups` estrecho, `categorias` medio, `mensajes` estrecho.
 **Fix:** convención en la spec de diseño: listados/tablas `7xl` (default del layout), formularios `3xl`, lectura (lección, actividad) `4xl`. Aplicar por tipo de página; sin tocar contenido.
 
@@ -123,7 +124,7 @@ Cajas blancas del plugin `@tailwindcss/forms` (visto en `competencias`, `pondera
 ### M8 — (scrim hecho; falta devolver el foco) — Modal · M · S
 Scrim `bg-gray-500 opacity-75` se vuelve más claro que el fondo oscuro. Usar `bg-black/60` en oscuro (la skill pide 40–60 % negro). Devolver el foco al disparador al cerrar. El atrapado de Tab actual falla si no hay elementos enfocables.
 
-### M9 — Color dinámico de categoría · M · S
+### M9 — ✅ Color dinámico de categoría · M · S
 `cursos/index:173`: `style="background:{{color}}20; color:{{color}}"`. El contraste depende del color que elija el admin y en oscuro colores oscuros (p. ej. morado) quedan ilegibles.
 **Fix:** texto neutro (`text-gray-700` / oscuro `#e2e8f0`) con un punto del color de la categoría, o calcular color legible. Misma lógica en `admin/categorias` (punto, sin texto: correcto).
 
@@ -137,9 +138,9 @@ Scrim `bg-gray-500 opacity-75` se vuelve más claro que el fondo oscuro. Usar `b
 ### M11 — ✅  Código muerto: `welcome.blade.php` · M · S
 Sin ruta; copia de Breeze con ~100 KB de CSS Tailwind v4 inline y 22 clases `dark:`. Eliminar tras confirmar que ninguna ruta/test lo referencia (`grep -rn "view('welcome')"`).
 
-### M12 — Páginas de error sin marca · M · M
+### M12 — ✅ (parcial) Páginas de error sin marca · M · M
 403/404 son las de Laravel por defecto, en inglés ("NOT FOUND"), sin layout. Además `/certificados/` devuelve el 403 de Apache ("Forbidden … Apache/2.4.58") porque existe un directorio físico `public/certificados` que sombrea la ruta `certificados`.
-**Fix:** `resources/views/errors/{403,404,419,500,503}.blade.php` en español con `layouts/guest`, y revisar la colisión directorio/ruta (mover los PDFs o excluir el directorio en `.htaccess`/Nginx).
+**Fix:** hecho (`errors/*.blade.php` + `errors/layout`). **Colisión `/certificados/`:** `public/certificados/plantilla-diploma.pdf` es un archivo **sin seguimiento en git** (solo existe en el equipo local), así que producción no se ve afectada; localmente el 403 de Apache sale porque ese directorio tapa la ruta. Mover el PDF fuera de `public/` (p. ej. `resources/` o `storage/`) o trackearlo en otra ruta si debe viajar con el repo.
 
 ### M13 — ✅ Tema por defecto y sincronización · M · S
 Hoy el default es claro aunque el SO esté en oscuro, y el cambio no se sincroniza entre pestañas (se comprobó: otra pestaña dejó `dyl_theme=light`).
@@ -157,10 +158,10 @@ Hoy el default es claro aunque el SO esté en oscuro, y el cambio no se sincroni
 El modo oscuro actual (D1/D8) remapea ~35 utilidades por nombre. Cualquier clase nueva (`bg-slate-*`, `text-gray-400` en una vista nueva…) puede quedar sin mapear, como pasó con `bg-gray-200` y `bg-gray-50/40`.
 **Fase 2 sugerida:** variables CSS (`--surface`, `--surface-2`, `--text`, `--text-muted`, `--border`, `--accent`) por tema, expuestas como colores de Tailwind (`bg-surface`, `text-muted`), y migrar vistas por módulo. Hasta entonces: regla de revisión "toda vista nueva se abre en oscuro antes de aprobarse".
 
-### B2 — Estilos inline y duplicados · B · S
+### B2 — ✅ Estilos inline y duplicados · B · S
 `topbar` (`#fff`, `#EDF1F5`), `sidebar` (hex literales) y `app.blade` (`.desc-justify`) llevan `<style>` propio. Mover a `app.css` para que el modo oscuro los gestione en un solo sitio.
 
-### B3 — Alertas · B · S
+### B3 — ✅ Alertas · B · S
 `alert-success|error` de sesión no se descartan y no tienen botón de cierre; la skill sugiere auto-cierre 3–5 s para éxito (`toast-dismiss`) y botón de cerrar en errores.
 
 ---

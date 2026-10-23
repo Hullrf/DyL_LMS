@@ -135,7 +135,7 @@
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($e['tiene_certificado'])
-                            <span class="text-dyl-orange-500 text-lg" title="Certificado emitido">&#127941;</span>
+                            <span class="inline-flex text-dyl-orange-700" title="Certificado emitido" role="img" aria-label="Certificado emitido"><x-icon name="certificado" class="w-5 h-5"/></span>
                         @else
                             <span class="text-gray-300">—</span>
                         @endif

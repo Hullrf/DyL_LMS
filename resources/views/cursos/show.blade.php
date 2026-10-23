@@ -94,7 +94,7 @@
                             @if($certExistente)
                                 <a href="{{ route('certificados.show', $certExistente) }}"
                                    class="block w-full text-center bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
-                                    &#127941; Ver Certificado
+                                    <x-icon name="certificado" class="w-4 h-4 inline -mt-0.5 mr-1"/>Ver Certificado
                                 </a>
                             @else
                                 <div class="text-center text-gray-600 text-sm px-4 py-3 bg-gray-50 rounded-lg">

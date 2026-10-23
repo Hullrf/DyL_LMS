@@ -2,7 +2,7 @@
 @section('title', 'Gestión de Categorías — D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('admin.categorias.index') }}@endsection
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Categorías</h1>
         <a href="{{ route('admin.categorias.create') }}" class="btn-primary">+ Nueva Categoría</a>

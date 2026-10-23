@@ -50,7 +50,7 @@
                      alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
             @else
                 <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-400 to-dyl-orange-700 flex items-center justify-center">
-                    <span class="text-5xl">&#128218;</span>
+                    <x-icon name="libro" class="w-14 h-14 text-white/90"/>
                 </div>
             @endif
             <div class="p-5">
