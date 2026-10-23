@@ -27,7 +27,7 @@
 
             <div>
                 <label for="delete_password" class="form-label">Contraseña</label>
-                <input
+                <input aria-label="Tu contraseña actual"
                     id="delete_password"
                     name="password"
                     type="password"

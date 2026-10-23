@@ -458,9 +458,9 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-200">
-                        <th class="text-left px-4 py-3 font-semibold text-gray-700 min-w-40">Criterio</th>
+                        <th scope="col" class="text-left px-4 py-3 font-semibold text-gray-700 min-w-40">Criterio</th>
                         @foreach($criteriosRubrica->first()->niveles as $nivelHeader)
-                        <th class="text-center px-3 py-3 font-semibold text-gray-500 text-xs min-w-32">
+                        <th scope="col" class="text-center px-3 py-3 font-semibold text-gray-500 text-xs min-w-32">
                             Nivel {{ $loop->iteration }}<br>
                             <span class="text-dyl-orange-600 font-bold">{{ number_format($nivelHeader->puntos, 2) }} pts</span>
                         </th>

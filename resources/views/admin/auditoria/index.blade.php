@@ -32,13 +32,13 @@
         <table class="tbl w-full">
             <thead>
                 <tr>
-                    <th class="tbl-th">Fecha</th>
-                    <th class="tbl-th">Usuario</th>
-                    <th class="tbl-th">Acción</th>
-                    <th class="tbl-th">Modelo</th>
-                    <th class="tbl-th">ID</th>
-                    <th class="tbl-th">IP</th>
-                    <th class="tbl-th">Campos afectados</th>
+                    <th scope="col" class="tbl-th">Fecha</th>
+                    <th scope="col" class="tbl-th">Usuario</th>
+                    <th scope="col" class="tbl-th">Acción</th>
+                    <th scope="col" class="tbl-th">Modelo</th>
+                    <th scope="col" class="tbl-th">ID</th>
+                    <th scope="col" class="tbl-th">IP</th>
+                    <th scope="col" class="tbl-th">Campos afectados</th>
                 </tr>
             </thead>
             <tbody>

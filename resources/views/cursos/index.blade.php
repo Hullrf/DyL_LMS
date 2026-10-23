@@ -137,7 +137,7 @@
                         Gestionar categorías
                     </a>
                 @endif
-                <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar curso..."
+                <input aria-label="Buscar curso..." type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar curso..."
                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px] focus:ring-2 focus:ring-dyl-orange-600">
                 <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Buscar</button>
                 @if(request()->anyFilled(['categoria', 'buscar']))

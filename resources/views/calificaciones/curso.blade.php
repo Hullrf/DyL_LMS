@@ -19,7 +19,7 @@
 {{-- Filtros --}}
 <form method="GET" action="{{ route('calificaciones.curso', $curso) }}"
       class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap items-center gap-3">
-    <input type="text" name="buscar" value="{{ request('buscar') }}"
+    <input aria-label="Buscar estudiante..." type="text" name="buscar" value="{{ request('buscar') }}"
            placeholder="Buscar estudiante..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
     <select name="estado" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
         <option value="">Todos los estudiantes</option>
@@ -50,8 +50,8 @@
             <table class="min-w-full divide-y divide-gray-100 text-sm">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
+                        <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -82,15 +82,15 @@
         <table class="min-w-full divide-y divide-gray-100 text-sm">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
                     @foreach($actividades as $act)
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">
                             {{ $act->tituloCompleto() }}
                             <span class="block normal-case text-gray-400 font-normal">/ {{ number_format($act->puntaje_maximo ?? 0, 0) }} pts</span>
                         </th>
                     @endforeach
-                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Promedio</th>
-                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
+                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Promedio</th>
+                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">

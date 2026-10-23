@@ -24,7 +24,7 @@
                 <form id="reply-{{ $c->id }}" method="POST" action="{{ route('foros.comentar', $foro) }}" class="hidden mt-2 flex gap-2">
                     @csrf
                     <input type="hidden" name="padre_id" value="{{ $c->id }}">
-                    <input type="text" name="contenido" class="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm" placeholder="Escribe una respuesta..." required>
+                    <input aria-label="Escribe una respuesta..." type="text" name="contenido" class="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm" placeholder="Escribe una respuesta..." required>
                     <button type="submit" class="px-3 py-1.5 bg-dyl-orange-600 text-white text-xs rounded hover:bg-dyl-orange-700">Enviar</button>
                 </form>
             </div>
@@ -47,7 +47,7 @@
 
     <form method="POST" action="{{ route('foros.comentar', $foro) }}" class="mt-4 flex gap-2">
         @csrf
-        <input type="text" name="contenido" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Escribe un comentario..." required>
+        <input aria-label="Escribe un comentario..." type="text" name="contenido" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Escribe un comentario..." required>
         <button type="submit" class="px-5 py-2 bg-dyl-orange-600 text-white text-sm rounded-lg hover:bg-dyl-orange-700">Comentar</button>
     </form>
 </div>

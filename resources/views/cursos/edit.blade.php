@@ -135,7 +135,7 @@
             <h2 class="text-lg font-bold text-gray-900 mb-4">Agregar Módulo</h2>
             <form action="{{ route('modulos.store', $curso) }}" method="POST" class="flex gap-3">
                 @csrf
-                <input type="text" name="titulo" placeholder="Nombre del módulo"
+                <input aria-label="Nombre del módulo" type="text" name="titulo" placeholder="Nombre del módulo"
                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
                 <button type="submit" class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm font-medium">
                     + Módulo

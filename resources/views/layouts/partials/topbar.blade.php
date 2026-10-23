@@ -7,7 +7,7 @@
             </a>
         @endguest
         @auth
-            <button @click="$dispatch('sidebar-open')" type="button"
+            <button @click="$dispatch('sidebar-open')" type="button" id="sidebar-toggle"
                     class="lg:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 text-dyl-graphite-500 hover:text-dyl-graphite-900 rounded-lg"
                     aria-label="Abrir menú de navegación">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

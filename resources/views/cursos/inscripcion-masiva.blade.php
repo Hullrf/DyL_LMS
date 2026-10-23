@@ -13,7 +13,7 @@
 
     {{-- Formulario de búsqueda --}}
     <form method="GET" class="mb-4 flex gap-3">
-        <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre o email..."
+        <input aria-label="Buscar por nombre o email..." type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre o email..."
                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-dyl-orange-600">
         <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Buscar</button>
         @if(request('buscar'))

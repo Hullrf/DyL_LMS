@@ -26,7 +26,7 @@
 
     <div class="flex gap-2">
         <div class="relative flex-1">
-            <input
+            <input aria-label="Buscar o escribir nueva categoría..."
                 type="text"
                 x-model="query"
                 x-on:input="onInput"

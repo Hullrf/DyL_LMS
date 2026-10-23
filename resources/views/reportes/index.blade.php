@@ -67,7 +67,7 @@
                     <input type="hidden" name="{{ $preservar }}" value="{{ request($preservar) }}">
                 @endif
             @endforeach
-            <input type="text" name="curso_buscar" value="{{ request('curso_buscar') }}"
+            <input aria-label="Buscar curso..." type="text" name="curso_buscar" value="{{ request('curso_buscar') }}"
                    placeholder="Buscar curso..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
             <select name="curso_estado" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
                 <option value="">Todos los estados</option>
@@ -85,13 +85,13 @@
         <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
                     @if($kpis)
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Instructor</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Instructor</th>
                     @endif
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Inscritos</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Inscritos</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -148,7 +148,7 @@
                     <input type="hidden" name="{{ $preservar }}" value="{{ request($preservar) }}">
                 @endif
             @endforeach
-            <input type="text" name="usuario_buscar" value="{{ request('usuario_buscar') }}"
+            <input aria-label="Buscar por nombre o email..." type="text" name="usuario_buscar" value="{{ request('usuario_buscar') }}"
                    placeholder="Buscar por nombre o email..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
             <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Filtrar</button>
             @if(request()->filled('usuario_buscar'))
@@ -160,10 +160,10 @@
         <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estudiante</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cursos inscritos</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ver reporte</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estudiante</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cursos inscritos</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ver reporte</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">

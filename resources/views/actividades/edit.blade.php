@@ -607,7 +607,7 @@
                         </div>
                         <form action="{{ route('opciones.store', $pregunta) }}" method="POST" class="flex gap-2">
                             @csrf
-                            <input type="text" name="texto" placeholder="Texto de la opción"
+                            <input aria-label="Texto de la opción" type="text" name="texto" placeholder="Texto de la opción"
                                    class="form-input flex-1" required>
                             <label class="flex items-center gap-1 text-sm text-gray-600 whitespace-nowrap">
                                 <input type="checkbox" name="es_correcta" value="1" class="rounded">

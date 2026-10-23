@@ -48,8 +48,8 @@
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-50 text-left text-xs uppercase text-gray-500">
                     <tr>
-                        <th class="px-4 py-3">Estudiante</th><th class="px-4 py-3">Nivel</th><th class="px-4 py-3">Progreso</th>
-                        <th class="px-4 py-3">Promedio</th><th class="px-4 py-3">Atrasadas</th><th class="px-4 py-3">Último acceso</th><th class="px-4 py-3">Señales</th>
+                        <th scope="col" class="px-4 py-3">Estudiante</th><th scope="col" class="px-4 py-3">Nivel</th><th scope="col" class="px-4 py-3">Progreso</th>
+                        <th scope="col" class="px-4 py-3">Promedio</th><th scope="col" class="px-4 py-3">Atrasadas</th><th scope="col" class="px-4 py-3">Último acceso</th><th scope="col" class="px-4 py-3">Señales</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
