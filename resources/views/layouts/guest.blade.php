@@ -19,6 +19,7 @@
     function dylToggleTheme() {
         var d = document.documentElement.classList.toggle('dark');
         try { localStorage.setItem('dyl_theme', d ? 'dark' : 'light'); } catch (e) {}
+        window.dispatchEvent(new Event('themechange'));
         document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
     }
     </script>
