@@ -25,7 +25,7 @@
             </label>
             @include('cursos.partials.competencia-actividades', ['actividades' => $actividades, 'marcadas' => $enlazadas])
             <div class="mt-3 flex items-center gap-3">
-                <button class="rounded-lg bg-dyl-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Guardar</button>
+                <button class="rounded-lg bg-dyl-orange-700 px-4 py-2 text-sm font-medium text-white hover:bg-dyl-orange-800">Guardar</button>
             </div>
         </form>
         <form method="POST" action="{{ route('cursos.competencias.destroy', [$curso, $c]) }}" class="mt-2"
@@ -47,7 +47,7 @@
                    placeholder="Ej.: Aplicar los fundamentos de seguridad en sistemas y redes">
         </label>
         @include('cursos.partials.competencia-actividades', ['actividades' => $actividades, 'marcadas' => []])
-        <button class="mt-3 rounded-lg bg-dyl-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Agregar competencia</button>
+        <button class="mt-3 rounded-lg bg-dyl-orange-700 px-4 py-2 text-sm font-medium text-white hover:bg-dyl-orange-800">Agregar competencia</button>
     </form>
 </div>
 @endsection

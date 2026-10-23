@@ -37,10 +37,10 @@
         <legend class="text-sm font-medium text-gray-700 mb-2">Bibliografía</legend>
         <template x-for="(fila, i) in filas" :key="i">
             <div class="mb-2 grid grid-cols-12 gap-2">
-                <input class="col-span-3 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][autor]`" x-model="fila.autor" placeholder="Autor" required>
-                <input class="col-span-1 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][anio]`" x-model="fila.anio" placeholder="Año" type="number">
-                <input class="col-span-4 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][titulo]`" x-model="fila.titulo" placeholder="Título" required>
-                <input class="col-span-3 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][editorial]`" x-model="fila.editorial" placeholder="Editorial">
+                <input aria-label="Autor" class="col-span-3 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][autor]`" x-model="fila.autor" placeholder="Autor" required>
+                <input aria-label="Año" class="col-span-1 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][anio]`" x-model="fila.anio" placeholder="Año" type="number">
+                <input aria-label="Título" class="col-span-4 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][titulo]`" x-model="fila.titulo" placeholder="Título" required>
+                <input aria-label="Editorial" class="col-span-3 rounded-lg border-gray-300 text-sm" :name="`bibliografia[${i}][editorial]`" x-model="fila.editorial" placeholder="Editorial">
                 <button type="button" class="col-span-1 text-red-600" @click="filas.splice(i, 1)" aria-label="Quitar">×</button>
             </div>
         </template>
@@ -49,6 +49,6 @@
         @error('bibliografia.*.titulo')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
     </fieldset>
 
-    <button class="rounded-lg bg-dyl-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Guardar ficha</button>
+    <button class="rounded-lg bg-dyl-orange-700 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-800">Guardar ficha</button>
 </form>
 @endsection

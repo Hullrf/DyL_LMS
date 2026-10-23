@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="mb-4">
-        <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">&larr; Volver al curso</a>
+        <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">&larr; Volver al curso</a>
     </div>
     <div class="bg-white rounded-lg shadow p-8">
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Nueva Actividad</h1>
@@ -138,7 +138,7 @@
                 </select>
             </div>
             <div class="flex gap-4">
-                <button type="submit" class="bg-dyl-orange-600 text-white px-6 py-2 rounded-lg hover:bg-dyl-orange-700">
+                <button type="submit" class="bg-dyl-orange-700 text-white px-6 py-2 rounded-lg hover:bg-dyl-orange-800">
                     Crear y configurar
                 </button>
                 <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">

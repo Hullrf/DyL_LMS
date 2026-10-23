@@ -8,7 +8,7 @@
             <p class="text-sm text-gray-500">{{ $curso->titulo }}</p>
         </div>
         @if(auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
-            <a href="{{ route('foros.create', $curso) }}" class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-dyl-orange-700">+ Nuevo foro</a>
+            <a href="{{ route('foros.create', $curso) }}" class="bg-dyl-orange-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-dyl-orange-800">+ Nuevo foro</a>
         @endif
     </div>
 

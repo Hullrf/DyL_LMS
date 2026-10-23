@@ -7,7 +7,7 @@
         @if($notificaciones->where('leido', false)->count() > 0)
             <form method="POST" action="{{ route('notificaciones.marcar-todas') }}">
                 @csrf
-                <button type="submit" class="text-sm text-dyl-orange-600 hover:text-dyl-orange-700 font-medium">Marcar todas como leídas</button>
+                <button type="submit" class="text-sm text-dyl-orange-700 hover:text-dyl-orange-800 font-medium">Marcar todas como leídas</button>
             </form>
         @endif
     </div>

@@ -14,7 +14,7 @@
         @endif
         <div class="absolute inset-0 bg-black/30 flex items-end p-6">
             <span class="px-3 py-1 rounded-full text-xs font-medium
-                @if($curso->estado === 'publicado') bg-dyl-orange-600 text-white
+                @if($curso->estado === 'publicado') bg-dyl-orange-700 text-white
                 @elseif($curso->estado === 'borrador') bg-dyl-graphite-200 text-dyl-graphite-900
                 @else bg-dyl-graphite-600 text-white @endif">
                 {{ ucfirst($curso->estado) }}
@@ -54,7 +54,7 @@
                 @if(auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
                     {{-- Instructor: botón editar --}}
                     <a href="{{ route('cursos.edit', $curso) }}"
-                       class="block w-full text-center bg-dyl-orange-600 text-white px-6 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium mb-2">
+                       class="block w-full text-center bg-dyl-orange-700 text-white px-6 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium mb-2">
                         Editar curso
                     </a>
                     <a href="{{ route('cursos.inscripcion-masiva', $curso) }}"
@@ -67,7 +67,7 @@
                         <p class="text-xs text-gray-500 mb-1">Tu progreso</p>
                         <div class="flex justify-between text-sm font-medium mb-1">
                             <span>{{ $completadasIds->count() }}/{{ $totalLecciones }} lecciones</span>
-                            <span class="{{ $porcentaje === 100 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">{{ $porcentaje }}%</span>
+                            <span class="{{ $porcentaje === 100 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">{{ $porcentaje }}%</span>
                         </div>
                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden mb-3">
                             <div class="h-full rounded-full transition-all bg-dyl-orange-600"
@@ -80,7 +80,7 @@
                         @endphp
                         @if($primeraLeccionSinCompletar)
                             <a href="{{ route('lecciones.show', $primeraLeccionSinCompletar) }}"
-                               class="block w-full text-center bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
+                               class="block w-full text-center bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
                                 Continuar &rarr;
                             </a>
                         @else
@@ -93,7 +93,7 @@
                             @endphp
                             @if($certExistente)
                                 <a href="{{ route('certificados.show', $certExistente) }}"
-                                   class="block w-full text-center bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 font-medium text-sm">
+                                   class="block w-full text-center bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
                                     &#127941; Ver Certificado
                                 </a>
                             @else
@@ -185,7 +185,7 @@
                     {{-- Icono completado --}}
                     <span class="mr-3 flex-shrink-0">
                         @if($done)
-                            <svg class="w-5 h-5 text-dyl-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-dyl-orange-700" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                         @else
@@ -199,7 +199,7 @@
                     <div class="flex-1 min-w-0">
                         @if($estaInscrito || auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
                             <a href="{{ route('lecciones.show', $leccion) }}"
-                               class="text-sm font-medium {{ $done ? 'text-gray-500 line-through' : 'text-gray-800 hover:text-dyl-orange-600' }}">
+                               class="text-sm font-medium {{ $done ? 'text-gray-500 line-through' : 'text-gray-800 hover:text-dyl-orange-700' }}">
                                 {{ $leccion->titulo }}
                             </a>
                         @else

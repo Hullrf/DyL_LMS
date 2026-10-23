@@ -9,19 +9,19 @@
     </div>
 
     <form method="GET" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap gap-3">
-        <input type="text" name="buscar" value="{{ request('buscar') }}"
+        <input aria-label="Buscar por nombre..." type="text" name="buscar" value="{{ request('buscar') }}"
                placeholder="Buscar por nombre..." class="form-input flex-1 min-w-48">
         <button type="submit" class="btn-primary">Filtrar</button>
         <a href="{{ route('admin.categorias.index') }}" class="btn-outline">Limpiar</a>
     </form>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         <table class="tbl w-full">
             <thead>
                 <tr>
-                    <th class="tbl-th">Categoría</th>
-                    <th class="tbl-th">Cursos</th>
-                    <th class="tbl-th">Acciones</th>
+                    <th scope="col" class="tbl-th">Categoría</th>
+                    <th scope="col" class="tbl-th">Cursos</th>
+                    <th scope="col" class="tbl-th">Acciones</th>
                 </tr>
             </thead>
             <tbody>

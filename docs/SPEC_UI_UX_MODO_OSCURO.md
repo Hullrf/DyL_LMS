@@ -21,6 +21,8 @@ Marca que se conserva: naranja `#EA580C` / grafito `#0F172A`, Figtree. No se ado
 | D9 | **Bug sidebar:** el botón Colapsar/Expandir parecía muerto tras cargar una página con el sidebar guardado como colapsado. `html.dyl-sb-collapsed` (puesta por el script del `<head>`) nunca se quitaba y su regla `width:72px` ganaba sobre `.is-collapsed`. `toggleSidebar()` ahora la sincroniza. Verificado: 72 → 220 → 72 px | `layouts/app.blade.php` |
 | D10 | Fase 2 · bloque 1: A4 (footer libera el botón Ayuda), A5 (separadores de tabla), A6 (`aria-pressed` real), A7 (halo de foco), M5 (`rel=noopener`), M6 (badges 12px), M7 (checkbox/radio), M8 (scrim del modal), M11 (borrado `welcome.blade.php`); además campana con nombre accesible y 44px | varios |
 | D11 | Fase 2 · bloque 2: A1 (Quill en oscuro), A2 (Chart.js: defaults por tema, sin animación con reduced-motion, redibujo al alternar, series con más contraste), M10 parcial (CSS de `.office-render`, `.leccion-contenido` y neutralización de negro/blanco inline de Quill) | `app.css`, `app.js`, layouts, dashboards, reportes |
+| D12 | Fase 3: M3 (`scope="col"` en 76 `<th`, scroll horizontal en 6 tablas), M4 (`aria-label` en buscadores, comentarios, bibliografía y módulo; **no** en inputs con etiqueta visible ni con placeholders de ejemplo), M13 (tema por defecto = preferencia del SO si no hay elección guardada; sincroniza entre pestañas vía evento `storage`), M14 (tooltip `title` en el riel colapsado; drawer móvil con Esc, `inert` en el resto de la página, bloqueo de scroll, foco al abrir y retorno al botón) | varios |
+| D13 | A3 (decisión: botón en `#C2410C`): `.btn-primary` y 61 botones/avatares con texto blanco pasan a `orange-700` (hover `orange-800`), 5.18:1; texto naranja sobre claro `orange-600` → `orange-700` (~96 usos). `orange-600` queda solo en acentos sin texto (barras, toggles, puntos, foco). En oscuro el texto naranja pasa a `#FB923C` (≈9:1) | `app.css`, ~50 vistas |
 | D8 | Corregidos en oscuro: badge "En progreso", pista de progreso, textarea/select/input sin clase, dropzone `bg-gray-50/40`, tarjetas sin borde | `app.css` |
 
 Pruebas: `php artisan test` → 459 passed tras D1–D7.
@@ -51,7 +53,7 @@ Esfuerzo: S ≤ 1 h · M ≤ half-day · L ≥ 1 día.
 **Fix:** helper único en `resources/js/app.js` (`dylChartTheme()`): aplica defaults según `html.dark`, `Chart.defaults.animation = false` si `prefers-reduced-motion`, y escucha un evento `themechange` que `dylToggleTheme()` ya puede disparar para `chart.update()`. Paleta de series con ≥3:1 en ambos temas; no depender solo del color (leyenda visible ya existe).
 **Aceptación:** ejes/leyenda legibles en ambos temas; alternar tema actualiza sin recargar. Verificar con datos reales (hoy todas las barras están en 0).
 
-### A3 — Contraste de la marca en modo claro · A · M (decisión de marca)
+### A3 — ✅ Contraste de la marca en modo claro · A · M (decisión de marca)
 Cálculo WCAG:
 
 | Par | Ratio | AA texto normal (4.5) |
@@ -64,7 +66,7 @@ Cálculo WCAG:
 
 (En oscuro: naranja-600 sobre fondo/tarjeta 5.26 / 4.84 ✓; el botón blanco-sobre-600 sigue en 3.56 ✗.)
 **Fix propuesto:** `.btn-primary` base `orange-700`, hover `orange-800`; en vistas `text-dyl-orange-600` → `text-dyl-orange-700` para texto sobre claro (búsqueda/reemplazo acotado; el naranja-600 queda para barras, bordes, íconos y fondos grandes). En oscuro mantener texto `600`.
-**Decisión pendiente:** confirmar con quien lleve la marca que el botón pase a `#C2410C`. Alternativa: texto del botón en `#0F172A` sobre `orange-600` (5.3:1), sin tocar el color de marca.
+**Decisión tomada:** botón en `#C2410C` (ver D13).
 
 ### A4 — ✅  Botón flotante "Ayuda" tapa contenido · A · S
 **Visto en:** todas las páginas (captura): cubre el enlace "Dashboard" del footer y los últimos elementos al final del scroll.
@@ -95,14 +97,15 @@ Regla de la skill: SVG de una sola familia (los del sidebar ya son stroke 1.8). 
 `max-w-2xl` ×15, `3xl` ×14, `4xl` ×7, `5xl` ×2, `6xl` ×1, `7xl` ×5. Visto: `admin/usuarios` ancho completo, `backups` estrecho, `categorias` medio, `mensajes` estrecho.
 **Fix:** convención en la spec de diseño: listados/tablas `7xl` (default del layout), formularios `3xl`, lectura (lección, actividad) `4xl`. Aplicar por tipo de página; sin tocar contenido.
 
-### M3 — Tablas: scroll móvil y semántica · M · M
+### M3 — ✅ Tablas: scroll móvil y semántica · M · M
 - 9 vistas con `<table>` sin wrapper `overflow-x-auto`: `admin/categorias`, `admin/usuarios`, `calificaciones/mis-calificaciones`, `calificaciones/partials/resumen-nota-curso`, `cursos/partials/ficha`, `cursos/ponderaciones` (+ 3 plantillas PDF que no aplican). Heurística por archivo: confirmar a mano.
 - 91 `<th>` sin `scope="col"`.
 - `.table-auto-responsive` ya existe en `app.css` y casi no se usa.
 **Fix:** envolver con `.table-auto-responsive`; `scope="col"` por búsqueda/reemplazo.
 **No verificado:** el redimensionado de ventana no cambió el viewport en esta sesión, así que lo móvil falta probarlo (ver §4).
 
-### M4 — Inputs sin label visible · M · S
+### M4 — ✅ Inputs sin label visible · M · S
+(Pendiente menor: `actividades/create` tiene `<label>` sin `for`/`id` que lo asocie al input.)
 8 vistas con `<input placeholder>`: `cursos/ficha` (4), `foros/show` (2), buscadores en `cursos/index`, `linea-de-tiempo`, `inscripcion-masiva`, `actividades/create|edit`.
 **Fix:** `<label class="sr-only">` o `aria-label` en los buscadores; label visible en formularios.
 
@@ -138,11 +141,11 @@ Sin ruta; copia de Breeze con ~100 KB de CSS Tailwind v4 inline y 22 clases `dar
 403/404 son las de Laravel por defecto, en inglés ("NOT FOUND"), sin layout. Además `/certificados/` devuelve el 403 de Apache ("Forbidden … Apache/2.4.58") porque existe un directorio físico `public/certificados` que sombrea la ruta `certificados`.
 **Fix:** `resources/views/errors/{403,404,419,500,503}.blade.php` en español con `layouts/guest`, y revisar la colisión directorio/ruta (mover los PDFs o excluir el directorio en `.htaccess`/Nginx).
 
-### M13 — Tema por defecto y sincronización · M · S
+### M13 — ✅ Tema por defecto y sincronización · M · S
 Hoy el default es claro aunque el SO esté en oscuro, y el cambio no se sincroniza entre pestañas (se comprobó: otra pestaña dejó `dyl_theme=light`).
 **Fix:** si no hay valor guardado, usar `matchMedia('(prefers-color-scheme: dark)')`; escuchar el evento `storage`. Opcional: columna `users.tema` para persistir por cuenta.
 
-### M14 — Sidebar: riel colapsado y drawer móvil · M · M
+### M14 — ✅ Sidebar: riel colapsado y drawer móvil · M · M
 - Colapsado (72 px) los iconos no tienen `title`/tooltip; el nombre accesible existe pero un usuario vidente no ve el texto.
 - Drawer móvil: cierra solo por clic en overlay; falta Esc, atrapar foco y devolverlo al botón hamburguesa; `body` sigue haciendo scroll.
 **Fix:** `title` condicional (`:title="collapsed ? label : null"`), `@keydown.escape.window="mobileOpen=false"`, `x-trap` (Alpine focus plugin, ya compatible) o foco manual.

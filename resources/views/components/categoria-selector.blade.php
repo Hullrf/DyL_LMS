@@ -26,7 +26,7 @@
 
     <div class="flex gap-2">
         <div class="relative flex-1">
-            <input
+            <input aria-label="Buscar o escribir nueva categoría..."
                 type="text"
                 x-model="query"
                 x-on:input="onInput"
@@ -55,7 +55,7 @@
             type="button"
             x-on:click="crear"
             x-bind:disabled="!puedeCrear"
-            class="px-3 py-2 text-sm rounded-lg border border-dyl-orange-600 text-dyl-orange-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-dyl-orange-50 whitespace-nowrap"
+            class="px-3 py-2 text-sm rounded-lg border border-dyl-orange-600 text-dyl-orange-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-dyl-orange-50 whitespace-nowrap"
         >
             <span x-show="!creando">Crear</span>
             <span x-show="creando" x-cloak>Creando...</span>

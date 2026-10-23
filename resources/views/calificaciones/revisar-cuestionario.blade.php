@@ -79,7 +79,7 @@
                                :class="decision === '1' ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-700 ring-1 ring-dyl-orange-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                             <input type="radio" name="decisiones[{{ $pregunta->id }}]" value="1"
                                    x-model="decision" class="sr-only">
-                            <span :class="decision === '1' ? 'text-dyl-orange-600' : 'text-gray-300'">✓</span>
+                            <span :class="decision === '1' ? 'text-dyl-orange-700' : 'text-gray-300'">✓</span>
                             Correcto
                             <span class="text-xs font-normal opacity-70">({{ $pregunta->puntaje }} pts)</span>
                         </label>
@@ -123,7 +123,7 @@
                             @elseif($esCorrecta) bg-dyl-orange-50/50 border border-dyl-orange-100
                             @else bg-gray-50 border border-gray-100 @endif">
                             <span class="w-4 text-center font-bold shrink-0
-                                @if($esCorrecta) text-dyl-orange-600
+                                @if($esCorrecta) text-dyl-orange-700
                                 @elseif($fueElegida) text-dyl-graphite-600
                                 @else text-gray-300 @endif">
                                 @if($esCorrecta) ✓ @elseif($fueElegida) ✗ @else ○ @endif
@@ -132,7 +132,7 @@
                             @if($fueElegida && !$esCorrecta)
                                 <span class="ml-auto text-xs text-dyl-graphite-600 font-semibold">Elegida incorrectamente</span>
                             @elseif($esCorrecta && $fueElegida)
-                                <span class="ml-auto text-xs text-dyl-orange-600">Correcta ✓</span>
+                                <span class="ml-auto text-xs text-dyl-orange-700">Correcta ✓</span>
                             @elseif($esCorrecta)
                                 <span class="ml-auto text-xs text-dyl-orange-500 opacity-60">Correcta (no elegida)</span>
                             @endif
@@ -141,7 +141,7 @@
                     </div>
 
                     <div class="mt-3 text-right text-sm">
-                        <span class="{{ $ptsObtenidos > 0 ? 'text-dyl-orange-600 font-semibold' : 'text-gray-400' }}">
+                        <span class="{{ $ptsObtenidos > 0 ? 'text-dyl-orange-700 font-semibold' : 'text-gray-400' }}">
                             {{ $ptsObtenidos }} / {{ $pregunta->puntaje }} pts
                         </span>
                         <span class="text-gray-300 ml-1 text-xs">(auto-calificado)</span>

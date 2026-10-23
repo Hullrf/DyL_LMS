@@ -35,7 +35,7 @@
                            name="respuesta_{{ $pregunta->id }}[]"
                            value="{{ $opcion->id }}"
                            {{ $checked ? 'checked' : '' }}
-                           class="w-4 h-4 rounded text-dyl-orange-600">
+                           class="w-4 h-4 rounded text-dyl-orange-700">
                     <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
                 </label>
                 @endforeach
@@ -48,7 +48,7 @@
                 <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                     <input type="radio" name="respuesta_{{ $pregunta->id }}" value="{{ $opcion->id }}"
                            {{ $checked ? 'checked' : '' }}
-                           class="text-dyl-orange-600" required>
+                           class="text-dyl-orange-700" required>
                     <span class="text-sm text-gray-800">{{ $opcion->texto }}</span>
                 </label>
                 @endforeach

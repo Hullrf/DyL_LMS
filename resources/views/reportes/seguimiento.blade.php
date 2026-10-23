@@ -19,7 +19,7 @@
     </div>
 @else
     <div class="mb-6 grid grid-cols-3 gap-4">
-        @foreach(['riesgo' => 'text-red-700', 'atencion' => 'text-dyl-orange-600', 'ok' => 'text-dyl-graphite-700'] as $nivel => $color)
+        @foreach(['riesgo' => 'text-red-700', 'atencion' => 'text-dyl-orange-700', 'ok' => 'text-dyl-graphite-700'] as $nivel => $color)
             <div class="rounded-xl bg-white p-4 text-center shadow">
                 <p class="text-xs uppercase tracking-wide text-gray-400">{{ $niveles[$nivel] }}</p>
                 <p class="mt-1 text-3xl font-bold {{ $color }}">{{ $datos['resumen'][$nivel] }}</p>
@@ -48,8 +48,8 @@
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-50 text-left text-xs uppercase text-gray-500">
                     <tr>
-                        <th class="px-4 py-3">Estudiante</th><th class="px-4 py-3">Nivel</th><th class="px-4 py-3">Progreso</th>
-                        <th class="px-4 py-3">Promedio</th><th class="px-4 py-3">Atrasadas</th><th class="px-4 py-3">Último acceso</th><th class="px-4 py-3">Señales</th>
+                        <th scope="col" class="px-4 py-3">Estudiante</th><th scope="col" class="px-4 py-3">Nivel</th><th scope="col" class="px-4 py-3">Progreso</th>
+                        <th scope="col" class="px-4 py-3">Promedio</th><th scope="col" class="px-4 py-3">Atrasadas</th><th scope="col" class="px-4 py-3">Último acceso</th><th scope="col" class="px-4 py-3">Señales</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">

@@ -32,14 +32,14 @@
         @endif
         @if($hayBiblio)
             <section><h3 class="font-semibold text-gray-900 mb-1">Bibliografía</h3>
-                <table class="min-w-full text-left text-xs">
-                    <thead class="text-gray-500"><tr><th class="py-1 pr-3">Autor</th><th class="py-1 pr-3">Año</th><th class="py-1 pr-3">Título</th><th class="py-1">Editorial</th></tr></thead>
+                <div class="overflow-x-auto"><table class="min-w-full text-left text-xs">
+                    <thead class="text-gray-500"><tr><th scope="col" class="py-1 pr-3">Autor</th><th scope="col" class="py-1 pr-3">Año</th><th scope="col" class="py-1 pr-3">Título</th><th scope="col" class="py-1">Editorial</th></tr></thead>
                     <tbody class="divide-y divide-gray-100">
                         @foreach($curso->bibliografias as $b)
                             <tr><td class="py-1 pr-3">{{ $b->autor }}</td><td class="py-1 pr-3">{{ $b->anio ?? '—' }}</td><td class="py-1 pr-3">{{ $b->titulo }}</td><td class="py-1">{{ $b->editorial ?? '—' }}</td></tr>
                         @endforeach
                     </tbody>
-                </table></section>
+                </table></div></section>
         @endif
         <section class="grid gap-4 border-t border-gray-100 pt-4 sm:grid-cols-2">
             <div><h3 class="font-semibold text-gray-900 mb-1">Contacte a su profesor</h3>
