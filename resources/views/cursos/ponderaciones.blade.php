@@ -23,14 +23,14 @@
     @csrf @method('PUT')
     @error('ponderaciones')<div class="alert alert-error mb-4" role="alert">{{ $message }}</div>@enderror
 
-    <div class="bg-white rounded-xl shadow overflow-hidden">
+    <div class="bg-white rounded-xl shadow overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Puntaje máx.</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Peso (%)</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Puntaje máx.</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Peso (%)</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -59,7 +59,7 @@
     </div>
 
     <div class="mt-4 flex gap-3">
-        <button type="submit" class="rounded-lg bg-dyl-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-700">Guardar</button>
+        <button type="submit" class="rounded-lg bg-dyl-orange-700 px-5 py-2 text-sm font-medium text-white hover:bg-dyl-orange-800">Guardar</button>
         <button type="button" @click="limpiar()" class="rounded-lg border border-gray-300 px-5 py-2 text-sm text-gray-700 hover:bg-gray-50">Repartir por puntaje</button>
         <a href="{{ route('calificaciones.curso', $curso) }}" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">Volver a calificaciones</a>
     </div>

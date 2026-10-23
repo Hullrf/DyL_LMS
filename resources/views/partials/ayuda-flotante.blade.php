@@ -23,7 +23,7 @@
         </ul>
     </div>
     <button type="button" @click="abierto = !abierto" :aria-expanded="abierto"
-            class="ml-auto flex items-center gap-1.5 rounded-full bg-dyl-orange-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-dyl-orange-700 focus:outline-none focus:ring-2 focus:ring-dyl-orange-600 focus:ring-offset-2">
+            class="ml-auto flex items-center gap-1.5 rounded-full bg-dyl-orange-700 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-dyl-orange-800 focus:outline-none focus:ring-2 focus:ring-dyl-orange-600 focus:ring-offset-2">
         <span aria-hidden="true">?</span> Ayuda
     </button>
 </div>

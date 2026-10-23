@@ -10,11 +10,27 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script>
     (function () {
-        try { if (localStorage.getItem('dyl_theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+        try {
+            var t = localStorage.getItem('dyl_theme');
+            if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+        } catch (e) {}
     })();
+    document.addEventListener('DOMContentLoaded', function () {
+        var d = document.documentElement.classList.contains('dark');
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+    });
+    // Otra pestaña cambió el tema: reflejarlo aquí.
+    window.addEventListener('storage', function (e) {
+        if (e.key !== 'dyl_theme') return;
+        var d = e.newValue === 'dark';
+        document.documentElement.classList.toggle('dark', d);
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+        window.dispatchEvent(new Event('themechange'));
+    });
     function dylToggleTheme() {
         var d = document.documentElement.classList.toggle('dark');
         try { localStorage.setItem('dyl_theme', d ? 'dark' : 'light'); } catch (e) {}
+        window.dispatchEvent(new Event('themechange'));
         document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
     }
     </script>

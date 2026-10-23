@@ -24,7 +24,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5 text-center">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Certificados</p>
-        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">
+        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">
             {{ $reporte['cursos']->where('tiene_certificado', true)->count() }}
         </p>
     </div>
@@ -70,7 +70,7 @@
 
                 <div class="text-right flex-shrink-0">
                     @if($cd['promedio'] !== null)
-                        <p class="text-2xl font-bold {{ $cd['promedio'] >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
+                        <p class="text-2xl font-bold {{ $cd['promedio'] >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
                             {{ $cd['promedio'] }}%
                         </p>
                         <p class="text-xs text-gray-400">Calificación</p>
@@ -96,10 +96,10 @@
         <table class="min-w-full divide-y divide-gray-50">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enviado</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Calificación</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enviado</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Calificación</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -119,7 +119,7 @@
                         @if($resp->estado === 'calificada')
                             @php $pct = ($resp->actividad?->puntaje_maximo ?? 0) > 0
                                 ? round(($resp->calificacion / $resp->actividad->puntaje_maximo) * 100) : 0; @endphp
-                            <span class="text-sm font-bold {{ $pct >= 60 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
+                            <span class="text-sm font-bold {{ $pct >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
                                 {{ $resp->calificacion }}{{ $resp->actividad ? '/' . $resp->actividad->puntaje_maximo : '' }}
                             </span>
                         @else

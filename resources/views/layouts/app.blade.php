@@ -18,11 +18,27 @@
     </script>
     <script>
     (function () {
-        try { if (localStorage.getItem('dyl_theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+        try {
+            var t = localStorage.getItem('dyl_theme');
+            if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+        } catch (e) {}
     })();
+    document.addEventListener('DOMContentLoaded', function () {
+        var d = document.documentElement.classList.contains('dark');
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+    });
+    // Otra pestaña cambió el tema: reflejarlo aquí.
+    window.addEventListener('storage', function (e) {
+        if (e.key !== 'dyl_theme') return;
+        var d = e.newValue === 'dark';
+        document.documentElement.classList.toggle('dark', d);
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+        window.dispatchEvent(new Event('themechange'));
+    });
     function dylToggleTheme() {
         var d = document.documentElement.classList.toggle('dark');
         try { localStorage.setItem('dyl_theme', d ? 'dark' : 'light'); } catch (e) {}
+        window.dispatchEvent(new Event('themechange'));
         document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
     }
     </script>
@@ -98,6 +114,10 @@
          x-data="{
              collapsed: localStorage.getItem('dyl_sidebar_collapsed') === '1',
              mobileOpen: false,
+             closeDrawer() {
+                 this.mobileOpen = false;
+                 document.getElementById('sidebar-toggle')?.focus();
+             },
              toggleSidebar() {
                  this.collapsed = !this.collapsed;
                  {{-- html.dyl-sb-collapsed la pone el script del <head> al cargar; si no se
@@ -107,11 +127,13 @@
                  localStorage.setItem('dyl_sidebar_collapsed', this.collapsed ? '1' : '0');
              }
          }"
-         @sidebar-open.window="mobileOpen = true">
+         x-effect="document.body.classList.toggle('overflow-hidden', mobileOpen)"
+         @sidebar-open.window="mobileOpen = true; $nextTick(() => document.querySelector('.dyl-sb-link')?.focus())"
+         @keydown.escape.window="mobileOpen && closeDrawer()">
 
         {{-- Overlay móvil — sibling de <aside>, no descendiente, para que 'fixed inset-0'
              se calcule contra el viewport y no contra la caja transformada del sidebar --}}
-        <div x-show="mobileOpen" x-cloak @click="mobileOpen = false"
+        <div x-show="mobileOpen" x-cloak @click="closeDrawer()"
              class="lg:hidden fixed inset-0 bg-black/50 z-40"
              x-transition:enter="transition-opacity ease-out duration-200"
              x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -120,7 +142,8 @@
 
         @include('layouts.partials.sidebar')
 
-        <div class="flex-1 flex flex-col min-w-0 lg:h-screen lg:overflow-y-auto">
+        {{-- inert: con el drawer abierto el resto de la página no recibe foco ni lector de pantalla --}}
+        <div class="flex-1 flex flex-col min-w-0 lg:h-screen lg:overflow-y-auto" :inert="mobileOpen">
 
             @include('layouts.partials.topbar')
 
@@ -161,7 +184,7 @@
                  FOOTER
             ================================================================ --}}
             <footer class="bg-dyl-graphite-900 mt-auto" role="contentinfo">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20">
                     <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div class="flex items-center gap-2.5">
                             <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-12 h-12" aria-hidden="true">

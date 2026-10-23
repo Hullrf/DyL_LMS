@@ -32,13 +32,13 @@
         <table class="tbl w-full">
             <thead>
                 <tr>
-                    <th class="tbl-th">Fecha</th>
-                    <th class="tbl-th">Usuario</th>
-                    <th class="tbl-th">Acción</th>
-                    <th class="tbl-th">Modelo</th>
-                    <th class="tbl-th">ID</th>
-                    <th class="tbl-th">IP</th>
-                    <th class="tbl-th">Campos afectados</th>
+                    <th scope="col" class="tbl-th">Fecha</th>
+                    <th scope="col" class="tbl-th">Usuario</th>
+                    <th scope="col" class="tbl-th">Acción</th>
+                    <th scope="col" class="tbl-th">Modelo</th>
+                    <th scope="col" class="tbl-th">ID</th>
+                    <th scope="col" class="tbl-th">IP</th>
+                    <th scope="col" class="tbl-th">Campos afectados</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,7 +61,7 @@
                     <td class="tbl-td">
                         @if($audit->new_values)
                         <details class="text-xs cursor-pointer">
-                            <summary class="text-dyl-orange-600 hover:text-dyl-orange-700 select-none">
+                            <summary class="text-dyl-orange-700 hover:text-dyl-orange-800 select-none">
                                 {{ count($audit->new_values) }} campo(s)
                             </summary>
                             <pre class="bg-gray-50 rounded p-2 mt-1 text-xs overflow-x-auto max-w-xs whitespace-pre-wrap">{{ implode(', ', array_keys($audit->new_values)) }}</pre>

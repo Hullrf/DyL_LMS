@@ -6,7 +6,7 @@
 
     <div class="flex items-center justify-between gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Mensajes</h1>
-        <a href="{{ route('mensajes.create') }}" class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-dyl-orange-700">+ Nuevo mensaje</a>
+        <a href="{{ route('mensajes.create') }}" class="bg-dyl-orange-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-dyl-orange-800">+ Nuevo mensaje</a>
     </div>
 
     @forelse($recibidos as $m)
@@ -17,7 +17,7 @@
                     <div class="flex items-center gap-2 mb-1">
                         <span class="font-medium text-sm text-gray-900">{{ $m->remitente->name }}</span>
                         <span class="text-xs text-gray-400">en</span>
-                        <span class="text-xs text-dyl-orange-600 font-medium">{{ $m->curso->titulo }}</span>
+                        <span class="text-xs text-dyl-orange-700 font-medium">{{ $m->curso->titulo }}</span>
                         @if(!$m->leido)
                             <span class="w-2 h-2 bg-dyl-orange-500 rounded-full"></span>
                         @endif

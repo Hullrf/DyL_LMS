@@ -12,13 +12,13 @@
         @if($nota['promedio_a_la_fecha'] !== null)
             <p class="text-sm font-medium text-gray-900 mb-3">Promedio a la fecha: {{ $nota['promedio_a_la_fecha'] }} %</p>
         @endif
-        <table class="min-w-full text-sm">
+        <div class="overflow-x-auto"><table class="min-w-full text-sm">
             <thead>
                 <tr class="text-left text-xs uppercase text-gray-500">
-                    <th class="py-1 pr-4">Actividad</th>
-                    <th class="py-1 pr-4 text-right">Peso</th>
-                    <th class="py-1 pr-4 text-right">Nota</th>
-                    <th class="py-1 text-right">Aporta</th>
+                    <th scope="col" class="py-1 pr-4">Actividad</th>
+                    <th scope="col" class="py-1 pr-4 text-right">Peso</th>
+                    <th scope="col" class="py-1 pr-4 text-right">Nota</th>
+                    <th scope="col" class="py-1 text-right">Aporta</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -48,7 +48,7 @@
                     <td class="py-2 text-right">{{ number_format($nota['acumulado'], 1) }} / 100</td>
                 </tr>
             </tfoot>
-        </table>
+        </table></div>
 
         @if($nota['requerido'] !== null)
             <p class="mt-3 rounded-lg px-3 py-2 text-sm {{ $nota['alcanzable'] ? 'bg-dyl-orange-50 text-dyl-orange-800' : 'bg-dyl-graphite-100 text-dyl-graphite-700' }}">

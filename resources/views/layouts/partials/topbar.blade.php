@@ -7,7 +7,7 @@
             </a>
         @endguest
         @auth
-            <button @click="$dispatch('sidebar-open')" type="button"
+            <button @click="$dispatch('sidebar-open')" type="button" id="sidebar-toggle"
                     class="lg:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 text-dyl-graphite-500 hover:text-dyl-graphite-900 rounded-lg"
                     aria-label="Abrir menú de navegación">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -46,7 +46,7 @@
                 <button @click="open = !open" @click.outside="open = false" @keydown.escape.window="open = false"
                         class="flex items-center gap-2 text-dyl-graphite-600 hover:text-dyl-graphite-900 rounded-lg px-2 py-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-dyl-orange-600"
                         aria-haspopup="menu" :aria-expanded="open">
-                    <div class="w-8 h-8 bg-dyl-orange-600 rounded-full flex items-center justify-center" aria-hidden="true">
+                    <div class="w-8 h-8 bg-dyl-orange-700 rounded-full flex items-center justify-center" aria-hidden="true">
                         <span class="text-white text-xs font-bold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                     </div>
                     <span class="hidden md:inline text-sm max-w-[120px] truncate">{{ auth()->user()->name }}</span>

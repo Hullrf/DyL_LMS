@@ -98,7 +98,7 @@
                                        x-model="selecciones[{{ $criterio->id }}]"
                                        class="sr-only">
                                 <p class="text-xs text-gray-600 leading-relaxed mb-2">{{ $nivel->descripcion }}</p>
-                                <p class="text-sm font-bold text-dyl-orange-600">{{ number_format($nivel->puntos, 2) }} pts</p>
+                                <p class="text-sm font-bold text-dyl-orange-700">{{ number_format($nivel->puntos, 2) }} pts</p>
                             </label>
                             @endforeach
                         </div>
@@ -126,7 +126,7 @@
 
                 <button type="submit"
                         :disabled="!todosSeleccionados"
-                        :class="todosSeleccionados ? 'bg-dyl-orange-600 hover:bg-dyl-orange-700 cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
+                        :class="todosSeleccionados ? 'bg-dyl-orange-700 hover:bg-dyl-orange-800 cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
                         class="w-full text-white py-2.5 rounded-lg font-medium transition-colors">
                     <span x-show="todosSeleccionados">Guardar Calificación</span>
                     <span x-show="!todosSeleccionados">Selecciona un nivel por criterio para continuar</span>
@@ -165,7 +165,7 @@
                 </div>
 
                 <button type="submit"
-                        class="w-full bg-dyl-orange-600 text-white py-2.5 rounded-lg hover:bg-dyl-orange-700 font-medium transition-colors">
+                        class="w-full bg-dyl-orange-700 text-white py-2.5 rounded-lg hover:bg-dyl-orange-800 font-medium transition-colors">
                     Guardar Calificación
                 </button>
             </form>
@@ -198,8 +198,8 @@
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <div class="flex items-center justify-between mb-2">
                     <p class="text-xs text-gray-500 uppercase tracking-wide">Archivo adjunto</p>
-                    <a href="{{ $urlAdj }}" target="_blank" download
-                       class="inline-flex items-center gap-1.5 text-dyl-orange-600 hover:text-dyl-orange-700 text-xs font-medium">
+                    <a href="{{ $urlAdj }}" target="_blank" rel="noopener noreferrer" download
+                       class="inline-flex items-center gap-1.5 text-dyl-orange-700 hover:text-dyl-orange-800 text-xs font-medium">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -265,8 +265,8 @@
                                     @if($arch->tamano) · {{ number_format($arch->tamano / 1024 / 1024, 2) }} MB @endif
                                 </p>
                             </div>
-                            <a href="{{ $urlArch }}" target="_blank" download
-                               class="inline-flex items-center gap-1 text-dyl-orange-600 hover:text-dyl-orange-700 text-xs font-medium flex-shrink-0">
+                            <a href="{{ $urlArch }}" target="_blank" rel="noopener noreferrer" download
+                               class="inline-flex items-center gap-1 text-dyl-orange-700 hover:text-dyl-orange-800 text-xs font-medium flex-shrink-0">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -301,8 +301,8 @@
                     <button type="button" @click="alto = Math.min(95, alto + 15)"
                             class="px-2 py-1 rounded border border-gray-200 hover:bg-gray-50">＋</button>
                 </div>
-                <a href="{{ $urlAdj }}" target="_blank" download
-                   class="inline-flex items-center gap-1.5 text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium">
+                <a href="{{ $urlAdj }}" target="_blank" rel="noopener noreferrer" download
+                   class="inline-flex items-center gap-1.5 text-dyl-orange-700 hover:text-dyl-orange-800 text-sm font-medium">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>

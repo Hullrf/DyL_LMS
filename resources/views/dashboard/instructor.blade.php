@@ -20,11 +20,11 @@
     </div>
     <a href="{{ route('calificaciones.index') }}" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow block">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Por Calificar</p>
-        <p class="text-3xl font-bold mt-1 {{ $stats['pendientes_calificar'] > 0 ? 'text-dyl-orange-600' : 'text-gray-400' }}">
+        <p class="text-3xl font-bold mt-1 {{ $stats['pendientes_calificar'] > 0 ? 'text-dyl-orange-700' : 'text-gray-400' }}">
             {{ $stats['pendientes_calificar'] }}
         </p>
         @if($stats['pendientes_calificar'] > 0)
-            <p class="text-xs text-dyl-orange-600 mt-1">Ver pendientes &rarr;</p>
+            <p class="text-xs text-dyl-orange-700 mt-1">Ver pendientes &rarr;</p>
         @endif
     </a>
 </div>
@@ -38,7 +38,7 @@
             Calificaciones
         </a>
         <a href="{{ route('cursos.create') }}"
-           class="bg-dyl-orange-600 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-700 text-sm">
+           class="bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 text-sm">
             + Nuevo Curso
         </a>
     </div>
@@ -63,7 +63,7 @@
                     Ver
                 </a>
                 <a href="{{ route('cursos.edit', $curso) }}"
-                   class="flex-1 text-center bg-dyl-orange-600 text-white py-2 rounded hover:bg-dyl-orange-700 text-sm">
+                   class="flex-1 text-center bg-dyl-orange-700 text-white py-2 rounded hover:bg-dyl-orange-800 text-sm">
                     Editar
                 </a>
             </div>
@@ -71,7 +71,7 @@
     @empty
         <div class="col-span-3 text-center py-12 text-gray-500">
             No tienes cursos aún.
-            <a href="{{ route('cursos.create') }}" class="text-dyl-orange-600 hover:underline">Crea tu primer curso</a>
+            <a href="{{ route('cursos.create') }}" class="text-dyl-orange-700 hover:underline">Crea tu primer curso</a>
         </div>
     @endforelse
 </div>

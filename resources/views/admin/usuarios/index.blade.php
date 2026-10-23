@@ -9,7 +9,7 @@
     </div>
 
     <form method="GET" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap gap-3">
-        <input type="text" name="buscar" value="{{ request('buscar') }}"
+        <input aria-label="Nombre o email..." type="text" name="buscar" value="{{ request('buscar') }}"
                placeholder="Nombre o email..." class="form-input flex-1 min-w-48">
         <select name="rol" class="form-input w-44">
             <option value="">Todos los roles</option>
@@ -26,17 +26,17 @@
         <a href="{{ route('admin.usuarios.index') }}" class="btn-outline">Limpiar</a>
     </form>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         <table class="tbl w-full">
             <thead>
                 <tr>
-                    <th class="tbl-th">Nombre</th>
-                    <th class="tbl-th">Email</th>
-                    <th class="tbl-th">Empresa</th>
-                    <th class="tbl-th">Rol</th>
-                    <th class="tbl-th">Estado</th>
-                    <th class="tbl-th">Registro</th>
-                    <th class="tbl-th">Acciones</th>
+                    <th scope="col" class="tbl-th">Nombre</th>
+                    <th scope="col" class="tbl-th">Email</th>
+                    <th scope="col" class="tbl-th">Empresa</th>
+                    <th scope="col" class="tbl-th">Rol</th>
+                    <th scope="col" class="tbl-th">Estado</th>
+                    <th scope="col" class="tbl-th">Registro</th>
+                    <th scope="col" class="tbl-th">Acciones</th>
                 </tr>
             </thead>
             <tbody>

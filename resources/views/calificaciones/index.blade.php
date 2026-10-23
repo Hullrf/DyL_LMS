@@ -16,10 +16,10 @@
         <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Inscritos</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Pendientes</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acción</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Inscritos</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Pendientes</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acción</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -41,7 +41,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <a href="{{ route('calificaciones.curso', $curso) }}"
-                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium">
+                           class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm font-medium">
                             Ver calificaciones &rarr;
                         </a>
                     </td>

@@ -49,7 +49,7 @@
         @include('actividades.partials.formulario-cuestionario')
 
         <div class="mt-6 flex justify-end">
-            <button type="submit" class="bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
+            <button type="submit" class="bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium">
                 Enviar respuesta
             </button>
         </div>
@@ -82,7 +82,7 @@
         </div>
         <form action="{{ route('actividades.iniciarIntento', $actividad) }}" method="POST">
             @csrf
-            <button type="submit" class="bg-dyl-orange-600 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-700 font-medium">
+            <button type="submit" class="bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium">
                 {{ $respuesta ? 'Reintentar' : 'Iniciar cuestionario' }}
             </button>
         </form>

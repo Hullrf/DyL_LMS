@@ -25,7 +25,7 @@
 
         {{-- Cabecera sidebar --}}
         <div class="p-4 border-b border-gray-200 bg-gray-50">
-            <a href="{{ route('cursos.show', $curso) }}" class="text-xs text-dyl-orange-600 hover:underline">&larr; Ver curso</a>
+            <a href="{{ route('cursos.show', $curso) }}" class="text-xs text-dyl-orange-700 hover:underline">&larr; Ver curso</a>
             <h2 class="text-sm font-bold text-gray-900 mt-1 line-clamp-2">{{ $curso->titulo }}</h2>
 
             {{-- Mini barra de progreso --}}
@@ -60,7 +60,7 @@
                             {{-- Icono estado --}}
                             <span class="mr-2.5 flex-shrink-0">
                                 @if($isDone)
-                                    <svg class="w-4 h-4 text-dyl-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-dyl-orange-700" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                     </svg>
                                 @elseif($isActual)
@@ -92,7 +92,7 @@
             <button @click="sidebarOpen = true" class="p-1.5 -ml-1.5 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100" aria-label="Abrir índice del curso">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
             </button>
-            <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-600 hover:underline truncate">{{ $curso->titulo }}</a>
+            <a href="{{ route('cursos.show', $curso) }}" class="text-dyl-orange-700 hover:underline truncate">{{ $curso->titulo }}</a>
             <span class="text-gray-300">/</span>
             <span class="truncate">{{ $leccion->titulo }}</span>
         </div>
@@ -140,7 +140,7 @@
         {{-- Contenido HTML de la lección --}}
         @if($leccion->contenido_html)
             <div class="leccion-contenido prose prose-lg max-w-none bg-white rounded-xl shadow-sm p-6 sm:p-8 mb-8 leading-relaxed
-                        prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-dyl-orange-600">
+                        prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-dyl-orange-700">
                 {!! $leccion->contenido_html !!}
             </div>
             <style>
@@ -187,7 +187,7 @@
                             @if($completada)
                                 <span class="px-2 py-1 bg-dyl-orange-100 text-dyl-orange-700 text-xs rounded-full font-medium">Completada</span>
                             @else
-                                <span class="text-gray-400 text-sm group-hover:text-dyl-orange-600">&rarr;</span>
+                                <span class="text-gray-400 text-sm group-hover:text-dyl-orange-700">&rarr;</span>
                             @endif
                         </a>
                     @endforeach
@@ -210,7 +210,7 @@
             <div>
                 @if($prevLeccion)
                     <a href="{{ route('lecciones.show', $prevLeccion) }}"
-                       class="flex items-center gap-2 text-gray-600 hover:text-dyl-orange-600 group">
+                       class="flex items-center gap-2 text-gray-600 hover:text-dyl-orange-700 group">
                         <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -224,7 +224,7 @@
             <div class="text-right">
                 @if($nextLeccion)
                     <a href="{{ route('lecciones.show', $nextLeccion) }}"
-                       class="flex items-center gap-2 text-gray-600 hover:text-dyl-orange-600 group">
+                       class="flex items-center gap-2 text-gray-600 hover:text-dyl-orange-700 group">
                         <div class="text-right">
                             <p class="text-xs text-gray-400">Siguiente</p>
                             <p class="text-sm font-medium line-clamp-1">{{ $nextLeccion->titulo }}</p>
@@ -235,9 +235,9 @@
                     </a>
                 @else
                     <a href="{{ route('cursos.show', $curso) }}"
-                       class="flex items-center gap-2 text-dyl-orange-600 hover:text-dyl-orange-700 font-medium group">
+                       class="flex items-center gap-2 text-dyl-orange-700 hover:text-dyl-orange-800 font-medium group">
                         <div class="text-right">
-                            <p class="text-xs text-dyl-orange-600">Has terminado el módulo</p>
+                            <p class="text-xs text-dyl-orange-700">Has terminado el módulo</p>
                             <p class="text-sm font-medium">Ver resumen del curso</p>
                         </div>
                         <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

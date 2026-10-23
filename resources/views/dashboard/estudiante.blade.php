@@ -11,7 +11,7 @@
     </div>
     <div class="bg-white p-6 rounded-lg shadow">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Completados</p>
-        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">{{ $stats['completados'] }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">{{ $stats['completados'] }}</p>
     </div>
     <div class="bg-white p-6 rounded-lg shadow col-span-2 md:col-span-1">
         <p class="text-gray-500 text-xs uppercase tracking-wide">Progreso General</p>
@@ -58,7 +58,7 @@
                 @include('cursos._resumen', ['curso' => $curso])
                 <p class="text-xs text-gray-500 mb-4">{{ $curso->duracion_horas }} horas</p>
                 <a href="{{ route('cursos.show', $curso) }}"
-                   class="block w-full bg-dyl-orange-600 text-white py-2 rounded text-center hover:bg-dyl-orange-700 text-sm font-medium">
+                   class="block w-full bg-dyl-orange-700 text-white py-2 rounded text-center hover:bg-dyl-orange-800 text-sm font-medium">
                     Continuar
                 </a>
             </div>
@@ -66,7 +66,7 @@
     @empty
         <div class="col-span-3 text-center py-12 text-gray-500">
             No estás inscrito en ningún curso.
-            <a href="{{ route('cursos.index') }}" class="text-dyl-orange-600 hover:underline ml-1">Ver cursos disponibles</a>
+            <a href="{{ route('cursos.index') }}" class="text-dyl-orange-700 hover:underline ml-1">Ver cursos disponibles</a>
         </div>
     @endforelse
 </div>

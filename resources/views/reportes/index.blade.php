@@ -21,7 +21,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Tasa de completitud</p>
-        <p class="text-3xl font-bold mt-1 {{ $kpis['tasa_completitud'] >= 70 ? 'text-dyl-orange-600' : 'text-dyl-graphite-500' }}">
+        <p class="text-3xl font-bold mt-1 {{ $kpis['tasa_completitud'] >= 70 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
             {{ $kpis['tasa_completitud'] }}%
         </p>
         <div class="mt-2 h-1.5 bg-gray-200 rounded-full">
@@ -31,7 +31,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Certificados emitidos</p>
-        <p class="text-3xl font-bold text-dyl-orange-600 mt-1">{{ $kpis['total_certificados'] }}</p>
+        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">{{ $kpis['total_certificados'] }}</p>
     </div>
 </div>
 
@@ -42,7 +42,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Publicados</p>
-        <p class="text-2xl font-bold text-dyl-orange-600 mt-1">{{ $kpis['cursos_publicados'] }}</p>
+        <p class="text-2xl font-bold text-dyl-orange-700 mt-1">{{ $kpis['cursos_publicados'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Completaron cursos</p>
@@ -50,7 +50,7 @@
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wide">Promedio calificación</p>
-        <p class="text-2xl font-bold mt-1 {{ ($kpis['promedio_calificacion'] ?? 0) >= 60 ? 'text-dyl-orange-600' : 'text-gray-500' }}">
+        <p class="text-2xl font-bold mt-1 {{ ($kpis['promedio_calificacion'] ?? 0) >= 60 ? 'text-dyl-orange-700' : 'text-gray-500' }}">
             {{ $kpis['promedio_calificacion'] !== null ? $kpis['promedio_calificacion'] . '%' : '—' }}
         </p>
     </div>
@@ -67,7 +67,7 @@
                     <input type="hidden" name="{{ $preservar }}" value="{{ request($preservar) }}">
                 @endif
             @endforeach
-            <input type="text" name="curso_buscar" value="{{ request('curso_buscar') }}"
+            <input aria-label="Buscar curso..." type="text" name="curso_buscar" value="{{ request('curso_buscar') }}"
                    placeholder="Buscar curso..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
             <select name="curso_estado" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
                 <option value="">Todos los estados</option>
@@ -75,7 +75,7 @@
                 <option value="borrador"  @selected(request('curso_estado') === 'borrador')>Borrador</option>
                 <option value="archivado" @selected(request('curso_estado') === 'archivado')>Archivado</option>
             </select>
-            <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Filtrar</button>
+            <button type="submit" class="px-4 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Filtrar</button>
             @if(request()->anyFilled(['curso_buscar', 'curso_estado']))
                 <a href="{{ route('reportes.index') }}" class="text-sm text-gray-500 hover:text-gray-700 self-center">Limpiar</a>
             @endif
@@ -85,13 +85,13 @@
         <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
                     @if($kpis)
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Instructor</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Instructor</th>
                     @endif
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Inscritos</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Inscritos</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -117,7 +117,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <a href="{{ route('reportes.curso', $curso) }}"
-                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm font-medium">
+                           class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm font-medium">
                             Ver reporte &rarr;
                         </a>
                     </td>
@@ -148,9 +148,9 @@
                     <input type="hidden" name="{{ $preservar }}" value="{{ request($preservar) }}">
                 @endif
             @endforeach
-            <input type="text" name="usuario_buscar" value="{{ request('usuario_buscar') }}"
+            <input aria-label="Buscar por nombre o email..." type="text" name="usuario_buscar" value="{{ request('usuario_buscar') }}"
                    placeholder="Buscar por nombre o email..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
-            <button type="submit" class="px-4 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Filtrar</button>
+            <button type="submit" class="px-4 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Filtrar</button>
             @if(request()->filled('usuario_buscar'))
                 <a href="{{ route('reportes.index') }}" class="text-sm text-gray-500 hover:text-gray-700 self-center">Limpiar</a>
             @endif
@@ -160,10 +160,10 @@
         <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estudiante</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cursos inscritos</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ver reporte</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estudiante</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cursos inscritos</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ver reporte</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -174,7 +174,7 @@
                     <td class="px-6 py-3 text-center text-sm font-bold text-gray-700">{{ $usr->cursos_count }}</td>
                     <td class="px-6 py-3">
                         <a href="{{ route('reportes.estudiante', $usr) }}"
-                           class="text-dyl-orange-600 hover:text-dyl-orange-700 text-sm">Ver &rarr;</a>
+                           class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">Ver &rarr;</a>
                     </td>
                 </tr>
                 @empty
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Sin calificar', 'Calificada', 'En revisión'],
             datasets: [{
                 data: @json($chartData['resp_estados']),
-                backgroundColor: ['#CBD5E1', '#F97316', '#475569'],
+                backgroundColor: ['#94A3B8', '#F97316', '#64748B'],
                 borderWidth: 0,
             }]
         },

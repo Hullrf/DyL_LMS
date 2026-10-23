@@ -49,7 +49,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Destinatarios</label>
 
             <label class="flex items-center gap-2 mb-3 cursor-pointer">
-                <input type="checkbox" x-model="enviarATodos" class="w-4 h-4 rounded text-dyl-orange-600">
+                <input type="checkbox" x-model="enviarATodos" class="w-4 h-4 rounded text-dyl-orange-700">
                 <span class="text-sm font-medium text-gray-700">Enviar a todos los estudiantes del curso</span>
             </label>
 
@@ -79,7 +79,7 @@
                                 <span class="font-medium text-gray-900" x-text="user.name"></span>
                                 <span class="text-gray-400 ml-1.5 text-xs" x-text="user.email"></span>
                             </span>
-                            <span x-show="seleccionados.find(s => s.id === user.id)" class="text-xs text-dyl-orange-600">Seleccionado</span>
+                            <span x-show="seleccionados.find(s => s.id === user.id)" class="text-xs text-dyl-orange-700">Seleccionado</span>
                         </button>
                     </template>
                 </div>
@@ -108,7 +108,7 @@
 
         <div class="flex justify-between">
             <a href="{{ route('mensajes.bandeja') }}" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</a>
-            <button type="submit" class="px-6 py-2 bg-dyl-orange-600 text-white rounded-lg text-sm hover:bg-dyl-orange-700">Enviar</button>
+            <button type="submit" class="px-6 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Enviar</button>
         </div>
     </form>
 </div>
