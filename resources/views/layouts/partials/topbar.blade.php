@@ -8,7 +8,7 @@
         @endguest
         @auth
             <button @click="$dispatch('sidebar-open')" type="button"
-                    class="lg:hidden text-dyl-graphite-500 hover:text-dyl-graphite-900 p-2 -ml-2 rounded-lg"
+                    class="lg:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 text-dyl-graphite-500 hover:text-dyl-graphite-900 rounded-lg"
                     aria-label="Abrir menú de navegación">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -23,7 +23,13 @@
         @endif
     </div>
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-1 sm:gap-3">
+        <button type="button" onclick="dylToggleTheme()" data-theme-toggle aria-pressed="false"
+                class="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg text-dyl-graphite-500 hover:text-dyl-graphite-900"
+                aria-label="Modo oscuro">
+            <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
         @auth
             <x-notification-bell />
 
@@ -37,9 +43,9 @@
             @endif
 
             <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" @click.outside="open = false"
+                <button @click="open = !open" @click.outside="open = false" @keydown.escape.window="open = false"
                         class="flex items-center gap-2 text-dyl-graphite-600 hover:text-dyl-graphite-900 rounded-lg px-2 py-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-dyl-orange-600"
-                        aria-haspopup="true" :aria-expanded="open">
+                        aria-haspopup="menu" :aria-expanded="open">
                     <div class="w-8 h-8 bg-dyl-orange-600 rounded-full flex items-center justify-center" aria-hidden="true">
                         <span class="text-white text-xs font-bold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                     </div>

@@ -16,6 +16,16 @@
         } catch (e) {}
     })();
     </script>
+    <script>
+    (function () {
+        try { if (localStorage.getItem('dyl_theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+    })();
+    function dylToggleTheme() {
+        var d = document.documentElement.classList.toggle('dark');
+        try { localStorage.setItem('dyl_theme', d ? 'dark' : 'light'); } catch (e) {}
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+    }
+    </script>
     <meta name="description" content="@yield('meta_description', 'D&L Quality Campus — Plataforma de Aprendizaje')">
     <title>@yield('title', 'D&L Quality Campus')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -90,6 +100,10 @@
              mobileOpen: false,
              toggleSidebar() {
                  this.collapsed = !this.collapsed;
+                 {{-- html.dyl-sb-collapsed la pone el script del <head> al cargar; si no se
+                      sincroniza aquí, sus reglas (width: 72px) ganan sobre .is-collapsed ausente
+                      y el botón 'Expandir' parece no hacer nada. --}}
+                 document.documentElement.classList.toggle('dyl-sb-collapsed', this.collapsed);
                  localStorage.setItem('dyl_sidebar_collapsed', this.collapsed ? '1' : '0');
              }
          }"
@@ -153,12 +167,12 @@
                             <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-12 h-12" aria-hidden="true">
                             <span class="text-white/80 font-semibold text-sm">DyL Quality Consulting</span>
                         </div>
-                        <p class="text-white/40 text-xs">
+                        <p class="text-white/60 text-xs">
                             &copy; {{ date('Y') }} DyL Quality Consulting LTDA. Todos los derechos reservados.
                         </p>
-                        <div class="flex gap-4 text-xs text-white/40">
-                            <a href="{{ route('cursos.index') }}" class="hover:text-white/70 transition-colors">Cursos</a>
-                            <a href="{{ route('dashboard') }}"    class="hover:text-white/70 transition-colors">Dashboard</a>
+                        <div class="flex gap-4 text-xs text-white/60">
+                            <a href="{{ route('cursos.index') }}" class="hover:text-white transition-colors">Cursos</a>
+                            <a href="{{ route('dashboard') }}"    class="hover:text-white transition-colors">Dashboard</a>
                         </div>
                     </div>
                 </div>
