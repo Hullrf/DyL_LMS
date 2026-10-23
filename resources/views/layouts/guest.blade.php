@@ -8,7 +8,17 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <style>[x-cloak]{display:none!important}</style>
+        <script>
+    (function () {
+        try { if (localStorage.getItem('dyl_theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+    })();
+    function dylToggleTheme() {
+        var d = document.documentElement.classList.toggle('dark');
+        try { localStorage.setItem('dyl_theme', d ? 'dark' : 'light'); } catch (e) {}
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+    }
+    </script>
+    <style>[x-cloak]{display:none!important}</style>
     </head>
     <body class="h-full font-sans antialiased">
 
@@ -34,7 +44,7 @@
                             siempre es el resultado de un<br>
                             esfuerzo inteligente."
                         </p>
-                        <footer class="text-white/50 text-sm">— John Ruskin</footer>
+                        <footer class="text-white/70 text-sm">— John Ruskin</footer>
                     </blockquote>
                 </div>
 
