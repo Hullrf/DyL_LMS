@@ -259,3 +259,9 @@ html.dark { color-scheme: dark; }
 .dark textarea::placeholder, .dark input::placeholder { color: #94a3b8; }
 .dark [class*="bg-gray-50/"], .dark [class*="bg-white/"] { background-color: rgba(255,255,255,.03); }
 .dark [class*="hover:bg-dyl-orange-50/"]:hover { background-color: rgba(249,115,22,.1); }
+
+/* Modo oscuro — tablas, foco y controles nativos */
+.dark .tbl tbody tr, .dark .tbl { border-color: #1f2b42; }
+.dark *, .dark ::before, .dark ::after { --tw-ring-offset-color: #0b1220; }
+.dark input[type=checkbox], .dark input[type=radio] { background-color: #0f172a; border-color: #475569; }
+.dark input[type=checkbox]:checked, .dark input[type=radio]:checked { background-color: #ea580c; border-color: #ea580c; }

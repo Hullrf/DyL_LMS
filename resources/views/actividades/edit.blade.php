@@ -458,7 +458,7 @@
                     <code class="bg-gray-100 px-1 rounded">docs/apps-script/</code> y sube el archivo aquí.
                     Las preguntas se agregan al final de las que ya existen.
                 </p>
-                <a href="{{ route('preguntas.ejemplo') }}" target="_blank"
+                <a href="{{ route('preguntas.ejemplo') }}" target="_blank" rel="noopener noreferrer"
                    class="btn-outline w-full mb-3 flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -485,12 +485,12 @@
                             <span class="text-xs font-medium text-gray-500 uppercase">
                                 {{ str_replace('_', ' ', $pregunta->tipo) }}
                             </span>
-                            <span class="ml-1 badge badge-gold text-[10px]">{{ $pregunta->puntaje }} pts</span>
+                            <span class="ml-1 badge badge-gold text-xs">{{ $pregunta->puntaje }} pts</span>
                             @if($pregunta->seleccion_multiple)
-                                <span class="ml-2 badge badge-blue text-[10px]">selección múltiple</span>
+                                <span class="ml-2 badge badge-blue text-xs">selección múltiple</span>
                             @endif
                             @if($pregunta->tipo !== 'respuesta_corta' && !$pregunta->opciones->contains('es_correcta', true))
-                                <span class="ml-2 badge text-[10px] bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold">Falta marcar la correcta</span>
+                                <span class="ml-2 badge text-xs bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold">Falta marcar la correcta</span>
                             @endif
                             <p class="font-medium text-gray-900 mt-1" x-show="!editing">{{ $pregunta->pregunta_texto }}</p>
 
@@ -907,7 +907,7 @@
                                 <p>• Última línea de cada celda: el puntaje (ej: <strong>0.8 puntos</strong>)</p>
                             </div>
 
-                            <a href="{{ route('rubrica.ejemplo') }}" target="_blank"
+                            <a href="{{ route('rubrica.ejemplo') }}" target="_blank" rel="noopener noreferrer"
                                class="btn-outline w-full mb-4 flex items-center justify-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>

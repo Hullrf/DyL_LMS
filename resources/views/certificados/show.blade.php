@@ -55,7 +55,7 @@
         <div class="text-right">
             <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Enlace de verificación</p>
             <a href="{{ route('certificados.verificar', $certificado->numero_certificado) }}"
-               target="_blank"
+               target="_blank" rel="noopener noreferrer"
                class="text-dyl-orange-600 hover:underline text-sm font-mono break-all">
                 {{ url('/verificar-certificado/' . $certificado->numero_certificado) }}
             </a>

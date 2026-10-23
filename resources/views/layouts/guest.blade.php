@@ -12,6 +12,10 @@
     (function () {
         try { if (localStorage.getItem('dyl_theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
     })();
+    document.addEventListener('DOMContentLoaded', function () {
+        var d = document.documentElement.classList.contains('dark');
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+    });
     function dylToggleTheme() {
         var d = document.documentElement.classList.toggle('dark');
         try { localStorage.setItem('dyl_theme', d ? 'dark' : 'light'); } catch (e) {}
