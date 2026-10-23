@@ -47,7 +47,7 @@
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     @if($esCorta)
-                        <span class="badge badge-blue text-[10px]">Revisión manual</span>
+                        <span class="badge badge-blue text-xs">Revisión manual</span>
                     @endif
                     <span class="text-xs text-gray-400">{{ $pregunta->puntaje }} pts</span>
                 </div>

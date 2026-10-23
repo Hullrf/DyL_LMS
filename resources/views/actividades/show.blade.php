@@ -219,7 +219,7 @@
                     </div>
                 </div>
                 @if($descargaPermitida)
-                <a href="{{ $recurso->archivoUrl() }}" target="_blank" class="block bg-gray-50 p-2">
+                <a href="{{ $recurso->archivoUrl() }}" target="_blank" rel="noopener noreferrer" class="block bg-gray-50 p-2">
                     <img src="{{ $recurso->archivoUrl() }}"
                          alt="{{ $recurso->titulo }}"
                          class="w-full max-h-96 object-contain rounded-lg mx-auto"
@@ -476,7 +476,7 @@
                         <td class="px-3 py-4 align-top text-xs text-gray-600 leading-relaxed
                             {{ $estaSeleccionado ? 'bg-dyl-orange-50 border-l-2 border-dyl-orange-400' : '' }}">
                             @if($estaSeleccionado)
-                                <span class="inline-block mb-1 text-dyl-orange-600 font-semibold text-[10px] uppercase tracking-wide">✓ Nivel obtenido</span><br>
+                                <span class="inline-block mb-1 text-dyl-orange-600 font-semibold text-xs uppercase tracking-wide">✓ Nivel obtenido</span><br>
                             @endif
                             {{ $nivel->descripcion }}
                             <span class="block mt-2 font-bold text-sm {{ $estaSeleccionado ? 'text-dyl-orange-600' : 'text-gray-400' }}">

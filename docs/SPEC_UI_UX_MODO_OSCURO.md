@@ -19,6 +19,8 @@ Marca que se conserva: naranja `#EA580C` / grafito `#0F172A`, Figtree. No se ado
 | D6 | Sidebar: `aria-current="page"` en 11 enlaces, sin landmark `navigation` duplicado | `sidebar` |
 | D7 | Modal con `role="dialog" aria-modal` | `components/modal` |
 | D9 | **Bug sidebar:** el botón Colapsar/Expandir parecía muerto tras cargar una página con el sidebar guardado como colapsado. `html.dyl-sb-collapsed` (puesta por el script del `<head>`) nunca se quitaba y su regla `width:72px` ganaba sobre `.is-collapsed`. `toggleSidebar()` ahora la sincroniza. Verificado: 72 → 220 → 72 px | `layouts/app.blade.php` |
+| D10 | Fase 2 · bloque 1: A4 (footer libera el botón Ayuda), A5 (separadores de tabla), A6 (`aria-pressed` real), A7 (halo de foco), M5 (`rel=noopener`), M6 (badges 12px), M7 (checkbox/radio), M8 (scrim del modal), M11 (borrado `welcome.blade.php`); además campana con nombre accesible y 44px | varios |
+| D11 | Fase 2 · bloque 2: A1 (Quill en oscuro), A2 (Chart.js: defaults por tema, sin animación con reduced-motion, redibujo al alternar, series con más contraste), M10 parcial (CSS de `.office-render`, `.leccion-contenido` y neutralización de negro/blanco inline de Quill) | `app.css`, `app.js`, layouts, dashboards, reportes |
 | D8 | Corregidos en oscuro: badge "En progreso", pista de progreso, textarea/select/input sin clase, dropzone `bg-gray-50/40`, tarjetas sin borde | `app.css` |
 
 Pruebas: `php artisan test` → 459 passed tras D1–D7.
@@ -30,7 +32,7 @@ Pruebas: `php artisan test` → 459 passed tras D1–D7.
 Severidad: **A** = se ve roto o falla WCAG AA · **M** = inconsistencia/deuda visible · **B** = pulido.
 Esfuerzo: S ≤ 1 h · M ≤ half-day · L ≥ 1 día.
 
-### A1 — Quill ilegible en oscuro · A · M
+### A1 — ✅  Quill ilegible en oscuro · A · M
 **Visto en:** `actividades/edit` (captura): iconos de la barra y selectores casi invisibles, placeholder tenue.
 **Afecta:** `cursos/create|edit`, `lecciones/create|edit`, `actividades/create|edit`, `foros/create`, `modulos/edit`, `components/quill-init`.
 **Causa:** `quill.snow.css` (CDN) pinta `.ql-stroke`/`.ql-fill` en `#444` y bordes claros; nuestro remapeo no lo toca.
@@ -38,7 +40,7 @@ Esfuerzo: S ≤ 1 h · M ≤ half-day · L ≥ 1 día.
 **Aceptación:** barra completa visible (≥3:1 los iconos), texto del editor ≥4.5:1, dropdowns de color/tamaño legibles.
 **Riesgo conocido:** Quill guarda estilos inline (`color: rgb(0,0,0)`) en el HTML. En oscuro ese texto queda negro sobre oscuro. Ver M10.
 
-### A2 — Chart.js no sigue el tema · A · M
+### A2 — ✅  Chart.js no sigue el tema · A · M
 **Visto en:** `dashboard/instructor` (ejes y cuadrícula grises por defecto, tenues en oscuro).
 **Afecta:** `dashboard/admin`, `dashboard/instructor`, `reportes/index` (3 vistas, 6 gráficos).
 **Problemas:**
@@ -64,21 +66,21 @@ Cálculo WCAG:
 **Fix propuesto:** `.btn-primary` base `orange-700`, hover `orange-800`; en vistas `text-dyl-orange-600` → `text-dyl-orange-700` para texto sobre claro (búsqueda/reemplazo acotado; el naranja-600 queda para barras, bordes, íconos y fondos grandes). En oscuro mantener texto `600`.
 **Decisión pendiente:** confirmar con quien lleve la marca que el botón pase a `#C2410C`. Alternativa: texto del botón en `#0F172A` sobre `orange-600` (5.3:1), sin tocar el color de marca.
 
-### A4 — Botón flotante "Ayuda" tapa contenido · A · S
+### A4 — ✅  Botón flotante "Ayuda" tapa contenido · A · S
 **Visto en:** todas las páginas (captura): cubre el enlace "Dashboard" del footer y los últimos elementos al final del scroll.
 **Fix:** `padding-bottom` del `<main>`/footer ≥ altura del botón + 16px, o mover el botón dentro del footer en móvil. Mantener `z-30` por debajo de modales (`z-50`).
 **Aceptación:** ningún enlace o botón queda tapado en 1528 px y 390 px.
 
-### A5 — Separadores de tabla claros en oscuro · A · S
+### A5 — ✅  Separadores de tabla claros en oscuro · A · S
 **Visto en:** `reportes/index`, `reportes/cursos/1`, `ponderaciones`, listas de `admin/*`: líneas de fila casi blancas.
 **Causa:** `.tbl tbody tr` usa `@apply border-gray-50` (no es una clase en el DOM, el remapeo `.dark .border-gray-50` no aplica).
 **Fix:** `.dark .tbl tbody tr { border-color:#1f2b42 }` y revisar `.tbl` (`divide-gray-100`).
 
-### A6 — Estado `aria-pressed` del botón de tema incorrecto · A · S
+### A6 — ✅  Estado `aria-pressed` del botón de tema incorrecto · A · S
 El botón nace con `aria-pressed="false"` fijo; tras recargar en oscuro el lector de pantalla anuncia "no pulsado".
 **Fix:** en el script de `<head>`, o en `DOMContentLoaded`, poner `aria-pressed` según `html.classList.contains('dark')`.
 
-### A7 — Anillo de foco con halo blanco en oscuro · A · S
+### A7 — ✅  Anillo de foco con halo blanco en oscuro · A · S
 `:focus-visible` usa `ring-offset-2` con offset por defecto `#fff`. En oscuro dibuja un anillo blanco alrededor.
 **Fix:** `.dark { --tw-ring-offset-color: #0b1220 }` (o `ring-offset-dyl-graphite-900`).
 
@@ -104,32 +106,32 @@ Regla de la skill: SVG de una sola familia (los del sidebar ya son stroke 1.8). 
 8 vistas con `<input placeholder>`: `cursos/ficha` (4), `foros/show` (2), buscadores en `cursos/index`, `linea-de-tiempo`, `inscripcion-masiva`, `actividades/create|edit`.
 **Fix:** `<label class="sr-only">` o `aria-label` en los buscadores; label visible en formularios.
 
-### M5 — `target="_blank"` sin `rel` · M · S
+### M5 — ✅  `target="_blank"` sin `rel` · M · S
 7 enlaces (excluyendo `welcome`): `actividades/edit` ×2, `actividades/show`, `calificaciones/show` ×3, `certificados/show`. Añadir `rel="noopener noreferrer"`.
 
-### M6 — Texto bajo 12 px · M · S
+### M6 — ✅  Texto bajo 12 px · M · S
 `text-[10px]` en badges de `actividades/edit` (×3), `calificaciones/revisar-cuestionario`, etiqueta en `actividades/show`, contador de `notification-bell`. La marca de agua de `actividades/show` es decorativa y se excluye.
 **Fix:** `text-xs` (12 px); el contador de la campana puede mantener 10–11 px solo si es número con `aria-label`.
 
-### M7 — Checkbox/radio nativos en oscuro · B · S
+### M7 — ✅  Checkbox/radio nativos en oscuro · B · S
 Cajas blancas del plugin `@tailwindcss/forms` (visto en `competencias`, `ponderaciones`, `inscripcion-masiva`). Legibles pero no coherentes.
 **Fix:** `.dark input[type=checkbox|radio] { background-color:#0f172a; border-color:#475569 }`, `:checked` naranja.
 
-### M8 — Modal · M · S
+### M8 — (scrim hecho; falta devolver el foco) — Modal · M · S
 Scrim `bg-gray-500 opacity-75` se vuelve más claro que el fondo oscuro. Usar `bg-black/60` en oscuro (la skill pide 40–60 % negro). Devolver el foco al disparador al cerrar. El atrapado de Tab actual falla si no hay elementos enfocables.
 
 ### M9 — Color dinámico de categoría · M · S
 `cursos/index:173`: `style="background:{{color}}20; color:{{color}}"`. El contraste depende del color que elija el admin y en oscuro colores oscuros (p. ej. morado) quedan ilegibles.
 **Fix:** texto neutro (`text-gray-700` / oscuro `#e2e8f0`) con un punto del color de la categoría, o calcular color legible. Misma lógica en `admin/categorias` (punto, sin texto: correcto).
 
-### M10 — Contenido enriquecido con colores propios · M · M (riesgo alto)
+### M10 — ✅  Contenido enriquecido con colores propios · M · M (riesgo alto)
 - `actividades/show` `.office-render`: bordes y fondos `#d1d5db/#f3f4f6/#f9fafb` fijos → tabla clara con texto claro en oscuro.
 - `lecciones/show` `.leccion-contenido img`: fondo `#f9fafb`, borde `#e5e7eb` fijos.
 - Descripciones y lecciones creadas con Quill llevan estilos inline (`color`, `background-color`). Texto negro inline sobre fondo oscuro = ilegible.
 **Fix:** reglas `.dark .office-render …` y `.dark .leccion-contenido …`; en oscuro neutralizar color inline de contenido de usuario (`.dark .desc-justify [style*="color"]{color:inherit!important}` salvo que se decida respetar colores elegidos). Decisión de producto: ¿respetar o normalizar?
 **Falta verificar** con una lección real con texto coloreado.
 
-### M11 — Código muerto: `welcome.blade.php` · M · S
+### M11 — ✅  Código muerto: `welcome.blade.php` · M · S
 Sin ruta; copia de Breeze con ~100 KB de CSS Tailwind v4 inline y 22 clases `dark:`. Eliminar tras confirmar que ninguna ruta/test lo referencia (`grep -rn "view('welcome')"`).
 
 ### M12 — Páginas de error sin marca · M · M

@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Sin calificar', 'Calificada', 'En revisión'],
             datasets: [{
                 data: @json($chartData['resp_estados']),
-                backgroundColor: ['#CBD5E1', '#F97316', '#475569'],
+                backgroundColor: ['#94A3B8', '#F97316', '#64748B'],
                 borderWidth: 0,
             }]
         },

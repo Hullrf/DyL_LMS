@@ -20,9 +20,14 @@
     (function () {
         try { if (localStorage.getItem('dyl_theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
     })();
+    document.addEventListener('DOMContentLoaded', function () {
+        var d = document.documentElement.classList.contains('dark');
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
+    });
     function dylToggleTheme() {
         var d = document.documentElement.classList.toggle('dark');
         try { localStorage.setItem('dyl_theme', d ? 'dark' : 'light'); } catch (e) {}
+        window.dispatchEvent(new Event('themechange'));
         document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', d); });
     }
     </script>
@@ -161,7 +166,7 @@
                  FOOTER
             ================================================================ --}}
             <footer class="bg-dyl-graphite-900 mt-auto" role="contentinfo">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20">
                     <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div class="flex items-center gap-2.5">
                             <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-12 h-12" aria-hidden="true">

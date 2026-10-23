@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Borrador', 'Publicado', 'Archivado'],
             datasets: [{
                 data: [{{ $stats['cursos_borrador'] }}, {{ $stats['cursos_publicados'] }}, {{ $stats['cursos_archivados'] }}],
-                backgroundColor: ['#CBD5E1', '#F97316', '#475569'],
+                backgroundColor: ['#94A3B8', '#F97316', '#64748B'],
                 borderWidth: 0,
             }]
         },

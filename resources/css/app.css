@@ -259,3 +259,40 @@ html.dark { color-scheme: dark; }
 .dark textarea::placeholder, .dark input::placeholder { color: #94a3b8; }
 .dark [class*="bg-gray-50/"], .dark [class*="bg-white/"] { background-color: rgba(255,255,255,.03); }
 .dark [class*="hover:bg-dyl-orange-50/"]:hover { background-color: rgba(249,115,22,.1); }
+
+/* Modo oscuro — tablas, foco y controles nativos */
+.dark .tbl tbody tr, .dark .tbl { border-color: #1f2b42; }
+.dark *, .dark ::before, .dark ::after { --tw-ring-offset-color: #0b1220; }
+.dark input[type=checkbox], .dark input[type=radio] { background-color: #0f172a; border-color: #475569; }
+.dark input[type=checkbox]:checked, .dark input[type=radio]:checked { background-color: #ea580c; border-color: #ea580c; }
+
+/* Modo oscuro — editor Quill (snow) */
+.dark .ql-toolbar.ql-snow { background-color: #0f172a; border-color: #334155; }
+.dark .ql-container.ql-snow { border-color: #334155; }
+.dark .ql-snow .ql-stroke { stroke: #cbd5e1; }
+.dark .ql-snow .ql-fill, .dark .ql-snow .ql-stroke.ql-fill { fill: #cbd5e1; }
+.dark .ql-snow .ql-picker { color: #cbd5e1; }
+.dark .ql-snow .ql-picker-options { background-color: #111b2e; border-color: #334155; }
+.dark .ql-snow .ql-picker.ql-expanded .ql-picker-label,
+.dark .ql-snow .ql-picker.ql-expanded .ql-picker-options { border-color: #475569; }
+.dark .ql-snow.ql-toolbar button:hover .ql-stroke, .dark .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.dark .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .dark .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke { stroke: #fb923c; }
+.dark .ql-snow.ql-toolbar button:hover .ql-fill, .dark .ql-snow.ql-toolbar button.ql-active .ql-fill,
+.dark .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill { fill: #fb923c; }
+.dark .ql-snow.ql-toolbar button:hover, .dark .ql-snow.ql-toolbar button.ql-active,
+.dark .ql-snow.ql-toolbar .ql-picker-label:hover, .dark .ql-snow.ql-toolbar .ql-picker-item:hover,
+.dark .ql-snow.ql-toolbar .ql-picker-item.ql-selected { color: #fb923c; }
+.dark .ql-editor { color: #f1f5f9; }
+.dark .ql-editor.ql-blank::before { color: #94a3b8; font-style: normal; }
+.dark .ql-snow a { color: #fdba74; }
+.dark .ql-snow .ql-tooltip { background-color: #111b2e; border-color: #334155; color: #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,.5); }
+
+/* Modo oscuro — contenido enriquecido (Office renderizado, lecciones, descripciones) */
+.dark .office-render th, .dark .office-render td { border-color: #334155; }
+.dark .office-render th { background: #1e293b; }
+.dark .office-render tr:nth-child(even) { background: rgba(255,255,255,.03); }
+.dark .leccion-contenido img { background-color: #0f172a; border-color: #334155; }
+/* Quill guarda negro/blanco como estilo inline: en oscuro se heredan los colores del tema.
+   Los colores elegidos a propósito (rojo, azul…) se respetan. */
+.dark :is(.desc-justify, .leccion-contenido, .ql-editor) [style*="color: rgb(0, 0, 0)"] { color: inherit !important; }
+.dark :is(.desc-justify, .leccion-contenido, .ql-editor) [style*="background-color: rgb(255, 255, 255)"] { background-color: transparent !important; }
