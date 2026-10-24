@@ -85,7 +85,7 @@ class RespuestaEstudianteController extends Controller
             $request->validate([
                 'respuesta'          => 'nullable|string',
                 'archivos_adjuntos'   => "nullable|array|max:{$actividad->max_archivos_adjuntos}",
-                'archivos_adjuntos.*' => 'file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,webm,zip|max:51200',
+                'archivos_adjuntos.*' => self::reglasArchivo(),
             ]);
             if (!$request->filled('respuesta') && !$request->hasFile('archivos_adjuntos')) {
                 return back()->withErrors(['respuesta' => 'Debes escribir una respuesta o adjuntar un archivo.']);
@@ -170,7 +170,7 @@ class RespuestaEstudianteController extends Controller
         $request->validate([
             'respuesta'           => 'nullable|string',
             'archivos_adjuntos'   => "nullable|array|max:{$actividad->max_archivos_adjuntos}",
-            'archivos_adjuntos.*' => 'file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,webm,zip|max:51200',
+            'archivos_adjuntos.*' => self::reglasArchivo(),
         ]);
         if (!$request->filled('respuesta') && !$request->hasFile('archivos_adjuntos') && !$respuesta->archivos()->exists()) {
             return back()->withErrors(['respuesta' => 'Debes escribir una respuesta o adjuntar un archivo.']);
@@ -211,5 +211,23 @@ class RespuestaEstudianteController extends Controller
         }
 
         return $archivos;
+    }
+
+    /** .fsm no tiene MIME reconocible, por eso se valida por extensión; el resto por contenido (mimes). */
+    private static function reglasArchivo(): array
+    {
+        return [
+            'file',
+            'max:51200',
+            function ($attr, $file, $fail) {
+                if (strtolower($file->getClientOriginalExtension()) === 'fsm') {
+                    return;
+                }
+                $ok = validator(['f' => $file], ['f' => 'mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,webm,zip'])->passes();
+                if (!$ok) {
+                    $fail('El archivo debe ser de tipo: jpg, png, gif, webp, pdf, Office, mp4, mov, avi, webm, zip o fsm.');
+                }
+            },
+        ];
     }
 }
