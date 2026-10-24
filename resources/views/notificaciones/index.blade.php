@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Notificaciones - D&L Quality Campus')
 @section('content')
-<div class="max-w-2xl mx-auto">
+<div class="max-w-3xl mx-auto">
     <div class="flex items-center justify-between gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Notificaciones</h1>
         @if($notificaciones->where('leido', false)->count() > 0)

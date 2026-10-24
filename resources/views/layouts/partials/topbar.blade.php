@@ -80,11 +80,3 @@
         @endauth
     </div>
 </header>
-
-<style>
-.dyl-topbar {
-    height: 56px; background: #fff; border-bottom: 1px solid #EDF1F5;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px; flex-shrink: 0; position: sticky; top: 0; z-index: 30;
-}
-</style>

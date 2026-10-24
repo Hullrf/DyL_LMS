@@ -61,6 +61,17 @@ class CategoriaControllerTest extends TestCase
         ]);
     }
 
+    public function test_rechaza_color_que_no_es_hex_de_seis_digitos(): void
+    {
+        foreach (['red;position:fixed', '#12', 'rgb(0,0,0)'] as $color) {
+            $this->actingAs($this->admin)->post(route('admin.categorias.store'), [
+                'nombre' => 'Color invalido',
+                'color'  => $color,
+            ])->assertSessionHasErrors('color');
+        }
+        $this->assertDatabaseMissing('categorias', ['nombre' => 'Color invalido']);
+    }
+
     public function test_no_permite_crear_categoria_con_nombre_duplicado(): void
     {
         Categoria::create(['nombre' => 'Normas ISO', 'slug' => 'normas-iso']);

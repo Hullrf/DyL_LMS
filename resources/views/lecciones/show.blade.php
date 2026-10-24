@@ -172,12 +172,8 @@
                            class="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-5 py-4 hover:border-dyl-orange-300 hover:shadow-sm transition-all group">
                             <div class="flex items-center gap-3">
                                 {{-- Icono por tipo --}}
-                                <span class="text-xl">
-                                    @if($actividad->tipo === 'cuestionario') &#10067;
-                                    @elseif($actividad->tipo === 'ensayo')    &#9997;
-                                    @elseif($actividad->tipo === 'tarea')     &#128203;
-                                    @else                                     &#127919;
-                                    @endif
+                                <span class="text-dyl-graphite-500" aria-hidden="true">
+                                    <x-icon :name="match($actividad->tipo) { 'cuestionario' => 'pregunta', 'ensayo' => 'lapiz', 'tarea' => 'tarea', default => 'encuesta' }" class="w-6 h-6"/>
                                 </span>
                                 <div>
                                     <p class="font-medium text-gray-900 group-hover:text-dyl-orange-700">{{ $actividad->tituloCompleto() }}</p>

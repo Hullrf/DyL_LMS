@@ -49,12 +49,6 @@
     <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet">
     @stack('styles')
     <style>[x-cloak]{display:none!important}</style>
-    <style>
-        .desc-justify { text-align: justify; }
-        .desc-justify .ql-align-center { text-align: center; }
-        .desc-justify .ql-align-right { text-align: right; }
-        .desc-justify .ql-align-justify { text-align: justify; }
-    </style>
     <script>
     function traducirQuill(quill) {
         const tb = quill.container.previousElementSibling;
@@ -166,13 +160,21 @@
                     </div>
                 @endif
                 @if(session('success'))
-                    <div class="alert alert-success mb-5" role="status" aria-live="polite">
+                    {{-- Se descarta solo: el mensaje ya se anunció (role=status) y no debe quedar tapando contenido --}}
+                    <div class="alert alert-success mb-5" role="status" aria-live="polite"
+                         x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
+                         x-transition.opacity.duration.300ms>
                         {{ session('success') }}
                     </div>
                 @endif
                 @if(session('error'))
-                    <div class="alert alert-error mb-5" role="alert" aria-live="polite">
-                        {{ session('error') }}
+                    <div class="alert alert-error mb-5 justify-between" role="alert" aria-live="polite"
+                         x-data="{ show: true }" x-show="show">
+                        <span>{{ session('error') }}</span>
+                        <button type="button" @click="show = false" aria-label="Cerrar aviso"
+                                class="shrink-0 -m-2 p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg hover:bg-white/10">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
                     </div>
                 @endif
                 @endunless

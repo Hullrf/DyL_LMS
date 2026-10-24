@@ -15,7 +15,7 @@ class StoreCategoriaRequest extends FormRequest
     {
         return [
             'nombre' => 'required|string|max:100|unique:categorias,nombre',
-            'color'  => 'nullable|string|max:20',
+            'color'  => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ];
     }
 }

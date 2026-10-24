@@ -17,7 +17,7 @@ class UpdateCategoriaRequest extends FormRequest
 
         return [
             'nombre' => "required|string|max:100|unique:categorias,nombre,{$categoriaId}",
-            'color'  => 'nullable|string|max:20',
+            'color'  => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ];
     }
 }

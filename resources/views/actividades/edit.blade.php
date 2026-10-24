@@ -196,11 +196,11 @@
                 <div>
                     <label class="form-label">Tipo de recurso</label>
                     <div class="grid grid-cols-2 gap-2">
-                        @foreach(['documento' => ['📄','Documento'], 'imagen' => ['🖼️','Imagen'], 'video' => ['▶️','Video'], 'texto' => ['📝','Texto'], 'enlace' => ['🔗','Enlace']] as $val => [$emoji, $label])
+                        @foreach(['documento' => 'Documento', 'imagen' => 'Imagen', 'video' => 'Video', 'texto' => 'Texto', 'enlace' => 'Enlace'] as $val => $label)
                         <label class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
                                :class="tipoRecurso === '{{ $val }}' ? 'border-dyl-orange-600 bg-dyl-orange-50 text-dyl-orange-700 font-medium' : 'border-gray-200 text-gray-600 hover:border-gray-300'">
                             <input type="radio" name="tipo" value="{{ $val }}" x-model="tipoRecurso" class="sr-only">
-                            <span>{{ $emoji }}</span> {{ $label }}
+                            <x-icon :name="$val" class="w-4 h-4"/> {{ $label }}
                         </label>
                         @endforeach
                     </div>
