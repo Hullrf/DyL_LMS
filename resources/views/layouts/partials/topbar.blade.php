@@ -2,7 +2,8 @@
     <div class="flex items-center gap-3">
         @guest
             <a href="{{ route('login') }}" class="flex items-center gap-2.5" aria-label="D&amp;L Quality Campus - Ir al inicio">
-                <img src="{{ asset('images/logo/logo-icon-light-256.png') }}" alt="" class="w-11 h-11 flex-shrink-0" aria-hidden="true">
+                <img src="{{ asset('images/logo/logo-icon-light-256.png') }}" alt="" class="w-11 h-11 flex-shrink-0 dark:hidden" aria-hidden="true">
+                <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-11 h-11 flex-shrink-0 hidden dark:block" aria-hidden="true">
                 <span class="font-bold text-dyl-graphite-900">Quality Campus</span>
             </a>
         @endguest
