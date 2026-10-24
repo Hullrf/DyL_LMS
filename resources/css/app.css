@@ -7,6 +7,31 @@
    Paleta:  Naranja #EA580C (dyl-orange-600: acentos, barras, íconos) · #C2410C (dyl-orange-700: botones y texto, 5.18:1 sobre blanco) · Grafito #0F172A (dyl-graphite-900)
 ============================================================ */
 
+/* ============================================================
+   Tokens de gris por rol (bg / tx / bd). Valores "RGB" sin coma para usar <alpha-value>.
+   Claro = escala gray por defecto de Tailwind. Oscuro = los valores ya validados en pantalla.
+   Se declaran en el nivel base para que existan antes que cualquier utilidad.
+============================================================ */
+:root {
+    --g-bg-50: 249 250 251;  --g-bg-100: 243 244 246; --g-bg-200: 229 231 235; --g-bg-300: 209 213 219; --g-bg-400: 156 163 175;
+    --g-bg-500: 107 114 128; --g-bg-600: 75 85 99;    --g-bg-700: 55 65 81;    --g-bg-800: 31 41 55;    --g-bg-900: 17 24 39;
+    --g-tx-50: 249 250 251;  --g-tx-100: 243 244 246; --g-tx-200: 229 231 235; --g-tx-300: 209 213 219; --g-tx-400: 156 163 175;
+    --g-tx-500: 107 114 128; --g-tx-600: 75 85 99;    --g-tx-700: 55 65 81;    --g-tx-800: 31 41 55;    --g-tx-900: 17 24 39;
+    --g-bd-50: 249 250 251;  --g-bd-100: 243 244 246; --g-bd-200: 229 231 235; --g-bd-300: 209 213 219; --g-bd-400: 156 163 175;
+    --g-bd-500: 107 114 128; --g-bd-600: 75 85 99;    --g-bd-700: 55 65 81;    --g-bd-800: 31 41 55;    --g-bd-900: 17 24 39;
+}
+.dark {
+    /* fondos: 50/100 inset (#0f172a), 200/300 pistas y píldoras (#334155) */
+    --g-bg-50: 15 23 42;     --g-bg-100: 15 23 42;    --g-bg-200: 51 65 85;    --g-bg-300: 51 65 85;    --g-bg-400: 71 85 105;
+    --g-bg-500: 100 116 139; --g-bg-600: 148 163 184; --g-bg-700: 203 213 225; --g-bg-800: 226 232 240; --g-bg-900: 241 245 249;
+    /* texto: 300-500 comparten #94a3b8 (≥4.5:1 sobre la tarjeta), 600-700 #cbd5e1, 800-900 #f1f5f9 */
+    --g-tx-50: 248 250 252;  --g-tx-100: 241 245 249; --g-tx-200: 226 232 240; --g-tx-300: 148 163 184; --g-tx-400: 148 163 184;
+    --g-tx-500: 148 163 184; --g-tx-600: 203 213 225; --g-tx-700: 203 213 225; --g-tx-800: 241 245 249; --g-tx-900: 241 245 249;
+    /* bordes: 50-300 un solo trazo sutil (#263247) */
+    --g-bd-50: 38 50 71;     --g-bd-100: 38 50 71;    --g-bd-200: 38 50 71;    --g-bd-300: 38 50 71;    --g-bd-400: 71 85 105;
+    --g-bd-500: 100 116 139; --g-bd-600: 148 163 184; --g-bd-700: 203 213 225; --g-bd-800: 226 232 240; --g-bd-900: 241 245 249;
+}
+
 @layer base {
     html {
         scroll-behavior: smooth;
@@ -205,14 +230,9 @@
 html.dark { color-scheme: dark; }
 .dark body { background: #0b1220; color: #e2e8f0; }
 .dark .bg-white, .dark .card, .dark .auth-card { background-color: #111b2e; }
-.dark .bg-gray-50, .dark .bg-gray-100, .dark .tbl thead { background-color: #0f172a; }
-.dark .text-gray-900, .dark .text-gray-800, .dark .text-dyl-graphite-900, .dark .card-header { color: #f1f5f9; }
-.dark .text-gray-700, .dark .text-gray-600, .dark .text-dyl-graphite-700, .dark .text-dyl-graphite-600,
-.dark .tbl td, .dark .form-label, .dark .dropdown-item { color: #cbd5e1; }
-.dark .text-gray-500, .dark .text-gray-400, .dark .text-dyl-graphite-500, .dark .tbl th,
-.dark .kpi-label, .dark .form-hint { color: #94a3b8; }
-.dark .border-gray-50, .dark .border-gray-100, .dark .border-gray-200, .dark .border-gray-300,
-.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: #263247; }
+.dark .text-dyl-graphite-900 { color: #f1f5f9; }
+.dark .text-dyl-graphite-700, .dark .text-dyl-graphite-600 { color: #cbd5e1; }
+.dark .text-dyl-graphite-500 { color: #94a3b8; }
 .dark .hover\:bg-gray-50:hover, .dark .dropdown-item:hover,
 .dark .tbl tbody tr:hover { background-color: rgba(255,255,255,.04); }
 .dark .form-input { background-color: #0f172a; color: #f1f5f9; border-color: #334155; }
@@ -230,24 +250,22 @@ html.dark { color-scheme: dark; }
 .dark .alert-warning { border-color: #fb923c; }
 .dark .alert-error { background-color: #1e293b; border: 1px solid #fb923c; color: #fff; }
 .dark .form-error { color: #fed7aa; }
-.dark .progress-bar { background-color: #334155; }
 .dark .dyl-topbar { background: #0f172a; border-color: #1e293b; }
 .dark ::selection { background: rgba(249,115,22,.4); }
 
 /* Modo oscuro — segunda pasada: tintes, hovers y separación de superficies */
 .dark .card, .dark .card-hover, .dark .bg-white.rounded-2xl, .dark .bg-white.rounded-xl { border: 1px solid #1f2b42; }
 .dark .dyl-sidebar { border-right: 1px solid #1f2b42; }
-.dark .bg-gray-200, .dark .bg-gray-300, .dark .bg-dyl-graphite-100, .dark .bg-dyl-graphite-200 { background-color: #334155; }
+.dark .bg-dyl-graphite-100, .dark .bg-dyl-graphite-200 { background-color: #334155; }
 .dark .bg-dyl-graphite-50 { background-color: #0f172a; }
 .dark .bg-dyl-orange-50 { background-color: rgba(249,115,22,.1); }
 .dark .bg-dyl-orange-100, .dark .bg-dyl-orange-200 { background-color: rgba(249,115,22,.18); }
 .dark .text-dyl-orange-700 { color: #fb923c; }
 .dark .text-dyl-orange-800, .dark .hover\:text-dyl-orange-700:hover, .dark .hover\:text-dyl-orange-800:hover { color: #fdba74; }
 .dark .text-red-600, .dark .text-red-800 { color: #fca5a5; }
-.dark .text-gray-300, .dark .text-dyl-graphite-400, .dark .text-dyl-graphite-300 { color: #94a3b8; }
-.dark .hover\:text-gray-700:hover, .dark .hover\:text-gray-900:hover, .dark .hover\:text-dyl-graphite-900:hover { color: #fff; }
-.dark .border-dyl-graphite-200, .dark .border-dyl-graphite-100, .dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]),
-.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: #263247; }
+.dark .text-dyl-graphite-400, .dark .text-dyl-graphite-300 { color: #94a3b8; }
+.dark .hover\:text-dyl-graphite-900:hover { color: #fff; }
+.dark .border-dyl-graphite-200, .dark .border-dyl-graphite-100 { border-color: #263247; }
 .dark .border-dyl-orange-200, .dark .border-dyl-orange-300 { border-color: rgba(249,115,22,.4); }
 .dark .hover\:bg-gray-100:hover, .dark .hover\:bg-gray-200:hover, .dark .hover\:bg-gray-300:hover,
 .dark .hover\:bg-dyl-orange-50:hover { background-color: rgba(255,255,255,.07); }
@@ -258,7 +276,7 @@ html.dark { color-scheme: dark; }
     background-color: #0f172a; color: #f1f5f9; border-color: #334155;
 }
 .dark textarea::placeholder, .dark input::placeholder { color: #94a3b8; }
-.dark [class*="bg-gray-50/"], .dark [class*="bg-white/"] { background-color: rgba(255,255,255,.03); }
+.dark [class*="bg-white/"] { background-color: rgba(255,255,255,.03); }
 .dark [class*="hover:bg-dyl-orange-50/"]:hover { background-color: rgba(249,115,22,.1); }
 
 /* Modo oscuro — tablas, foco y controles nativos */

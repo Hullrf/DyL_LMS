@@ -1,6 +1,13 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
+// Tokens por rol: cada utilidad (bg/text/border/divide/placeholder) resuelve su propia escala de gris
+// desde variables CSS que cambian con el tema (ver :root / .dark en resources/css/app.css).
+// Así cualquier clase gray-* nueva se adapta al modo oscuro sin escribir una regla por clase.
+const escalaGris = (rol) => Object.fromEntries(
+    [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((n) => [n, `rgb(var(--g-${rol}-${n}) / <alpha-value>)`])
+);
+
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: 'class',
@@ -12,6 +19,11 @@ export default {
 
     theme: {
         extend: {
+            backgroundColor:  { gray: escalaGris('bg') },
+            textColor:        { gray: escalaGris('tx') },
+            borderColor:      { gray: escalaGris('bd') },
+            divideColor:      { gray: escalaGris('bd') },
+            placeholderColor: { gray: escalaGris('tx') },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
