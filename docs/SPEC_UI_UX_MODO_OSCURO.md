@@ -24,6 +24,7 @@ Marca que se conserva: naranja `#EA580C` / grafito `#0F172A`, Figtree. No se ado
 | D12 | Fase 3: M3 (`scope="col"` en 76 `<th`, scroll horizontal en 6 tablas), M4 (`aria-label` en buscadores, comentarios, bibliografía y módulo; **no** en inputs con etiqueta visible ni con placeholders de ejemplo), M13 (tema por defecto = preferencia del SO si no hay elección guardada; sincroniza entre pestañas vía evento `storage`), M14 (tooltip `title` en el riel colapsado; drawer móvil con Esc, `inert` en el resto de la página, bloqueo de scroll, foco al abrir y retorno al botón) | varios |
 | D13 | A3 (decisión: botón en `#C2410C`): `.btn-primary` y 61 botones/avatares con texto blanco pasan a `orange-700` (hover `orange-800`), 5.18:1; texto naranja sobre claro `orange-600` → `orange-700` (~96 usos). `orange-600` queda solo en acentos sin texto (barras, toggles, puntos, foco). En oscuro el texto naranja pasa a `#FB923C` (≈9:1) | `app.css`, ~50 vistas |
 | D14 | Fase 4 (consistencia): M1 (componente `x-icon` con los paths Heroicons del modelo `RecursoActividad`; sustituye los emojis de portada, medalla, tipo de actividad y tipo de recurso; los glifos `✓ ✗ ○ ✕` se dejan por ser tipográficos), M2 (solo desentonaban `admin/categorias` 5xl→7xl y `notificaciones` 2xl→3xl; resto ya era coherente: formularios 2xl, listas 3xl, edición 4xl), M9 (punto de color + texto neutro, y validación `regex:#RRGGBB` en las categorías, que antes aceptaba cualquier cadena de ≤20 caracteres en un `style`), M12 (páginas 403/404/419/429/500/503 en español con layout propio sin consultas a BD), B2 (CSS de topbar, sidebar y `.desc-justify` movido a `app.css`), B3 (éxito se descarta a los 5 s; errores con botón de cerrar). 3 tests nuevos (462 en total) | varios |
+| D15 | Pendientes: logo de letra blanca en modo oscuro en el login móvil y en el topbar de invitados (reportado tras revisar en móvil); `label`/`for`+`id` en puntaje y tiempo límite de `actividades/create` y `edit`; 3 tests (botón de tema accesible, `aria-current`, logo oscuro en login). M15 confirmado por inspección: las `x-transition` de Alpine usan clases `duration-*` y la regla global `transition-duration: .01ms !important` las cubre | varios |
 | D8 | Corregidos en oscuro: badge "En progreso", pista de progreso, textarea/select/input sin clase, dropzone `bg-gray-50/40`, tarjetas sin borde | `app.css` |
 
 Pruebas: `php artisan test` → 459 passed tras D1–D7.
@@ -106,7 +107,7 @@ Regla de la skill: SVG de una sola familia (los del sidebar ya son stroke 1.8). 
 **No verificado:** el redimensionado de ventana no cambió el viewport en esta sesión, así que lo móvil falta probarlo (ver §4).
 
 ### M4 — ✅ Inputs sin label visible · M · S
-(Pendiente menor: `actividades/create` tiene `<label>` sin `for`/`id` que lo asocie al input.)
+(Resuelto en D15.)
 8 vistas con `<input placeholder>`: `cursos/ficha` (4), `foros/show` (2), buscadores en `cursos/index`, `linea-de-tiempo`, `inscripcion-masiva`, `actividades/create|edit`.
 **Fix:** `<label class="sr-only">` o `aria-label` en los buscadores; label visible en formularios.
 
@@ -121,8 +122,8 @@ Regla de la skill: SVG de una sola familia (los del sidebar ya son stroke 1.8). 
 Cajas blancas del plugin `@tailwindcss/forms` (visto en `competencias`, `ponderaciones`, `inscripcion-masiva`). Legibles pero no coherentes.
 **Fix:** `.dark input[type=checkbox|radio] { background-color:#0f172a; border-color:#475569 }`, `:checked` naranja.
 
-### M8 — (scrim hecho; falta devolver el foco) — Modal · M · S
-Scrim `bg-gray-500 opacity-75` se vuelve más claro que el fondo oscuro. Usar `bg-black/60` en oscuro (la skill pide 40–60 % negro). Devolver el foco al disparador al cerrar. El atrapado de Tab actual falla si no hay elementos enfocables.
+### M8 — ✅ (scrim hecho) — Modal · M · S
+Scrim `bg-gray-500 opacity-75` se vuelve más claro que el fondo oscuro. Usar `bg-black/60` en oscuro (la skill pide 40–60 % negro). Devolver el foco al disparador al cerrar: **no aplicado**, el componente `x-modal` no se usa en ninguna vista hoy; hacerlo si se vuelve a usar. El atrapado de Tab actual falla si no hay elementos enfocables.
 
 ### M9 — ✅ Color dinámico de categoría · M · S
 `cursos/index:173`: `style="background:{{color}}20; color:{{color}}"`. El contraste depende del color que elija el admin y en oscuro colores oscuros (p. ej. morado) quedan ilegibles.
@@ -151,7 +152,7 @@ Hoy el default es claro aunque el SO esté en oscuro, y el cambio no se sincroni
 - Drawer móvil: cierra solo por clic en overlay; falta Esc, atrapar foco y devolverlo al botón hamburguesa; `body` sigue haciendo scroll.
 **Fix:** `title` condicional (`:title="collapsed ? label : null"`), `@keydown.escape.window="mobileOpen=false"`, `x-trap` (Alpine focus plugin, ya compatible) o foco manual.
 
-### M15 — Reduced motion en Alpine y Chart · B · S
+### M15 — ✅ Reduced motion en Alpine y Chart · B · S
 `app.css` ya apaga transiciones CSS. Las `x-transition` de Alpine y la animación de Chart.js hay que cubrirlas (Chart en A2; Alpine respeta las transiciones CSS, quedaría cubierto — confirmar).
 
 ### B1 — Tokens semánticos en lugar de remapeo · B · L (estrategia)

@@ -35,8 +35,8 @@
                 </div>
                 @if($actividad->tieneCalificacion())
                 <div class="mb-3">
-                    <label class="form-label">Puntaje máximo</label>
-                    <input type="number" name="puntaje_maximo"
+                    <label for="puntaje_maximo" class="form-label">Puntaje máximo</label>
+                    <input type="number" name="puntaje_maximo" id="puntaje_maximo"
                            value="{{ old('puntaje_maximo', $actividad->puntaje_maximo ? number_format($actividad->puntaje_maximo, 2, '.', '') : '') }}"
                            min="0.01" step="0.01"
                            class="form-input" required>
@@ -81,8 +81,8 @@
                 </div>
                 @endif
                 <div class="mb-3">
-                    <label class="form-label">Tiempo límite <span class="text-gray-400 font-normal">(minutos, opcional)</span></label>
-                    <input type="number" name="duracion_minutos"
+                    <label for="duracion_minutos" class="form-label">Tiempo límite <span class="text-gray-400 font-normal">(minutos, opcional)</span></label>
+                    <input type="number" name="duracion_minutos" id="duracion_minutos"
                            value="{{ old('duracion_minutos', $actividad->duracion_minutos) }}"
                            min="1" placeholder="Sin límite"
                            class="form-input">

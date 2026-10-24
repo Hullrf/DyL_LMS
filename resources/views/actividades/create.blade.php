@@ -57,14 +57,14 @@
                  x-show="!['ejercicio','lectura','encuesta','reflexion'].includes(tipo)"
                  x-cloak>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Puntaje máximo</label>
-                    <input type="number" name="puntaje_maximo" value="{{ old('puntaje_maximo', 5.00) }}"
+                    <label for="puntaje_maximo" class="block text-sm font-medium text-gray-700 mb-2">Puntaje máximo</label>
+                    <input type="number" name="puntaje_maximo" id="puntaje_maximo" value="{{ old('puntaje_maximo', 5.00) }}"
                            min="0.01" step="0.01"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tiempo límite (minutos)</label>
-                    <input type="number" name="duracion_minutos" value="{{ old('duracion_minutos') }}" min="1" placeholder="Sin límite"
+                    <label for="duracion_minutos" class="block text-sm font-medium text-gray-700 mb-2">Tiempo límite (minutos)</label>
+                    <input type="number" name="duracion_minutos" id="duracion_minutos" value="{{ old('duracion_minutos') }}" min="1" placeholder="Sin límite"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
                 </div>
             </div>

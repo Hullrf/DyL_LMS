@@ -53,4 +53,29 @@ class SidebarNavigationTest extends TestCase
         $response->assertSee('Auditoría');
         $response->assertSee('Reportes');
     }
+
+    public function test_topbar_tiene_boton_de_tema_con_nombre_accesible(): void
+    {
+        $student = $this->crearUsuarioConRol('Estudiante');
+
+        $this->actingAs($student)->get('/dashboard')
+            ->assertSee('data-theme-toggle', false)
+            ->assertSee('aria-label="Modo oscuro"', false);
+    }
+
+    public function test_el_enlace_de_la_seccion_actual_marca_aria_current(): void
+    {
+        $student = $this->crearUsuarioConRol('Estudiante');
+
+        $this->actingAs($student)->get('/cursos')
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_login_muestra_el_logo_de_letra_blanca_en_modo_oscuro(): void
+    {
+        $this->get('/login')
+            ->assertSee('logo-icon-light-256.png', false)
+            ->assertSee('logo-icon-dark-256.png', false)
+            ->assertSee('hidden dark:block', false);
+    }
 }

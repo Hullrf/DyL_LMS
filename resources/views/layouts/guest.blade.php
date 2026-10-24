@@ -82,7 +82,8 @@
 
                 {{-- Logo móvil --}}
                 <a href="/" class="flex items-center gap-2 mb-8 lg:hidden">
-                    <img src="{{ asset('images/logo/logo-icon-light-256.png') }}" alt="" class="w-16 h-16" aria-hidden="true">
+                    <img src="{{ asset('images/logo/logo-icon-light-256.png') }}" alt="" class="w-16 h-16 dark:hidden" aria-hidden="true">
+                    <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" alt="" class="w-16 h-16 hidden dark:block" aria-hidden="true">
                     <span class="text-dyl-graphite-900 font-bold text-lg">Quality Campus</span>
                 </a>
 
