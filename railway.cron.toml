@@ -1,13 +1,13 @@
 # Configuracion del servicio "scheduler" de Railway (cron).
-# Mismo repo que la app web, pero con su propio archivo de configuracion para que NO herede el
-# arranque de nginx de railway.toml. En el servicio: Settings > Config-as-code > ruta del archivo
+# Mismo repo e imagen (Dockerfile) que la app web, pero con su propio archivo de configuracion
+# para que NO herede el arranque de nginx (start.sh). En el servicio: Settings > Config-as-code > ruta del archivo
 # = /railway.cron.toml
 #
 # Cada 5 minutos (minimo que permite Railway, en UTC) arranca, ejecuta el scheduler de Laravel
 # (routes/console.php: notificaciones:vencimientos cada hora) y termina.
 
 [build]
-builder = "NIXPACKS"
+builder = "DOCKERFILE"
 
 [deploy]
 startCommand = "mkdir -p storage/app/tmp && php artisan schedule:run"
