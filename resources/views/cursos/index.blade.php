@@ -3,205 +3,160 @@
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.index') }}@endsection
 @section('content')
 
-<div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Cursos</h1>
+<div class="flex flex-wrap justify-between items-end gap-4 mb-10">
+    <h1 class="font-display text-4xl font-semibold text-gray-900">Cursos</h1>
     @if(auth()->user()->esInstructor() || auth()->user()->esAdmin())
         <div class="flex items-center gap-3">
             <form method="POST" action="{{ route('cursos.importar') }}" enctype="multipart/form-data">
                 @csrf
-                <label class="cursor-pointer border border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 font-medium text-sm inline-block"
+                <label class="btn-outline cursor-pointer"
                        title="Carga un curso exportado (.zip). Se crea como borrador.">
                     Importar curso
                     <input type="file" name="archivo" accept=".zip,application/zip" class="hidden"
                            onchange="if (this.files.length) this.form.submit()">
                 </label>
             </form>
-            <a href="{{ route('cursos.create') }}"
-               class="bg-dyl-orange-700 text-white px-5 py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
-                + Nuevo Curso
-            </a>
+            <a href="{{ route('cursos.create') }}" class="btn-primary">+ Nuevo curso</a>
         </div>
     @endif
 </div>
 
-{{-- ============================================================
-     SECCIÓN: MIS CURSOS
-     ============================================================ --}}
+{{-- Mis cursos: lista compacta (el dashboard ya los muestra en grande) --}}
 @if($inscripciones->isNotEmpty())
-<section class="mb-12">
-    <div class="flex items-center gap-3 mb-5">
-        <div class="w-1 h-6 bg-dyl-orange-600 rounded-full"></div>
-        <h2 class="text-xl font-bold text-gray-900">Mis Cursos</h2>
-        <span class="text-sm text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-            {{ $inscripciones->count() }}
-        </span>
-    </div>
+<section class="mb-12" aria-labelledby="mis-cursos-titulo">
+    <h2 id="mis-cursos-titulo" class="font-display text-2xl font-semibold text-gray-900 mb-4">
+        Mis cursos <span class="text-base font-sans font-normal text-gray-500 tabular-nums">({{ $inscripciones->count() }})</span>
+    </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <ul class="card divide-y divide-gray-100">
         @foreach($inscripciones as $inscripcion)
         @php $curso = $inscripcion->curso; @endphp
-        <div class="bg-white rounded-xl shadow hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
-
-            {{-- Imagen --}}
-            @if($curso->imagen_portada)
-                <img src="{{ asset('storage/' . $curso->imagen_portada) }}"
-                     alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
-            @else
-                <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-600 to-dyl-orange-700 flex items-center justify-center">
-                    <x-icon name="libro" class="w-14 h-14 text-white/90"/>
-                </div>
-            @endif
-
-            <div class="p-5 flex flex-col flex-1">
-                {{-- Estado de inscripción --}}
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-medium
-                        @if($inscripcion->estado === 'completado') text-dyl-orange-700 bg-dyl-orange-100
-                        @else text-dyl-graphite-600 bg-dyl-graphite-100 @endif
-                        px-2.5 py-0.5 rounded-full">
-                        @if($inscripcion->estado === 'completado')
-                            ✓ Completado
-                        @else
-                            En progreso
-                        @endif
-                    </span>
-                    <span class="text-xs text-gray-400">{{ $curso->duracion_horas }} h</span>
-                </div>
-
-                <h3 class="text-base font-bold text-gray-900 line-clamp-2 mb-2">{{ $curso->titulo }}</h3>
-                @include('cursos._resumen', ['curso' => $curso])
-
-                <p class="text-gray-500 text-sm line-clamp-2 flex-1 mb-4">
-                    {{ Str::limit(strip_tags($curso->descripcion), 90) }}
-                </p>
-
-                <div class="mt-auto space-y-2">
-                    <a href="{{ route('cursos.show', $curso) }}"
-                       class="block w-full text-center py-2 rounded-lg font-medium text-sm bg-dyl-orange-700 text-white hover:bg-dyl-orange-800 transition-colors">
-                        Continuar →
-                    </a>
-                    @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
-                        <a href="{{ route('cursos.edit', $curso) }}"
-                           class="block w-full text-center bg-gray-100 text-gray-600 py-2 rounded-lg hover:bg-gray-200 text-sm">
-                            Editar
-                        </a>
+        <li class="flex flex-wrap sm:flex-nowrap items-center gap-4 p-4">
+            <a href="{{ route('cursos.show', $curso) }}" tabindex="-1" aria-hidden="true" class="hidden sm:block w-28 h-16 rounded-lg overflow-hidden shrink-0">
+                @if($curso->imagen_portada)
+                    <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="" class="w-full h-full object-cover">
+                @else
+                    <x-portada-curso :curso="$curso"/>
+                @endif
+            </a>
+            <div class="min-w-0 flex-1 basis-full sm:basis-auto">
+                <h3 class="font-display text-lg font-semibold text-gray-900 truncate">{{ $curso->titulo }}</h3>
+                <div class="mt-1.5 max-w-sm">
+                    @if($inscripcion->estado === 'completado')
+                        <span class="badge-success mb-2">Completado</span>
                     @endif
+                    @include('cursos._resumen', ['curso' => $curso])
+                    <p class="text-xs text-gray-500">{{ $curso->duracion_horas }} h</p>
                 </div>
             </div>
-        </div>
+            <div class="flex items-center gap-2 shrink-0">
+                @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
+                    <a href="{{ route('cursos.edit', $curso) }}" class="btn-ghost btn-sm">Editar</a>
+                @endif
+                <a href="{{ route('cursos.show', $curso) }}" class="btn-primary btn-sm">
+                    {{ $inscripcion->estado === 'completado' ? 'Repasar' : 'Continuar' }}
+                </a>
+            </div>
+        </li>
         @endforeach
-    </div>
+    </ul>
 </section>
 @endif
 
-{{-- ============================================================
-     SECCIÓN: CATÁLOGO
-     ============================================================ --}}
-<section>
-    <div class="flex items-center gap-3 mb-5">
-        <div class="w-1 h-6 bg-gray-300 rounded-full"></div>
-        <h2 class="text-xl font-bold text-gray-900">
-            @if($inscripciones->isNotEmpty()) Más cursos disponibles @else Catálogo de Cursos @endif
-        </h2>
+{{-- Catálogo --}}
+<section aria-labelledby="catalogo-titulo">
+    <h2 id="catalogo-titulo" class="font-display text-2xl font-semibold text-gray-900 mb-4">
+        {{ $inscripciones->isNotEmpty() ? 'Más cursos disponibles' : 'Catálogo de cursos' }}
         @if($catalogo->total() > 0)
-        <span class="text-sm text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-            {{ $catalogo->total() }}
-        </span>
+            <span class="text-base font-sans font-normal text-gray-500 tabular-nums">({{ $catalogo->total() }})</span>
         @endif
-    </div>
+    </h2>
 
-    @if($catalogo->isEmpty())
-        <div class="bg-white rounded-xl shadow p-16 text-center text-gray-400">
+    @if($catalogo->isEmpty() && !request()->anyFilled(['categoria', 'buscar']))
+        <div class="card p-12 text-center text-gray-500">
             @if($inscripciones->isNotEmpty())
                 Ya estás inscrito en todos los cursos disponibles.
             @else
-                No hay cursos disponibles por el momento.
+                Todavía no hay cursos publicados. Cuando haya uno, aparecerá aquí.
             @endif
         </div>
     @else
-        {{-- Filtros --}}
-        <div class="flex flex-wrap items-center gap-3 mb-5">
-            <form method="GET" action="{{ route('cursos.index') }}" class="flex flex-wrap items-center gap-3 w-full">
-                @if($categorias->isNotEmpty())
-                <select name="categoria" onchange="this.form.submit()"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-dyl-orange-600">
+        <form method="GET" action="{{ route('cursos.index') }}" class="flex flex-wrap items-center gap-3 mb-6">
+            <input aria-label="Buscar curso" type="search" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por título"
+                   class="form-input flex-1 min-w-[200px] sm:max-w-sm">
+            @if($categorias->isNotEmpty())
+                <select name="categoria" aria-label="Categoría" onchange="this.form.submit()" class="form-select w-auto">
                     <option value="">Todas las categorías</option>
                     @foreach($categorias as $cat)
                         <option value="{{ $cat->id }}" {{ request('categoria') == $cat->id ? 'selected' : '' }}>{{ $cat->nombre }}</option>
                     @endforeach
                 </select>
-                @endif
-                @if(auth()->user()->esAdmin())
-                    <a href="{{ route('admin.categorias.index') }}"
-                       class="text-sm text-gray-500 hover:text-dyl-orange-700 whitespace-nowrap">
-                        Gestionar categorías
-                    </a>
-                @endif
-                <input aria-label="Buscar curso..." type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar curso..."
-                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px] focus:ring-2 focus:ring-dyl-orange-600">
-                <button type="submit" class="px-4 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Buscar</button>
-                @if(request()->anyFilled(['categoria', 'buscar']))
-                    <a href="{{ route('cursos.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</a>
-                @endif
-            </form>
-        </div>
+            @endif
+            <button type="submit" class="btn-primary">Buscar</button>
+            @if(request()->anyFilled(['categoria', 'buscar']))
+                <a href="{{ route('cursos.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</a>
+            @endif
+            @if(auth()->user()->esAdmin())
+                <a href="{{ route('admin.categorias.index') }}" class="text-sm text-gray-500 hover:text-dyl-orange-700 ml-auto whitespace-nowrap">Gestionar categorías</a>
+            @endif
+        </form>
+
+        @if($catalogo->isEmpty())
+            <div class="card p-12 text-center text-gray-500">
+                Ningún curso coincide con tu búsqueda.
+                <a href="{{ route('cursos.index') }}" class="text-dyl-orange-700 font-medium hover:underline ml-1">Ver todos</a>
+            </div>
+        @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($catalogo as $curso)
-            <div class="bg-white rounded-xl shadow hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
-
-                {{-- Imagen --}}
-                @if($curso->imagen_portada)
-                    <img src="{{ asset('storage/' . $curso->imagen_portada) }}"
-                         alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
-                @else
-                    <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-400 to-dyl-orange-700 flex items-center justify-center">
-                        <x-icon name="libro" class="w-14 h-14 text-white/90"/>
-                    </div>
-                @endif
+            <article class="card-hover overflow-hidden flex flex-col">
+                <a href="{{ route('cursos.show', $curso) }}" tabindex="-1" aria-hidden="true" class="block h-36">
+                    @if($curso->imagen_portada)
+                        <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="" class="w-full h-full object-cover">
+                    @else
+                        <x-portada-curso :curso="$curso"/>
+                    @endif
+                </a>
 
                 <div class="p-5 flex flex-col flex-1">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs px-2.5 py-0.5 rounded-full font-medium
-                            @if($curso->estado === 'publicado') bg-dyl-orange-100 text-dyl-orange-700
-                            @elseif($curso->estado === 'borrador') bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold
-                            @else bg-gray-100 text-gray-500 @endif">
-                            {{ ucfirst($curso->estado) }}
-                        </span>
-                        <span class="text-xs text-gray-400">{{ $curso->duracion_horas }} h</span>
-                    </div>
-                    @if($curso->categoria)
-                        <span class="inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full font-medium mb-2 bg-gray-100 text-gray-700">
-                            <span class="w-2 h-2 rounded-full" style="background-color: {{ $curso->categoria->color }}" aria-hidden="true"></span>
-                            {{ $curso->categoria->nombre }}
-                        </span>
-                    @endif
-                    <h3 class="text-base font-bold text-gray-900 line-clamp-2 mb-2">{{ $curso->titulo }}</h3>
-
-                    <p class="text-gray-500 text-sm line-clamp-2 flex-1 mb-4">
-                        {{ Str::limit(strip_tags($curso->descripcion), 90) }}
-                    </p>
-
-                    <p class="text-xs text-gray-400 mb-4">Por {{ $curso->creador->name }}</p>
-
-                    <div class="mt-auto space-y-2">
-                        <a href="{{ route('cursos.show', $curso) }}"
-                           class="block w-full text-center py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
-                            Ver Curso
-                        </a>
-                        @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
-                            <a href="{{ route('cursos.edit', $curso) }}"
-                               class="block w-full text-center bg-dyl-orange-50 text-dyl-orange-700 py-2 rounded-lg hover:bg-dyl-orange-100 text-sm">
-                                Editar
-                            </a>
+                    <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 mb-2">
+                        @if($curso->categoria)
+                            <span class="inline-flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $curso->categoria->color }}" aria-hidden="true"></span>
+                                {{ $curso->categoria->nombre }}
+                            </span>
+                        @endif
+                        <span class="tabular-nums">{{ $curso->duracion_horas }} h</span>
+                        @if($curso->estado !== 'publicado')
+                            <span class="{{ $curso->estado === 'borrador' ? 'badge-warning' : 'badge-info' }}">{{ ucfirst($curso->estado) }}</span>
                         @endif
                     </div>
+
+                    <h3 class="font-display text-xl font-semibold text-gray-900 line-clamp-2 mb-2">
+                        <a href="{{ route('cursos.show', $curso) }}" class="hover:text-dyl-orange-700">{{ $curso->titulo }}</a>
+                    </h3>
+
+                    <p class="text-gray-600 text-sm line-clamp-3 flex-1 mb-4">
+                        {{ Str::limit(strip_tags($curso->descripcion), 140) }}
+                    </p>
+
+                    <div class="flex items-center justify-between gap-3 mt-auto">
+                        <p class="text-xs text-gray-500 truncate">Por {{ $curso->creador->name }}</p>
+                        <div class="flex items-center gap-2 shrink-0">
+                            @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
+                                <a href="{{ route('cursos.edit', $curso) }}" class="btn-ghost btn-sm">Editar</a>
+                            @endif
+                            <a href="{{ route('cursos.show', $curso) }}" class="btn-outline btn-sm">Ver curso</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </article>
             @endforeach
         </div>
 
         @if($catalogo->hasPages())
-        <div class="mt-8">{{ $catalogo->links() }}</div>
+            <div class="mt-8">{{ $catalogo->links() }}</div>
+        @endif
         @endif
     @endif
 </section>

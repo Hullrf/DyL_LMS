@@ -21,16 +21,16 @@
 
 @if($destacado)
 <section aria-labelledby="continuar-titulo" class="card overflow-hidden grid md:grid-cols-5 mb-10">
-    <div class="md:col-span-2 h-40 md:h-auto">
+    <div class="md:col-span-2 h-40 md:h-auto md:min-h-[16rem] relative">
         @if($destacado->imagen_portada)
-            <img src="{{ asset('storage/' . $destacado->imagen_portada) }}" alt="" class="w-full h-full object-cover">
+            <img src="{{ asset('storage/' . $destacado->imagen_portada) }}" alt="" class="absolute inset-0 w-full h-full object-cover">
         @else
-            <x-portada-curso :curso="$destacado"/>
+            <x-portada-curso :curso="$destacado" class="absolute inset-0"/>
         @endif
     </div>
     <div class="md:col-span-3 p-6 sm:p-8 flex flex-col justify-center">
         <p class="text-sm text-gray-500 mb-1">{{ $pctDestacado > 0 ? 'Retoma donde lo dejaste' : 'Empieza tu primer curso' }}</p>
-        <h2 id="continuar-titulo" class="font-display text-3xl font-semibold text-gray-900 mb-5">{{ $destacado->titulo }}</h2>
+        <h2 id="continuar-titulo" class="font-display text-3xl font-semibold text-gray-900 mb-5 break-words">{{ $destacado->titulo }}</h2>
         <div class="flex items-center gap-3 mb-6" role="progressbar" aria-valuenow="{{ $pctDestacado }}" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso del curso">
             <div class="progress-bar flex-1"><div class="progress-blue" style="width: {{ $pctDestacado }}%"></div></div>
             <span class="text-sm font-medium text-gray-700 tabular-nums">{{ $pctDestacado }}%</span>
@@ -44,7 +44,7 @@
 @endif
 
 <div class="grid lg:grid-cols-3 gap-10">
-    <section class="lg:col-span-2" aria-labelledby="cursos-titulo">
+    <section class="lg:col-span-2 min-w-0" aria-labelledby="cursos-titulo">
         <h2 id="cursos-titulo" class="font-display text-2xl font-semibold text-gray-900 mb-4">{{ $destacado ? 'Tus otros cursos' : 'Mis cursos' }}</h2>
         @if($cursos_inscritos->isEmpty())
             <div class="card p-8 text-center text-gray-500">
@@ -76,7 +76,7 @@
         @endif
     </section>
 
-    <aside aria-labelledby="entregas-titulo">
+    <aside class="min-w-0" aria-labelledby="entregas-titulo">
         <div class="flex items-baseline justify-between mb-4">
             <h2 id="entregas-titulo" class="font-display text-2xl font-semibold text-gray-900">Próximas entregas</h2>
             <a href="{{ route('linea-de-tiempo.index') }}" class="text-sm text-dyl-orange-700 hover:underline">Ver todo</a>

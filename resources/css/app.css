@@ -285,6 +285,11 @@ html.dark { color-scheme: dark; }
 .dark input[type=checkbox], .dark input[type=radio] { background-color: #0f172a; border-color: #475569; }
 .dark input[type=checkbox]:checked, .dark input[type=radio]:checked { background-color: #ea580c; border-color: #ea580c; }
 
+/* Modo oscuro — avisos en rojo (tareas atrasadas): fondo tenue en vez del rosa claro */
+.dark .bg-red-50 { background-color: rgba(239,68,68,.1); }
+.dark .border-red-200 { border-color: rgba(239,68,68,.35); }
+.dark .divide-red-100 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(239,68,68,.2); }
+
 /* Modo oscuro — editor Quill (snow) */
 .dark .ql-toolbar.ql-snow { background-color: #0f172a; border-color: #334155; }
 .dark .ql-container.ql-snow { border-color: #334155; }
