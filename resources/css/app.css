@@ -179,6 +179,26 @@
         @apply bg-white shadow-xl rounded-2xl px-8 py-10 w-full max-w-md mx-auto;
     }
 
+    /* ---- Contenido de lección (Quill/HTML libre): el proyecto no usa @tailwindcss/typography ---- */
+    .leccion-contenido { @apply text-gray-700 text-base leading-7 break-words; }
+    .leccion-contenido > * + * { @apply mt-4; }
+    .leccion-contenido h1, .leccion-contenido h2, .leccion-contenido h3, .leccion-contenido h4 {
+        @apply font-display font-semibold text-gray-900 leading-snug;
+    }
+    .leccion-contenido h1 { @apply text-3xl mt-8; }
+    .leccion-contenido h2 { @apply text-2xl mt-8; }
+    .leccion-contenido h3 { @apply text-xl mt-6; }
+    .leccion-contenido h4 { @apply text-lg mt-6; }
+    .leccion-contenido ul { @apply list-disc pl-6; }
+    .leccion-contenido ol { @apply list-decimal pl-6; }
+    .leccion-contenido li + li { @apply mt-1; }
+    .leccion-contenido a { @apply text-dyl-orange-700 underline underline-offset-2 hover:text-dyl-orange-800; }
+    .leccion-contenido blockquote { @apply border-l-4 border-dyl-orange-300 pl-4 text-gray-600; }
+    .leccion-contenido pre { @apply bg-dyl-graphite-900 text-white rounded-lg p-4 text-sm overflow-x-auto; }
+    .leccion-contenido code { @apply text-sm; }
+    .leccion-contenido table { @apply w-full text-sm; }
+    .leccion-contenido th, .leccion-contenido td { @apply border border-gray-200 px-3 py-2 text-left; }
+
     /* ---- Dropdown (topbar) ---- */
     .dropdown-item {
         @apply flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 transition-colors;
