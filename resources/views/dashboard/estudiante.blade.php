@@ -2,72 +2,86 @@
 @section('title', 'Mi Aprendizaje - D&L Quality Campus')
 
 @section('content')
-<h1 class="text-3xl font-bold text-gray-900 mb-8">Mi Aprendizaje</h1>
+@php
+    $progresoDe = fn($c) => $resumen[$c->id]['porcentaje'] ?? null;
+    $destacado = $cursos_inscritos->first(fn($c) => $progresoDe($c) !== null && $progresoDe($c) > 0 && $progresoDe($c) < 100)
+        ?? $cursos_inscritos->first();
+    $otros = $cursos_inscritos->reject(fn($c) => $destacado && $c->id === $destacado->id);
+    $pctDestacado = $destacado ? ($progresoDe($destacado) ?? 0) : 0;
+@endphp
 
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-    <div class="bg-white p-6 rounded-lg shadow">
-        <p class="text-gray-500 text-xs uppercase tracking-wide">Cursos Activos</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['cursos_activos'] }}</p>
+<header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 mb-8">
+    <h1 class="font-display text-4xl font-semibold text-gray-900">Hola, {{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</h1>
+    <dl class="flex gap-8 text-sm text-gray-500">
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['cursos_activos'] }}</dd><dt>en curso</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['completados'] }}</dd><dt>completados</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['progreso_general'] }}%</dd><dt>de avance total</dt></div>
+    </dl>
+</header>
+
+@if($destacado)
+<section aria-labelledby="continuar-titulo" class="card overflow-hidden grid md:grid-cols-5 mb-10">
+    <div class="md:col-span-2 h-40 md:h-auto">
+        @if($destacado->imagen_portada)
+            <img src="{{ asset('storage/' . $destacado->imagen_portada) }}" alt="" class="w-full h-full object-cover">
+        @else
+            <x-portada-curso :curso="$destacado"/>
+        @endif
     </div>
-    <div class="bg-white p-6 rounded-lg shadow">
-        <p class="text-gray-500 text-xs uppercase tracking-wide">Completados</p>
-        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">{{ $stats['completados'] }}</p>
+    <div class="md:col-span-3 p-6 sm:p-8 flex flex-col justify-center">
+        <p class="text-sm text-gray-500 mb-1">{{ $pctDestacado > 0 ? 'Retoma donde lo dejaste' : 'Empieza tu primer curso' }}</p>
+        <h2 id="continuar-titulo" class="font-display text-3xl font-semibold text-gray-900 mb-5">{{ $destacado->titulo }}</h2>
+        <div class="flex items-center gap-3 mb-6" role="progressbar" aria-valuenow="{{ $pctDestacado }}" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso del curso">
+            <div class="progress-bar flex-1"><div class="progress-blue" style="width: {{ $pctDestacado }}%"></div></div>
+            <span class="text-sm font-medium text-gray-700 tabular-nums">{{ $pctDestacado }}%</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+            <a href="{{ route('cursos.show', $destacado) }}" class="btn-primary btn-lg">{{ $pctDestacado > 0 ? 'Continuar curso' : 'Empezar curso' }}</a>
+            <span class="text-sm text-gray-500">{{ $destacado->duracion_horas }} horas</span>
+        </div>
     </div>
-    <div class="bg-white p-6 rounded-lg shadow col-span-2 md:col-span-1">
-        <p class="text-gray-500 text-xs uppercase tracking-wide">Progreso General</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['progreso_general'] }}%</p>
-    </div>
-</div>
+</section>
+@endif
 
-{{-- Accesos rápidos --}}
-<div class="flex gap-3 mb-6">
-    <a href="{{ route('calificaciones.mis') }}"
-       class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 text-sm font-medium">
-        Mis Calificaciones
-    </a>
-    <a href="{{ route('certificados.mis') }}"
-       class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 text-sm font-medium">
-        Mis Certificados
-    </a>
-    <a href="{{ route('cursos.index') }}"
-       class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 text-sm font-medium">
-        Ver Catálogo
-    </a>
-</div>
-
-<div class="flex items-center justify-between mb-3">
-    <h2 class="text-xl font-bold text-gray-900">Próximas entregas</h2>
-    <a href="{{ route('linea-de-tiempo.index') }}" class="text-sm text-dyl-orange-700 hover:underline">Ver todo</a>
-</div>
-<div class="mb-8">@include('partials.linea-de-tiempo', ['lineaDeTiempo' => $lineaDeTiempo, 'compacto' => true])</div>
-
-<h2 class="text-xl font-bold text-gray-900 mb-4">Mis Cursos</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    @forelse($cursos_inscritos as $curso)
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            @if($curso->imagen_portada)
-                <img src="{{ asset('storage/' . $curso->imagen_portada) }}"
-                     alt="{{ $curso->titulo }}" class="w-full h-44 object-cover">
-            @else
-                <div class="w-full h-44 bg-gradient-to-br from-dyl-orange-400 to-dyl-orange-700 flex items-center justify-center">
-                    <x-icon name="libro" class="w-14 h-14 text-white/90"/>
-                </div>
-            @endif
-            <div class="p-5">
-                <h3 class="font-bold text-gray-900 mb-1">{{ $curso->titulo }}</h3>
-                @include('cursos._resumen', ['curso' => $curso])
-                <p class="text-xs text-gray-500 mb-4">{{ $curso->duracion_horas }} horas</p>
-                <a href="{{ route('cursos.show', $curso) }}"
-                   class="block w-full bg-dyl-orange-700 text-white py-2 rounded text-center hover:bg-dyl-orange-800 text-sm font-medium">
-                    Continuar
-                </a>
+<div class="grid lg:grid-cols-3 gap-10">
+    <section class="lg:col-span-2" aria-labelledby="cursos-titulo">
+        <h2 id="cursos-titulo" class="font-display text-2xl font-semibold text-gray-900 mb-4">{{ $destacado ? 'Tus otros cursos' : 'Mis cursos' }}</h2>
+        @if($cursos_inscritos->isEmpty())
+            <div class="card p-8 text-center text-gray-500">
+                Aún no estás inscrito en ningún curso.
+                <a href="{{ route('cursos.index') }}" class="text-dyl-orange-700 font-medium hover:underline ml-1">Explorar el catálogo</a>
             </div>
+        @elseif($otros->isEmpty())
+            <p class="text-sm text-gray-500">Este es tu único curso por ahora.
+                <a href="{{ route('cursos.index') }}" class="text-dyl-orange-700 font-medium hover:underline">Explorar el catálogo</a></p>
+        @else
+            <div class="grid sm:grid-cols-2 gap-5">
+                @foreach($otros as $curso)
+                    <a href="{{ route('cursos.show', $curso) }}" class="card-hover overflow-hidden block group">
+                        <div class="h-32">
+                            @if($curso->imagen_portada)
+                                <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="" class="w-full h-full object-cover">
+                            @else
+                                <x-portada-curso :curso="$curso"/>
+                            @endif
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-display text-lg font-semibold text-gray-900 mb-1 group-hover:text-dyl-orange-700">{{ $curso->titulo }}</h3>
+                            @include('cursos._resumen', ['curso' => $curso])
+                            <p class="text-xs text-gray-500">{{ $curso->duracion_horas }} horas</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        @endif
+    </section>
+
+    <aside aria-labelledby="entregas-titulo">
+        <div class="flex items-baseline justify-between mb-4">
+            <h2 id="entregas-titulo" class="font-display text-2xl font-semibold text-gray-900">Próximas entregas</h2>
+            <a href="{{ route('linea-de-tiempo.index') }}" class="text-sm text-dyl-orange-700 hover:underline">Ver todo</a>
         </div>
-    @empty
-        <div class="col-span-3 text-center py-12 text-gray-500">
-            No estás inscrito en ningún curso.
-            <a href="{{ route('cursos.index') }}" class="text-dyl-orange-700 hover:underline ml-1">Ver cursos disponibles</a>
-        </div>
-    @endforelse
+        @include('partials.linea-de-tiempo', ['lineaDeTiempo' => $lineaDeTiempo, 'compacto' => true])
+    </aside>
 </div>
 @endsection

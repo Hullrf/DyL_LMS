@@ -14,6 +14,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                display: ['Newsreader', 'Georgia', ...defaultTheme.fontFamily.serif],
             },
             colors: {
                 dyl: {
