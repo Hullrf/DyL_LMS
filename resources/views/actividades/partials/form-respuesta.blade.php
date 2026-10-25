@@ -1,7 +1,7 @@
 <form id="form-respuesta" action="{{ $respuesta ? route('respuestas.update', $actividad) : route('respuestas.store', $actividad) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @if($respuesta) @method('PUT') @endif
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="card p-6 mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-2">Tu respuesta</label>
         <textarea name="respuesta" rows="8"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600"
@@ -10,7 +10,7 @@
     </div>
 
     @php($maxArchivos = $actividad->max_archivos_adjuntos)
-    <div class="bg-white rounded-lg shadow p-6" x-data="{ nombres: [], errorArchivo: '', maxArchivos: {{ $maxArchivos }} }">
+    <div class="card p-6" x-data="{ nombres: [], errorArchivo: '', maxArchivos: {{ $maxArchivos }} }">
         @if($respuesta && $respuesta->archivos->isNotEmpty())
             <p class="text-xs text-gray-500 mb-3">
                 Archivos actuales: {{ $respuesta->archivos->pluck('nombre_original')->implode(', ') }}.
@@ -83,7 +83,7 @@
     </div>
 
     <div class="mt-6 flex justify-end">
-        <button type="submit" class="bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium">
+        <button type="submit" class="btn-primary btn-lg">
             {{ $respuesta ? 'Guardar cambios' : 'Enviar respuesta' }}
         </button>
     </div>
