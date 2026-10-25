@@ -20,18 +20,18 @@
     </div>
 
     {{-- Encabezado de la actividad --}}
-    <div class="bg-white rounded-lg shadow p-8 mb-6">
+    <div class="card p-6 sm:p-8 mb-6">
         <div class="flex items-start justify-between mb-4">
             <div>
-                <span class="text-xs font-medium uppercase text-gray-500">{{ $actividad->tipo }}</span>
-                <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $actividad->tituloCompleto() }}</h1>
+                <span class="text-sm text-gray-500">{{ ucfirst($actividad->tipo) }}</span>
+                <h1 class="font-display text-3xl font-semibold text-gray-900 mt-1 break-words">{{ $actividad->tituloCompleto() }}</h1>
             </div>
             <div class="text-right">
                 @if($actividad->tieneCalificacion())
-                    <p class="text-2xl font-bold text-dyl-orange-700">{{ $actividad->puntaje_maximo }}</p>
+                    <p class="font-display text-4xl font-semibold text-dyl-orange-700 tabular-nums">{{ $actividad->puntaje_maximo }}</p>
                     <p class="text-xs text-gray-500">puntos</p>
                 @else
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                    <span class="badge-info">
                         Sin calificación
                     </span>
                 @endif
@@ -134,7 +134,7 @@
          },
      }"
           @keydown.window="if(visorAbierto && (($event.ctrlKey || $event.metaKey) && ['s','p','S','P'].includes($event.key))) $event.preventDefault()">
-        <h2 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+        <h2 class="font-display text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <svg class="w-5 h-5 text-dyl-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
             </svg>
@@ -422,7 +422,7 @@
         <form action="{{ route('actividades.descompletar', $actividad) }}" method="POST">
             @csrf
             <button type="submit"
-                    class="w-full sm:w-auto border border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors">
+                    class="btn-outline btn-lg w-full sm:w-auto">
                 Desmarcar como completada
             </button>
         </form>
@@ -433,7 +433,7 @@
         <form action="{{ route('actividades.completar', $actividad) }}" method="POST">
             @csrf
             <button type="submit"
-                    class="w-full sm:w-auto bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium transition-colors flex items-center gap-2">
+                    class="btn-primary btn-lg w-full sm:w-auto">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
@@ -445,9 +445,9 @@
 
     {{-- Tabla de rúbrica (solo tarea con rúbrica activa) --}}
     @if($actividad->usa_rubrica && $criteriosRubrica->isNotEmpty())
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
+    <div class="card mb-6 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
-            <h2 class="font-bold text-gray-900 flex items-center gap-2">
+            <h2 class="font-display text-xl font-semibold text-gray-900 flex items-center gap-2">
                 <svg class="w-5 h-5 text-dyl-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
@@ -476,7 +476,7 @@
                         <td class="px-3 py-4 align-top text-xs text-gray-600 leading-relaxed
                             {{ $estaSeleccionado ? 'bg-dyl-orange-50 border-l-2 border-dyl-orange-400' : '' }}">
                             @if($estaSeleccionado)
-                                <span class="inline-block mb-1 text-dyl-orange-700 font-semibold text-xs uppercase tracking-wide">✓ Nivel obtenido</span><br>
+                                <span class="inline-block mb-1 text-dyl-orange-700 font-semibold text-xs">✓ Nivel obtenido</span><br>
                             @endif
                             {{ $nivel->descripcion }}
                             <span class="block mt-2 font-bold text-sm {{ $estaSeleccionado ? 'text-dyl-orange-700' : 'text-gray-400' }}">
@@ -519,7 +519,7 @@
                         Intento {{ $intentosUsados }} de {{ $actividad->intentosPermitidosPara(auth()->id()) }}
                     </h2>
                     @if($respuesta->calificacion !== null)
-                        <p class="text-2xl font-bold text-dyl-orange-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
+                        <p class="font-display text-4xl font-semibold text-dyl-orange-700 tabular-nums">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
                         <p class="text-xs text-gray-500 mt-1">
                             Calificación vigente ({{ $actividad->criterio_calificacion_intentos === 'ultimo' ? 'último intento' : 'intento más alto' }})
                         </p>
@@ -573,7 +573,7 @@
         <div class="bg-dyl-orange-50 border border-dyl-orange-200 rounded-lg p-6 mb-6">
             <h2 class="font-bold text-dyl-orange-800 mb-2">Ya respondiste esta actividad</h2>
             @if($respuesta->calificacion !== null)
-                <p class="text-2xl font-bold text-dyl-orange-700">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
+                <p class="font-display text-4xl font-semibold text-dyl-orange-700 tabular-nums">{{ $respuesta->calificacion }}/{{ $actividad->puntaje_maximo }} puntos</p>
             @else
                 <p class="text-gray-600">Tu respuesta está pendiente de calificación.</p>
             @endif

@@ -5,8 +5,8 @@
 <div class="space-y-6">
     @foreach($preguntas as $index => $pregunta)
     @php $oldVal = $oldAnswers[$pregunta->id] ?? null; @endphp
-    <div class="bg-white rounded-lg shadow p-6" data-pregunta-id="{{ $pregunta->id }}">
-        <p class="font-medium text-gray-900 mb-1">
+    <div class="card p-6" data-pregunta-id="{{ $pregunta->id }}">
+        <p class="font-semibold text-gray-900 text-base leading-snug mb-1">
             {{ $index + 1 }}. {{ $pregunta->pregunta_texto }}
             <span class="text-xs text-gray-400 ml-2">({{ $pregunta->puntaje }} pts)</span>
         </p>
@@ -30,7 +30,7 @@
             <div class="mt-2 space-y-2">
                 @foreach($pregunta->opciones as $opcion)
                 @php $checked = is_array($oldVal) && in_array((string)$opcion->id, array_map('strval', $oldVal)); @endphp
-                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-dyl-orange-50 transition-colors">
+                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-dyl-orange-50 transition-colors has-[:checked]:border-dyl-orange-600 has-[:checked]:ring-1 has-[:checked]:ring-dyl-orange-600">
                     <input type="checkbox"
                            name="respuesta_{{ $pregunta->id }}[]"
                            value="{{ $opcion->id }}"
@@ -45,7 +45,7 @@
             <div class="mt-3 space-y-2">
                 @foreach($pregunta->opciones as $opcion)
                 @php $checked = $oldVal !== null && (string)$oldVal === (string)$opcion->id; @endphp
-                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors has-[:checked]:border-dyl-orange-600 has-[:checked]:ring-1 has-[:checked]:ring-dyl-orange-600">
                     <input type="radio" name="respuesta_{{ $pregunta->id }}" value="{{ $opcion->id }}"
                            {{ $checked ? 'checked' : '' }}
                            class="text-dyl-orange-700" required>

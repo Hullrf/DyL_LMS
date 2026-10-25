@@ -49,21 +49,21 @@
         @include('actividades.partials.formulario-cuestionario')
 
         <div class="mt-6 flex justify-end">
-            <button type="submit" class="bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium">
+            <button type="submit" class="btn-primary btn-lg">
                 Enviar respuesta
             </button>
         </div>
     </form>
 @else
     @php $totalPreguntas = $actividad->preguntas()->count(); @endphp
-    <div class="bg-white rounded-lg shadow p-8 text-center">
+    <div class="card p-8 text-center">
         <svg class="w-12 h-12 text-dyl-graphite-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
         <div class="flex justify-center flex-wrap gap-6 text-sm text-gray-600 mb-6">
             @php($intentosPermitidosEstudiante = $actividad->intentosPermitidosPara(auth()->id()))
             <span>
-                <strong class="block text-gray-900 text-lg">{{ $intentosPermitidosEstudiante }}</strong>
+                <strong class="block font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $intentosPermitidosEstudiante }}</strong>
                 {{ $intentosPermitidosEstudiante === 1 ? 'intento permitido' : 'intentos permitidos' }}
                 @if($actividad->permiteMultiplesIntentos(auth()->id()))
                     <span class="block text-xs text-gray-400">(ya usaste {{ $intentosUsados }} de {{ $intentosPermitidosEstudiante }})</span>
@@ -71,18 +71,18 @@
             </span>
             @if($actividad->duracion_minutos)
             <span>
-                <strong class="block text-gray-900 text-lg">{{ $actividad->duracion_minutos }}</strong>
+                <strong class="block font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $actividad->duracion_minutos }}</strong>
                 minutos
             </span>
             @endif
             <span>
-                <strong class="block text-gray-900 text-lg">{{ $totalPreguntas }}</strong>
+                <strong class="block font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $totalPreguntas }}</strong>
                 {{ $totalPreguntas === 1 ? 'pregunta' : 'preguntas' }}
             </span>
         </div>
         <form action="{{ route('actividades.iniciarIntento', $actividad) }}" method="POST">
             @csrf
-            <button type="submit" class="bg-dyl-orange-700 text-white px-8 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium">
+            <button type="submit" class="btn-primary btn-lg">
                 {{ $respuesta ? 'Reintentar' : 'Iniciar cuestionario' }}
             </button>
         </form>
