@@ -2,61 +2,50 @@
 @section('title', 'Mis Calificaciones - D&L Quality Campus')
 
 @section('content')
-<div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Mis Calificaciones</h1>
-    <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm">&larr; Dashboard</a>
-</div>
+<header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 mb-8">
+    <h1 class="font-display text-4xl font-semibold text-gray-900">Mis calificaciones</h1>
 
-{{-- Resumen rápido --}}
-@if($respuestas->count() > 0)
-@php
-    $calificadas = $respuestas->where('estado', 'calificada')->whereIn('id', $oficialesIds);
-    $promedio    = $calificadas->count() > 0
-        ? round($calificadas->avg(fn($r) => $r->actividad->puntaje_maximo > 0
-            ? ($r->calificacion / $r->actividad->puntaje_maximo) * 100 : 0))
-        : 0;
-@endphp
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white p-5 rounded-lg shadow text-center">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Enviadas</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $respuestas->count() }}</p>
-    </div>
-    <div class="bg-white p-5 rounded-lg shadow text-center">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Calificadas</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $calificadas->count() }}</p>
-    </div>
-    <div class="bg-white p-5 rounded-lg shadow text-center">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Cursos</p>
-        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">{{ $porCurso->count() }}</p>
-    </div>
-    <div class="bg-white p-5 rounded-lg shadow text-center">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Promedio</p>
-        <p class="text-3xl font-bold mt-1 {{ $promedio >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">{{ $promedio }}%</p>
-    </div>
-</div>
-@endif
+    {{-- Resumen rápido --}}
+    @if($respuestas->count() > 0)
+    @php
+        $calificadas = $respuestas->where('estado', 'calificada')->whereIn('id', $oficialesIds);
+        $promedio    = $calificadas->count() > 0
+            ? round($calificadas->avg(fn($r) => $r->actividad->puntaje_maximo > 0
+                ? ($r->calificacion / $r->actividad->puntaje_maximo) * 100 : 0))
+            : 0;
+    @endphp
+    <dl class="flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-500">
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $respuestas->count() }}</dd><dt>enviadas</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $calificadas->count() }}</dd><dt>calificadas</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $porCurso->count() }}</dd><dt>{{ $porCurso->count() === 1 ? 'curso' : 'cursos' }}</dt></div>
+        <div><dd class="font-display text-2xl font-semibold tabular-nums {{ $promedio >= 60 ? 'text-dyl-orange-700' : 'text-gray-900' }}">{{ $promedio }}%</dd><dt>promedio</dt></div>
+    </dl>
+    @endif
+</header>
 
 {{-- Secciones por curso --}}
 @forelse($porCurso as $grupo)
-<div class="mb-8">
+@php
+    $grupoCalificadas = $grupo->respuestas->where('estado', 'calificada')->whereIn('id', $oficialesIds);
+    $promedioCurso    = $grupoCalificadas->count() > 0
+        ? round($grupoCalificadas->avg(fn($r) => $r->actividad->puntaje_maximo > 0
+            ? ($r->calificacion / $r->actividad->puntaje_maximo) * 100 : 0))
+        : null;
+@endphp
+<section class="card overflow-hidden mb-8" aria-labelledby="curso-{{ $grupo->curso->id }}">
     {{-- Encabezado del curso --}}
-    <div class="flex items-center gap-3 mb-3">
-        <div class="w-2 h-6 bg-dyl-orange-600 rounded-full flex-shrink-0"></div>
-        <h2 class="text-lg font-bold text-gray-900">{{ $grupo->curso->titulo }}</h2>
-        <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-            {{ $grupo->respuestas->count() }} {{ Str::plural('actividad', $grupo->respuestas->count()) }}
-        </span>
-        @php
-            $grupoCalificadas = $grupo->respuestas->where('estado', 'calificada')->whereIn('id', $oficialesIds);
-            $promedioCurso    = $grupoCalificadas->count() > 0
-                ? round($grupoCalificadas->avg(fn($r) => $r->actividad->puntaje_maximo > 0
-                    ? ($r->calificacion / $r->actividad->puntaje_maximo) * 100 : 0))
-                : null;
-        @endphp
+    <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 p-5 sm:p-6">
+        <div class="min-w-0">
+            <h2 id="curso-{{ $grupo->curso->id }}" class="font-display text-2xl font-semibold text-gray-900">{{ $grupo->curso->titulo }}</h2>
+            <p class="text-sm text-gray-500 mt-0.5">
+                {{ $grupo->respuestas->count() }} {{ Str::plural('actividad', $grupo->respuestas->count()) }}
+            </p>
+        </div>
         @if($promedioCurso !== null)
-        <span class="ml-auto text-sm font-semibold {{ $promedioCurso >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
-            Promedio: {{ $promedioCurso }}%
-        </span>
+        <p class="text-right">
+            <span class="block font-display text-4xl font-semibold tabular-nums {{ $promedioCurso >= 60 ? 'text-dyl-orange-700' : 'text-gray-900' }}">{{ $promedioCurso }}%</span>
+            <span class="text-sm text-gray-500">promedio</span>
+        </p>
         @endif
     </div>
 
@@ -64,14 +53,14 @@
         @include('calificaciones.partials.resumen-nota-curso', ['nota' => $notasPorCurso[$grupo->curso->id]])
     @endisset
 
-    <div class="bg-white rounded-lg shadow overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
+    <div class="overflow-x-auto border-t border-gray-100">
+        <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actividad</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Enviado</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Calificación</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Retroalimentación</th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actividad</th>
+                    <th scope="col" class="hidden sm:table-cell px-6 py-3 text-left text-sm font-medium text-gray-500">Enviado</th>
+                    <th scope="col" class="px-6 py-3 text-center text-sm font-medium text-gray-500">Calificación</th>
+                    <th scope="col" class="hidden md:table-cell px-6 py-3 text-left text-sm font-medium text-gray-500">Retroalimentación</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -79,16 +68,24 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4">
                         <p class="text-sm font-medium text-gray-900">{{ $respuesta->actividad->tituloCompleto() }}</p>
-                        <span class="inline-block mt-1 px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded">
-                            {{ ucfirst($respuesta->actividad->tipo) }}
-                        </span>
-                        @if(in_array($respuesta->id, $oficialesIds) && $grupo->respuestas->where('actividad_id', $respuesta->actividad_id)->count() > 1)
-                            <span class="inline-block mt-1 ml-1 px-2 py-0.5 bg-dyl-orange-100 text-dyl-orange-700 text-xs rounded font-medium">Cuenta para tu nota</span>
+                        <p class="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                            <span>{{ ucfirst($respuesta->actividad->tipo) }}</span>
+                            @if(in_array($respuesta->id, $oficialesIds) && $grupo->respuestas->where('actividad_id', $respuesta->actividad_id)->count() > 1)
+                                <span class="badge-success">Cuenta para tu nota</span>
+                            @endif
+                        </p>
+                        {{-- En pantallas chicas la fecha y el comentario viven aquí (sus columnas se ocultan) --}}
+                        <p class="sm:hidden mt-1 text-xs text-gray-500">{{ $respuesta->fecha_envio->format('d/m/Y H:i') }}</p>
+                        @if($respuesta->feedback)
+                            <details class="md:hidden mt-2">
+                                <summary class="cursor-pointer text-dyl-orange-700 text-xs">Ver comentario</summary>
+                                <p class="mt-2 text-gray-700 bg-dyl-graphite-50 p-3 rounded text-xs whitespace-pre-wrap leading-relaxed">{{ $respuesta->feedback }}</p>
+                            </details>
                         @endif
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
                         <p class="text-sm text-gray-700">{{ $respuesta->fecha_envio->format('d/m/Y') }}</p>
-                        <p class="text-xs text-gray-400">{{ $respuesta->fecha_envio->format('H:i') }}</p>
+                        <p class="text-xs text-gray-500">{{ $respuesta->fecha_envio->format('H:i') }}</p>
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($respuesta->estado === 'calificada')
@@ -97,19 +94,19 @@
                                 $pct = $max > 0 ? round(($respuesta->calificacion / $max) * 100) : 0;
                             @endphp
                             <div class="flex flex-col items-center">
-                                <span class="text-xl font-bold {{ $pct >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
+                                <span class="font-display text-2xl font-semibold tabular-nums {{ $pct >= 60 ? 'text-dyl-orange-700' : 'text-gray-900' }}">
                                     {{ number_format($respuesta->calificacion, 2) }}
-                                    <span class="text-sm text-gray-400 font-normal">/ {{ number_format($max, 2) }}</span>
+                                    <span class="text-sm text-gray-500 font-sans font-normal">/ {{ number_format($max, 2) }}</span>
                                 </span>
-                                <span class="text-xs {{ $pct >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">{{ $pct }}%</span>
+                                <span class="text-xs text-gray-500 tabular-nums">{{ $pct }}%</span>
                             </div>
                         @elseif($respuesta->estado === 'en_revision')
-                            <span class="px-2 py-1 bg-dyl-graphite-100 text-dyl-graphite-600 text-xs rounded-full font-medium">En revisión</span>
+                            <span class="badge-info">En revisión</span>
                         @else
-                            <span class="px-2 py-1 bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold text-xs rounded-full">Pendiente</span>
+                            <span class="badge-warning">Pendiente</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                    <td class="hidden md:table-cell px-6 py-4 text-sm text-gray-700 max-w-xs">
                         @if($respuesta->feedback)
                             <details class="cursor-pointer">
                                 <summary class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">Ver comentario</summary>
@@ -124,11 +121,11 @@
             </tbody>
         </table>
     </div>
-</div>
+</section>
 @empty
-<div class="bg-white rounded-lg shadow p-16 text-center text-gray-500">
+<div class="card p-16 text-center text-gray-500">
     Todavía no has enviado ninguna actividad.
-    <a href="{{ route('cursos.index') }}" class="text-dyl-orange-700 hover:underline ml-1">Ver cursos disponibles</a>
+    <a href="{{ route('cursos.index') }}" class="text-dyl-orange-700 font-medium hover:underline ml-1">Ver cursos disponibles</a>
 </div>
 @endforelse
 @endsection
