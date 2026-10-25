@@ -4,115 +4,30 @@
 @section('content')
 
 {{-- Hero del curso --}}
-<div class="bg-white rounded-xl shadow overflow-hidden mb-8">
-    {{-- Imagen de portada o gradiente --}}
-    <div class="h-40 sm:h-56 relative
-        {{ $curso->imagen_portada ? '' : 'bg-gradient-to-br from-dyl-orange-500 to-dyl-orange-700' }}">
+<header class="card overflow-hidden mb-8">
+    <div class="h-40 sm:h-56 relative">
         @if($curso->imagen_portada)
-            <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="{{ $curso->titulo }}"
-                 class="w-full h-full object-cover">
+            <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="" class="absolute inset-0 w-full h-full object-cover">
+        @else
+            <x-portada-curso :curso="$curso" class="absolute inset-0"/>
         @endif
-        <div class="absolute inset-0 bg-black/30 flex items-end p-6">
-            <span class="px-3 py-1 rounded-full text-xs font-medium
-                @if($curso->estado === 'publicado') bg-dyl-orange-700 text-white
-                @elseif($curso->estado === 'borrador') bg-dyl-graphite-200 text-dyl-graphite-900
-                @else bg-dyl-graphite-600 text-white @endif">
-                {{ ucfirst($curso->estado) }}
-            </span>
-        </div>
     </div>
 
     <div class="p-6 sm:p-8">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-            <div class="flex-1">
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{{ $curso->titulo }}</h1>
-                                @include('components.descripcion-render', ['slot' => $curso->descripcion])
-                <div class="flex flex-wrap gap-4 text-sm text-gray-500">
-                    <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        {{ $curso->duracion_horas }} horas
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        {{ $curso->creador->name }}
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                        {{ $totalLecciones }} lecciones
-                    </span>
-                </div>
-            </div>
-
-            {{-- Panel de acción derecha --}}
-            <div class="sm:w-56 flex-shrink-0">
-                @if(auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
-                    {{-- Instructor: botón editar --}}
-                    <a href="{{ route('cursos.edit', $curso) }}"
-                       class="block w-full text-center bg-dyl-orange-700 text-white px-6 py-3 rounded-lg hover:bg-dyl-orange-800 font-medium mb-2">
-                        Editar curso
-                    </a>
-                    <a href="{{ route('cursos.inscripcion-masiva', $curso) }}"
-                       class="block w-full text-center bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 font-medium text-sm">
-                        Inscribir estudiantes
-                    </a>
-                @elseif($estaInscrito)
-                    {{-- Inscrito: mostrar progreso y continuar --}}
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <p class="text-xs text-gray-500 mb-1">Tu progreso</p>
-                        <div class="flex justify-between text-sm font-medium mb-1">
-                            <span>{{ $completadasIds->count() }}/{{ $totalLecciones }} lecciones</span>
-                            <span class="{{ $porcentaje === 100 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">{{ $porcentaje }}%</span>
-                        </div>
-                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden mb-3">
-                            <div class="h-full rounded-full transition-all bg-dyl-orange-600"
-                                 style="width: {{ $porcentaje }}%"></div>
-                        </div>
-                        @php
-                            $primeraLeccionSinCompletar = $modulos->flatMap->lecciones->first(
-                                fn($l) => !$completadasIds->contains($l->id)
-                            );
-                        @endphp
-                        @if($primeraLeccionSinCompletar)
-                            <a href="{{ route('lecciones.show', $primeraLeccionSinCompletar) }}"
-                               class="block w-full text-center bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
-                                Continuar &rarr;
-                            </a>
-                        @else
-                            <div class="text-center text-dyl-orange-700 font-medium text-sm mb-2">
-                                &#10003; Curso completado
-                            </div>
-                            @php
-                                $certExistente = \App\Models\Certificado::where('user_id', auth()->id())
-                                    ->where('curso_id', $curso->id)->first();
-                            @endphp
-                            @if($certExistente)
-                                <a href="{{ route('certificados.show', $certExistente) }}"
-                                   class="block w-full text-center bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
-                                    <x-icon name="certificado" class="w-4 h-4 inline -mt-0.5 mr-1"/>Ver Certificado
-                                </a>
-                            @else
-                                <div class="text-center text-gray-600 text-sm px-4 py-3 bg-gray-50 rounded-lg">
-                                    Tu certificado está pendiente de revisión del instructor.
-                                </div>
-                            @endif
-                        @endif
-                    </div>
-                @else
-                    {{-- No inscrito: el acceso lo otorga un administrador o el instructor del curso --}}
-                    <div class="w-full text-center bg-gray-100 text-gray-600 px-4 py-3 rounded-lg text-sm">
-                        Aún no tienes acceso a este curso. Contacta a tu administrador o instructor para que te inscriba.
-                    </div>
-                @endif
-            </div>
+        @if($curso->estado !== 'publicado')
+            <span class="{{ $curso->estado === 'borrador' ? 'badge-warning' : 'badge-info' }} mb-3">{{ ucfirst($curso->estado) }}</span>
+        @endif
+        <h1 class="font-display text-3xl sm:text-4xl font-semibold text-gray-900 mb-3 break-words">{{ $curso->titulo }}</h1>
+        <div class="max-w-3xl">
+            @include('components.descripcion-render', ['slot' => $curso->descripcion])
         </div>
+        <dl class="flex flex-wrap gap-x-10 gap-y-3 mt-5 text-sm">
+            <div><dt class="text-gray-500">Duración</dt><dd class="font-medium text-gray-900">{{ $curso->duracion_horas }} horas</dd></div>
+            <div><dt class="text-gray-500">Instructor</dt><dd class="font-medium text-gray-900">{{ $curso->creador->name }}</dd></div>
+            <div><dt class="text-gray-500">Contenido</dt><dd class="font-medium text-gray-900">{{ $totalLecciones }} {{ $totalLecciones === 1 ? 'lección' : 'lecciones' }}</dd></div>
+        </dl>
     </div>
-</div>
+</header>
 
 {{-- Contenido del curso --}}
 @php
@@ -120,8 +35,64 @@
     $modoEdicion = $puedeEditar && session('modo_edicion', false);
 @endphp
 
+<div class="grid lg:grid-cols-3 gap-8 items-start">
+
+{{-- Panel de acción: primero en móvil, columna fija a la derecha en escritorio --}}
+<aside class="lg:col-span-1 lg:order-2 lg:sticky lg:top-6 min-w-0 space-y-4" aria-label="Tu avance en el curso">
+    <div class="card p-5">
+        @if(auth()->user()->esAdmin() || auth()->id() === $curso->created_by)
+            {{-- Instructor: botón editar --}}
+            <a href="{{ route('cursos.edit', $curso) }}" class="btn-primary w-full mb-2">Editar curso</a>
+            <a href="{{ route('cursos.inscripcion-masiva', $curso) }}" class="btn-outline w-full">Inscribir estudiantes</a>
+        @elseif($estaInscrito)
+            {{-- Inscrito: progreso y continuar --}}
+            <p class="text-sm text-gray-500">Tu progreso</p>
+            <p class="font-display text-4xl font-semibold tabular-nums {{ $porcentaje === 100 ? 'text-dyl-orange-700' : 'text-gray-900' }}">{{ $porcentaje }}%</p>
+            <div class="progress-bar my-2" role="progressbar" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso del curso">
+                <div class="progress-blue" style="width: {{ $porcentaje }}%"></div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">{{ $completadasIds->count() }}/{{ $totalLecciones }} lecciones</p>
+            @php
+                $primeraLeccionSinCompletar = $modulos->flatMap->lecciones->first(
+                    fn($l) => !$completadasIds->contains($l->id)
+                );
+            @endphp
+            @if($primeraLeccionSinCompletar)
+                <a href="{{ route('lecciones.show', $primeraLeccionSinCompletar) }}" class="btn-primary w-full">Continuar &rarr;</a>
+            @else
+                <div class="text-center text-dyl-orange-700 font-medium text-sm mb-3">
+                    &#10003; Curso completado
+                </div>
+                @php
+                    $certExistente = \App\Models\Certificado::where('user_id', auth()->id())
+                        ->where('curso_id', $curso->id)->first();
+                @endphp
+                @if($certExistente)
+                    <a href="{{ route('certificados.show', $certExistente) }}" class="btn-primary w-full">
+                        <x-icon name="certificado" class="w-4 h-4"/>Ver Certificado
+                    </a>
+                @else
+                    <div class="text-center text-gray-600 text-sm px-4 py-3 bg-gray-50 rounded-lg">
+                        Tu certificado está pendiente de revisión del instructor.
+                    </div>
+                @endif
+            @endif
+        @else
+            {{-- No inscrito: el acceso lo otorga un administrador o el instructor del curso --}}
+            <p class="text-sm text-gray-600">Aún no tienes acceso a este curso. Contacta a tu administrador o instructor para que te inscriba.</p>
+        @endif
+    </div>
+
+    <div class="flex gap-3">
+        <a href="{{ route('anuncios.index', $curso) }}" class="btn-outline flex-1">Anuncios</a>
+        <a href="{{ route('foros.index', $curso) }}" class="btn-outline flex-1">Foros</a>
+    </div>
+</aside>
+
+<div class="lg:col-span-2 lg:order-1 min-w-0">
+
 <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-    <h2 class="text-xl font-bold text-gray-900">Contenido del curso</h2>
+    <h2 class="font-display text-2xl font-semibold text-gray-900">Contenido del curso</h2>
     @if($puedeEditar)
         <form method="POST" action="{{ route('cursos.modo-edicion', $curso) }}">
             @csrf
@@ -146,13 +117,13 @@
 @endif
 
 @forelse($modulos as $modulo)
-    <div class="bg-white rounded-xl shadow mb-4 overflow-hidden" x-data="{ open: true }">
+    <div class="card mb-4 overflow-hidden" x-data="{ open: true }">
 
         {{-- Cabecera del módulo --}}
-        <button @click="open = !open"
+        <button @click="open = !open" :aria-expanded="open"
                 class="w-full flex justify-between items-center p-5 text-left hover:bg-gray-50 transition-colors">
-            <div>
-                <h3 class="text-base font-bold text-gray-900">
+            <div class="min-w-0">
+                <h3 class="font-display text-lg font-semibold text-gray-900">
                     {{ $modulo->orden + 1 }}. {{ $modulo->titulo }}
                 </h3>
                 @if($modulo->descripcion)
@@ -161,10 +132,10 @@
                     </div>
                 @endif
             </div>
-            <div class="flex items-center gap-3 ml-4">
-                <span class="text-xs text-gray-400">{{ $modulo->lecciones->count() }} lecciones</span>
+            <div class="flex items-center gap-3 ml-4 shrink-0">
+                <span class="text-xs text-gray-500">{{ $modulo->lecciones->count() }} {{ $modulo->lecciones->count() === 1 ? 'lección' : 'lecciones' }}</span>
                 <svg class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"
-                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </div>
@@ -185,11 +156,11 @@
                     {{-- Icono completado --}}
                     <span class="mr-3 flex-shrink-0">
                         @if($done)
-                            <svg class="w-5 h-5 text-dyl-orange-700" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-dyl-orange-700" fill="currentColor" viewBox="0 0 20 20" role="img" aria-label="Completada">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                         @else
-                            <svg class="w-5 h-5 text-gray-300 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-gray-300 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
@@ -208,7 +179,7 @@
 
                         {{-- Actividades de la lección --}}
                         @if($leccion->actividades->isNotEmpty())
-                            <span class="ml-2 text-xs text-gray-400">
+                            <span class="ml-2 text-xs text-gray-500">
                                 {{ $leccion->actividades->count() }} actividad(es)
                             </span>
                         @endif
@@ -224,29 +195,18 @@
                         </div>
                     @endif
 
-                    <span class="text-xs text-gray-400 ml-3 flex-shrink-0">{{ $leccion->duracion_minutos }} min</span>
+                    <span class="text-xs text-gray-500 ml-3 flex-shrink-0 tabular-nums">{{ $leccion->duracion_minutos }} min</span>
                 </div>
             @empty
-                <p class="px-5 py-3 text-sm text-gray-400">Sin lecciones en este módulo</p>
+                <p class="px-5 py-3 text-sm text-gray-500">Sin lecciones en este módulo</p>
             @endforelse
         </div>
     </div>
 @empty
-    <div class="text-center py-16 text-gray-500">Este curso no tiene módulos aún.</div>
+    <div class="card text-center py-16 text-gray-500">Este curso no tiene módulos aún.</div>
 @endforelse
 
-{{-- Foros del curso --}}
-<div class="mt-6 flex flex-wrap gap-3 justify-center">
-    <a href="{{ route('anuncios.index', $curso) }}"
-       class="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 text-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
-        Anuncios
-    </a>
-    <a href="{{ route('foros.index', $curso) }}"
-       class="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 text-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
-        Foros
-    </a>
+</div>
 </div>
 
 @include('cursos.partials.competencias', ['curso' => $curso])
