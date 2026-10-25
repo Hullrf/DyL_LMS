@@ -1,7 +1,7 @@
 @if($nota['filas']->isNotEmpty())
-<details class="mb-4 rounded-lg border border-gray-200 bg-white">
-    <summary class="cursor-pointer px-4 py-3 text-sm font-medium text-dyl-orange-700">Cómo se calcula tu nota</summary>
-    <div class="px-4 pb-4">
+<details class="border-t border-gray-100">
+    <summary class="cursor-pointer px-5 sm:px-6 py-3 text-sm font-medium text-dyl-orange-700">Cómo se calcula tu nota</summary>
+    <div class="px-5 sm:px-6 pb-4">
         <p class="text-xs text-gray-500 mb-3">
             @if($nota['modo'] === 'ponderado')
                 Cada actividad pesa lo que definió tu instructor.
@@ -14,7 +14,7 @@
         @endif
         <div class="overflow-x-auto"><table class="min-w-full text-sm">
             <thead>
-                <tr class="text-left text-xs uppercase text-gray-500">
+                <tr class="text-left text-xs text-gray-500">
                     <th scope="col" class="py-1 pr-4">Actividad</th>
                     <th scope="col" class="py-1 pr-4 text-right">Peso</th>
                     <th scope="col" class="py-1 pr-4 text-right">Nota</th>
