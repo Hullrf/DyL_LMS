@@ -18,8 +18,9 @@
     {{-- ============================================================
          SIDEBAR — índice del curso
     ============================================================ --}}
-    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-           class="lg:translate-x-0 lg:relative lg:z-auto flex-col w-72 xl:w-80 bg-white border-r border-gray-200 flex-shrink-0
+    {{-- Nace cerrado en móvil (-translate-x-full estático) para que no parpadee antes de que Alpine cargue --}}
+    <aside :class="sidebarOpen && '!translate-x-0'"
+           class="-translate-x-full lg:translate-x-0 lg:relative lg:z-auto flex-col w-72 xl:w-80 bg-white border-r border-gray-200 flex-shrink-0
                   fixed inset-y-0 left-0 z-50 lg:sticky lg:top-14 h-[calc(100vh-3.5rem)] overflow-y-auto
                   transition-transform duration-300 flex">
 
