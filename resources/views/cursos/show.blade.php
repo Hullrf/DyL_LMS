@@ -18,8 +18,14 @@
             <span class="{{ $curso->estado === 'borrador' ? 'badge-warning' : 'badge-info' }} mb-3">{{ ucfirst($curso->estado) }}</span>
         @endif
         <h1 class="font-display text-3xl sm:text-4xl font-semibold text-gray-900 mb-3 break-words">{{ $curso->titulo }}</h1>
-        <div class="max-w-3xl">
-            @include('components.descripcion-render', ['slot' => $curso->descripcion])
+        {{-- Descripción larga: se recorta para que el avance y "Continuar" no queden fuera de la vista --}}
+        <div class="max-w-3xl" x-data="{ abierta: false, larga: false }" x-init="$nextTick(() => larga = $refs.desc.scrollHeight > 170)">
+            <div x-ref="desc" :class="larga && !abierta ? 'max-h-40 overflow-hidden' : ''">
+                @include('components.descripcion-render', ['slot' => $curso->descripcion])
+            </div>
+            <button type="button" x-show="larga" x-cloak @click="abierta = !abierta" :aria-expanded="abierta"
+                    class="mt-2 text-sm font-medium text-dyl-orange-700 hover:underline"
+                    x-text="abierta ? 'Ver menos' : 'Ver descripción completa'"></button>
         </div>
         <dl class="flex flex-wrap gap-x-10 gap-y-3 mt-5 text-sm">
             <div><dt class="text-gray-500">Duración</dt><dd class="font-medium text-gray-900">{{ $curso->duracion_horas }} horas</dd></div>
