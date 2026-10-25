@@ -26,6 +26,7 @@ export default {
             placeholderColor: { gray: escalaGris('tx') },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                display: ['Newsreader', 'Georgia', ...defaultTheme.fontFamily.serif],
             },
             colors: {
                 dyl: {

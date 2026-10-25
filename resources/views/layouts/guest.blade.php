@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>{{ config('app.name', 'D&amp;L Quality Campus') }}</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700|newsreader:500,600,700&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script>
     (function () {
@@ -53,28 +53,21 @@
                 </a>
 
                 {{-- Mensaje central --}}
-                <div class="relative z-10">
+                <div class="relative z-10 max-w-md">
                     <blockquote>
-                        <p class="text-2xl font-semibold text-white leading-snug mb-4">
-                            "La calidad nunca es un accidente;<br>
-                            siempre es el resultado de un<br>
-                            esfuerzo inteligente."
+                        <p class="font-display text-4xl font-medium text-white leading-tight mb-5">
+                            La calidad nunca es un accidente; siempre es el resultado de un esfuerzo inteligente.
                         </p>
-                        <footer class="text-white/70 text-sm">— John Ruskin</footer>
+                        <footer class="text-white/70 text-sm">John Ruskin</footer>
                     </blockquote>
                 </div>
 
-                {{-- Features --}}
-                <div class="space-y-3 relative z-10">
+                {{-- Qué ofrece el campus --}}
+                <ul class="relative z-10 text-white/80 text-sm divide-y divide-white/15 border-y border-white/15 max-w-md">
                     @foreach(['Cursos de normas ISO y gestión de calidad', 'Certificados verificables al completar', 'Seguimiento de progreso en tiempo real'] as $feat)
-                    <div class="flex items-center gap-3 text-white/70 text-sm">
-                        <svg class="w-5 h-5 text-dyl-orange-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        {{ $feat }}
-                    </div>
+                        <li class="py-3">{{ $feat }}</li>
                     @endforeach
-                </div>
+                </ul>
             </div>
 
             {{-- Panel derecho: formulario --}}

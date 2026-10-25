@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">Iniciar sesión</h1>
-        <p class="text-gray-500 text-sm mt-1">Accede a tu cuenta para continuar aprendiendo</p>
+        <h1 class="font-display text-4xl font-semibold text-gray-900">Iniciar sesión</h1>
+        <p class="text-gray-500 mt-2">Entra para retomar tus cursos.</p>
     </div>
 
     <x-auth-session-status class="mb-4" :status="session('status')" />

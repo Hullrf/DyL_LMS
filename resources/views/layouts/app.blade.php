@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700|newsreader:500,600,700&display=swap" rel="stylesheet" />
     {{-- Bloqueante a propósito: debe correr antes de que el <aside> se pinte, para que si el
          sidebar estaba colapsado no "nazca" expandido y luego salte a 72px con animación al
          cargar Alpine (ver .dyl-sb-collapsed en layouts/partials/sidebar.blade.php). --}}
