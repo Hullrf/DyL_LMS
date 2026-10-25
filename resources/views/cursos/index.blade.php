@@ -39,9 +39,9 @@
                     <x-portada-curso :curso="$curso"/>
                 @endif
             </a>
-            <div class="min-w-0 flex-1 basis-full sm:basis-auto">
+            <div class="min-w-0 basis-full sm:basis-96 sm:grow-0">
                 <h3 class="font-display text-lg font-semibold text-gray-900 truncate">{{ $curso->titulo }}</h3>
-                <div class="mt-1.5 max-w-sm">
+                <div class="mt-1.5">
                     @if($inscripcion->estado === 'completado')
                         <span class="badge-success mb-2">Completado</span>
                     @endif
