@@ -427,7 +427,10 @@ class CalificacionController extends Controller
             ->where('user_id', Auth::id())
             ->whereHas('actividad')
             ->orderBy('fecha_envio', 'desc')
-            ->get();
+            ->get()
+            // Lección, módulo o curso eliminados (soft delete) dejan la cadena en null: esas respuestas no se listan.
+            ->filter(fn($r) => $r->actividad->leccion?->modulo?->curso)
+            ->values();
 
         $oficialesIds = $this->calificacionService
             ->respuestasOficiales($respuestas->where('estado', 'calificada'))

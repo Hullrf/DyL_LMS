@@ -42,6 +42,24 @@ class MisCalificacionesPonderadasTest extends TestCase
         $this->assertMatchesRegularExpression('/Pendiente X.*?—/s', $m[0] ?? '');
     }
 
+    public function test_respuestas_de_un_curso_eliminado_no_rompen_la_pagina(): void
+    {
+        $u = $this->estudiante();
+
+        $vigente = $this->cursoInscrito($u);
+        $aVigente = $this->actividadEn($vigente, ['titulo' => 'Actividad vigente', 'puntaje_maximo' => 5]);
+        $this->calificar($u, $aVigente, 5);
+
+        $eliminado = $this->cursoInscrito($u);
+        $aEliminada = $this->actividadEn($eliminado, ['titulo' => 'Actividad de curso borrado', 'puntaje_maximo' => 5]);
+        $this->calificar($u, $aEliminada, 4);
+        $eliminado->delete();
+
+        $this->actingAs($u)->get(route('calificaciones.mis'))->assertOk()
+            ->assertSee('Actividad vigente')
+            ->assertDontSee('Actividad de curso borrado');
+    }
+
     public function test_mensaje_cuando_ya_alcanzo_y_cuando_no_es_alcanzable(): void
     {
         $u = $this->estudiante();
