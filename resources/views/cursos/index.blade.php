@@ -21,45 +21,47 @@
     @endif
 </div>
 
-{{-- Mis cursos: lista compacta (el dashboard ya los muestra en grande) --}}
+{{-- Mis cursos --}}
 @if($inscripciones->isNotEmpty())
 <section class="mb-12" aria-labelledby="mis-cursos-titulo">
     <h2 id="mis-cursos-titulo" class="font-display text-2xl font-semibold text-gray-900 mb-4">
         Mis cursos <span class="text-base font-sans font-normal text-gray-500 tabular-nums">({{ $inscripciones->count() }})</span>
     </h2>
 
-    <ul class="card divide-y divide-gray-100">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($inscripciones as $inscripcion)
         @php $curso = $inscripcion->curso; @endphp
-        <li class="flex flex-wrap sm:flex-nowrap items-center gap-4 p-4">
-            <a href="{{ route('cursos.show', $curso) }}" tabindex="-1" aria-hidden="true" class="hidden sm:block w-28 h-16 rounded-lg overflow-hidden shrink-0">
+        <article class="card-hover overflow-hidden flex flex-col">
+            <a href="{{ route('cursos.show', $curso) }}" tabindex="-1" aria-hidden="true" class="block h-36">
                 @if($curso->imagen_portada)
                     <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="" class="w-full h-full object-cover">
                 @else
                     <x-portada-curso :curso="$curso"/>
                 @endif
             </a>
-            <div class="min-w-0 basis-full sm:basis-96 sm:grow-0">
-                <h3 class="font-display text-lg font-semibold text-gray-900 truncate">{{ $curso->titulo }}</h3>
-                <div class="mt-1.5">
-                    @if($inscripcion->estado === 'completado')
-                        <span class="badge-success mb-2">Completado</span>
+
+            <div class="p-5 flex flex-col flex-1">
+                <h3 class="font-display text-xl font-semibold text-gray-900 line-clamp-2 mb-2">
+                    <a href="{{ route('cursos.show', $curso) }}" class="hover:text-dyl-orange-700">{{ $curso->titulo }}</a>
+                </h3>
+                @if($inscripcion->estado === 'completado')
+                    <span class="badge-success self-start mb-2">Completado</span>
+                @endif
+                @include('cursos._resumen', ['curso' => $curso])
+                <p class="text-xs text-gray-500 flex-1 mb-4">{{ $curso->duracion_horas }} h</p>
+
+                <div class="flex items-center gap-2 mt-auto">
+                    <a href="{{ route('cursos.show', $curso) }}" class="btn-primary flex-1">
+                        {{ $inscripcion->estado === 'completado' ? 'Repasar' : 'Continuar' }}
+                    </a>
+                    @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
+                        <a href="{{ route('cursos.edit', $curso) }}" class="btn-ghost">Editar</a>
                     @endif
-                    @include('cursos._resumen', ['curso' => $curso])
-                    <p class="text-xs text-gray-500">{{ $curso->duracion_horas }} h</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
-                @if($curso->created_by === auth()->id() || auth()->user()->esAdmin())
-                    <a href="{{ route('cursos.edit', $curso) }}" class="btn-ghost btn-sm">Editar</a>
-                @endif
-                <a href="{{ route('cursos.show', $curso) }}" class="btn-primary btn-sm">
-                    {{ $inscripcion->estado === 'completado' ? 'Repasar' : 'Continuar' }}
-                </a>
-            </div>
-        </li>
+        </article>
         @endforeach
-    </ul>
+    </div>
 </section>
 @endif
 
