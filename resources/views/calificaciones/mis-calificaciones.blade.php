@@ -96,7 +96,7 @@
                             <div class="flex flex-col items-center">
                                 <span class="font-display text-2xl font-semibold tabular-nums {{ $pct >= 60 ? 'text-dyl-orange-700' : 'text-gray-900' }}">
                                     {{ number_format($respuesta->calificacion, 2) }}
-                                    <span class="text-sm text-gray-500 font-sans font-normal">/ {{ number_format($max, 2) }}</span>
+                                    <span class="text-sm text-gray-500 font-sans font-normal whitespace-nowrap">/ {{ number_format($max, 2) }}</span>
                                 </span>
                                 <span class="text-xs text-gray-500 tabular-nums">{{ $pct }}%</span>
                             </div>

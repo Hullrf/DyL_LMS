@@ -4,15 +4,15 @@
 @section('content')
 <div class="max-w-3xl mx-auto">
 
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-wrap justify-between items-end gap-4 mb-8">
         <div>
             <a href="{{ route('certificados.mis') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Mis certificados</a>
-            <h1 class="text-2xl font-bold text-gray-900 mt-1">Certificado de Finalización</h1>
+            <h1 class="font-display text-3xl sm:text-4xl font-semibold text-gray-900 mt-1">Certificado de finalización</h1>
+            <p class="text-gray-600 mt-1">{{ $certificado->curso->titulo }}</p>
         </div>
-        <div class="flex items-center gap-2">
-            <a href="{{ route('certificados.descargar', $certificado) }}"
-               class="flex items-center gap-2 bg-dyl-orange-700 text-white px-5 py-2.5 rounded-lg hover:bg-dyl-orange-800 font-medium">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('certificados.descargar', $certificado) }}" class="btn-primary btn-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
                 Descargar PDF
@@ -21,10 +21,7 @@
                 <form method="POST" action="{{ route('certificados.regenerar', $certificado) }}"
                       onsubmit="return confirm('¿Regenerar el PDF con la plantilla actual?')">
                     @csrf
-                    <button type="submit"
-                            class="flex items-center gap-2 border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 font-medium">
-                        Regenerar PDF
-                    </button>
+                    <button type="submit" class="btn-outline btn-lg">Regenerar PDF</button>
                 </form>
             @endif
         </div>
@@ -32,7 +29,7 @@
 
     {{-- Previsualización: el PDF real, no un mockup aparte --}}
     @if($certificado->archivo_pdf && Storage::disk('public')->exists($certificado->archivo_pdf))
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border-2 border-dyl-orange-300">
+        <div class="card overflow-hidden mb-6">
             <iframe
                 src="{{ route('certificados.previsualizar', $certificado) }}?v={{ $certificado->updated_at?->timestamp }}"
                 class="w-full"
@@ -41,26 +38,28 @@
             ></iframe>
         </div>
     @else
-        <div class="bg-gray-50 rounded-2xl p-6 mb-6 border-2 border-dashed border-gray-300 text-center text-gray-500">
+        <div class="rounded-2xl p-6 mb-6 border-2 border-dashed border-gray-300 text-center text-gray-500">
             El certificado se está generando o no está disponible en este momento.
         </div>
     @endif
 
     {{-- Datos de verificación --}}
-    <div class="bg-gray-50 rounded-xl p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+    <dl class="card p-5 flex flex-col gap-4">
         <div>
-            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">N° de Certificado</p>
-            <p class="font-mono font-bold text-gray-800">{{ $certificado->numero_certificado }}</p>
+            <dt class="text-sm text-gray-500 mb-1">Número de certificado</dt>
+            <dd class="font-mono font-semibold text-gray-900">{{ $certificado->numero_certificado }}</dd>
         </div>
-        <div class="text-right">
-            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Enlace de verificación</p>
-            <a href="{{ route('certificados.verificar', $certificado->numero_certificado) }}"
-               target="_blank" rel="noopener noreferrer"
-               class="text-dyl-orange-700 hover:underline text-sm font-mono break-all">
-                {{ url('/verificar-certificado/' . $certificado->numero_certificado) }}
-            </a>
+        <div class="min-w-0">
+            <dt class="text-sm text-gray-500 mb-1">Enlace de verificación</dt>
+            <dd>
+                <a href="{{ route('certificados.verificar', $certificado->numero_certificado) }}"
+                   target="_blank" rel="noopener noreferrer"
+                   class="text-dyl-orange-700 hover:underline text-sm font-mono break-all">
+                    {{ url('/verificar-certificado/' . $certificado->numero_certificado) }}
+                </a>
+            </dd>
         </div>
-    </div>
+    </dl>
 
 </div>
 @endsection
