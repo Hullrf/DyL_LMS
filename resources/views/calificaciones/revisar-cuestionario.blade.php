@@ -12,8 +12,8 @@
     <div class="card card-body mb-6">
         <div class="flex items-start justify-between gap-4">
             <div>
-                <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Revisión de cuestionario</p>
-                <h1 class="text-xl font-bold text-gray-900">{{ $actividad->titulo }}</h1>
+                <p class="text-sm text-gray-500 mb-1">Revisión de cuestionario</p>
+                <h1 class="font-display text-3xl font-semibold text-gray-900 break-words">{{ $actividad->titulo }}</h1>
                 <p class="text-sm text-gray-500 mt-1">
                     {{ $respuesta->usuario->name }} — {{ $respuesta->usuario->email }}
                 </p>
@@ -22,8 +22,8 @@
                 </p>
             </div>
             <div class="text-right flex-shrink-0">
-                <p class="text-2xl font-bold text-gray-900">{{ $actividad->puntaje_maximo }}</p>
-                <p class="text-xs text-gray-400">pts totales</p>
+                <p class="font-display text-4xl font-semibold text-gray-900 tabular-nums">{{ $actividad->puntaje_maximo }}</p>
+                <p class="text-xs text-gray-500">pts totales</p>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
                 {{-- ===== RESPUESTA CORTA: requiere decisión ===== --}}
                 @if($esCorta)
                     <div class="mb-4">
-                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Respuesta del estudiante</p>
+                        <p class="text-sm text-gray-500 mb-1">Respuesta del estudiante</p>
                         <div class="bg-dyl-graphite-50 border border-dyl-graphite-200 rounded-lg px-4 py-3 text-sm text-gray-800">
                             {{ $respuestaEstudiante ?? '— Sin respuesta —' }}
                         </div>

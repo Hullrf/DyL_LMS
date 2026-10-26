@@ -22,5 +22,5 @@
         @endif
     </form>
 @else
-    <span class="text-gray-300">—</span>
+    <span class="text-gray-500" aria-label="Sin certificado">—</span>
 @endif

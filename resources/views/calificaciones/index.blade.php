@@ -3,56 +3,55 @@
 @section('breadcrumbs'){{ Breadcrumbs::render('calificaciones.index') }}@endsection
 @section('content')
 
-<div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Calificaciones</h1>
-    <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm">&#8592; Dashboard</a>
-</div>
+<header class="mb-8">
+    <h1 class="font-display text-4xl font-semibold text-gray-900">Calificaciones</h1>
+    <p class="mt-1 text-gray-600">Elige un curso para revisar y calificar las entregas.</p>
+</header>
 
-<div class="bg-white rounded-xl shadow mb-8">
-    <div class="px-6 py-4 border-b border-gray-100">
-        <h2 class="text-lg font-bold text-gray-900">Elige un curso para calificar</h2>
-    </div>
-    <div class="overflow-x-auto">
+<section class="card overflow-hidden mb-8" aria-labelledby="cursos-titulo">
+    <h2 id="cursos-titulo" class="sr-only">Cursos</h2>
+    {{-- relative: el <span class="sr-only"> del encabezado es absoluto y, sin esto, ensancharía la página en móvil --}}
+    <div class="relative overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Inscritos</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Pendientes</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acción</th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-gray-500">Curso</th>
+                    <th scope="col" class="px-6 py-3 text-center text-sm font-medium text-gray-500">Inscritos</th>
+                    <th scope="col" class="px-6 py-3 text-center text-sm font-medium text-gray-500">Pendientes</th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-gray-500"><span class="sr-only">Acción</span></th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50">
+            <tbody class="divide-y divide-gray-100">
                 @forelse($cursos as $curso)
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4">
-                        <p class="text-sm font-medium text-gray-900">{{ $curso->titulo }}</p>
-                        <p class="text-xs text-gray-400">{{ $curso->duracion_horas }} h</p>
+                        <p class="font-display text-lg font-semibold text-gray-900">{{ $curso->titulo }}</p>
+                        <p class="text-xs text-gray-500">{{ $curso->duracion_horas }} h</p>
                     </td>
                     <td class="px-6 py-4 text-center">
-                        <span class="text-lg font-bold text-gray-800">{{ $curso->inscripciones_count }}</span>
+                        <span class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $curso->inscripciones_count }}</span>
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($curso->pendientes_count > 0)
                             <span class="badge badge-yellow">{{ $curso->pendientes_count }}</span>
                         @else
-                            <span class="text-gray-300">0</span>
+                            <span class="text-gray-500">0</span>
                         @endif
                     </td>
                     <td class="px-6 py-4">
                         <a href="{{ route('calificaciones.curso', $curso) }}"
-                           class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm font-medium">
-                            Ver calificaciones &rarr;
+                           class="{{ $curso->pendientes_count > 0 ? 'btn-primary' : 'btn-outline' }} btn-sm whitespace-nowrap">
+                            {{ $curso->pendientes_count > 0 ? 'Calificar' : 'Ver calificaciones' }}
                         </a>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="px-6 py-16 text-center text-gray-400">No tienes cursos todavía.</td>
+                    <td colspan="4" class="px-6 py-16 text-center text-gray-500">Aún no tienes cursos.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-</div>
+</section>
 @endsection

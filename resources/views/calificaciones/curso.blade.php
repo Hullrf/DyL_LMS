@@ -5,11 +5,11 @@
 
 <div class="flex justify-between items-center mb-6">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">{{ $curso->titulo }}</h1>
+        <h1 class="font-display text-3xl font-semibold text-gray-900 break-words">{{ $curso->titulo }}</h1>
         <p class="text-sm text-gray-500">Calificaciones</p>
     </div>
     <div class="flex items-center gap-4">
-        <a href="{{ route('cursos.ponderaciones.edit', $curso) }}" class="text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5">Ponderaciones</a>
+        <a href="{{ route('cursos.ponderaciones.edit', $curso) }}" class="btn-outline btn-sm">Ponderaciones</a>
         <a href="{{ route('calificaciones.index') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Cursos</a>
     </div>
 </div>
@@ -18,40 +18,40 @@
 
 {{-- Filtros --}}
 <form method="GET" action="{{ route('calificaciones.curso', $curso) }}"
-      class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap items-center gap-3">
+      class="card p-4 mb-6 flex flex-wrap items-center gap-3">
     <input aria-label="Buscar estudiante..." type="text" name="buscar" value="{{ request('buscar') }}"
-           placeholder="Buscar estudiante..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]">
-    <select name="estado" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+           placeholder="Buscar estudiante..." class="form-input flex-1 min-w-[200px]">
+    <select name="estado" class="form-select w-auto">
         <option value="">Todos los estudiantes</option>
         <option value="pendientes" @selected(request('estado') === 'pendientes')>Con pendientes</option>
         <option value="completos" @selected(request('estado') === 'completos')>Completos</option>
     </select>
     @if($modulos->count() > 1)
-    <select name="modulo" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+    <select name="modulo" class="form-select w-auto">
         <option value="">Todos los módulos</option>
         @foreach($modulos as $mod)
             <option value="{{ $mod->id }}" @selected(request('modulo') == $mod->id)>{{ $mod->titulo }}</option>
         @endforeach
     </select>
     @endif
-    <button type="submit" class="px-4 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Filtrar</button>
+    <button type="submit" class="btn-primary">Filtrar</button>
     @if(request()->anyFilled(['buscar', 'estado', 'modulo']))
         <a href="{{ route('calificaciones.curso', $curso) }}" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</a>
     @endif
 </form>
 
 @if($actividades->isEmpty())
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 text-center text-gray-400 text-sm">
+    <div class="card p-4 mb-6 text-center text-gray-500 text-sm">
         Este curso no tiene actividades calificables todavía. Los estudiantes que completen el curso
         (por ejemplo, terminando todas las lecciones) igual pueden recibir su certificado abajo.
     </div>
-    <div class="bg-white rounded-xl shadow overflow-hidden">
+    <div class="card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-100 text-sm">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
-                        <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
+                        <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-gray-500 whitespace-nowrap">Estudiante</th>
+                        <th scope="col" class="px-4 py-3 text-center text-sm font-medium text-gray-500 whitespace-nowrap">Certificado</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -59,7 +59,7 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-3 whitespace-nowrap">
                             <p class="font-medium text-gray-900">{{ $fila->estudiante->name }}</p>
-                            <p class="text-xs text-gray-400">{{ $fila->estudiante->email }}</p>
+                            <p class="text-xs text-gray-500">{{ $fila->estudiante->email }}</p>
                         </td>
                         <td class="px-4 py-3 text-center whitespace-nowrap">
                             @include('calificaciones.partials.celda-certificado', ['curso' => $curso, 'fila' => $fila])
@@ -67,7 +67,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="2" class="px-6 py-10 text-center text-gray-400">
+                        <td colspan="2" class="px-6 py-10 text-center text-gray-500">
                             Ningún estudiante coincide con el filtro.
                         </td>
                     </tr>
@@ -77,20 +77,20 @@
         </div>
     </div>
 @else
-<div class="bg-white rounded-xl shadow overflow-hidden">
+<div class="card overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-100 text-sm">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Estudiante</th>
+                    <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-gray-500 whitespace-nowrap">Estudiante</th>
                     @foreach($actividades as $act)
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">
+                        <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-gray-500 whitespace-nowrap">
                             {{ $act->tituloCompleto() }}
-                            <span class="block normal-case text-gray-400 font-normal">/ {{ number_format($act->puntaje_maximo ?? 0, 0) }} pts</span>
+                            <span class="block text-xs text-gray-500 font-normal">/ {{ number_format($act->puntaje_maximo ?? 0, 0) }} pts</span>
                         </th>
                     @endforeach
-                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Promedio</th>
-                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Certificado</th>
+                    <th scope="col" class="px-4 py-3 text-center text-sm font-medium text-gray-500 whitespace-nowrap">Promedio</th>
+                    <th scope="col" class="px-4 py-3 text-center text-sm font-medium text-gray-500 whitespace-nowrap">Certificado</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -98,7 +98,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 whitespace-nowrap">
                         <p class="font-medium text-gray-900">{{ $fila->estudiante->name }}</p>
-                        <p class="text-xs text-gray-400">{{ $fila->estudiante->email }}</p>
+                        <p class="text-xs text-gray-500">{{ $fila->estudiante->email }}</p>
                     </td>
                     @foreach($actividades as $i => $act)
                         @php($respuesta = $fila->celdas[$i])
@@ -118,7 +118,7 @@
 
                             @if($act->tipo === 'cuestionario')
                                 @php($info = $intentosPorCelda["{$fila->estudiante->id}-{$act->id}"] ?? ['usados' => 0, 'permitidos' => $act->intentos_permitidos, 'extra' => 0])
-                                <div class="mt-1 flex items-center gap-1.5 text-xs text-gray-400">
+                                <div class="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
                                     <span>{{ $info['usados'] }}/{{ $info['permitidos'] }} intentos</span>
                                     @if($info['extra'] > 0)
                                         <span class="badge badge-green" title="Intentos extra otorgados">+{{ $info['extra'] }}</span>
@@ -130,9 +130,9 @@
                                               class="absolute z-10 mt-1 p-2 bg-white border border-gray-200 rounded-lg shadow-lg flex items-center gap-1 whitespace-nowrap">
                                             @csrf
                                             <input type="number" name="cantidad" value="1" min="1" max="5"
-                                                   class="w-14 px-1 py-0.5 border border-gray-300 rounded text-xs">
+                                                   class="form-input w-16 py-1 text-xs">
                                             <button type="submit"
-                                                    class="px-2 py-0.5 bg-dyl-orange-700 text-white rounded text-xs hover:bg-dyl-orange-800">
+                                                    class="btn-primary btn-sm">
                                                 Otorgar
                                             </button>
                                         </form>
@@ -150,7 +150,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="{{ $actividades->count() + 3 }}" class="px-6 py-10 text-center text-gray-400">
+                    <td colspan="{{ $actividades->count() + 3 }}" class="px-6 py-10 text-center text-gray-500">
                         Ningún estudiante coincide con el filtro.
                     </td>
                 </tr>
