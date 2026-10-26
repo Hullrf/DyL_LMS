@@ -21,7 +21,8 @@ class Certificado extends Model
 
     public function curso(): BelongsTo
     {
-        return $this->belongsTo(Curso::class);
+        // withTrashed: un certificado emitido sigue siendo válido y visible aunque el curso se archive.
+        return $this->belongsTo(Curso::class)->withTrashed();
     }
 
     public function aprobador(): BelongsTo
