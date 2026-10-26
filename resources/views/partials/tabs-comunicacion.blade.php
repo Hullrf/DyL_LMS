@@ -4,13 +4,15 @@
     ("Mensajes") que lleva a la bandeja; este selector es lo que permite
     moverse a Anuncios sin agregar una segunda sección al sidebar.
 --}}
-<div class="flex gap-2 mb-6">
+<nav class="flex gap-6 border-b border-gray-200 mb-6" aria-label="Comunicación">
     <a href="{{ route('mensajes.bandeja') }}"
-       class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('mensajes.*') ? 'bg-dyl-orange-700 text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
+       @if(request()->routeIs('mensajes.*')) aria-current="page" @endif
+       class="-mb-px pb-3 text-sm font-medium border-b-2 {{ request()->routeIs('mensajes.*') ? 'border-dyl-orange-700 text-dyl-orange-700' : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300' }}">
         Mensajes
     </a>
     <a href="{{ route('anuncios.todos') }}"
-       class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('anuncios.todos') ? 'bg-dyl-orange-700 text-white' : 'bg-white text-gray-700 border hover:bg-gray-50' }}">
+       @if(request()->routeIs('anuncios.todos')) aria-current="page" @endif
+       class="-mb-px pb-3 text-sm font-medium border-b-2 {{ request()->routeIs('anuncios.todos') ? 'border-dyl-orange-700 text-dyl-orange-700' : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300' }}">
         Anuncios
     </a>
-</div>
+</nav>
