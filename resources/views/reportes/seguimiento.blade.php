@@ -58,7 +58,7 @@
                             <td class="px-4 py-3 text-gray-900">{{ $f->usuario->name }}</td>
                             <td class="px-4 py-3">
                                 <span class="rounded-full px-2.5 py-0.5 text-xs font-medium
-                                    {{ $f->nivel === 'riesgo' ? 'bg-dyl-graphite-800 text-white' : ($f->nivel === 'atencion' ? 'bg-dyl-orange-100 text-dyl-orange-800' : 'bg-dyl-graphite-100 text-dyl-graphite-700') }}">
+                                    {{ $f->nivel === 'riesgo' ? 'bg-dyl-graphite-800 text-white dark:bg-[#E2E8F0] dark:text-[#0F172A]' : ($f->nivel === 'atencion' ? 'bg-dyl-orange-100 text-dyl-orange-800' : 'bg-dyl-graphite-100 text-dyl-graphite-700') }}">
                                     {{ $niveles[$f->nivel] }}
                                 </span>
                             </td>
