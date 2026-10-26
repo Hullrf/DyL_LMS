@@ -70,6 +70,7 @@
             </a>
         @endif
         @if(auth()->user()->esAdmin())
+            <p class="dyl-sb-group" id="sb-admin">Administración</p>
             <a href="{{ route('admin.usuarios.index') }}" :title="collapsed ? 'Usuarios' : null" class="dyl-sb-link {{ request()->routeIs('admin.usuarios.*') ? 'active' : '' }}" @if(request()->routeIs('admin.usuarios.*')) aria-current="page" @endif>
                 <span class="dyl-sb-ic" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19a6 6 0 0112 0"/><path d="M15.5 6.2a3 3 0 010 5.6"/><path d="M16 13.3a5.2 5.2 0 014.5 5.7"/></svg>
