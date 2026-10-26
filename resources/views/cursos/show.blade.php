@@ -14,7 +14,8 @@
     </div>
 
     <div class="p-6 sm:p-8">
-        @if($curso->estado !== 'publicado')
+        {{-- El estado interno (borrador/archivado) solo lo ve quien gestiona el curso; al estudiante inscrito no le dice nada útil --}}
+        @if($curso->estado !== 'publicado' && auth()->user()->can('update', $curso))
             <span class="{{ $curso->estado === 'borrador' ? 'badge-warning' : 'badge-info' }} mb-3">{{ ucfirst($curso->estado) }}</span>
         @endif
         <h1 class="font-display text-3xl sm:text-4xl font-semibold text-gray-900 mb-3 break-words">{{ $curso->titulo }}</h1>
