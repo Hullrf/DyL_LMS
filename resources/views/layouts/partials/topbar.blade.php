@@ -39,7 +39,7 @@
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
-                    Nuevo Curso
+                    Nuevo curso
                 </a>
             @endif
 
@@ -61,12 +61,14 @@
                      x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                      class="absolute right-0 top-full mt-1 w-56 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden" role="menu">
                     <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                        <p class="text-xs text-gray-500">Sesión activa</p>
-                        <p class="text-sm font-medium text-gray-900 truncate">{{ auth()->user()->email }}</p>
+                        <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
                     </div>
                     <a href="{{ route('dashboard') }}" class="dropdown-item" role="menuitem">Dashboard</a>
-                    <a href="{{ route('certificados.mis') }}" class="dropdown-item" role="menuitem">Mis Certificados</a>
-                    <a href="{{ route('profile.edit') }}" class="dropdown-item" role="menuitem">Mi Perfil</a>
+                    @if(!auth()->user()->esAdmin() || auth()->user()->esEstudiante())
+                        <a href="{{ route('certificados.mis') }}" class="dropdown-item" role="menuitem">Mis certificados</a>
+                    @endif
+                    <a href="{{ route('profile.edit') }}" class="dropdown-item" role="menuitem">Mi perfil</a>
                     <div class="border-t border-gray-100"></div>
                     <form method="POST" action="{{ route('logout') }}" role="none">
                         @csrf

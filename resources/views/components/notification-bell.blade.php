@@ -36,7 +36,7 @@
         <div class="max-h-72 overflow-y-auto">
             @forelse($notificaciones as $n)
                 <a href="{{ route('notificaciones.marcar', $n) }}"
-                   class="block px-4 py-3 hover:bg-gray-50 transition-colors {{ $n->leido ? '' : 'bg-dyl-orange-50/60' }}">
+                   class="block px-4 py-3 hover:bg-gray-50 transition-colors border-l-2 {{ $n->leido ? 'border-l-transparent' : 'border-l-dyl-orange-600' }}">
                     <div class="flex items-start gap-3">
                         <div class="mt-0.5 shrink-0">
                             @if($n->tipo === 'calificacion')
@@ -50,17 +50,17 @@
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{{ $n->titulo }}</p>
+                            <p class="text-sm {{ $n->leido ? 'font-medium' : 'font-semibold' }} text-gray-900 truncate">{{ $n->titulo }}@unless($n->leido)<span class="sr-only"> (no leída)</span>@endunless</p>
                             <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">{{ $n->mensaje }}</p>
-                            <p class="text-xs text-gray-400 mt-1">{{ $n->created_at->diffForHumans() }}</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $n->created_at->diffForHumans() }}</p>
                         </div>
                         @if(!$n->leido)
-                            <span class="w-2 h-2 bg-dyl-orange-600 rounded-full shrink-0 mt-2"></span>
+                            <span class="w-2 h-2 bg-dyl-orange-600 rounded-full shrink-0 mt-2" aria-hidden="true"></span>
                         @endif
                     </div>
                 </a>
             @empty
-                <div class="px-4 py-8 text-center text-sm text-gray-400">
+                <div class="px-4 py-8 text-center text-sm text-gray-500">
                     <svg class="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     No tienes notificaciones
                 </div>
