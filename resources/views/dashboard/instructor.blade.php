@@ -2,87 +2,78 @@
 @section('title', 'Dashboard Instructor - D&L Quality Campus')
 
 @section('content')
-<h1 class="text-3xl font-bold text-gray-900 mb-8">Panel del Instructor</h1>
+@php $pendientes = $stats['pendientes_calificar']; @endphp
 
-{{-- Stats --}}
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white p-6 rounded-lg shadow">
-        <p class="text-gray-500 text-xs uppercase tracking-wide">Mis Cursos</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['mis_cursos'] }}</p>
-    </div>
-    <div class="bg-white p-6 rounded-lg shadow">
-        <p class="text-gray-500 text-xs uppercase tracking-wide">Publicados</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['cursos_publicados'] }}</p>
-    </div>
-    <div class="bg-white p-6 rounded-lg shadow">
-        <p class="text-gray-500 text-xs uppercase tracking-wide">Estudiantes</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['estudiantes_inscritos'] }}</p>
-    </div>
-    <a href="{{ route('calificaciones.index') }}" class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow block">
-        <p class="text-gray-500 text-xs uppercase tracking-wide">Por Calificar</p>
-        <p class="text-3xl font-bold mt-1 {{ $stats['pendientes_calificar'] > 0 ? 'text-dyl-orange-700' : 'text-gray-400' }}">
-            {{ $stats['pendientes_calificar'] }}
+<header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 mb-8">
+    <h1 class="font-display text-4xl font-semibold text-gray-900">Hola, {{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</h1>
+    <dl class="flex gap-8 text-sm text-gray-500">
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['mis_cursos'] }}</dd><dt>{{ $stats['mis_cursos'] === 1 ? 'curso' : 'cursos' }}</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['cursos_publicados'] }}</dd><dt>{{ $stats['cursos_publicados'] === 1 ? 'publicado' : 'publicados' }}</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['estudiantes_inscritos'] }}</dd><dt>{{ $stats['estudiantes_inscritos'] === 1 ? 'estudiante' : 'estudiantes' }}</dt></div>
+    </dl>
+</header>
+
+{{-- Lo primero para un instructor: qué espera su revisión --}}
+<section aria-labelledby="pendientes-titulo" class="card p-6 sm:p-8 mb-10 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h2 id="pendientes-titulo" class="font-display text-2xl font-semibold text-gray-900">
+            @if($pendientes > 0)
+                {{ $pendientes }} {{ $pendientes === 1 ? 'entrega por calificar' : 'entregas por calificar' }}
+            @else
+                Nada pendiente por calificar
+            @endif
+        </h2>
+        <p class="text-gray-600 mt-1">
+            {{ $pendientes > 0 ? 'Tus estudiantes están esperando su retroalimentación.' : 'Cuando un estudiante entregue una actividad, aparecerá aquí.' }}
         </p>
-        @if($stats['pendientes_calificar'] > 0)
-            <p class="text-xs text-dyl-orange-700 mt-1">Ver pendientes &rarr;</p>
-        @endif
-    </a>
-</div>
-
-{{-- Acciones rápidas --}}
-<div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-bold text-gray-900">Mis Cursos</h2>
-    <div class="flex gap-3">
-        <a href="{{ route('calificaciones.index') }}"
-           class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 text-sm">
-            Calificaciones
-        </a>
-        <a href="{{ route('cursos.create') }}"
-           class="bg-dyl-orange-700 text-white px-4 py-2 rounded-lg hover:bg-dyl-orange-800 text-sm">
-            + Nuevo Curso
-        </a>
     </div>
+    <a href="{{ route('calificaciones.index') }}" class="{{ $pendientes > 0 ? 'btn-primary btn-lg' : 'btn-outline btn-lg' }}">
+        {{ $pendientes > 0 ? 'Calificar ahora' : 'Ver calificaciones' }}
+    </a>
+</section>
+
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <h2 class="font-display text-2xl font-semibold text-gray-900">Mis cursos</h2>
+    <a href="{{ route('cursos.create') }}" class="btn-primary">+ Nuevo curso</a>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @forelse($cursos as $curso)
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex justify-between items-start mb-2">
-                <h3 class="font-bold text-gray-900">{{ $curso->titulo }}</h3>
-                <span class="px-2 py-1 rounded text-xs font-medium ml-2 flex-shrink-0
-                    @if($curso->estado === 'publicado') bg-dyl-orange-100 text-dyl-orange-800
-                    @elseif($curso->estado === 'borrador') bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold
-                    @else bg-gray-100 text-gray-800 @endif">
-                    {{ ucfirst($curso->estado) }}
-                </span>
+        <article class="card-hover overflow-hidden flex flex-col">
+            <a href="{{ route('cursos.show', $curso) }}" tabindex="-1" aria-hidden="true" class="block h-32">
+                @if($curso->imagen_portada)
+                    <img src="{{ asset('storage/' . $curso->imagen_portada) }}" alt="" class="w-full h-full object-cover">
+                @else
+                    <x-portada-curso :curso="$curso"/>
+                @endif
+            </a>
+            <div class="p-5 flex flex-col flex-1">
+                <div class="flex justify-between items-start gap-3 mb-1">
+                    <h3 class="font-display text-xl font-semibold text-gray-900 break-words">{{ $curso->titulo }}</h3>
+                    <span class="{{ $curso->estado === 'publicado' ? 'badge-success' : ($curso->estado === 'borrador' ? 'badge-warning' : 'badge-info') }} shrink-0">{{ ucfirst($curso->estado) }}</span>
+                </div>
+                <p class="text-sm text-gray-500 mb-4">{{ $curso->modulos->count() }} {{ $curso->modulos->count() === 1 ? 'módulo' : 'módulos' }}</p>
+                <div class="flex gap-2 mt-auto">
+                    <a href="{{ route('cursos.show', $curso) }}" class="btn-outline flex-1">Ver</a>
+                    <a href="{{ route('cursos.edit', $curso) }}" class="btn-primary flex-1">Editar</a>
+                </div>
             </div>
-            <p class="text-sm text-gray-500 mb-4">{{ $curso->modulos->count() }} módulo(s)</p>
-            <div class="flex gap-2">
-                <a href="{{ route('cursos.show', $curso) }}"
-                   class="flex-1 text-center bg-gray-100 text-gray-700 py-2 rounded hover:bg-gray-200 text-sm">
-                    Ver
-                </a>
-                <a href="{{ route('cursos.edit', $curso) }}"
-                   class="flex-1 text-center bg-dyl-orange-700 text-white py-2 rounded hover:bg-dyl-orange-800 text-sm">
-                    Editar
-                </a>
-            </div>
-        </div>
+        </article>
     @empty
-        <div class="col-span-3 text-center py-12 text-gray-500">
-            No tienes cursos aún.
-            <a href="{{ route('cursos.create') }}" class="text-dyl-orange-700 hover:underline">Crea tu primer curso</a>
+        <div class="card md:col-span-2 lg:col-span-3 p-12 text-center text-gray-500">
+            Aún no tienes cursos.
+            <a href="{{ route('cursos.create') }}" class="text-dyl-orange-700 font-medium hover:underline ml-1">Crea tu primer curso</a>
         </div>
     @endforelse
 </div>
 
 @if($cursos->isNotEmpty())
-<div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-    <h3 class="text-sm font-semibold text-gray-700 mb-4">Progreso promedio por curso (%)</h3>
+<section class="card mt-10 p-6" aria-labelledby="progreso-titulo">
+    <h2 id="progreso-titulo" class="font-display text-xl font-semibold text-gray-900 mb-4">Progreso promedio por curso</h2>
     <div style="height: 200px;">
-        <canvas id="chartProgresoCursos"></canvas>
+        <canvas id="chartProgresoCursos" role="img" aria-label="Gráfico de barras con el progreso promedio de los estudiantes en cada curso"></canvas>
     </div>
-</div>
+</section>
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {

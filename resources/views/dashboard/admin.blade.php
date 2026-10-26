@@ -2,100 +2,79 @@
 @section('title', 'Dashboard Admin - D&L Quality Campus')
 
 @section('content')
-<h1 class="text-3xl font-bold text-gray-900 mb-8">Dashboard Administrador</h1>
-
-{{-- KPIs --}}
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white p-6 rounded-xl shadow">
-        <p class="text-gray-400 text-xs uppercase tracking-wide">Total Cursos</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['total_cursos'] }}</p>
-    </div>
-    <div class="bg-white p-6 rounded-xl shadow">
-        <p class="text-gray-400 text-xs uppercase tracking-wide">Publicados</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['cursos_publicados'] }}</p>
-    </div>
-    <div class="bg-white p-6 rounded-xl shadow">
-        <p class="text-gray-400 text-xs uppercase tracking-wide">Total Usuarios</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $stats['total_usuarios'] }}</p>
-    </div>
-    <div class="bg-white p-6 rounded-xl shadow">
-        <p class="text-gray-400 text-xs uppercase tracking-wide">Instructores</p>
-        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">{{ $stats['total_instructores'] }}</p>
-    </div>
-</div>
+<header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 mb-8">
+    <h1 class="font-display text-4xl font-semibold text-gray-900">Administración</h1>
+    <dl class="flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-500">
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['total_cursos'] }}</dd><dt>{{ $stats['total_cursos'] === 1 ? 'curso' : 'cursos' }}</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['cursos_publicados'] }}</dd><dt>{{ $stats['cursos_publicados'] === 1 ? 'publicado' : 'publicados' }}</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-gray-900 tabular-nums">{{ $stats['total_usuarios'] }}</dd><dt>{{ $stats['total_usuarios'] === 1 ? 'usuario' : 'usuarios' }}</dt></div>
+        <div><dd class="font-display text-2xl font-semibold text-dyl-orange-700 tabular-nums">{{ $stats['total_instructores'] }}</dd><dt>{{ $stats['total_instructores'] === 1 ? 'instructor' : 'instructores' }}</dt></div>
+    </dl>
+</header>
 
 {{-- Accesos rápidos --}}
-<div class="flex gap-3 mb-8">
-    <a href="{{ route('reportes.index') }}"
-       class="bg-dyl-orange-700 text-white px-5 py-2.5 rounded-lg hover:bg-dyl-orange-800 font-medium text-sm">
-        Ver Reportes
-    </a>
-    <a href="{{ route('calificaciones.index') }}"
-       class="bg-white border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 text-sm">
-        Calificaciones
-    </a>
-    <a href="{{ route('cursos.create') }}"
-       class="bg-white border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-50 text-sm">
-        + Nuevo Curso
-    </a>
+<div class="flex flex-wrap gap-3 mb-8">
+    <a href="{{ route('reportes.index') }}" class="btn-primary btn-lg">Ver reportes</a>
+    <a href="{{ route('calificaciones.index') }}" class="btn-outline btn-lg">Calificaciones</a>
+    <a href="{{ route('cursos.create') }}" class="btn-outline btn-lg">+ Nuevo curso</a>
 </div>
 
 {{-- Cursos recientes --}}
-<div class="bg-white rounded-xl shadow">
-    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-        <h2 class="text-lg font-bold text-gray-900">Cursos Recientes</h2>
+<section class="card overflow-hidden" aria-labelledby="recientes-titulo">
+    <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-2">
+        <h2 id="recientes-titulo" class="font-display text-2xl font-semibold text-gray-900">Cursos recientes</h2>
         <a href="{{ route('reportes.index') }}" class="text-sm text-dyl-orange-700 hover:underline">Ver todos los reportes</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Título</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Instructor</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                    <th scope="col" class="px-4 sm:px-6 py-3 text-left text-sm font-medium text-gray-500">Título</th>
+                    <th scope="col" class="hidden md:table-cell px-6 py-3 text-left text-sm font-medium text-gray-500">Instructor</th>
+                    <th scope="col" class="px-4 sm:px-6 py-3 text-left text-sm font-medium text-gray-500">Estado</th>
+                    <th scope="col" class="px-4 sm:px-6 py-3 text-left text-sm font-medium text-gray-500">Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-100">
                 @forelse($cursos_recientes as $curso)
-                    <tr class="border-b border-gray-50 hover:bg-gray-50">
-                        <td class="px-6 py-4 font-medium text-gray-900 text-sm">{{ $curso->titulo }}</td>
-                        <td class="px-6 py-4 text-gray-500 text-sm">{{ $curso->creador->name }}</td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium
-                                @if($curso->estado === 'publicado') bg-dyl-orange-100 text-dyl-orange-700
-                                @elseif($curso->estado === 'borrador') bg-dyl-graphite-100 text-dyl-graphite-900 font-semibold
-                                @else bg-gray-100 text-gray-500 @endif">
-                                {{ ucfirst($curso->estado) }}
-                            </span>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 text-sm">
+                            {{ $curso->titulo }}
+                            <span class="md:hidden block mt-0.5 text-xs font-normal text-gray-500">{{ $curso->creador->name }}</span>
                         </td>
-                        <td class="px-6 py-4 flex gap-3">
-                            <a href="{{ route('reportes.curso', $curso) }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">Reporte</a>
-                            <a href="{{ route('cursos.edit', $curso) }}" class="text-gray-600 hover:text-gray-900 text-sm">Editar</a>
+                        <td class="hidden md:table-cell px-6 py-4 text-gray-600 text-sm">{{ $curso->creador->name }}</td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <span class="{{ $curso->estado === 'publicado' ? 'badge-success' : ($curso->estado === 'borrador' ? 'badge-warning' : 'badge-info') }}">{{ ucfirst($curso->estado) }}</span>
+                        </td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <a href="{{ route('reportes.curso', $curso) }}" class="btn-outline btn-sm">Reporte</a>
+                                <a href="{{ route('cursos.edit', $curso) }}" class="btn-ghost btn-sm">Editar</a>
+                            </div>
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">No hay cursos aún</td></tr>
+                    <tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Aún no hay cursos.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-</div>
+</section>
 
 {{-- Gráficos --}}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-sm font-semibold text-gray-700 mb-4">Cursos por Estado</h3>
+    <section class="card p-6" aria-labelledby="estado-titulo">
+        <h2 id="estado-titulo" class="font-display text-xl font-semibold text-gray-900 mb-4">Cursos por estado</h2>
         <div style="height:200px; display:flex; align-items:center; justify-content:center;">
-            <canvas id="chartCursosEstado"></canvas>
+            <canvas id="chartCursosEstado" role="img" aria-label="Gráfico de dona con los cursos en borrador, publicados y archivados"></canvas>
         </div>
-    </div>
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
-        <h3 class="text-sm font-semibold text-gray-700 mb-4">Inscripciones — Últimos 6 meses</h3>
+    </section>
+    <section class="card p-6 lg:col-span-2" aria-labelledby="inscripciones-titulo">
+        <h2 id="inscripciones-titulo" class="font-display text-xl font-semibold text-gray-900 mb-4">Inscripciones de los últimos 6 meses</h2>
         <div style="height:200px;">
-            <canvas id="chartInscripciones"></canvas>
+            <canvas id="chartInscripciones" role="img" aria-label="Gráfico de barras con las inscripciones de cada uno de los últimos seis meses"></canvas>
         </div>
-    </div>
+    </section>
 </div>
 
 @push('scripts')
