@@ -189,8 +189,47 @@
                 </div>
             @endif
 
-            {{-- Una sola línea: whitespace-pre-wrap respetaría la indentación del código como parte del texto --}}
-            <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-800 whitespace-pre-wrap min-h-32 leading-relaxed">{{ $respuesta->respuesta ?: '— Sin texto —' }}</div>
+            @if($detalleCuestionario)
+                {{-- Cuestionario: cada pregunta con lo que eligió el estudiante (y lo correcto, para calificar con contexto) --}}
+                <ol class="space-y-4">
+                    @foreach($detalleCuestionario['preguntas'] as $i => $pregunta)
+                        @php
+                            $dada = $detalleCuestionario['respuestas'][$pregunta->id] ?? null;
+                            $esCorta = $pregunta->tipo === 'respuesta_corta';
+                            $idsElegidos = collect(is_array($dada) ? $dada : [$dada])->filter(fn($v) => $v !== null && $v !== '')->map(fn($v) => (string) $v);
+                        @endphp
+                        <li class="rounded-lg border border-gray-200 p-4">
+                            <p class="text-sm font-semibold text-gray-900">
+                                <span class="text-gray-500 font-medium">{{ $i + 1 }}.</span> {{ $pregunta->pregunta_texto }}
+                                <span class="text-xs font-normal text-gray-500">({{ $pregunta->puntaje }} pts)</span>
+                            </p>
+                            @if($esCorta)
+                                <p class="mt-2 rounded-lg bg-gray-50 p-3 text-sm text-gray-800 whitespace-pre-wrap">{{ is_string($dada) && $dada !== '' ? $dada : '— Sin respuesta —' }}</p>
+                            @else
+                                <ul class="mt-2 space-y-1.5">
+                                    @foreach($pregunta->opciones as $opcion)
+                                        @php $elegida = $idsElegidos->contains((string) $opcion->id); @endphp
+                                        <li class="flex items-start gap-2 rounded-lg px-3 py-2 text-sm {{ $elegida ? 'bg-dyl-graphite-100 text-gray-900 font-medium' : 'text-gray-600' }}">
+                                            <span class="shrink-0 mt-0.5 h-2.5 w-2.5 rounded-full {{ $elegida ? 'bg-dyl-orange-700' : 'border border-gray-300' }}" aria-hidden="true"></span>
+                                            <span class="flex-1 min-w-0 break-words">{{ $opcion->texto }}</span>
+                                            @if($elegida)<span class="shrink-0 text-xs text-gray-600">Eligió</span>@endif
+                                            @if($opcion->es_correcta)
+                                                <span class="shrink-0 text-xs font-semibold text-dyl-orange-700">Correcta</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                                @if($idsElegidos->isEmpty())
+                                    <p class="mt-2 text-xs text-gray-500">— Sin respuesta —</p>
+                                @endif
+                            @endif
+                        </li>
+                    @endforeach
+                </ol>
+            @else
+                {{-- Una sola línea: whitespace-pre-wrap respetaría la indentación del código como parte del texto --}}
+                <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-800 whitespace-pre-wrap min-h-32 leading-relaxed">{{ $respuesta->respuesta ?: '— Sin texto —' }}</div>
+            @endif
 
             {{-- Adjuntos que no son PDF (imagen, video, otros) --}}
             @if($adjunto && !$esPdf)

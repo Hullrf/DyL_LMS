@@ -274,7 +274,22 @@ class CalificacionController extends Controller
             ? $respuesta->actividad->criteriosRubrica()->with('niveles')->get()
             : collect();
         $seleccionesActuales = $respuesta->seleccionesRubrica->pluck('nivel_criterio_id', 'criterio_id');
-        return view('calificaciones.show', compact('respuesta', 'criteriosRubrica', 'seleccionesActuales'));
+
+        // Cuestionario: la respuesta se guarda como JSON {pregunta_id: opción | [opciones] | texto}. Se prepara cada
+        // pregunta con lo que eligió el estudiante para mostrarlo legible; si no es un JSON válido (datos antiguos)
+        // la vista cae al texto tal cual.
+        $detalleCuestionario = null;
+        if ($respuesta->actividad->tipo === 'cuestionario') {
+            $elegidas = json_decode((string) $respuesta->respuesta, true);
+            if (is_array($elegidas)) {
+                $detalleCuestionario = [
+                    'preguntas' => $respuesta->actividad->preguntas()->with('opciones')->orderBy('orden')->get(),
+                    'respuestas' => $elegidas,
+                ];
+            }
+        }
+
+        return view('calificaciones.show', compact('respuesta', 'criteriosRubrica', 'seleccionesActuales', 'detalleCuestionario'));
     }
 
     /**
