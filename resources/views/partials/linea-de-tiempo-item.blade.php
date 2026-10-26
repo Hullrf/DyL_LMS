@@ -1,16 +1,14 @@
-<li class="flex items-center gap-4 px-4 py-3">
-    <span class="w-16 shrink-0 text-sm font-medium text-gray-800">
-        {{ $i->actividad->fecha_cierre->format($conFecha ? 'd/m H:i' : 'H:i') }}
-    </span>
+<li class="flex items-start gap-3 px-4 py-3">
     <div class="min-w-0 flex-1">
-        <p class="truncate text-sm font-medium text-gray-900">{{ $i->actividad->tituloCompleto() }}</p>
-        <p class="truncate text-xs text-gray-500">
-            {{ ucfirst($i->actividad->tipo) }} · {{ $i->curso->titulo }}
+        <p class="text-sm font-medium text-gray-900 line-clamp-2">{{ $i->actividad->tituloCompleto() }}</p>
+        <p class="mt-0.5 flex flex-wrap gap-x-3 text-xs text-gray-500">
+            <span class="font-medium text-gray-700 tabular-nums">{{ $i->actividad->fecha_cierre->format($conFecha ? 'd/m H:i' : 'H:i') }}</span>
+            <span>{{ ucfirst($i->actividad->tipo) }}</span>
+            <span class="min-w-0 max-w-full truncate">{{ $i->curso->titulo }}</span>
         </p>
     </div>
     <a href="{{ route('actividades.show', $i->actividad) }}"
-       class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium
-              {{ $i->estado === 'entregada' ? 'border border-gray-300 text-gray-700 hover:bg-gray-50' : 'bg-dyl-orange-700 text-white hover:bg-dyl-orange-800' }}">
+       class="shrink-0 {{ $i->estado === 'entregada' ? 'btn-outline' : 'btn-primary' }} btn-sm">
         {{ $i->accion }}
     </a>
 </li>
