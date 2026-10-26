@@ -1,7 +1,7 @@
 <section>
     <header class="mb-6">
-        <h2 class="text-lg font-semibold text-gray-900">Información del perfil</h2>
-        <p class="mt-1 text-sm text-gray-500">Actualiza tu nombre, empresa y dirección de correo electrónico.</p>
+        <h2 class="font-display text-2xl font-semibold text-gray-900">Información del perfil</h2>
+        <p class="mt-1 text-sm text-gray-600">Actualiza tu nombre, empresa y dirección de correo electrónico.</p>
     </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">

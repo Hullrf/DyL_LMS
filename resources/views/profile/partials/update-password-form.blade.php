@@ -1,7 +1,7 @@
 <section>
     <header class="mb-6">
-        <h2 class="text-lg font-semibold text-gray-900">Cambiar contraseña</h2>
-        <p class="mt-1 text-sm text-gray-500">Usa una contraseña larga y aleatoria para mantener tu cuenta segura.</p>
+        <h2 class="font-display text-2xl font-semibold text-gray-900">Cambiar contraseña</h2>
+        <p class="mt-1 text-sm text-gray-600">Usa una contraseña larga y aleatoria para mantener tu cuenta segura.</p>
     </header>
 
     <form method="post" action="{{ route('password.update') }}" class="space-y-5">

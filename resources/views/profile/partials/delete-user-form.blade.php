@@ -1,7 +1,7 @@
 <section x-data="{ confirmar: {{ $errors->userDeletion->isNotEmpty() ? 'true' : 'false' }} }">
     <header class="mb-6">
-        <h2 class="text-lg font-semibold text-dyl-graphite-900">Eliminar cuenta</h2>
-        <p class="mt-1 text-sm text-gray-500">
+        <h2 class="font-display text-2xl font-semibold text-gray-900">Eliminar cuenta</h2>
+        <p class="mt-1 text-sm text-gray-600">
             Una vez eliminada, todos tus datos serán borrados permanentemente. Esta acción no se puede deshacer.
         </p>
     </header>
@@ -46,7 +46,7 @@
                 <button
                     type="button"
                     x-on:click="confirmar = false"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    class="btn-outline"
                 >
                     Cancelar
                 </button>
