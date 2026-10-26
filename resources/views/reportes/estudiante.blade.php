@@ -4,40 +4,40 @@
 @section('content')
 @php $usuario = $reporte['usuario']; @endphp
 
-<div class="flex justify-between items-center mb-8">
+<div class="flex flex-wrap justify-between items-center gap-3 mb-8">
     <div>
         <a href="{{ route('reportes.index') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Reportes</a>
-        <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $usuario->name }}</h1>
+        <h1 class="font-display text-3xl font-semibold text-gray-900 mt-1 break-words">{{ $usuario->name }}</h1>
         <p class="text-sm text-gray-500">{{ $usuario->email }}</p>
     </div>
 </div>
 
 {{-- KPIs del estudiante --}}
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white rounded-xl shadow p-5 text-center">
-        <p class="text-xs text-gray-400 uppercase tracking-wide">Cursos inscritos</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $reporte['total_cursos'] }}</p>
+    <div class="card p-5 text-center">
+        <p class="text-sm text-gray-500">Cursos inscritos</p>
+        <p class="font-display text-4xl font-semibold tabular-nums text-dyl-graphite-700 mt-1">{{ $reporte['total_cursos'] }}</p>
     </div>
-    <div class="bg-white rounded-xl shadow p-5 text-center">
-        <p class="text-xs text-gray-400 uppercase tracking-wide">Completados</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $reporte['completados'] }}</p>
+    <div class="card p-5 text-center">
+        <p class="text-sm text-gray-500">Completados</p>
+        <p class="font-display text-4xl font-semibold tabular-nums text-dyl-graphite-700 mt-1">{{ $reporte['completados'] }}</p>
     </div>
-    <div class="bg-white rounded-xl shadow p-5 text-center">
-        <p class="text-xs text-gray-400 uppercase tracking-wide">Certificados</p>
-        <p class="text-3xl font-bold text-dyl-orange-700 mt-1">
+    <div class="card p-5 text-center">
+        <p class="text-sm text-gray-500">Certificados</p>
+        <p class="font-display text-4xl font-semibold tabular-nums text-dyl-orange-700 mt-1">
             {{ $reporte['cursos']->where('tiene_certificado', true)->count() }}
         </p>
     </div>
-    <div class="bg-white rounded-xl shadow p-5 text-center">
-        <p class="text-xs text-gray-400 uppercase tracking-wide">Actividades enviadas</p>
-        <p class="text-3xl font-bold text-dyl-graphite-700 mt-1">{{ $reporte['respuestas_historial']->count() }}</p>
+    <div class="card p-5 text-center">
+        <p class="text-sm text-gray-500">Actividades enviadas</p>
+        <p class="font-display text-4xl font-semibold tabular-nums text-dyl-graphite-700 mt-1">{{ $reporte['respuestas_historial']->count() }}</p>
     </div>
 </div>
 
 {{-- Cursos del estudiante --}}
-<div class="bg-white rounded-xl shadow mb-8">
+<div class="card mb-8">
     <div class="px-6 py-4 border-b border-gray-100">
-        <h2 class="text-lg font-bold text-gray-900">Progreso por Curso</h2>
+        <h2 class="font-display text-2xl font-semibold text-gray-900">Progreso por Curso</h2>
     </div>
     <div class="divide-y divide-gray-50">
         @forelse($reporte['cursos'] as $cd)
@@ -45,7 +45,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
-                        <h3 class="text-sm font-bold text-gray-900">{{ $cd['curso']->titulo }}</h3>
+                        <h3 class="font-display text-lg font-semibold text-gray-900">{{ $cd['curso']->titulo }}</h3>
                         <span class="px-2 py-0.5 text-xs rounded-full font-medium
                             @if($cd['estado'] === 'completado') bg-dyl-orange-100 text-dyl-orange-700
                             @elseif($cd['estado'] === 'en_progreso') bg-dyl-graphite-100 text-dyl-graphite-600
@@ -64,42 +64,42 @@
                                  style="width: {{ $cd['progreso_pct'] }}%"></div>
                         </div>
                         <span class="text-xs font-medium text-gray-600">{{ $cd['progreso_pct'] }}%</span>
-                        <span class="text-xs text-gray-400">{{ $cd['lecciones_ok'] }}/{{ $cd['total_lecciones'] }} lecciones</span>
+                        <span class="text-xs text-gray-500">{{ $cd['lecciones_ok'] }}/{{ $cd['total_lecciones'] }} lecciones</span>
                     </div>
                 </div>
 
                 <div class="text-right flex-shrink-0">
                     @if($cd['promedio'] !== null)
-                        <p class="text-2xl font-bold {{ $cd['promedio'] >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
+                        <p class="font-display text-3xl font-semibold tabular-nums {{ $cd['promedio'] >= 60 ? 'text-dyl-orange-700' : 'text-dyl-graphite-500' }}">
                             {{ $cd['promedio'] }}%
                         </p>
-                        <p class="text-xs text-gray-400">Calificación</p>
+                        <p class="text-xs text-gray-500">Calificación</p>
                     @else
-                        <p class="text-sm text-gray-400">Sin actividades calificadas</p>
+                        <p class="text-sm text-gray-500">Sin actividades calificadas</p>
                     @endif
                 </div>
             </div>
         </div>
         @empty
-        <div class="px-6 py-10 text-center text-gray-400">No está inscrito en ningún curso.</div>
+        <div class="px-6 py-10 text-center text-gray-500">No está inscrito en ningún curso.</div>
         @endforelse
     </div>
 </div>
 
 {{-- Historial de actividades --}}
 @if($reporte['respuestas_historial']->isNotEmpty())
-<div class="bg-white rounded-xl shadow">
+<div class="card">
     <div class="px-6 py-4 border-b border-gray-100">
-        <h2 class="text-lg font-bold text-gray-900">Últimas Actividades</h2>
+        <h2 class="font-display text-2xl font-semibold text-gray-900">Últimas Actividades</h2>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-50">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Curso</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enviado</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Calificación</th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actividad</th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-gray-500">Curso</th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-gray-500">Enviado</th>
+                    <th scope="col" class="px-6 py-3 text-center text-sm font-medium text-gray-500">Calificación</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -107,7 +107,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-3">
                         <p class="text-sm font-medium text-gray-800">{{ $resp->actividad->titulo ?? 'Actividad eliminada' }}</p>
-                        <p class="text-xs text-gray-400">{{ $resp->actividad ? ucfirst($resp->actividad->tipo) : '—' }}</p>
+                        <p class="text-xs text-gray-500">{{ $resp->actividad ? ucfirst($resp->actividad->tipo) : '—' }}</p>
                     </td>
                     <td class="px-6 py-3 text-sm text-gray-500">
                         {{ $resp->actividad->leccion->modulo->curso->titulo ?? '—' }}
