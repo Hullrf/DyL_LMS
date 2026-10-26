@@ -6,11 +6,11 @@
     <div class="flex items-center gap-3 mb-6">
         <a href="{{ route('admin.usuarios.index') }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">← Usuarios</a>
         <span class="text-gray-400">/</span>
-        <h1 class="text-2xl font-bold text-gray-900">Editar: {{ $usuario->name }}</h1>
+        <h1 class="font-display text-3xl font-semibold text-gray-900">Editar: {{ $usuario->name }}</h1>
     </div>
 
     <form method="POST" action="{{ route('admin.usuarios.update', $usuario) }}"
-          class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-5">
+          class="card p-8 space-y-5">
         @csrf @method('PUT')
 
         <div>
@@ -26,7 +26,7 @@
         <div>
             <label class="form-label">
                 Nueva contraseña
-                <span class="text-gray-400 font-normal">(dejar vacío para no cambiar)</span>
+                <span class="text-gray-500 font-normal">(dejar vacío para no cambiar)</span>
             </label>
             <input type="password" name="password" class="form-input">
             @error('password')<p class="form-error">{{ $message }}</p>@enderror
@@ -41,7 +41,7 @@
         </div>
         <div>
             <label class="form-label">Estado</label>
-            <select name="estado" class="form-input">
+            <select name="estado" class="form-select">
                 <option value="activo"   @selected(old('estado', $usuario->estado) === 'activo')>Activo</option>
                 <option value="inactivo" @selected(old('estado', $usuario->estado) === 'inactivo')>Inactivo</option>
             </select>
@@ -56,7 +56,7 @@
                            class="rounded text-dyl-orange-700">
                     <span class="text-sm text-gray-700 font-medium">{{ $rol->nombre }}</span>
                     @if($rol->descripcion)
-                        <span class="text-xs text-gray-400">— {{ $rol->descripcion }}</span>
+                        <span class="text-xs text-gray-500">— {{ $rol->descripcion }}</span>
                     @endif
                 </label>
             @endforeach
@@ -64,7 +64,7 @@
             @error('roles')<p class="form-error">{{ $message }}</p>@enderror
         </div>
         <div class="flex gap-3 pt-2">
-            <button type="submit" class="btn-primary">Guardar Cambios</button>
+            <button type="submit" class="btn-primary">Guardar cambios</button>
             <a href="{{ route('admin.usuarios.index') }}" class="btn-outline">Cancelar</a>
         </div>
     </form>

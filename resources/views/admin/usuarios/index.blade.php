@@ -4,20 +4,20 @@
 @section('content')
 <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between gap-3 mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
-        <a href="{{ route('admin.usuarios.create') }}" class="btn-primary">+ Nuevo Usuario</a>
+        <h1 class="font-display text-3xl font-semibold text-gray-900">Gestión de usuarios</h1>
+        <a href="{{ route('admin.usuarios.create') }}" class="btn-primary">+ Nuevo usuario</a>
     </div>
 
-    <form method="GET" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap gap-3">
+    <form method="GET" class="card p-4 mb-6 flex flex-wrap gap-3">
         <input aria-label="Nombre o email..." type="text" name="buscar" value="{{ request('buscar') }}"
                placeholder="Nombre o email..." class="form-input flex-1 min-w-48">
-        <select name="rol" class="form-input w-44">
+        <select name="rol" class="form-select w-44">
             <option value="">Todos los roles</option>
             @foreach($roles as $rol)
                 <option value="{{ $rol->id }}" @selected(request('rol') == $rol->id)>{{ $rol->nombre }}</option>
             @endforeach
         </select>
-        <select name="estado" class="form-input w-36">
+        <select name="estado" class="form-select w-48">
             <option value="">Todos los estados</option>
             <option value="activo"   @selected(request('estado') === 'activo')>Activo</option>
             <option value="inactivo" @selected(request('estado') === 'inactivo')>Inactivo</option>
@@ -26,7 +26,7 @@
         <a href="{{ route('admin.usuarios.index') }}" class="btn-outline">Limpiar</a>
     </form>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+    <div class="card overflow-x-auto">
         <table class="tbl w-full">
             <thead>
                 <tr>
@@ -73,7 +73,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="tbl-td text-center text-gray-400 py-10">No se encontraron usuarios.</td>
+                    <td colspan="7" class="tbl-td text-center text-gray-500 py-10">No se encontraron usuarios.</td>
                 </tr>
             @endforelse
             </tbody>
