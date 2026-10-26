@@ -2,9 +2,9 @@
 @section('title', 'Redactar mensaje - D&L Quality Campus')
 @section('content')
 <div class="max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">Nuevo mensaje</h1>
+    <h1 class="font-display text-3xl font-semibold text-gray-900 mb-6">Nuevo mensaje</h1>
 
-    <form method="POST" action="{{ route('mensajes.store') }}" class="bg-white rounded-lg shadow p-6"
+    <form method="POST" action="{{ route('mensajes.store') }}" class="card p-6"
           x-data="{
             enviarATodos: true,
             buscando: '',
@@ -34,15 +34,15 @@
         @endif
 
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Curso</label>
+            <label class="form-label">Curso</label>
             <select name="curso_id" x-model="cursoId"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
+                    class="form-select" required>
                 <option value="">Seleccionar curso</option>
                 @foreach($cursos as $c)
                     <option value="{{ $c->id }}" {{ old('curso_id', $cursoId) == $c->id ? 'selected' : '' }}>{{ $c->titulo }}</option>
                 @endforeach
             </select>
-            @error('curso_id')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+            @error('curso_id')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
@@ -77,7 +77,7 @@
                                 class="w-full text-left px-3 py-2 text-sm hover:bg-dyl-orange-50 flex items-center justify-between">
                             <span>
                                 <span class="font-medium text-gray-900" x-text="user.name"></span>
-                                <span class="text-gray-400 ml-1.5 text-xs" x-text="user.email"></span>
+                                <span class="text-gray-500 ml-1.5 text-xs" x-text="user.email"></span>
                             </span>
                             <span x-show="seleccionados.find(s => s.id === user.id)" class="text-xs text-dyl-orange-700">Seleccionado</span>
                         </button>
@@ -90,25 +90,25 @@
                 <input type="hidden" name="destinatarios" value="">
             </template>
 
-            @error('destinatarios')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
-            @error('destinatarios.*')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+            @error('destinatarios')<p class="form-error">{{ $message }}</p>@enderror
+            @error('destinatarios.*')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Asunto</label>
-            <input type="text" name="asunto" value="{{ old('asunto') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>
-            @error('asunto')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+            <label class="form-label">Asunto</label>
+            <input type="text" name="asunto" value="{{ old('asunto') }}" class="form-input" required>
+            @error('asunto')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Mensaje</label>
-            <textarea name="mensaje" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required>{{ old('mensaje') }}</textarea>
-            @error('mensaje')<p class="text-dyl-graphite-900 font-semibold text-xs mt-1">{{ $message }}</p>@enderror
+            <label class="form-label">Mensaje</label>
+            <textarea name="mensaje" rows="6" class="form-input" required>{{ old('mensaje') }}</textarea>
+            @error('mensaje')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
         <div class="flex justify-between">
-            <a href="{{ route('mensajes.bandeja') }}" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</a>
-            <button type="submit" class="px-6 py-2 bg-dyl-orange-700 text-white rounded-lg text-sm hover:bg-dyl-orange-800">Enviar</button>
+            <a href="{{ route('mensajes.bandeja') }}" class="btn-ghost">Cancelar</a>
+            <button type="submit" class="btn-primary">Enviar</button>
         </div>
     </form>
 </div>
