@@ -22,27 +22,27 @@
     <div class="flex items-center gap-4 mb-8">
         <a href="{{ route('calificaciones.curso', $respuesta->actividad->leccion->modulo->curso) }}" class="text-gray-500 hover:text-gray-800 text-xl">&larr;</a>
         <div>
-            <p class="text-xs text-gray-500 uppercase tracking-wide">Calificando actividad</p>
-            <h1 class="text-2xl font-bold text-gray-900">{{ $respuesta->actividad->titulo }}</h1>
+            <p class="text-sm text-gray-500">Calificando actividad</p>
+            <h1 class="font-display text-3xl font-semibold text-gray-900 break-words">{{ $respuesta->actividad->titulo }}</h1>
         </div>
     </div>
 
     {{-- Tarjetas informativas --}}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white p-4 rounded-lg shadow text-center">
-            <p class="text-xs text-gray-500 uppercase mb-1">Estudiante</p>
+        <div class="card p-4 text-center">
+            <p class="text-sm text-gray-500 mb-1">Estudiante</p>
             <p class="font-semibold text-gray-900 text-sm">{{ $respuesta->usuario->name }}</p>
         </div>
-        <div class="bg-white p-4 rounded-lg shadow text-center">
-            <p class="text-xs text-gray-500 uppercase mb-1">Tipo</p>
+        <div class="card p-4 text-center">
+            <p class="text-sm text-gray-500 mb-1">Tipo</p>
             <p class="font-semibold text-gray-900 text-sm">{{ ucfirst($respuesta->actividad->tipo) }}</p>
         </div>
-        <div class="bg-white p-4 rounded-lg shadow text-center">
-            <p class="text-xs text-gray-500 uppercase mb-1">Puntaje máximo</p>
+        <div class="card p-4 text-center">
+            <p class="text-sm text-gray-500 mb-1">Puntaje máximo</p>
             <p class="font-semibold text-gray-900 text-sm">{{ $respuesta->actividad->puntaje_maximo }} pts</p>
         </div>
-        <div class="bg-white p-4 rounded-lg shadow text-center">
-            <p class="text-xs text-gray-500 uppercase mb-1">Enviado</p>
+        <div class="card p-4 text-center">
+            <p class="text-sm text-gray-500 mb-1">Enviado</p>
             <p class="font-semibold text-gray-900 text-sm">{{ $respuesta->fecha_envio->format('d/m/Y H:i') }}</p>
         </div>
     </div>
@@ -51,8 +51,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 
         {{-- Formulario de calificación --}}
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-lg font-bold text-gray-900 mb-4">Calificación</h2>
+        <div class="card p-6">
+            <h2 class="font-display text-2xl font-semibold text-gray-900 mb-4">Calificación</h2>
 
             @if($errors->any())
                 <div class="alert alert-error mb-4">
@@ -117,17 +117,17 @@
 
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Retroalimentación <span class="text-gray-400 font-normal">(opcional)</span>
+                        Retroalimentación <span class="text-gray-500 font-normal">(opcional)</span>
                     </label>
                     <textarea name="feedback" rows="5"
                               placeholder="Comentarios para el estudiante..."
-                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-dyl-orange-600 resize-none">{{ old('feedback', $respuesta->feedback) }}</textarea>
+                              class="form-input resize-none">{{ old('feedback', $respuesta->feedback) }}</textarea>
                 </div>
 
                 <button type="submit"
                         :disabled="!todosSeleccionados"
                         :class="todosSeleccionados ? 'bg-dyl-orange-700 hover:bg-dyl-orange-800 cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
-                        class="w-full text-white py-2.5 rounded-lg font-medium transition-colors">
+                        class="btn btn-lg w-full text-white">
                     <span x-show="todosSeleccionados">Guardar Calificación</span>
                     <span x-show="!todosSeleccionados">Selecciona un nivel por criterio para continuar</span>
                 </button>
@@ -149,23 +149,23 @@
                                max="{{ $respuesta->actividad->puntaje_maximo }}"
                                step="0.01"
                                value="{{ old('calificacion', $respuesta->calificacion) }}"
-                               class="w-28 border border-gray-300 rounded-lg px-3 py-2 text-center text-2xl font-bold focus:ring-2 focus:ring-dyl-orange-600 focus:border-dyl-orange-600"
+                               class="form-input w-28 text-center text-2xl font-bold"
                                required>
-                        <span class="text-gray-400 text-lg">/ {{ number_format($respuesta->actividad->puntaje_maximo, 2) }}</span>
+                        <span class="text-gray-500 text-lg">/ {{ number_format($respuesta->actividad->puntaje_maximo, 2) }}</span>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Retroalimentación <span class="text-gray-400 font-normal">(opcional)</span>
+                        Retroalimentación <span class="text-gray-500 font-normal">(opcional)</span>
                     </label>
                     <textarea name="feedback" rows="7"
                               placeholder="Escribe comentarios para el estudiante..."
-                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-dyl-orange-600 resize-none">{{ old('feedback', $respuesta->feedback) }}</textarea>
+                              class="form-input resize-none">{{ old('feedback', $respuesta->feedback) }}</textarea>
                 </div>
 
                 <button type="submit"
-                        class="w-full bg-dyl-orange-700 text-white py-2.5 rounded-lg hover:bg-dyl-orange-800 font-medium transition-colors">
+                        class="btn-primary btn-lg w-full">
                     Guardar Calificación
                 </button>
             </form>
@@ -179,8 +179,8 @@
         </div>
 
         {{-- Respuesta del estudiante (texto + adjuntos no-PDF) --}}
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-lg font-bold text-gray-900 mb-4">Respuesta del Estudiante</h2>
+        <div class="card p-6">
+            <h2 class="font-display text-2xl font-semibold text-gray-900 mb-4">Respuesta del Estudiante</h2>
 
             @if($respuesta->actividad->descripcion)
                 <div class="bg-dyl-graphite-50 rounded p-3 mb-4 text-sm text-dyl-graphite-700">
@@ -189,15 +189,14 @@
                 </div>
             @endif
 
-            <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-800 whitespace-pre-wrap min-h-32 leading-relaxed">
-                {{ $respuesta->respuesta ?: '— Sin texto —' }}
-            </div>
+            {{-- Una sola línea: whitespace-pre-wrap respetaría la indentación del código como parte del texto --}}
+            <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-800 whitespace-pre-wrap min-h-32 leading-relaxed">{{ $respuesta->respuesta ?: '— Sin texto —' }}</div>
 
             {{-- Adjuntos que no son PDF (imagen, video, otros) --}}
             @if($adjunto && !$esPdf)
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide">Archivo adjunto</p>
+                    <p class="text-sm text-gray-500">Archivo adjunto</p>
                     <a href="{{ $urlAdj }}" target="_blank" rel="noopener noreferrer" download
                        class="inline-flex items-center gap-1.5 text-dyl-orange-700 hover:text-dyl-orange-800 text-xs font-medium">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,7 +282,7 @@
 
     {{-- Visor de PDF a ancho completo --}}
     @if($esPdf)
-    <div class="bg-white rounded-lg shadow p-5" x-data="{ alto: 75 }">
+    <div class="card p-5" x-data="{ alto: 75 }">
         <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-dyl-graphite-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
