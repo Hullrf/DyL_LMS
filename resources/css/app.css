@@ -295,6 +295,10 @@ html.dark { color-scheme: dark; }
 .dark .border-dyl-orange-200, .dark .border-dyl-orange-300 { border-color: rgba(249,115,22,.4); }
 .dark .hover\:bg-gray-100:hover, .dark .hover\:bg-gray-200:hover, .dark .hover\:bg-gray-300:hover,
 .dark .hover\:bg-dyl-orange-50:hover { background-color: rgba(255,255,255,.07); }
+/* Hover de superficies grafito (p. ej. filas de actividad en el editor de curso): sin esta regla el hover claro
+   (#E2E8F0) quedaba casi blanco con texto claro. Un tono apenas más claro que el fondo en reposo (#334155 / #0f172a). */
+.dark .hover\:bg-dyl-graphite-200:hover { background-color: #3f4f69; }
+.dark .hover\:bg-dyl-graphite-50:hover { background-color: #1e293b; }
 
 /* Modo oscuro — controles sin clase propia y variantes con opacidad */
 .dark textarea, .dark select,
