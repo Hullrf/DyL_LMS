@@ -12,7 +12,7 @@
 
         {{-- Formulario de datos --}}
         <div class="card p-6">
-            <h2 class="text-lg font-bold text-gray-900 mb-1">{{ $actividad->titulo }}</h2>
+            <h2 class="font-display text-2xl font-semibold text-gray-900 mb-1">{{ $actividad->titulo }}</h2>
             <span class="badge mb-4
                 @if($actividad->tipo === 'cuestionario') badge-blue
                 @elseif($actividad->tipo === 'ensayo') bg-dyl-graphite-100 text-dyl-graphite-600
@@ -81,7 +81,7 @@
                 </div>
                 @endif
                 <div class="mb-3">
-                    <label for="duracion_minutos" class="form-label">Tiempo límite <span class="text-gray-400 font-normal">(minutos, opcional)</span></label>
+                    <label for="duracion_minutos" class="form-label">Tiempo límite <span class="text-gray-500 font-normal">(minutos, opcional)</span></label>
                     <input type="number" name="duracion_minutos" id="duracion_minutos"
                            value="{{ old('duracion_minutos', $actividad->duracion_minutos) }}"
                            min="1" placeholder="Sin límite"
@@ -89,19 +89,19 @@
                 </div>
                 <div class="grid grid-cols-3 gap-4 mb-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Ronda</label>
+                        <label class="form-label">Ronda</label>
                         <input type="number" name="ronda" min="1" max="9" value="{{ old('ronda', $actividad->ronda) }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                               class="form-input">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">N.º de actividad</label>
+                        <label class="form-label">N.º de actividad</label>
                         <input type="number" name="numero_actividad" min="1" max="99" value="{{ old('numero_actividad', $actividad->numero_actividad) }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                               class="form-input">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Semana</label>
+                        <label class="form-label">Semana</label>
                         <input type="number" name="semana" min="1" max="52" value="{{ old('semana', $actividad->semana) }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                               class="form-input">
                     </div>
                 </div>
                 <div class="mb-4">
@@ -119,7 +119,7 @@
                         $rawActual = $actividad->getRawOriginal('permitir_descarga_adjuntos');
                         $valorActual = old('permitir_descarga_adjuntos', is_null($rawActual) ? 'leccion' : ($rawActual ? '1' : '0'));
                     @endphp
-                    <select name="permitir_descarga_adjuntos" class="text-sm border border-gray-300 rounded-lg px-3 py-2">
+                    <select name="permitir_descarga_adjuntos" class="form-select w-auto">
                         <option value="1" {{ $valorActual === '1' ? 'selected' : '' }}>Permitir descarga</option>
                         <option value="0" {{ $valorActual === '0' ? 'selected' : '' }}>Bloquear descarga</option>
                         <option value="leccion" {{ $valorActual === 'leccion' ? 'selected' : '' }}>Usar config. de la lección</option>
@@ -209,7 +209,7 @@
 
                 {{-- Título --}}
                 <div>
-                    <label class="form-label">Título del recurso <span class="text-gray-400 font-normal">(opcional — se usará el nombre del archivo si se deja vacío)</span></label>
+                    <label class="form-label">Título del recurso <span class="text-gray-500 font-normal">(opcional — se usará el nombre del archivo si se deja vacío)</span></label>
                     <input type="text" name="titulo" value="{{ old('titulo') }}" class="form-input"
                            placeholder="Ej: Guía ISO 9001 v2015">
                     @error('titulo')<p class="form-error">{{ $message }}</p>@enderror
@@ -217,7 +217,7 @@
 
                 {{-- Descripción corta (opcional) --}}
                 <div>
-                    <label class="form-label">Descripción breve <span class="text-gray-400 font-normal">(opcional)</span></label>
+                    <label class="form-label">Descripción breve <span class="text-gray-500 font-normal">(opcional)</span></label>
                     <input type="text" name="descripcion" value="{{ old('descripcion') }}" class="form-input"
                            placeholder="Para qué sirve este recurso">
                 </div>
@@ -309,7 +309,7 @@
             @php $recursos = $actividad->recursos; @endphp
             @if($recursos->isNotEmpty())
                 <div class="mt-5 pt-4 border-t border-gray-100 space-y-2">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Recursos agregados ({{ $recursos->count() }})</p>
+                    <p class="text-sm font-medium text-gray-500 mb-2">Recursos agregados ({{ $recursos->count() }})</p>
                     @foreach($recursos as $recurso)
                     <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg group">
                         <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-dyl-graphite-500"
@@ -318,7 +318,7 @@
                         </svg>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-gray-800 truncate">{{ $recurso->titulo }}</p>
-                            <p class="text-xs text-gray-400 capitalize">{{ $recurso->tipo }}</p>
+                            <p class="text-xs text-gray-500 capitalize">{{ $recurso->tipo }}</p>
                         </div>
                         <form action="{{ route('recursos.destroy', $recurso) }}" method="POST"
                               onsubmit="return confirm('¿Eliminar este recurso?');" class="shrink-0">
@@ -359,7 +359,7 @@
 
             {{-- Agregar pregunta --}}
             <div class="card p-6 mb-4">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Agregar Pregunta</h3>
+                <h3 class="font-display text-2xl font-semibold text-gray-900 mb-4">Agregar pregunta</h3>
                 <form action="{{ route('preguntas.store', $actividad) }}" method="POST" enctype="multipart/form-data"
                       x-data="{ tipo: 'opcion_multiple', preview: null, correctaVF: '', errorImagen: '' }">
                     @csrf
@@ -374,7 +374,7 @@
                     <div class="mb-3">
                         <label class="form-label">
                             Imagen de apoyo
-                            <span class="text-gray-400 font-normal">(opcional)</span>
+                            <span class="text-gray-500 font-normal">(opcional)</span>
                         </label>
                         <input type="file" name="imagen" accept="image/*"
                                class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
@@ -419,7 +419,7 @@
                                        : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                                 <input type="radio" name="correcta_vf" value="verdadero"
                                        x-model="correctaVF" class="sr-only">
-                                <span class="text-base" :class="correctaVF === 'verdadero' ? 'text-dyl-orange-700' : 'text-gray-300'">✓</span>
+                                <span class="text-base" :class="correctaVF === 'verdadero' ? 'text-dyl-orange-700' : 'text-gray-500'">✓</span>
                                 Verdadero
                             </label>
                             <label class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors"
@@ -428,7 +428,7 @@
                                        : 'border-gray-200 text-gray-500 hover:border-gray-300'">
                                 <input type="radio" name="correcta_vf" value="falso"
                                        x-model="correctaVF" class="sr-only">
-                                <span class="text-base" :class="correctaVF === 'falso' ? 'text-dyl-graphite-600' : 'text-gray-300'">✗</span>
+                                <span class="text-base" :class="correctaVF === 'falso' ? 'text-dyl-graphite-600' : 'text-gray-500'">✗</span>
                                 Falso
                             </label>
                         </div>
@@ -442,7 +442,7 @@
                                    class="w-4 h-4 rounded text-dyl-orange-700">
                             <span class="text-sm text-gray-700">
                                 Permite <strong>más de una respuesta correcta</strong>
-                                <span class="text-gray-400">(puntaje parcial por cada acierto)</span>
+                                <span class="text-gray-500">(puntaje parcial por cada acierto)</span>
                             </span>
                         </label>
                     </div>
@@ -452,7 +452,7 @@
 
             {{-- Importar desde Google Forms --}}
             <div class="card p-6 mb-4">
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Importar desde Google Forms</h3>
+                <h3 class="font-display text-2xl font-semibold text-gray-900 mb-2">Importar desde Google Forms</h3>
                 <p class="text-xs text-gray-500 mb-3">
                     Exporta tu Google Form a JSON con la plantilla de Apps Script en
                     <code class="bg-gray-100 px-1 rounded">docs/apps-script/</code> y sube el archivo aquí.
@@ -466,10 +466,10 @@
                     Descargar archivo de ejemplo
                 </a>
                 <form action="{{ route('preguntas.importar', $actividad) }}" method="POST" enctype="multipart/form-data"
-                      class="flex gap-2 items-start">
+                      class="flex flex-wrap gap-2 items-start">
                     @csrf
                     <input type="file" name="archivo" accept=".json"
-                           class="flex-1 text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
+                           class="flex-1 min-w-0 text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer"
                            required>
                     <button type="submit" class="btn bg-dyl-orange-700 text-white hover:bg-dyl-orange-800 shrink-0">Importar</button>
                 </form>
@@ -482,7 +482,7 @@
                 <div class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl">
                     <div class="flex items-start justify-between gap-4">
                         <div class="flex-1">
-                            <span class="text-xs font-medium text-gray-500 uppercase">
+                            <span class="text-sm font-medium text-gray-500">
                                 {{ str_replace('_', ' ', $pregunta->tipo) }}
                             </span>
                             <span class="ml-1 badge badge-gold text-xs">{{ $pregunta->puntaje }} pts</span>
@@ -537,7 +537,7 @@
                             <textarea name="pregunta_texto" rows="2" class="form-textarea" required>{{ $pregunta->pregunta_texto }}</textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Cambiar imagen <span class="text-gray-400 font-normal">(opcional)</span></label>
+                            <label class="form-label">Cambiar imagen <span class="text-gray-500 font-normal">(opcional)</span></label>
                             <input type="file" name="imagen" accept="image/*"
                                    class="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dyl-orange-50 file:text-dyl-orange-700 hover:file:bg-dyl-orange-100 cursor-pointer">
                             <p class="form-hint">JPG, PNG, WebP — máx. 4 MB</p>
@@ -590,7 +590,7 @@
                                     <form action="{{ route('opciones.marcarCorrecta', $opcion) }}" method="POST">
                                         @csrf @method('PUT')
                                         <button type="submit"
-                                                class="text-lg leading-none {{ $opcion->es_correcta ? 'text-dyl-orange-700 font-bold' : 'text-gray-300 hover:text-gray-400' }}"
+                                                class="text-lg leading-none {{ $opcion->es_correcta ? 'text-dyl-orange-700 font-bold' : 'text-gray-500 hover:text-gray-700' }}"
                                                 title="{{ $opcion->es_correcta ? 'Correcta' : 'Marcar como correcta' }}">
                                             {{ $opcion->es_correcta ? '✓' : '○' }}
                                         </button>
@@ -641,7 +641,7 @@
 
                 {{-- Instrucciones y respuestas --}}
                 <div class="card p-8">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Instrucciones para estudiantes</h3>
+                    <h3 class="font-display text-2xl font-semibold text-gray-900 mb-2">Instrucciones para estudiantes</h3>
                     <p class="text-gray-600 mb-4">
                         Esta actividad de tipo <strong>{{ $actividad->tipo }}</strong> requiere calificación manual por parte del instructor.
                     </p>
@@ -763,7 +763,7 @@
 
                     {{-- Encabezado con toggle --}}
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <h3 class="font-display text-2xl font-semibold text-gray-900 flex items-center gap-2">
                             <svg class="w-5 h-5 text-dyl-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                             </svg>
@@ -818,16 +818,16 @@
                                     </div>
 
                                     <div class="space-y-2 mb-3">
-                                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Niveles (menor → mayor rendimiento)</p>
+                                        <p class="text-sm font-medium text-gray-500">Niveles (menor → mayor rendimiento)</p>
                                         <template x-for="(nivel, ni) in criterio.niveles" :key="ni">
                                             <div class="flex gap-2 items-start bg-white border border-gray-200 rounded-lg p-3">
-                                                <span class="text-xs text-gray-400 mt-2 w-5 shrink-0" x-text="ni+1+'.'"></span>
+                                                <span class="text-xs text-gray-500 mt-2 w-5 shrink-0" x-text="ni+1+'.'"></span>
                                                 <textarea x-model="nivel.descripcion"
                                                           placeholder="Descripción del nivel..."
                                                           rows="2"
                                                           class="form-input flex-1 text-sm resize-none"></textarea>
                                                 <div class="w-24 shrink-0">
-                                                    <label class="text-xs text-gray-400 block mb-1">Puntos</label>
+                                                    <label class="text-xs text-gray-500 block mb-1">Puntos</label>
                                                     <input type="number" x-model="nivel.puntos"
                                                            step="0.01" min="0" max="99.99"
                                                            placeholder="0.00"
@@ -854,7 +854,7 @@
                             </template>
 
                             <div x-show="criterios.length === 0"
-                                 class="text-center py-6 text-gray-400 text-sm border border-dashed border-gray-300 rounded-xl">
+                                 class="text-center py-6 text-gray-500 text-sm border border-dashed border-gray-300 rounded-xl">
                                 Sin criterios. Agrega uno o importa desde Excel.
                             </div>
                         </div>
@@ -898,7 +898,7 @@
                          class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
                          @click.self="modalImport = false">
                         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">Importar rúbrica desde Excel</h3>
+                            <h3 class="font-display text-2xl font-semibold text-gray-900 mb-4">Importar rúbrica desde Excel</h3>
 
                             <div class="mb-4 p-4 bg-dyl-graphite-50 border border-dyl-graphite-200 rounded-xl text-sm text-dyl-graphite-700 space-y-1">
                                 <p class="font-semibold">Formato del archivo:</p>

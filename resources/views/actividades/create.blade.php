@@ -5,15 +5,15 @@
     <div class="mb-4">
         <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">&larr; Volver al curso</a>
     </div>
-    <div class="bg-white rounded-lg shadow p-8">
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">Nueva Actividad</h1>
+    <div class="card p-8">
+        <h1 class="font-display text-3xl font-semibold text-gray-900 mb-2">Nueva actividad</h1>
         <p class="text-gray-500 text-sm mb-6">Lección: <strong>{{ $leccion->titulo }}</strong></p>
 
         <form action="{{ route('actividades.store', $leccion) }}" method="POST" x-data="{ tipo: 'cuestionario' }">
             @csrf
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de actividad</label>
-                <select name="tipo" x-model="tipo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                <label class="form-label">Tipo de actividad</label>
+                <select name="tipo" x-model="tipo" class="form-select">
                     <optgroup label="Con calificación">
                         <option value="cuestionario">Cuestionario (calificación automática)</option>
                         <option value="ensayo">Ensayo (calificación manual)</option>
@@ -43,13 +43,13 @@
                 </p>
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
+                <label class="form-label">Título</label>
                 <input type="text" name="titulo" value="{{ old('titulo') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
+                       class="form-input" required>
                 @error('titulo')<p class="text-dyl-graphite-900 font-semibold text-sm mt-1">{{ $message }}</p>@enderror
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Descripción / Instrucciones</label>
+                <label class="form-label">Descripción / Instrucciones</label>
                 <div id="quill-descripcion" class="h-48 border border-gray-300 rounded-lg"></div>
                 <input type="hidden" name="descripcion" id="descripcion" value="{{ old('descripcion') }}">
             </div>
@@ -57,29 +57,29 @@
                  x-show="!['ejercicio','lectura','encuesta','reflexion'].includes(tipo)"
                  x-cloak>
                 <div>
-                    <label for="puntaje_maximo" class="block text-sm font-medium text-gray-700 mb-2">Puntaje máximo</label>
+                    <label for="puntaje_maximo" class="form-label">Puntaje máximo</label>
                     <input type="number" name="puntaje_maximo" id="puntaje_maximo" value="{{ old('puntaje_maximo', 5.00) }}"
                            min="0.01" step="0.01"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                           class="form-input">
                 </div>
                 <div>
-                    <label for="duracion_minutos" class="block text-sm font-medium text-gray-700 mb-2">Tiempo límite (minutos)</label>
+                    <label for="duracion_minutos" class="form-label">Tiempo límite (minutos)</label>
                     <input type="number" name="duracion_minutos" id="duracion_minutos" value="{{ old('duracion_minutos') }}" min="1" placeholder="Sin límite"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                           class="form-input">
                 </div>
             </div>
             <div class="mb-6 p-5 bg-dyl-graphite-50 rounded-xl border border-dyl-graphite-200" x-show="tipo === 'cuestionario'" x-cloak>
                 <p class="text-sm font-semibold text-gray-800 mb-3">Intentos del cuestionario</p>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Intentos permitidos</label>
+                        <label class="form-label">Intentos permitidos</label>
                         <input type="number" name="intentos_permitidos" value="{{ old('intentos_permitidos', 1) }}"
                                min="1" max="20"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                               class="form-input">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cuando hay varios intentos, ¿cuál cuenta?</label>
-                        <select name="criterio_calificacion_intentos" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                        <label class="form-label">Cuando hay varios intentos, ¿cuál cuenta?</label>
+                        <select name="criterio_calificacion_intentos" class="form-select">
                             <option value="mas_alto" {{ old('criterio_calificacion_intentos', 'mas_alto') === 'mas_alto' ? 'selected' : '' }}>El intento más alto</option>
                             <option value="ultimo" {{ old('criterio_calificacion_intentos') === 'ultimo' ? 'selected' : '' }}>El último intento</option>
                         </select>
@@ -97,27 +97,27 @@
             </div>
             <div class="mb-6 p-5 bg-dyl-graphite-50 rounded-xl border border-dyl-graphite-200"
                  x-show="['ensayo','tarea','practica'].includes(tipo)" x-cloak>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Máximo de archivos por entrega</label>
+                <label class="form-label">Máximo de archivos por entrega</label>
                 <input type="number" name="max_archivos_adjuntos" value="{{ old('max_archivos_adjuntos', 1) }}"
                        min="1" max="10"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                       class="form-input">
                 <p class="text-xs text-gray-500 mt-1.5">Cuántos archivos puede adjuntar el estudiante en un mismo envío (1–10).</p>
             </div>
             <div class="grid grid-cols-3 gap-4 mb-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Ronda</label>
+                    <label class="form-label">Ronda</label>
                     <input type="number" name="ronda" min="1" max="9" value="{{ old('ronda') }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                           class="form-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">N.º de actividad</label>
+                    <label class="form-label">N.º de actividad</label>
                     <input type="number" name="numero_actividad" min="1" max="99" value="{{ old('numero_actividad') }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                           class="form-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Semana</label>
+                    <label class="form-label">Semana</label>
                     <input type="number" name="semana" min="1" max="52" value="{{ old('semana') }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                           class="form-input">
                 </div>
             </div>
             <div class="mb-6">
@@ -131,17 +131,17 @@
             <div class="mb-6 p-5 bg-gray-50 rounded-xl border border-gray-200">
                 <p class="text-sm font-semibold text-gray-800">Permitir descarga de archivos adjuntos</p>
                 <p class="text-xs text-gray-500 mt-1 mb-3">Si se desactiva, los estudiantes solo podrán visualizar los documentos en un visor integrado sin opción de descarga.</p>
-                <select name="permitir_descarga_adjuntos" class="text-sm border border-gray-300 rounded-lg px-3 py-2">
+                <select name="permitir_descarga_adjuntos" class="form-select w-auto">
                     <option value="1" {{ old('permitir_descarga_adjuntos') === '1' ? 'selected' : '' }}>Permitir descarga</option>
                     <option value="leccion" {{ old('permitir_descarga_adjuntos') !== '0' ? 'selected' : '' }}>Usar config. de la lección</option>
                     <option value="0" {{ old('permitir_descarga_adjuntos') === '0' ? 'selected' : '' }}>Bloquear descarga</option>
                 </select>
             </div>
             <div class="flex gap-4">
-                <button type="submit" class="bg-dyl-orange-700 text-white px-6 py-2 rounded-lg hover:bg-dyl-orange-800">
+                <button type="submit" class="btn-primary">
                     Crear y configurar
                 </button>
-                <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">
+                <a href="{{ route('cursos.edit', $leccion->modulo->curso) }}" class="btn-ghost">
                     Cancelar
                 </a>
             </div>

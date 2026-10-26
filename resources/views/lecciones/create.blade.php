@@ -5,8 +5,8 @@
     <div class="mb-4">
         <a href="{{ route('cursos.edit', $modulo->curso) }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">&larr; Volver al curso</a>
     </div>
-    <div class="bg-white rounded-lg shadow p-8">
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">Nueva Lección</h1>
+    <div class="card p-8">
+        <h1 class="font-display text-3xl font-semibold text-gray-900 mb-2">Nueva lección</h1>
         <p class="text-gray-500 text-sm mb-6">Módulo: <strong>{{ $modulo->titulo }}</strong></p>
 
         <form id="form-leccion" action="{{ route('lecciones.store', $modulo) }}" method="POST"
@@ -14,15 +14,15 @@
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Título de la lección</label>
+                    <label class="form-label">Título de la lección</label>
                     <input type="text" name="titulo" value="{{ old('titulo') }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
+                           class="form-input" required>
                     @error('titulo')<p class="form-error text-sm">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                    <label class="form-label">Tipo</label>
                     <select name="tipo" x-model="tipo"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                            class="form-select">
                         <option value="texto">Texto</option>
                         <option value="video">Video</option>
                         <option value="mixto">Mixto (texto + video)</option>
@@ -32,20 +32,20 @@
 
             {{-- URL de video (visible cuando tipo = video o mixto) --}}
             <div class="mb-6" x-show="tipo === 'video' || tipo === 'mixto'" x-cloak>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="form-label">
                     URL del video
-                    <span class="text-gray-400 font-normal">(YouTube, Vimeo o MP4 directo)</span>
+                    <span class="text-gray-500 font-normal">(YouTube, Vimeo o MP4 directo)</span>
                 </label>
                 <input type="url" name="video_url" value="{{ old('video_url') }}"
                        placeholder="https://www.youtube.com/watch?v=..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600">
+                       class="form-input">
                 @error('video_url')<p class="form-error text-sm">{{ $message }}</p>@enderror
             </div>
 
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Duración estimada (minutos)</label>
+                <label class="form-label">Duración estimada (minutos)</label>
                 <input type="number" name="duracion_minutos" value="{{ old('duracion_minutos', 30) }}" min="1"
-                       class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dyl-orange-600" required>
+                       class="form-input w-48" required>
             </div>
 
             {{-- Toggle: permitir descarga de adjuntos (default para actividades de esta lección) --}}
@@ -64,10 +64,10 @@
             </div>
 
             <div class="mb-6" x-show="tipo !== 'video'" x-cloak>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Contenido</label>
+                <label class="form-label">Contenido</label>
                 <div id="quill-editor" class="h-64 border border-gray-300 rounded-lg"></div>
                 <input type="hidden" name="contenido_html" id="contenido_html">
-                <p class="mt-1.5 text-xs text-gray-400 flex items-center gap-1">
+                <p class="mt-1.5 text-xs text-gray-500 flex items-center gap-1">
                     <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -78,10 +78,10 @@
             </div>{{-- /x-show contenido --}}
 
             <div class="flex gap-4">
-                <button type="submit" id="btn-guardar" class="bg-dyl-orange-700 text-white px-6 py-2 rounded-lg hover:bg-dyl-orange-800">
-                    Crear Lección
+                <button type="submit" id="btn-guardar" class="btn-primary">
+                    Crear lección
                 </button>
-                <a href="{{ route('cursos.edit', $modulo->curso) }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">
+                <a href="{{ route('cursos.edit', $modulo->curso) }}" class="btn-ghost">
                     Cancelar
                 </a>
             </div>
