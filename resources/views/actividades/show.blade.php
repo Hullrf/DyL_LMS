@@ -122,6 +122,20 @@
              }
          },
 
+         // Bloquea clic derecho y Ctrl+S/P dentro del PDF cuando el navegador deja acceder a su documento.
+         // Es un metodo y no una expresion inline en el atributo de carga del iframe: Alpine evalua expresiones, no
+         // sentencias, y el try inline fallaba con el error Unexpected token try (la proteccion nunca se aplicaba).
+         // OJO: este bloque vive dentro de un atributo HTML con comillas dobles; no uses comillas dobles aqui.
+         protegerVisor(marco) {
+             try {
+                 const d = marco.contentDocument || marco.contentWindow.document;
+                 d.addEventListener('contextmenu', e => e.preventDefault(), {capture: true});
+                 d.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && ['s', 'p', 'S', 'P'].includes(e.key)) e.preventDefault(); }, {capture: true});
+             } catch (e) {
+                 // El visor nativo de PDF puede no exponer su documento: ahi quedan la marca de agua y el atajo global de teclado.
+             }
+         },
+
          loadLib(src, global) {
              return new Promise((resolve, reject) => {
                  if (window[global]) return resolve();
@@ -330,7 +344,7 @@
                     <div x-show="visorTipo === 'pdf'" class="w-full min-h-[75vh] select-none relative" @contextmenu.prevent>
                         <iframe :src="visorTipo === 'pdf' ? visorUrl + '#toolbar=0&navpanes=0' : ''"
                                 class="w-full h-full min-h-[75vh]" frameborder="0"
-                                @load="try { const d = $el.contentDocument || $el.contentWindow.document; d.addEventListener('contextmenu', e => e.preventDefault(), {capture: true}); d.addEventListener('keydown', e => { if((e.ctrlKey||e.metaKey)&&['s','p','S','P'].includes(e.key)) e.preventDefault(); }, {capture: true}); } catch(e) {}"></iframe>
+                                @load="protegerVisor($el)"></iframe>
                         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden"
                              style="background-image: repeating-linear-gradient(35deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 100px), repeating-linear-gradient(145deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 100px);">
                         </div>
