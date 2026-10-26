@@ -4,11 +4,11 @@
 @section('content')
 <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">Seguimiento</h1>
+        <h1 class="font-display text-3xl font-semibold text-gray-900">Seguimiento</h1>
         <p class="text-sm text-gray-500">{{ $curso->titulo }}</p>
     </div>
     @if(!$error && $datos && $datos['filas']->isNotEmpty())
-        <a href="{{ route('reportes.seguimiento.csv', $curso) }}" class="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Exportar CSV</a>
+        <a href="{{ route('reportes.seguimiento.csv', $curso) }}" class="btn-outline">Exportar CSV</a>
     @endif
 </div>
 
@@ -19,34 +19,34 @@
     </div>
 @else
     <div class="mb-6 grid grid-cols-3 gap-4">
-        @foreach(['riesgo' => 'text-red-700', 'atencion' => 'text-dyl-orange-700', 'ok' => 'text-dyl-graphite-700'] as $nivel => $color)
-            <div class="rounded-xl bg-white p-4 text-center shadow">
-                <p class="text-xs uppercase tracking-wide text-gray-400">{{ $niveles[$nivel] }}</p>
-                <p class="mt-1 text-3xl font-bold {{ $color }}">{{ $datos['resumen'][$nivel] }}</p>
+        @foreach(['riesgo' => 'text-gray-900', 'atencion' => 'text-dyl-orange-700', 'ok' => 'text-dyl-graphite-700'] as $nivel => $color)
+            <div class="card p-4 text-center">
+                <p class="text-sm text-gray-500">{{ $niveles[$nivel] }}</p>
+                <p class="mt-1 font-display text-4xl font-semibold tabular-nums {{ $color }}">{{ $datos['resumen'][$nivel] }}</p>
             </div>
         @endforeach
     </div>
     <p class="mb-6 -mt-3 text-xs text-gray-500">La última conexión se registra desde la actualización de octubre de 2026; los estudiantes sin registro aparecerán como «Atención» hasta su próxima visita.</p>
 
-    <form method="POST" action="{{ route('reportes.seguimiento.umbrales', $curso) }}" class="mb-6 flex flex-wrap items-end gap-3 rounded-xl bg-white p-4 shadow text-sm">
+    <form method="POST" action="{{ route('reportes.seguimiento.umbrales', $curso) }}" class="card mb-6 flex flex-wrap items-end gap-3 p-4 text-sm">
         @csrf @method('PUT')
         <label class="text-gray-700">Días sin ingresar
-            <input type="number" min="1" max="90" name="seguimiento_dias_sin_acceso" value="{{ old('seguimiento_dias_sin_acceso', $datos['umbrales']['dias_sin_acceso']) }}" class="mt-1 block w-24 rounded-lg border-gray-300 text-sm">
+            <input type="number" min="1" max="90" name="seguimiento_dias_sin_acceso" value="{{ old('seguimiento_dias_sin_acceso', $datos['umbrales']['dias_sin_acceso']) }}" class="form-input mt-1 block w-24">
         </label>
         <label class="text-gray-700">Entregas atrasadas (mínimo)
-            <input type="number" min="1" max="20" name="seguimiento_max_atrasadas" value="{{ old('seguimiento_max_atrasadas', $datos['umbrales']['max_atrasadas']) }}" class="mt-1 block w-24 rounded-lg border-gray-300 text-sm">
+            <input type="number" min="1" max="20" name="seguimiento_max_atrasadas" value="{{ old('seguimiento_max_atrasadas', $datos['umbrales']['max_atrasadas']) }}" class="form-input mt-1 block w-24">
         </label>
-        <button class="rounded-lg bg-gray-100 px-4 py-2 hover:bg-gray-200">Guardar umbrales</button>
-        @error('seguimiento_dias_sin_acceso')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
-        @error('seguimiento_max_atrasadas')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
+        <button class="btn-ghost">Guardar umbrales</button>
+        @error('seguimiento_dias_sin_acceso')<span class="text-xs font-semibold text-gray-900">{{ $message }}</span>@enderror
+        @error('seguimiento_max_atrasadas')<span class="text-xs font-semibold text-gray-900">{{ $message }}</span>@enderror
     </form>
 
     @if($datos['filas']->isEmpty())
-        <div class="rounded-xl bg-white p-8 text-center text-gray-500 shadow">Aún no hay estudiantes inscritos.</div>
+        <div class="card p-8 text-center text-gray-500">Aún no hay estudiantes inscritos.</div>
     @else
-        <div class="overflow-x-auto rounded-xl bg-white shadow">
+        <div class="card overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-gray-50 text-left text-xs uppercase text-gray-500">
+                <thead class="bg-gray-50 text-left text-sm text-gray-500">
                     <tr>
                         <th scope="col" class="px-4 py-3">Estudiante</th><th scope="col" class="px-4 py-3">Nivel</th><th scope="col" class="px-4 py-3">Progreso</th>
                         <th scope="col" class="px-4 py-3">Promedio</th><th scope="col" class="px-4 py-3">Atrasadas</th><th scope="col" class="px-4 py-3">Último acceso</th><th scope="col" class="px-4 py-3">Señales</th>
@@ -58,7 +58,7 @@
                             <td class="px-4 py-3 text-gray-900">{{ $f->usuario->name }}</td>
                             <td class="px-4 py-3">
                                 <span class="rounded-full px-2.5 py-0.5 text-xs font-medium
-                                    {{ $f->nivel === 'riesgo' ? 'bg-red-100 text-red-800' : ($f->nivel === 'atencion' ? 'bg-dyl-orange-100 text-dyl-orange-800' : 'bg-dyl-graphite-100 text-dyl-graphite-700') }}">
+                                    {{ $f->nivel === 'riesgo' ? 'bg-dyl-graphite-800 text-white' : ($f->nivel === 'atencion' ? 'bg-dyl-orange-100 text-dyl-orange-800' : 'bg-dyl-graphite-100 text-dyl-graphite-700') }}">
                                     {{ $niveles[$f->nivel] }}
                                 </span>
                             </td>
