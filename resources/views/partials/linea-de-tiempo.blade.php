@@ -16,9 +16,9 @@
 @endphp
 
 @if($atrasadas->isNotEmpty())
-<div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
-    <h3 class="font-semibold text-red-800 mb-2">Atrasadas ({{ $atrasadas->count() }}{{ $topeAtrasadas ? '+' : '' }})</h3>
-    <ul class="divide-y divide-red-100">
+<div class="mb-6 rounded-xl border-2 border-dyl-orange-300 bg-dyl-graphite-50">
+    <h3 class="px-4 pt-4 font-display text-lg font-semibold text-gray-900">Atrasadas ({{ $atrasadas->count() }}{{ $topeAtrasadas ? '+' : '' }})</h3>
+    <ul class="divide-y divide-gray-200">
         @foreach($atrasadas as $i)
             @include('partials.linea-de-tiempo-item', ['i' => $i, 'conFecha' => true])
         @endforeach
@@ -28,10 +28,10 @@
 
 @forelse($dias as $fecha => $items)
     <div class="mb-5">
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">
+        <h3 class="font-display text-lg font-semibold text-gray-900 mb-2 first-letter:uppercase">
             {{ \Carbon\Carbon::parse($fecha)->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY') }}
         </h3>
-        <ul class="bg-white rounded-xl shadow divide-y divide-gray-100">
+        <ul class="card divide-y divide-gray-100">
             @foreach($items as $i)
                 @include('partials.linea-de-tiempo-item', ['i' => $i, 'conFecha' => false])
             @endforeach
@@ -39,7 +39,7 @@
     </div>
 @empty
     @if($atrasadas->isEmpty())
-        <div class="bg-white rounded-xl shadow p-8 text-center text-gray-500">No tienes entregas próximas.</div>
+        <div class="card p-8 text-center text-gray-500">No tienes entregas próximas.</div>
     @endif
 @endforelse
 
