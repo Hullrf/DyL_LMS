@@ -3,7 +3,7 @@
 @section('breadcrumbs'){{ Breadcrumbs::render('calificaciones.curso', $curso) }}@endsection
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
     <div>
         <h1 class="font-display text-3xl font-semibold text-gray-900 break-words">{{ $curso->titulo }}</h1>
         <p class="text-sm text-gray-500">Calificaciones</p>
@@ -21,13 +21,13 @@
       class="card p-4 mb-6 flex flex-wrap items-center gap-3">
     <input aria-label="Buscar estudiante..." type="text" name="buscar" value="{{ request('buscar') }}"
            placeholder="Buscar estudiante..." class="form-input flex-1 min-w-[200px]">
-    <select name="estado" class="form-select w-auto">
+    <select name="estado" class="form-select w-auto max-w-full">
         <option value="">Todos los estudiantes</option>
         <option value="pendientes" @selected(request('estado') === 'pendientes')>Con pendientes</option>
         <option value="completos" @selected(request('estado') === 'completos')>Completos</option>
     </select>
     @if($modulos->count() > 1)
-    <select name="modulo" class="form-select w-auto">
+    <select name="modulo" class="form-select w-auto max-w-full">
         <option value="">Todos los módulos</option>
         @foreach($modulos as $mod)
             <option value="{{ $mod->id }}" @selected(request('modulo') == $mod->id)>{{ $mod->titulo }}</option>
