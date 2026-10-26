@@ -274,7 +274,13 @@ html.dark { color-scheme: dark; }
 .dark ::selection { background: rgba(249,115,22,.4); }
 
 /* Modo oscuro — segunda pasada: tintes, hovers y separación de superficies */
-.dark .card, .dark .card-hover, .dark .bg-white.rounded-2xl, .dark .bg-white.rounded-xl { border: 1px solid #1f2b42; }
+.dark .card:not([class*="border-l-"]), .dark .card-hover:not([class*="border-l-"]),
+.dark .bg-white.rounded-2xl, .dark .bg-white.rounded-xl { border: 1px solid #1f2b42; }
+/* Tarjetas con borde izquierdo de acento (no leídas, respuestas): el shorthand de arriba pisaría su ancho y color,
+   así que a estas solo se les pone el borde sutil en los otros tres lados. */
+.dark .card[class*="border-l-"], .dark .card-hover[class*="border-l-"] {
+    border-top: 1px solid #1f2b42; border-right: 1px solid #1f2b42; border-bottom: 1px solid #1f2b42;
+}
 .dark .dyl-sidebar { border-right: 1px solid #1f2b42; }
 .dark .bg-dyl-graphite-100, .dark .bg-dyl-graphite-200 { background-color: #334155; }
 .dark .bg-dyl-graphite-50 { background-color: #0f172a; }
