@@ -6,11 +6,11 @@
     <div class="flex items-center gap-3 mb-6">
         <a href="{{ route('admin.categorias.index') }}" class="text-dyl-orange-700 hover:text-dyl-orange-800 text-sm">← Categorías</a>
         <span class="text-gray-400">/</span>
-        <h1 class="text-2xl font-bold text-gray-900">Editar Categoría</h1>
+        <h1 class="font-display text-3xl font-semibold text-gray-900">Editar categoría</h1>
     </div>
 
     <form method="POST" action="{{ route('admin.categorias.update', $categoria) }}"
-          class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-5">
+          class="card p-8 space-y-5">
         @csrf
         @method('PUT')
 
@@ -24,12 +24,12 @@
             <div class="flex items-center gap-3">
                 <input type="color" name="color" value="{{ old('color', $categoria->color) }}"
                        class="h-10 w-14 rounded border border-gray-300 cursor-pointer">
-                <span class="text-xs text-gray-400">Se usa como acento en el catálogo de cursos.</span>
+                <span class="text-xs text-gray-500">Se usa como acento en el catálogo de cursos.</span>
             </div>
             @error('color')<p class="form-error">{{ $message }}</p>@enderror
         </div>
         <div class="flex gap-3 pt-2">
-            <button type="submit" class="btn-primary">Guardar Cambios</button>
+            <button type="submit" class="btn-primary">Guardar cambios</button>
             <a href="{{ route('admin.categorias.index') }}" class="btn-outline">Cancelar</a>
         </div>
     </form>

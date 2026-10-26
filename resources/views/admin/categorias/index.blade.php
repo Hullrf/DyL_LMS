@@ -4,18 +4,18 @@
 @section('content')
 <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between gap-3 mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Categorías</h1>
-        <a href="{{ route('admin.categorias.create') }}" class="btn-primary">+ Nueva Categoría</a>
+        <h1 class="font-display text-3xl font-semibold text-gray-900">Gestión de categorías</h1>
+        <a href="{{ route('admin.categorias.create') }}" class="btn-primary">+ Nueva categoría</a>
     </div>
 
-    <form method="GET" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap gap-3">
+    <form method="GET" class="card p-4 mb-6 flex flex-wrap gap-3">
         <input aria-label="Buscar por nombre..." type="text" name="buscar" value="{{ request('buscar') }}"
                placeholder="Buscar por nombre..." class="form-input flex-1 min-w-48">
         <button type="submit" class="btn-primary">Filtrar</button>
         <a href="{{ route('admin.categorias.index') }}" class="btn-outline">Limpiar</a>
     </form>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+    <div class="card overflow-x-auto">
         <table class="tbl w-full">
             <thead>
                 <tr>
@@ -29,7 +29,7 @@
                 <tr class="tbl-row">
                     <td class="tbl-td">
                         <span class="inline-flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full inline-block" style="background-color: {{ $categoria->color }}"></span>
+                            <span class="w-3 h-3 rounded-full inline-block" style="background-color: {{ $categoria->color }}" aria-hidden="true"></span>
                             <span class="font-medium text-gray-900">{{ $categoria->nombre }}</span>
                         </span>
                     </td>
@@ -47,7 +47,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3" class="tbl-td text-center text-gray-400 py-10">No se encontraron categorías.</td>
+                    <td colspan="3" class="tbl-td text-center text-gray-500 py-10">No se encontraron categorías.</td>
                 </tr>
             @endforelse
             </tbody>

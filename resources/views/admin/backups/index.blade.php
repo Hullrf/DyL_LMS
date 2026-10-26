@@ -4,10 +4,10 @@
 @section('content')
 <div class="max-w-3xl mx-auto"
      x-data="{ descargoSeguridad: false, confirmacion: '', archivoSeleccionado: null }">
-    <h1 class="text-2xl font-bold text-gray-900 mb-2">Backups de la base de datos</h1>
+    <h1 class="font-display text-3xl font-semibold text-gray-900 mb-2">Backups de la base de datos</h1>
     <p class="text-gray-500 text-sm mb-6">
         Backup y restauración manual de la base de datos de producción. No hay backups automáticos: esto es
-        exclusivamente para vos.
+        exclusivamente para ti.
     </p>
 
     @error('archivo')
@@ -16,7 +16,7 @@
 
     {{-- Crear backup --}}
     <div class="card p-6 mb-6">
-        <h2 class="text-lg font-bold text-gray-900 mb-2">Crear backup</h2>
+        <h2 class="font-display text-2xl font-semibold text-gray-900 mb-2">Crear backup</h2>
         <p class="text-sm text-gray-600 mb-4">
             Genera un dump completo de la base de datos actual y lo descarga directo a tu computadora.
             No se guarda ninguna copia en el servidor.
@@ -29,7 +29,7 @@
 
     {{-- Restaurar backup --}}
     <div class="card p-6 border-2 border-dyl-graphite-300">
-        <h2 class="text-lg font-bold text-gray-900 mb-2">Restaurar backup</h2>
+        <h2 class="font-display text-2xl font-semibold text-gray-900 mb-2">Restaurar backup</h2>
         <p class="text-sm text-gray-600 mb-4">
             Sube un archivo <code>.sql</code> descargado previamente para reemplazar por completo el contenido
             actual de la base de datos. <strong>Esta acción no se puede deshacer.</strong>
@@ -72,7 +72,7 @@
             <button type="submit"
                     :disabled="!descargoSeguridad || confirmacion !== 'RESTAURAR' || !archivoSeleccionado"
                     :class="(!descargoSeguridad || confirmacion !== 'RESTAURAR' || !archivoSeleccionado) ? 'bg-gray-300 cursor-not-allowed' : 'bg-dyl-orange-600 hover:bg-dyl-orange-700 cursor-pointer'"
-                    class="text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    class="btn btn-lg text-white">
                 Restaurar base de datos
             </button>
         </form>
