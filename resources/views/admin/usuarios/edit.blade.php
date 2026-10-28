@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Editar Usuario — ' . $usuario->name)
+@section('title', 'Editar usuario — ' . $usuario->name)
 @section('breadcrumbs'){{ Breadcrumbs::render('admin.usuarios.edit', $usuario) }}@endsection
 @section('content')
 <div class="max-w-2xl mx-auto">

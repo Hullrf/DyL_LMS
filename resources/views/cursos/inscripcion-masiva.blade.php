@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Inscribir Estudiantes - ' . $curso->titulo)
+@section('title', 'Inscribir estudiantes - ' . $curso->titulo)
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.edit', $curso) }}@endsection
 @section('content')
 <div class="max-w-3xl mx-auto">

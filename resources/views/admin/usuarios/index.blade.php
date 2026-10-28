@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Gestión de Usuarios — D&L Quality Campus')
+@section('title', 'Gestión de usuarios — D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('admin.usuarios.index') }}@endsection
 @section('content')
 <div class="max-w-7xl mx-auto">
