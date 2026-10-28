@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Crear Curso - D&L Quality Campus')
+@section('title', 'Crear curso - D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('cursos.create') }}@endsection
 @section('content')
 <div class="max-w-2xl mx-auto">

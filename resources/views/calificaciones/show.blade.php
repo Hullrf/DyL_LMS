@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Calificar Respuesta - D&L Quality Campus')
+@section('title', 'Calificar respuesta - D&L Quality Campus')
 
 @section('content')
 @php

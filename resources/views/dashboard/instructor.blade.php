@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard Instructor - D&L Quality Campus')
+@section('title', 'Dashboard instructor - D&L Quality Campus')
 
 @section('content')
 @php $pendientes = $stats['pendientes_calificar']; @endphp

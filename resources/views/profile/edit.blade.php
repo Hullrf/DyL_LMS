@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Mi Perfil - D&L Quality Campus')
+@section('title', 'Mi perfil - D&L Quality Campus')
 
 @section('content')
 <div class="max-w-3xl mx-auto space-y-6">

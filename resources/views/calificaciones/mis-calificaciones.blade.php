@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Mis Calificaciones - D&L Quality Campus')
+@section('title', 'Mis calificaciones - D&L Quality Campus')
 
 @section('content')
 <header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 mb-8">

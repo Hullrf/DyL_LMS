@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Crear Categoría — D&L Quality Campus')
+@section('title', 'Crear categoría — D&L Quality Campus')
 @section('breadcrumbs'){{ Breadcrumbs::render('admin.categorias.create') }}@endsection
 @section('content')
 <div class="max-w-2xl mx-auto">

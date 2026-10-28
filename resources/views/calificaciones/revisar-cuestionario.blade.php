@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Revisar Cuestionario - D&L Quality Campus')
+@section('title', 'Revisar cuestionario - D&L Quality Campus')
 @section('content')
 
 <div class="max-w-3xl mx-auto">
