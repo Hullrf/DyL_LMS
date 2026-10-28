@@ -226,7 +226,7 @@
                 <a href="{{ route('cursos.show', $curso) }}"
                    class="card-hover flex items-center justify-end gap-3 px-4 py-3 group text-right">
                     <div class="min-w-0">
-                        <p class="text-xs text-dyl-orange-700">Has terminado el módulo</p>
+                        <p class="text-xs text-dyl-orange-700">Última lección del curso</p>
                         <p class="text-sm font-medium text-gray-900">Ver resumen del curso</p>
                     </div>
                     <svg class="w-5 h-5 shrink-0 text-dyl-orange-700 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
