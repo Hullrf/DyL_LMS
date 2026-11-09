@@ -1,7 +1,9 @@
 # Backup/restauración de BD: hallazgos pendientes de la revisión final
 
 **Fecha:** 2026-08-27
-**Estado:** Pendiente — documentado, no resuelto
+**Estado:** Resuelto (2026-11-09) en la rehecha de backups automáticos: `set_time_limit(0)`/`ignore_user_abort(true)`
+en `BackupService` (backup y restauración), `add-locks => false` + rechazo de archivos con `DELIMITER`, y el log de
+"backup descargado" se escribe dentro del callback, tras terminar el dump. Se conserva abajo como histórico.
 **Contexto:** `docs/superpowers/specs/2026-08-27-backup-restauracion-bd-design.md` y
 `docs/superpowers/plans/2026-08-27-backup-restauracion-bd.md` (feature: `app/Services/BackupService.php`,
 `app/Http/Controllers/Admin/BackupController.php`, mergeada en PR #4).
