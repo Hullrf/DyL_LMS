@@ -99,14 +99,8 @@ jobs:
       - name: Subir el código
         if: steps.secretos.outputs.listo == 'true'
         run: |
-          SSH="ssh -p $HOSTINGER_PORT -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=30"
+          SSH="ssh -p $HOSTINGER_PORT -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=30 -o ConnectionAttempts=3"
           DEST="$HOSTINGER_USER@$HOSTINGER_HOST:$HOSTINGER_PATH"
-
-          # IP pública del runner (dato no secreto): sirve si el firewall de Hostinger la bloquea.
-          echo "IP del runner: $(curl -s --max-time 10 https://api.ipify.org || echo desconocida)"
-
-          # Diagnóstico sin revelar valores: solo sí/no.
-          $SSH "$HOSTINGER_USER@$HOSTINGER_HOST" "for p in '$HOSTINGER_PATH' '$HOSTINGER_PATH/app' '$HOSTINGER_PATH/public'; do [ -d \"\$p\" ] && echo 'dir existe' || echo 'dir NO existe'; done; command -v rsync"
 
           # 1) Todo el árbol, sin borrar nada: el servidor tiene archivos propios que el repo no
           #    conoce (public/certificados, public/fonts, .env, storage/...).
