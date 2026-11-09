@@ -1,0 +1,129 @@
+# Autodeploy a Hostinger (staging hasta el cutover; ver docs/HOSTINGER.md).
+#
+# Cada push a master (o ejecución manual): corre los tests y, si pasan, compila assets y vendor
+# aquí (el servidor no tiene Node ni proc_open), sube el código por rsync/SSH y ejecuta
+# migrate + recache. Railway despliega aparte, por su propia integración con GitHub.
+#
+# Sin los secretos configurados, el job termina en verde sin desplegar (así este archivo se puede
+# mergear antes de tener la llave SSH lista).
+
+name: Deploy a Hostinger
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Un deploy a la vez; si llega otro merge, espera (no cancela uno a medias).
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+      HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+      HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+      HOSTINGER_PATH: ${{ secrets.HOSTINGER_PATH }}
+      HOSTINGER_URL: ${{ vars.HOSTINGER_URL || 'https://coral-seahorse-186583.hostingersite.com' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3' # misma versión que el sitio de Hostinger
+          extensions: mbstring, xml, ctype, json, bcmath, gd, zip, fileinfo, pdo_sqlite, sqlite3
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Dependencias (con dev, para los tests)
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist
+          npm ci
+
+      - name: Assets de producción
+        run: npm run build
+
+      - name: Tests
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan test
+
+      - name: Revisar secretos de deploy
+        id: secretos
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+        run: |
+          faltan=""
+          for v in HOSTINGER_HOST HOSTINGER_PORT HOSTINGER_USER HOSTINGER_PATH; do
+            [ -n "${!v}" ] || faltan="$faltan $v"
+          done
+          [ -n "$SSH_KEY" ] || faltan="$faltan HOSTINGER_SSH_KEY"
+          [ -n "$KNOWN_HOSTS" ] || faltan="$faltan HOSTINGER_KNOWN_HOSTS"
+          if [ -n "$faltan" ]; then
+            echo "::notice::Deploy omitido, faltan secretos:$faltan (ver docs/HOSTINGER.md)"
+            echo "listo=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "listo=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Vendor de producción
+        if: steps.secretos.outputs.listo == 'true'
+        run: |
+          rm -rf vendor
+          composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
+
+      - name: Configurar SSH
+        if: steps.secretos.outputs.listo == 'true'
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Subir el código
+        if: steps.secretos.outputs.listo == 'true'
+        run: |
+          SSH="ssh -p $HOSTINGER_PORT -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
+          DEST="$HOSTINGER_USER@$HOSTINGER_HOST:$HOSTINGER_PATH"
+
+          # 1) Todo el árbol, sin borrar nada: el servidor tiene archivos propios que el repo no
+          #    conoce (public/certificados, public/fonts, .env, storage/...).
+          rsync -az -e "$SSH" \
+            --exclude='.env' --exclude='.git/' --exclude='.github/' --exclude='.claude/' \
+            --exclude='.autopilot/' --exclude='node_modules/' --exclude='storage/' \
+            --exclude='bootstrap/cache/' --exclude='public/storage' --exclude='tests/' \
+            --exclude='docs/' ./ "$DEST/"
+
+          # 2) Solo en directorios 100 % de código, borrar lo que ya no existe en el repo.
+          for d in app config database resources routes lang vendor public/build; do
+            [ -d "$d" ] && rsync -az --delete -e "$SSH" "$d/" "$DEST/$d/"
+          done
+
+      - name: Migrar y recachear en el servidor
+        if: steps.secretos.outputs.listo == 'true'
+        run: |
+          ssh -p "$HOSTINGER_PORT" -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$HOSTINGER_USER@$HOSTINGER_HOST" "cd '$HOSTINGER_PATH' && \
+              php artisan migrate --force && \
+              php artisan config:clear && php artisan config:cache && \
+              php artisan route:cache && php artisan view:cache"
+
+      - name: Healthcheck
+        if: steps.secretos.outputs.listo == 'true'
+        run: curl --fail --silent --show-error --retry 5 --retry-delay 5 --retry-all-errors "$HOSTINGER_URL/up"
