@@ -255,6 +255,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         ->name('backups.crear');
     Route::post('backups/restaurar', [\App\Http\Controllers\Admin\BackupController::class, 'restaurar'])
         ->name('backups.restaurar');
+    Route::post('backups/guardar', [\App\Http\Controllers\Admin\BackupController::class, 'guardar'])
+        ->name('backups.guardar');
+    Route::get('backups/{nombre}/descargar', [\App\Http\Controllers\Admin\BackupController::class, 'descargar'])
+        ->name('backups.descargar');
+    Route::delete('backups/{nombre}', [\App\Http\Controllers\Admin\BackupController::class, 'eliminar'])
+        ->name('backups.eliminar');
+    Route::post('backups/{nombre}/restaurar', [\App\Http\Controllers\Admin\BackupController::class, 'restaurarGuardado'])
+        ->name('backups.restaurar-guardado');
 });
 
 require __DIR__.'/auth.php';
