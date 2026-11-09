@@ -99,11 +99,12 @@ jobs:
       - name: Subir el código
         if: steps.secretos.outputs.listo == 'true'
         run: |
-          SSH="ssh -p $HOSTINGER_PORT -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
+          SSH="ssh -p $HOSTINGER_PORT -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=30 -o ConnectionAttempts=3"
           DEST="$HOSTINGER_USER@$HOSTINGER_HOST:$HOSTINGER_PATH"
 
           # 1) Todo el árbol, sin borrar nada: el servidor tiene archivos propios que el repo no
           #    conoce (public/certificados, public/fonts, .env, storage/...).
+          echo "== paso 1: árbol completo"
           rsync -az -e "$SSH" \
             --exclude='.env' --exclude='.git/' --exclude='.github/' --exclude='.claude/' \
             --exclude='.autopilot/' --exclude='node_modules/' --exclude='storage/' \
@@ -112,6 +113,7 @@ jobs:
 
           # 2) Solo en directorios 100 % de código, borrar lo que ya no existe en el repo.
           for d in app config database resources routes lang vendor public/build; do
+            echo "== paso 2: $d"
             [ -d "$d" ] && rsync -az --delete -e "$SSH" "$d/" "$DEST/$d/"
           done
 
