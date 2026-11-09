@@ -17,15 +17,33 @@ Runbook de lo que ya está montado y checklist para el cutover desde Railway. Lo
 - No hay worker de colas: dejar `QUEUE_CONNECTION=sync`, o crear un cron con `queue:work --stop-when-empty`.
 - `.env` difiere de `.env.example`: `LOG_CHANNEL=single` (no `stderr`), `MAIL_MAILER=log` hasta tener SMTP real, `APP_URL` del dominio.
 
-## Actualizar el código
-```bash
-cd ~/domains/<sitio>/public_html/laravel
-git pull --ff-only
-php -d disable_functions= $(which composer) install --no-dev --optimize-autoloader
-php artisan migrate --force
-php artisan config:cache && php artisan route:cache && php artisan view:cache
-```
-Si cambió JS/CSS/Tailwind: recompilar en local y volver a subir `public/build`.
+## Autodeploy (GitHub Actions)
+`.github/workflows/deploy-hostinger.yml` despliega solo en cada push a `master` (también a mano: Actions → *Deploy a Hostinger* → Run workflow). Pasos: tests → `npm run build` y `composer install --no-dev` en GitHub (el servidor no tiene Node ni `proc_open`) → `rsync` por SSH → `migrate --force` + recache → healthcheck `/up`. Si fallan los tests no se despliega nada.
+
+- **Qué no toca nunca:** `.env`, `storage/`, `bootstrap/cache/`, `.git/` ni los archivos que el servidor genera (`public/certificados`, `public/fonts`…). El borrado de archivos viejos (`rsync --delete`) solo se aplica a `app config database resources routes lang vendor public/build`.
+- **Sin secretos el job pasa en verde sin desplegar** (deja un aviso en el log), así que mergear el workflow es seguro.
+- Railway sigue desplegando por su cuenta; ambos reciben el mismo `master`.
+
+### Activarlo (una sola vez)
+1. Generar una llave solo para deploy: `ssh-keygen -t ed25519 -f hostinger_deploy -C "github-actions-deploy" -N ""`.
+2. hPanel → Avanzado → **SSH Access** → pegar la llave pública (`hostinger_deploy.pub`). Ahí mismo están el host/IP y el puerto (normalmente `65002`). La API de Hostinger no permite autorizar llaves de login, por eso es manual.
+3. Obtener `known_hosts`: `ssh-keyscan -p 65002 <host>`.
+4. Crear estos *secrets* del repo (Settings → Secrets and variables → Actions, o `gh secret set NOMBRE`):
+
+| Secreto | Valor |
+|---|---|
+| `HOSTINGER_SSH_KEY` | contenido de la llave **privada** `hostinger_deploy` |
+| `HOSTINGER_KNOWN_HOSTS` | salida de `ssh-keyscan` |
+| `HOSTINGER_HOST` | host/IP del paso 2 |
+| `HOSTINGER_PORT` | puerto SSH (p. ej. `65002`) |
+| `HOSTINGER_USER` | `u777249992` |
+| `HOSTINGER_PATH` | ruta absoluta de la app, p. ej. `/home/u777249992/domains/<sitio>/public_html/laravel` |
+
+5. (Opcional) variable `HOSTINGER_URL` si cambia el dominio (cutover); por defecto usa el dominio temporal.
+6. Borrar la llave privada local tras guardarla como secreto.
+
+### Despliegue manual (si el autodeploy está caído)
+El `git pull` en el servidor **ya no es el camino**: el workflow sube los archivos con rsync y el directorio puede quedar con cambios respecto a `git`. Para un deploy manual, ejecutar el workflow a mano desde GitHub. Solo si GitHub Actions no está disponible: `git pull` + `composer install` (con `php -d disable_functions=`) + `migrate --force` + recache en el servidor, y subir `public/build` compilado en local.
 
 ## Cron del scheduler (hPanel → Avanzado → Cron Jobs)
 Cada 5 minutos (equivale al servicio scheduler de Railway):
