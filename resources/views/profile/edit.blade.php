@@ -25,6 +25,13 @@
         </div>
     </div>
 
+    {{-- Avisos por correo --}}
+    <div class="card">
+        <div class="card-body">
+            @include('profile.partials.update-avisos-correo-form')
+        </div>
+    </div>
+
     {{-- 2FA --}}
     <div class="card">
         <div class="card-body">

@@ -7,7 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use App\Services\AvisosPorCorreoService;
 
 class ProfileController extends Controller
 {
@@ -35,6 +37,25 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Guarda qué categorías de avisos quiere recibir por correo (las no marcadas se apagan).
+     */
+    public function actualizarAvisosCorreo(Request $request): RedirectResponse
+    {
+        $claves = array_keys(AvisosPorCorreoService::CATEGORIAS);
+
+        $validado = $request->validate([
+            'avisos'   => ['nullable', 'array'],
+            'avisos.*' => [Rule::in($claves)],
+        ]);
+
+        $desactivados = array_values(array_diff($claves, $validado['avisos'] ?? []));
+
+        $request->user()->forceFill(['correo_desactivados' => $desactivados ?: null])->save();
+
+        return Redirect::route('profile.edit')->with('status', 'avisos-correo-updated');
     }
 
     /**
