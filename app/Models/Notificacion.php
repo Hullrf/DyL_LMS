@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\AvisosPorCorreoService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -15,6 +16,12 @@ class Notificacion extends Model
         'leido' => 'boolean',
         'data' => 'array',
     ];
+
+    protected static function booted(): void
+    {
+        // Cada aviso de las categorías incluidas también sale por correo (ver AvisosPorCorreoService).
+        static::created(fn (self $aviso) => app(AvisosPorCorreoService::class)->enviarSiCorresponde($aviso));
+    }
 
     public function user(): BelongsTo
     {
