@@ -20,6 +20,14 @@ class AvisoLmsMailTest extends TestCase
         return Notificacion::crear($usuario->id, 'calificacion', $titulo, $mensaje, $url);
     }
 
+    public function test_reintenta_con_espera_para_no_gastar_los_intentos_de_golpe(): void
+    {
+        Mail::fake();
+        $mail = new AvisoLms($this->aviso('Actividad calificada', 'Ya tienes tu nota.', null));
+
+        $this->assertSame([60, 600], $mail->backoff);
+    }
+
     public function test_asunto_es_el_titulo_del_aviso(): void
     {
         Mail::fake();

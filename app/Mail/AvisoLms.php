@@ -17,6 +17,9 @@ class AvisoLms extends Mailable implements ShouldQueue
 
     public int $tries = 3;
 
+    /** Segundos de espera entre reintentos: sin esto, una caída breve de Zoho gasta los 3 intentos de golpe. */
+    public array $backoff = [60, 600];
+
     public function __construct(public Notificacion $notificacion)
     {
     }

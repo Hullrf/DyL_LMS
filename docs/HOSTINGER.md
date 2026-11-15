@@ -14,7 +14,7 @@ Runbook de lo que ya está montado y checklist para el cutover desde Railway. Lo
 - No hay Node en el servidor: los assets de Vite se compilan en local (`npm ci && npm run build`) y se suben `public/build` por el Administrador de archivos.
 - `proc_open` está en `disable_functions` (PHP web). Composer lo necesita: ejecutar con `php -d disable_functions= $(which composer) install --no-dev --optimize-autoloader`. No relajar `disable_functions` en la configuración del sitio.
 - `storage:link` también necesita `symlink`: `php -d disable_functions= artisan storage:link`.
-- No hay worker de colas: dejar `QUEUE_CONNECTION=sync`, o crear un cron con `queue:work --stop-when-empty`.
+- No hay un worker de colas permanente. Con `QUEUE_CONNECTION=database` la cola la procesa el scheduler (`queue:work --stop-when-empty` cada 5 min, ver "Correo (Zoho SMTP) y cola"); con `sync` los correos salen dentro de la petición.
 - `.env` difiere de `.env.example`: `LOG_CHANNEL=single` (no `stderr`), `MAIL_MAILER=log` hasta tener SMTP real, `APP_URL` del dominio.
 
 ## Autodeploy (GitHub Actions)
@@ -48,8 +48,9 @@ El `git pull` en el servidor **ya no es el camino**: el workflow sube los archiv
 ## Cron del scheduler (hPanel → Avanzado → Cron Jobs)
 Cada 5 minutos (equivale al servicio scheduler de Railway):
 ```
-cd /home/u777249992/domains/<sitio>/public_html/laravel && php artisan schedule:run >> /dev/null 2>&1
+/usr/bin/php -d disable_functions= /home/u777249992/domains/<sitio>/public_html/laravel/artisan schedule:run
 ```
+**Importante:** `schedule:run` lanza cada tarea como un proceso hijo (necesita `proc_open`), y en este servidor `proc_open` está en `disable_functions` también en la consola. Por eso el comando lleva `-d disable_functions=`. Sin esa opción el cron "corre" pero las tareas programadas (vencimientos, backup, cola de correos) fallan. Para comprobarlo por SSH: `php -r "var_dump(function_exists('proc_open'));"` (debe dar `false` sin la opción) y `php -d disable_functions= artisan schedule:run` (debe ejecutar las tareas que toquen sin error).
 
 ## Correo (Zoho SMTP) y cola
 El LMS manda por correo los avisos de vencimientos, calificaciones, anuncios y certificados (cada usuario puede apagar categorías en Perfil → Avisos por correo; ver `docs/superpowers/specs/2026-11-15-correos-avisos-design.md`). Los correos van en cola y el scheduler (cron de arriba) la procesa cada 5 minutos, así que un correo puede tardar hasta ~5 min en salir.
