@@ -37,7 +37,14 @@ class User extends Authenticatable implements Auditable
             'password'           => 'hashed',
             'two_factor_enabled' => 'boolean',
             'ultimo_acceso'      => 'datetime',
+            'correo_desactivados' => 'array',
         ];
+    }
+
+    /** ¿Quiere recibir por correo los avisos de esta categoría? (por defecto sí) */
+    public function recibeCorreo(string $categoria): bool
+    {
+        return !in_array($categoria, $this->correo_desactivados ?? [], true);
     }
 
     public function roles(): BelongsToMany
