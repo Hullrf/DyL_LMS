@@ -1,6 +1,6 @@
 # Avisos por correo con opt-out por usuario — diseño
 
-Fecha: 2026-11-15 · Estado: pendiente de aprobación · Tamaño: cambio pequeño-mediano (diseño corto)
+Fecha: 2026-11-15 · Estado: aprobado · Tamaño: cambio pequeño-mediano (diseño corto)
 
 ## Por qué
 El LMS avisa de vencimientos, calificaciones, anuncios y certificados solo dentro de la plataforma (campana de notificaciones). Quien no entra al campus no se entera. Se quiere que esos avisos también lleguen por correo, empezando por los recordatorios de entregas, sin spamear y con control del usuario.

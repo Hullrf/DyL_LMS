@@ -51,6 +51,30 @@ Cada 5 minutos (equivale al servicio scheduler de Railway):
 cd /home/u777249992/domains/<sitio>/public_html/laravel && php artisan schedule:run >> /dev/null 2>&1
 ```
 
+## Correo (Zoho SMTP) y cola
+El LMS manda por correo los avisos de vencimientos, calificaciones, anuncios y certificados (cada usuario puede apagar categorías en Perfil → Avisos por correo; ver `docs/superpowers/specs/2026-11-15-correos-avisos-design.md`). Los correos van en cola y el scheduler (cron de arriba) la procesa cada 5 minutos, así que un correo puede tardar hasta ~5 min en salir.
+
+1. En Zoho Mail: crear el buzón o alias `campus@dylqualityconsulting.com` y generar una **contraseña de aplicación** (Zoho Accounts → Seguridad → Contraseñas de aplicación). Confirmar que el plan de Zoho permite SMTP y su límite diario de envíos.
+2. En el `.env` del servidor (por SSH; nunca en el repo):
+   ```
+   MAIL_MAILER=smtp
+   MAIL_SCHEME=smtps
+   MAIL_HOST=smtp.zoho.com
+   MAIL_PORT=465
+   MAIL_USERNAME=campus@dylqualityconsulting.com
+   MAIL_PASSWORD="<contraseña de aplicación>"
+   MAIL_FROM_ADDRESS=campus@dylqualityconsulting.com
+   MAIL_FROM_NAME="D&L Quality Campus"
+   QUEUE_CONNECTION=database
+   ```
+3. `php artisan config:cache`. No hay que reiniciar nada: cada pasada del scheduler arranca un worker de cola nuevo, que ya lee la configuración actualizada.
+4. Prueba de envío (el correo sale al momento porque usa `send`, no la cola):
+   ```
+   php artisan tinker
+   >>> Mail::raw('Prueba', fn ($m) => $m->to('tu@correo.com')->subject('Prueba LMS'));
+   ```
+5. Si algo falla: `storage/logs/laravel.log` (aviso `No se pudo encolar el aviso por correo`) y la tabla `failed_jobs`.
+
 ## Checklist de cutover (cuando llegue el dominio)
 1. Confirmar que la transferencia terminó y el dominio está en la cuenta `formacion@`.
 2. Crear el subdominio del LMS (p. ej. `campus.<dominio>`) apuntando al mismo sitio (alias/parked o sitio nuevo) y esperar SSL activo.
