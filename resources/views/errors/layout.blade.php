@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('layouts.partials.favicon')
     <title>@yield('titulo') — D&amp;L Quality Campus</title>
     <script>
         try {
