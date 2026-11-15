@@ -15,7 +15,7 @@
                             <table role="presentation" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td style="padding-right:12px;">
-                                        <img src="{{ asset('images/logo/logo-icon-dark-256.png') }}" width="44" height="44" alt="" style="display:block;border:0;">
+                                        <img src="{{ asset('images/logo/logo-icon-light-256.png') }}" width="44" height="44" alt="" style="display:block;border:0;">
                                     </td>
                                     <td style="font-size:15px;font-weight:bold;color:#0F172A;">D&amp;L Quality Campus</td>
                                 </tr>
