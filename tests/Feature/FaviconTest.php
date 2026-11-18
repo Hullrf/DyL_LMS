@@ -35,7 +35,7 @@ class FaviconTest extends TestCase
         $html = $this->html($pagina);
 
         // El ?v= esquiva el CDN/navegador, que pudieron cachear el favicon.ico vacío de antes.
-        $this->assertStringContainsString('<link rel="icon" href="' . asset('favicon.ico') . '?v=2"', $html);
+        $this->assertStringContainsString('<link rel="icon" href="' . asset('favicon.ico') . '?v=3"', $html);
         $this->assertStringContainsString('rel="icon" type="image/png"', $html);
         $this->assertStringContainsString('rel="apple-touch-icon"', $html);
     }
