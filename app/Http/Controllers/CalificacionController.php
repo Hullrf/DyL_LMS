@@ -88,6 +88,15 @@ class CalificacionController extends Controller
             ->respuestasOficiales($respuestasRaw)
             ->keyBy(fn($r) => "{$r->user_id}-{$r->actividad_id}");
 
+        // Intentos por revisar que no son el oficial de su celda (p. ej. un reintento en revisión
+        // cuando ya hay uno calificado con nota mayor): la celda los enlaza para que no queden ocultos.
+        $oficialesIds = $respuestasPorCelda->pluck('id');
+        $pendientesOcultosPorCelda = $respuestasRaw
+            ->whereIn('estado', ['sin_calificar', 'en_revision'])
+            ->whereNotIn('id', $oficialesIds)
+            ->groupBy(fn($r) => "{$r->user_id}-{$r->actividad_id}")
+            ->map->first();
+
         // Conjunto de actividades SIEMPRE sin filtrar por ?modulo=, usado únicamente
         // para decidir si procede aprobar el certificado (acción irreversible: nunca
         // debe depender de una vista parcial/filtrada del curso). Si no hay filtro
@@ -143,12 +152,13 @@ class CalificacionController extends Controller
         $aprobatoria = (int) ($curso->nota_aprobatoria ?? 80);
 
         $filas = $inscripciones->map(function ($insc) use (
-            $notas, $aprobatoria, $esFiltrado, $actividades, $respuestasPorCelda, $actividadesCompletas, $respuestasPorCeldaCompletas, $certificadosPorEstudiante
+            $notas, $aprobatoria, $esFiltrado, $actividades, $respuestasPorCelda, $actividadesCompletas, $respuestasPorCeldaCompletas, $certificadosPorEstudiante, $pendientesOcultosPorCelda
         ) {
             $celdas = $actividades->map(fn($act) => $respuestasPorCelda->get("{$insc->user_id}-{$act->id}"));
+            $pendientesOcultos = $actividades->map(fn($act) => $pendientesOcultosPorCelda->get("{$insc->user_id}-{$act->id}"));
 
             $calificadas = $celdas->filter(fn($r) => $r && $r->estado === 'calificada');
-            $tienePendientes = $actividades->count() > $calificadas->count();
+            $tienePendientes = $actividades->count() > $calificadas->count() || $pendientesOcultos->filter()->isNotEmpty();
 
             // Nota del curso: misma fórmula que el certificado y las vistas del estudiante.
             // Modo y pesos salen SIEMPRE del curso completo; $promedio solo restringe las filas.
@@ -165,6 +175,7 @@ class CalificacionController extends Controller
             return (object) [
                 'estudiante'           => $insc->usuario,
                 'celdas'               => $celdas,
+                'pendientes_ocultos'   => $pendientesOcultos,
                 'promedio'             => $promedio,
                 'tiene_pendientes'     => $tienePendientes,
                 'completado'           => $insc->estado === 'completado',
