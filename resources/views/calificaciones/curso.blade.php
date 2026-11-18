@@ -116,6 +116,13 @@
                                 <a href="{{ route('calificaciones.show', $respuesta) }}" class="badge badge-yellow">Pendiente</a>
                             @endif
 
+                            @if($oculto = $fila->pendientes_ocultos[$i])
+                                <a href="{{ $oculto->estado === 'en_revision' ? route('calificaciones.revisar', $oculto) : route('calificaciones.show', $oculto) }}"
+                                   class="badge badge-blue ml-1" title="Otro intento de este estudiante espera revisión">
+                                    {{ $oculto->estado === 'en_revision' ? 'Revisar' : 'Pendiente' }} otro intento
+                                </a>
+                            @endif
+
                             @if($act->tipo === 'cuestionario')
                                 @php($info = $intentosPorCelda["{$fila->estudiante->id}-{$act->id}"] ?? ['usados' => 0, 'permitidos' => $act->intentos_permitidos, 'extra' => 0])
                                 <div class="mt-1 flex items-center gap-1.5 text-xs text-gray-500">

@@ -185,4 +185,38 @@ class CalificacionesCursoMatrizTest extends TestCase
         $response->assertSee('Actividad Módulo Uno');
         $response->assertDontSee('Actividad Módulo Dos');
     }
+
+    /**
+     * Caso real (Lean Manufacturing, 2026-11): intento 1 calificado con nota alta, intento 2 en revisión.
+     * La celda muestra el oficial (mas_alto) y antes escondía el intento pendiente, aunque el índice lo contaba.
+     */
+    public function test_celda_muestra_intento_en_revision_oculto_tras_el_oficial(): void
+    {
+        $curso = Curso::factory()->create(['created_by' => $this->instructor->id]);
+        $modulo = Modulo::factory()->create(['curso_id' => $curso->id]);
+        $leccion = Leccion::factory()->create(['modulo_id' => $modulo->id]);
+        $cuestionario = Actividad::factory()->create([
+            'leccion_id' => $leccion->id, 'tipo' => 'cuestionario', 'intentos_permitidos' => 2,
+            'criterio_calificacion_intentos' => 'mas_alto',
+        ]);
+        $estudiante = $this->inscribirEstudiante($curso, 'Estudiante Repite');
+
+        RespuestaEstudiante::factory()->calificada()->create([
+            'user_id' => $estudiante->id, 'actividad_id' => $cuestionario->id,
+            'calificacion' => 10, 'fecha_envio' => now()->subHours(5),
+        ]);
+        $pendiente = RespuestaEstudiante::factory()->create([
+            'user_id' => $estudiante->id, 'actividad_id' => $cuestionario->id,
+            'estado' => 'en_revision', 'calificacion' => null, 'fecha_envio' => now(),
+        ]);
+
+        $response = $this->actingAs($this->instructor)->get(route('calificaciones.curso', $curso));
+        $response->assertOk();
+        $response->assertSee('10.00');
+        $response->assertSee(route('calificaciones.revisar', $pendiente));
+
+        $filtrada = $this->actingAs($this->instructor)
+            ->get(route('calificaciones.curso', [$curso, 'estado' => 'pendientes']));
+        $filtrada->assertSee('Estudiante Repite');
+    }
 }
