@@ -1,14 +1,15 @@
 # Despliegue en Hostinger (Cloud Professional)
 
-Runbook de lo que ya está montado y checklist para el cutover desde Railway. Los secretos (contraseña de BD, `APP_KEY`, token de API) **no** viven en el repo.
+Runbook del despliegue del LMS en Hostinger, que es **la producción** (el hosting anterior, Railway, ya no se usa). Los secretos (contraseña de BD, `APP_KEY`, token de API) **no** viven en el repo.
 
-## Estado actual (entorno de pruebas)
+## Estado actual (producción)
 - Cuenta de Hostinger: la de `formacion@dylqualityconsulting.com` (plan Cloud Professional, usuario SSH `u777249992`).
-- Sitio temporal: `coral-seahorse-186583.hostingersite.com` (PHP 8.3).
+- URL de producción: `https://campus.dylqualityconsulting.com`, alias del sitio `coral-seahorse-186583.hostingersite.com` (PHP 8.3). La landing (repo aparte, sitio estático) está en `https://dylqualityconsulting.com`.
+- DNS del dominio en Hostinger (`ns1/ns2.dns-parking.com`); el correo `@dylqualityconsulting.com` va por Zoho (MX, SPF y DKIM en la zona: no tocarlos sin saber qué se hace).
 - Código: clon de `Hullrf/DyL_LMS` rama `master` en `~/domains/<sitio>/public_html/laravel/`.
 - Raíz del sitio (`public_html/.htaccess`) reescribe todo a `laravel/public/`; así `.env` y el código quedan inalcanzables por HTTP.
 - BD MySQL `u777249992_lms` (host `127.0.0.1` desde la app). `.env` en `laravel/.env`, permisos 600.
-- Railway sigue siendo producción hasta el cutover.
+- El LMS dejó Railway el 2026-11-15 (ver "Cutover desde Railway" al final).
 
 ## Particularidades de Hostinger (compartido/cloud)
 - No hay Node en el servidor: los assets de Vite se compilan en local (`npm ci && npm run build`) y se suben `public/build` por el Administrador de archivos.
@@ -22,7 +23,7 @@ Runbook de lo que ya está montado y checklist para el cutover desde Railway. Lo
 
 - **Qué no toca nunca:** `.env`, `storage/`, `bootstrap/cache/`, `.git/` ni los archivos que el servidor genera (`public/certificados`, `public/fonts`…). El borrado de archivos viejos (`rsync --delete`) solo se aplica a `app config database resources routes lang vendor public/build`.
 - **Sin secretos el job pasa en verde sin desplegar** (deja un aviso en el log), así que mergear el workflow es seguro.
-- Railway sigue desplegando por su cuenta; ambos reciben el mismo `master`.
+- Es el único despliegue: Railway ya no recibe `master`.
 
 ### Activarlo (una sola vez)
 1. Generar una llave solo para deploy: `ssh-keygen -t ed25519 -f hostinger_deploy -C "github-actions-deploy" -N ""`.
@@ -46,7 +47,7 @@ Runbook de lo que ya está montado y checklist para el cutover desde Railway. Lo
 El `git pull` en el servidor **ya no es el camino**: el workflow sube los archivos con rsync y el directorio puede quedar con cambios respecto a `git`. Para un deploy manual, ejecutar el workflow a mano desde GitHub. Solo si GitHub Actions no está disponible: `git pull` + `composer install` (con `php -d disable_functions=`) + `migrate --force` + recache en el servidor, y subir `public/build` compilado en local.
 
 ## Cron del scheduler (hPanel → Avanzado → Cron Jobs)
-Cada 5 minutos (equivale al servicio scheduler de Railway):
+Cada 5 minutos:
 ```
 /usr/bin/php -d disable_functions= /home/u777249992/domains/<sitio>/public_html/laravel/artisan schedule:run
 ```
@@ -76,7 +77,8 @@ El LMS manda por correo los avisos de vencimientos, calificaciones, anuncios y c
    ```
 5. Si algo falla: `storage/logs/laravel.log` (aviso `No se pudo encolar el aviso por correo`) y la tabla `failed_jobs`.
 
-## Checklist de cutover (cuando llegue el dominio)
+## Cutover desde Railway (histórico: completado el 2026-11-15)
+Se conserva como referencia de lo que se hizo y de lo que sigue pendiente (token de API, respaldo de la web vieja de HostGator).
 1. Confirmar que la transferencia terminó y el dominio está en la cuenta `formacion@`.
 2. Crear el subdominio del LMS (p. ej. `campus.<dominio>`) apuntando al mismo sitio (alias/parked o sitio nuevo) y esperar SSL activo.
 3. Cambiar `APP_URL` en `.env` al dominio final; `php artisan config:clear && php artisan config:cache`.

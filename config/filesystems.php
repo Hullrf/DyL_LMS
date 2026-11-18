@@ -16,7 +16,7 @@ return [
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     // Disco donde se guardan los backups de la BD (carpeta "backups/").
-    // En Railway el disco local es efímero: apuntar a 's3' (bucket) para que persistan.
+    // En Hostinger el disco local es persistente; apuntar a 's3' (bucket) para guardarlos fuera del servidor.
     'backup_disk' => env('BACKUP_DISK', 'local'),
 
     /*
